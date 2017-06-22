@@ -1,0 +1,58 @@
+"AddonInfo"
+{
+	"rubicks_magick"
+	{
+		"MaxPlayers"		"10"
+	}
+	"Default_Keys"
+	{
+		"01"
+		{
+			"Key"       "Q"
+            "Command"   "+rm_wtr"
+            "Name"      "Water Element"
+		}
+		"02"
+		{
+			"Key"       "W"
+            "Command"   "+rm_lif"
+            "Name"      "Life Element"	
+		}
+		"03"
+		{
+			"Key"       "E"
+            "Command"   "+rm_shld"
+            "Name"      "Shield Element"
+		}
+		"04"
+		{
+			"Key"       "R"
+            "Command"   "+rm_cld"
+            "Name"      "Cold Element"	
+		}
+		"05"
+		{
+			"Key"       "A"
+            "Command"   "+rm_ltg"
+            "Name"      "Lightning Element"	
+		}
+		"06"
+		{
+			"Key"       "S"
+            "Command"   "+rm_dth"
+            "Name"      "Death Element"	
+		}
+		"07"
+		{
+			"Key"       "D"
+            "Command"   "+rm_ert"
+            "Name"      "Earth Element"	
+		}
+		"08"
+		{
+			"Key"       "F"
+            "Command"   "+rm_fir"
+            "Name"      "Fire Element"	
+		}
+	}
+}

@@ -1,0 +1,1 @@
+This addon is a reincarnation of one of the most funny, exciting and crazy game - Magicka Wizard Wars - in Dota 2.
