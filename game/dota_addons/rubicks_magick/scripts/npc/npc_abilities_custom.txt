@@ -1,3 +1,18 @@
 "DOTAAbilities"
 {
+	"move_controller"
+	{
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_HIDDEN"
+		"BaseClass"						"ability_datadriven"
+		"OnSpellStart"
+		{				
+			"ApplyMotionController"
+			{
+				"Target"					"CASTER"
+			    "ScriptFile"				"scripts/vscripts/move_controller.lua"
+			    "HorizontalControlFunction"	"RubickMove"
+			    "VerticalControlFunction"	"RubickMove"         
+			}
+		}
+	}
 }
