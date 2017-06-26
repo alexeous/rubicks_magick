@@ -5,8 +5,9 @@ if RubicksMagickGameMode == nil then
 	RubicksMagickGameMode = class({})
 end
 
-function Precache( context )
+function Precache(context)
 	PrecacheUnitByNameSync("npc_dota_hero_rubick_rubicks_magick", context)
+	PrecacheResource("particle", "particles/ui_mouseactions/clicked_basemove.vpcf", context)
 end
 
 function Activate()
@@ -20,7 +21,7 @@ function RubicksMagickGameMode:InitGameMode()
 	GameRules:SetPreGameTime(20.0)
 
 	GameRules:GetGameModeEntity():SetThink("OnThink", self, "GlobalThink", 2)
-	GameRules:GetGameModeEntity():SetThink(OnMoveHeroesThink, "MoveHeroesThink", 1)
+	GameRules:GetGameModeEntity():SetThink(OnMoveHeroesThink, "MoveHeroesThink", 2)
 
 	ListenToGameEvent("player_connect_full", Dynamic_Wrap(RubicksMagickGameMode, "OnConnectFull"), self)
 
