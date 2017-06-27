@@ -8,6 +8,18 @@ playersLeftDown = {}
 playersMoveTo = {}
 moveToParticleIndices = {}
 
+
+
+function RubicksMagickMoveController:Init()
+	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(RubicksMagickMoveController, "OnMoveHeroesThink"), "MoveHeroesThink", 2)
+	
+	CustomGameEventManager:RegisterListener("me_mm", Dynamic_Wrap(RubicksMagickMoveController, "OnMouseMove"))
+	CustomGameEventManager:RegisterListener("me_rd", Dynamic_Wrap(RubicksMagickMoveController, "OnRightDown"))
+	CustomGameEventManager:RegisterListener("me_ru", Dynamic_Wrap(RubicksMagickMoveController, "OnRightUp"))
+	CustomGameEventManager:RegisterListener("me_ld", Dynamic_Wrap(RubicksMagickMoveController, "OnLeftDown"))
+	CustomGameEventManager:RegisterListener("me_lu", Dynamic_Wrap(RubicksMagickMoveController, "OnLeftUp"))
+end
+
 function RubicksMagickMoveController:OnMoveHeroesThink()
 	local MOVE_PER_THINK = 11.0
 	for playerID = 0, DOTA_MAX_PLAYERS - 1 do
@@ -48,7 +60,7 @@ function RubicksMagickMoveController:ShowMoveToParticle(playerID, pos)
 end
 
 
-function RubicksMagickMoveController:InitPlayer(playerID)
+function RubicksMagickMoveController:PlayerConnected(playerID)
 	playersRightDown[playerID] = false;
     playersLeftDown[playerID] = false;
 end

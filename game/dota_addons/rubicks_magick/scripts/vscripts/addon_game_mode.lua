@@ -21,17 +21,12 @@ function RubicksMagickGameMode:InitGameMode()
 	GameRules:SetPreGameTime(20.0)
 
 	GameRules:GetGameModeEntity():SetThink("OnThink", self, "GlobalThink", 2)
-	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(RubicksMagickMoveController, "OnMoveHeroesThink"), "MoveHeroesThink", 2)
 
 	GameRules:GetGameModeEntity():SetExecuteOrderFilter(Dynamic_Wrap(RubicksMagickGameMode, "OrderFilter"), self)
 
 	ListenToGameEvent("player_connect_full", Dynamic_Wrap(RubicksMagickGameMode, "OnConnectFull"), self)
 
-	CustomGameEventManager:RegisterListener("me_mm", Dynamic_Wrap(RubicksMagickMoveController, "OnMouseMove"))
-	CustomGameEventManager:RegisterListener("me_rd", Dynamic_Wrap(RubicksMagickMoveController, "OnRightDown"))
-	CustomGameEventManager:RegisterListener("me_ru", Dynamic_Wrap(RubicksMagickMoveController, "OnRightUp"))
-	CustomGameEventManager:RegisterListener("me_ld", Dynamic_Wrap(RubicksMagickMoveController, "OnLeftDown"))
-	CustomGameEventManager:RegisterListener("me_lu", Dynamic_Wrap(RubicksMagickMoveController, "OnLeftUp"))
+	RubicksMagickGameMode:Init()
 end
 
 
@@ -40,7 +35,7 @@ function RubicksMagickGameMode:OnConnectFull(keys)
     local playerID = player:GetPlayerID()
     local heroEntity = CreateHeroForPlayer("npc_dota_hero_rubick", player)
     heroEntity:SetHullRadius(0)
-    RubicksMagickMoveController:InitPlayer(playerID)
+    RubicksMagickMoveController:PlayerConnected(playerID)
 end
 
 function RubicksMagickGameMode:OrderFilter(keys)
