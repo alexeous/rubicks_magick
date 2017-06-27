@@ -1,5 +1,6 @@
 
 require("move_controller")
+require("elements")
 
 if RubicksMagickGameMode == nil then
 	RubicksMagickGameMode = class({})
@@ -21,12 +22,11 @@ function RubicksMagickGameMode:InitGameMode()
 	GameRules:SetPreGameTime(20.0)
 
 	GameRules:GetGameModeEntity():SetThink("OnThink", self, "GlobalThink", 2)
-
 	GameRules:GetGameModeEntity():SetExecuteOrderFilter(Dynamic_Wrap(RubicksMagickGameMode, "OrderFilter"), self)
-
 	ListenToGameEvent("player_connect_full", Dynamic_Wrap(RubicksMagickGameMode, "OnConnectFull"), self)
 
 	RubicksMagickMoveController:Init()
+	RubicksMagickElements:Init()
 end
 
 
@@ -36,6 +36,7 @@ function RubicksMagickGameMode:OnConnectFull(keys)
     local heroEntity = CreateHeroForPlayer("npc_dota_hero_rubick", player)
     heroEntity:SetHullRadius(0)
     RubicksMagickMoveController:PlayerConnected(playerID)
+    RubicksMagickElements:PlayerConnected(playerID)
 end
 
 function RubicksMagickGameMode:OrderFilter(keys)
