@@ -26,7 +26,7 @@ function RubicksMagickGameMode:InitGameMode()
 
 	ListenToGameEvent("player_connect_full", Dynamic_Wrap(RubicksMagickGameMode, "OnConnectFull"), self)
 
-	RubicksMagickGameMode:Init()
+	RubicksMagickMoveController:Init()
 end
 
 
