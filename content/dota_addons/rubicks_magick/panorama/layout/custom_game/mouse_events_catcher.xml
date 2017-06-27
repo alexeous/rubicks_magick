@@ -4,11 +4,8 @@
 	</styles>
 	<scripts>
 		<include src="file://{resources}/scripts/custom_game/mouse_events_catcher.js" />
+		<include src="file://{resources}/scripts/custom_game/style_configure.js" />
 	</scripts>
-	<script>
-		var customUIRoot = $.GetContextPanel().GetParent().GetParent()
-		customUIRoot.style.zIndex = -1000 	// make our event catcher under any other Dota HUDs
-	</script>
 	<Panel>
 		<Panel class="MouseEventsCatcher"/>
 	</Panel>

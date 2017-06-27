@@ -8,30 +8,35 @@ playersLeftDown = {}
 playersMoveTo = {}
 moveToParticleIndices = {}
 
-function OnMoveHeroesThink()
+function RubicksMagickMoveController:OnMoveHeroesThink()
 	local MOVE_PER_THINK = 11.0
 	for playerID = 0, DOTA_MAX_PLAYERS - 1 do
 		if playersMoveTo[playerID] ~= nil then
-			local heroEntity = PlayerResource:GetPlayer(playerID):GetAssignedHero()
-			local moveFrom = heroEntity:GetAbsOrigin()
-			local vec = playersMoveTo[playerID] - moveFrom
-			local distance = #vec
-			local newOrigin
-			if distance < MOVE_PER_THINK then
-				newOrigin = moveFrom + vec
-				heroEntity:RemoveGesture(ACT_DOTA_RUN)
-				playersMoveTo[playerID] = nil
-    			ParticleManager:DestroyParticle(moveToParticleIndices[playerID], false)
-			else
-				newOrigin = moveFrom + (vec / distance) * MOVE_PER_THINK
+			local player = PlayerResource:GetPlayer(playerID)
+			if player ~= nil then
+				local heroEntity = player:GetAssignedHero()
+				if heroEntity ~= nil then
+					local moveFrom = heroEntity:GetAbsOrigin()
+					local vec = playersMoveTo[playerID] - moveFrom
+					local distance = #vec
+					local newOrigin
+					if distance < MOVE_PER_THINK then
+						newOrigin = moveFrom + vec
+						heroEntity:RemoveGesture(ACT_DOTA_RUN)
+						playersMoveTo[playerID] = nil
+		    			ParticleManager:DestroyParticle(moveToParticleIndices[playerID], false)
+					else
+						newOrigin = moveFrom + (vec / distance) * MOVE_PER_THINK
+					end
+					FindClearSpaceForUnit(heroEntity, newOrigin, false)
+				end
 			end
-			FindClearSpaceForUnit(heroEntity, newOrigin, false)
 		end
 	end
 	return 0.03
 end
 
-function ShowMoveToParticle(playerID, pos)
+function RubicksMagickMoveController:ShowMoveToParticle(playerID, pos)
     local player = PlayerResource:GetPlayer(playerID)
     local PARTICLE_FILE = "particles/ui_mouseactions/clicked_basemove.vpcf"
     if moveToParticleIndices[playerID] ~= nil then
@@ -62,16 +67,16 @@ end
 function RubicksMagickMoveController:OnMouseMove(keys)
 	local heroEntity = PlayerResource:GetPlayer(keys.playerID):GetAssignedHero()
 	local cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
-	if playersLeftDown[keys.playerID] then
+	if playersLeftDown[keys.playerID] and heroEntity ~= nil then
 		HeroLookAt(heroEntity, cursorPos)
 	end
-	if playersRightDown[keys.playerID] then
+	if playersRightDown[keys.playerID] and heroEntity ~= nil then
 		HeroLookAt(heroEntity, cursorPos)
 		if playersMoveTo[keys.playerID] == nil then
 			heroEntity:StartGesture(ACT_DOTA_RUN)
 		end
 		playersMoveTo[keys.playerID] = cursorPos
-		ShowMoveToParticle(keys.playerID, cursorPos)
+		RubicksMagickMoveController:ShowMoveToParticle(keys.playerID, cursorPos)
 	end
 end	
 
@@ -79,13 +84,15 @@ end
 function RubicksMagickMoveController:OnRightDown(keys)
 	playersRightDown[keys.playerID] = true
 
-	local cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
-	playersMoveTo[keys.playerID] = cursorPos
-	ShowMoveToParticle(keys.playerID, cursorPos)
-
 	local heroEntity = PlayerResource:GetPlayer(keys.playerID):GetAssignedHero()
-	HeroLookAt(heroEntity, cursorPos)
-	heroEntity:StartGesture(ACT_DOTA_RUN)
+	if heroEntity ~= nil then
+		local cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
+		playersMoveTo[keys.playerID] = cursorPos
+		RubicksMagickMoveController:ShowMoveToParticle(keys.playerID, cursorPos)
+
+		HeroLookAt(heroEntity, cursorPos)
+		heroEntity:StartGesture(ACT_DOTA_RUN)
+	end
 end
 
 function RubicksMagickMoveController:OnRightUp(keys)

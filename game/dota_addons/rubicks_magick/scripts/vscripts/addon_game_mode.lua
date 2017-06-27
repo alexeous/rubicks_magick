@@ -21,7 +21,9 @@ function RubicksMagickGameMode:InitGameMode()
 	GameRules:SetPreGameTime(20.0)
 
 	GameRules:GetGameModeEntity():SetThink("OnThink", self, "GlobalThink", 2)
-	GameRules:GetGameModeEntity():SetThink(OnMoveHeroesThink, "MoveHeroesThink", 2)
+	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(RubicksMagickMoveController, "OnMoveHeroesThink"), "MoveHeroesThink", 2)
+
+	GameRules:GetGameModeEntity():SetExecuteOrderFilter(Dynamic_Wrap(RubicksMagickGameMode, "OrderFilter"), self)
 
 	ListenToGameEvent("player_connect_full", Dynamic_Wrap(RubicksMagickGameMode, "OnConnectFull"), self)
 
@@ -41,6 +43,9 @@ function RubicksMagickGameMode:OnConnectFull(keys)
     RubicksMagickMoveController:InitPlayer(playerID)
 end
 
+function RubicksMagickGameMode:OrderFilter(keys)
+	return false
+end
 
 function RubicksMagickGameMode:OnThink()
 	--local state = GameRules:State_Get()
