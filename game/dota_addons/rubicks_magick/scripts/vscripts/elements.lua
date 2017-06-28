@@ -36,10 +36,12 @@ function RubicksMagickElements:Init()
 	Convars:RegisterCommand("+rm_fir",  function(...) return self:PickElement(ELEMENT_FIRE) end, "Picked fire element", 0)
 
 	self.pickedElements = {}
+	self.flyingOrbIndices = {}
 end
 
 function RubicksMagickElements:PlayerConnected(playerID)
 	self.pickedElements[playerID] = {}
+	self.flyingOrbIndices[playerID] = {}
 end
 
 function RubicksMagickElements:PickElement(element)
@@ -49,23 +51,16 @@ function RubicksMagickElements:PickElement(element)
 	-- trying to find an opposite
 	local oppositeIndex = self:FindIndexOfOpposite(playerID, element)
 	if oppositeIndex ~= nil then
-		self:RemoveFlyingOrb(playerID, oppositeIndex)
-		return nil
-	end
-	
-	-- trying to find an empty place for the new element
-	for i = 1, MAX_PICKED_ELEMENTS do
-		if self.pickedElements[playerID][i] == nil then
-			self:AddFlyingOrb(playerID, element, i)
-			return nil
+		self:RemoveElement(playerID, oppositeIndex)
+	else
+		-- trying to find an empty place for the new element
+		for i = 1, MAX_PICKED_ELEMENTS do
+			if self.pickedElements[playerID][i] == nil then
+				self:AddElement(playerID, element, i)
+				break
+			end
 		end
 	end
-
-	-- shifting the list of the picked elements to free space for the new element
-	for i = 1, MAX_PICKED_ELEMENTS - 1 do
-		self.pickedElements[playerID][i] = self.pickedElements[playerID][i + 1]
-	end
-	self:AddFlyingOrb(playerID, element, MAX_PICKED_ELEMENTS)
 end
 
 function RubicksMagickElements:FindIndexOfOpposite(playerID, element)
@@ -80,13 +75,13 @@ function RubicksMagickElements:FindIndexOfOpposite(playerID, element)
 	return nil
 end
 
-function RubicksMagickElements:AddFlyingOrb(playerID, element, index)
+function RubicksMagickElements:AddElement(playerID, element, index)
 	self.pickedElements[playerID][index] = element
 	Say(nil, tostring(self.pickedElements[playerID][1]) .. " " .. tostring(self.pickedElements[playerID][2]) .. " " .. tostring(self.pickedElements[playerID][3]), false)
 	-- TODO: ADD PARTICLE
 end
 
-function RubicksMagickElements:RemoveFlyingOrb(playerID, index)
+function RubicksMagickElements:RemoveElement(playerID, index)
 	self.pickedElements[playerID][index] = nil
 	Say(nil, tostring(self.pickedElements[playerID][1]) .. " " .. tostring(self.pickedElements[playerID][2]) .. " " .. tostring(self.pickedElements[playerID][3]), false)
 	-- TODO: REMOVE PARTICLE
