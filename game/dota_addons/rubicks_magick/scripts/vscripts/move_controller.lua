@@ -34,7 +34,7 @@ function RubicksMagickMoveController:OnMoveHeroesThink()
 					local newOrigin
 					if distance < MOVE_PER_THINK then
 						newOrigin = moveFrom + vec
-						heroEntity:RemoveGesture(ACT_DOTA_RUN)
+						heroEntity:FadeGesture(ACT_DOTA_RUN)
 						playersMoveTo[playerID] = nil
 		    			ParticleManager:DestroyParticle(moveToParticleIndices[playerID], false)
 					else
