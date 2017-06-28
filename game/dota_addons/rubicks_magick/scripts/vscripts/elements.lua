@@ -15,10 +15,23 @@ OPPOSITE_ELEMENTS[ELEMENT_WATER] =     { ELEMENT_LIGHTNING }
 OPPOSITE_ELEMENTS[ELEMENT_LIFE] =      { ELEMENT_DEATH }
 OPPOSITE_ELEMENTS[ELEMENT_SHIELD] =    { ELEMENT_SHIELD }
 OPPOSITE_ELEMENTS[ELEMENT_COLD] =      { ELEMENT_FIRE }
-OPPOSITE_ELEMENTS[ELEMENT_LIGHTNING] = { ELEMENT_FIRE, ELEMENT_EARTH }
+OPPOSITE_ELEMENTS[ELEMENT_LIGHTNING] = { ELEMENT_WATER, ELEMENT_EARTH }
 OPPOSITE_ELEMENTS[ELEMENT_DEATH] = 	   { ELEMENT_LIFE }
 OPPOSITE_ELEMENTS[ELEMENT_EARTH] =	   { ELEMENT_LIGHTNING }
 OPPOSITE_ELEMENTS[ELEMENT_FIRE] = 	   { ELEMENT_COLD }
+
+ORB_PARTICLES = {}
+ORB_PARTICLES[ELEMENT_WATER]     = "particles/orbs/fire_orb/fire_orb.vpcf"
+ORB_PARTICLES[ELEMENT_LIFE]      = "particles/orbs/fire_orb/fire_orb.vpcf"
+ORB_PARTICLES[ELEMENT_SHIELD]    = "particles/orbs/fire_orb/fire_orb.vpcf"
+ORB_PARTICLES[ELEMENT_COLD]      = "particles/orbs/fire_orb/fire_orb.vpcf"
+ORB_PARTICLES[ELEMENT_LIGHTNING] = "particles/orbs/fire_orb/fire_orb.vpcf"
+ORB_PARTICLES[ELEMENT_DEATH]     = "particles/orbs/death_orb/death_orb.vpcf"
+ORB_PARTICLES[ELEMENT_EARTH]     = "particles/orbs/fire_orb/fire_orb.vpcf"
+ORB_PARTICLES[ELEMENT_FIRE]      = "particles/orbs/fire_orb/fire_orb.vpcf"
+
+ORB_ORIGIN_OFFSETS = { Vector(73, -43, -200), Vector(-73,  -43, -200), Vector(0, 85, -200) }
+CONTROL_OFFSET = 1
 
 if RubicksMagickElements == nil then
 	RubicksMagickElements = class({})
@@ -77,12 +90,13 @@ end
 
 function RubicksMagickElements:AddElement(playerID, element, index)
 	self.pickedElements[playerID][index] = element
-	Say(nil, tostring(self.pickedElements[playerID][1]) .. " " .. tostring(self.pickedElements[playerID][2]) .. " " .. tostring(self.pickedElements[playerID][3]), false)
-	-- TODO: ADD PARTICLE
+	local heroEntity = PlayerResource:GetPlayer(playerID):GetAssignedHero()
+	self.flyingOrbIndices[playerID][index] = ParticleManager:CreateParticle(ORB_PARTICLES[element], PATTACH_ABSORIGIN_FOLLOW, heroEntity)
+	ParticleManager:SetParticleControl(self.flyingOrbIndices[playerID][index], CONTROL_OFFSET, ORB_ORIGIN_OFFSETS[index])
 end
 
 function RubicksMagickElements:RemoveElement(playerID, index)
 	self.pickedElements[playerID][index] = nil
-	Say(nil, tostring(self.pickedElements[playerID][1]) .. " " .. tostring(self.pickedElements[playerID][2]) .. " " .. tostring(self.pickedElements[playerID][3]), false)
-	-- TODO: REMOVE PARTICLE
+	ParticleManager:DestroyParticle(self.flyingOrbIndices[playerID][index], false)
+	ParticleManager:ReleaseParticleIndex(self.flyingOrbIndices[playerID][index])
 end

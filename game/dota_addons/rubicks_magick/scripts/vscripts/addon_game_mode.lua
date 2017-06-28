@@ -9,6 +9,10 @@ end
 function Precache(context)
 	PrecacheUnitByNameSync("npc_dota_hero_rubick_rubicks_magick", context)
 	PrecacheResource("particle", "particles/ui_mouseactions/clicked_basemove.vpcf", context)
+	PrecacheResource("particle_folder", "particles/units/heroes/hero_invoker", context)
+
+	PrecacheResource("particle_folder", "particles/orbs/fire_orb", context)
+	PrecacheResource("particle_folder", "particles/orbs/death_orb", context)
 end
 
 function Activate()
