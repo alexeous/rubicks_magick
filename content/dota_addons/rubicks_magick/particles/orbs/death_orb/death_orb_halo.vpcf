@@ -12,7 +12,7 @@
 			_class = "C_OP_RenderSprites"
 			m_nSequenceCombineMode = "SEQUENCE_COMBINE_MODE_USE_SEQUENCE_0"
 			m_flOverbrightFactor = 2.0
-			m_hTexture = resource:"materials/particle/particle_ring_wavy4.vtex"
+			m_hTexture = resource:"materials/particle/particle_ring_wavy2c.vtex"
 			m_flAnimationRate = 2.0
 		},
 	]
@@ -36,12 +36,29 @@
 		{
 			_class = "C_OP_SpinUpdate"
 		},
+		{
+			_class = "C_OP_OscillateScalar"
+			m_RateMin = 10.0
+			m_RateMax = 20.0
+			m_nField = 3
+			m_flEndTime_min = 10000000000.0
+			m_flEndTime_max = 10000000000.0
+			m_flOscMult = 0.1
+			m_flOscAdd = 0.0
+		},
+		{
+			_class = "C_OP_MovementRotateParticleAroundAxis"
+			m_flRotRate = -180.0
+			m_bLocalSpace = true
+		},
 	]
 	m_Initializers = 
 	[
 		{
 			_class = "C_INIT_CreateWithinSphere"
 			m_nControlPointNumber = 3
+			m_fRadiusMin = 2.0
+			m_fRadiusMax = 15.0
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
@@ -53,8 +70,8 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 15.0
-			m_flRadiusMax = 50.0
+			m_flRadiusMin = 8.0
+			m_flRadiusMax = 15.0
 		},
 		{
 			_class = "C_INIT_RandomRotation"
@@ -66,8 +83,8 @@
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 50
-			m_nAlphaMax = 100
+			m_nAlphaMin = 180
+			m_nAlphaMax = 200
 		},
 	]
 	m_Emitters = 

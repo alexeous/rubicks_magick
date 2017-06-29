@@ -13,6 +13,9 @@ function Precache(context)
 
 	PrecacheResource("particle_folder", "particles/orbs/fire_orb", context)
 	PrecacheResource("particle_folder", "particles/orbs/death_orb", context)
+	PrecacheResource("particle_folder", "particles/orbs/cold_orb", context)
+	PrecacheResource("particle_folder", "particles/orbs/lightning_orb", context)
+	PrecacheResource("particle_folder", "particles/orbs/shield_orb", context)
 end
 
 function Activate()

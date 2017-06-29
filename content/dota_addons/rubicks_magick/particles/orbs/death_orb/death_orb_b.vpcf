@@ -4,7 +4,7 @@
 	m_bShouldHitboxesFallbackToRenderBounds = false
 	m_nMaxParticles = 32
 	m_nInitialParticles = 4
-	m_ConstantColor = [ 105, 0, 0, 255 ]
+	m_ConstantColor = [ 79, 0, 0, 255 ]
 	m_Renderers = 
 	[
 		{
@@ -62,8 +62,8 @@
 		{
 			_class = "C_INIT_CreateWithinSphere"
 			m_nControlPointNumber = 3
-			m_fRadiusMax = 16.0
-			m_fRadiusMin = 12.0
+			m_fRadiusMax = 12.0
+			m_fRadiusMin = 8.0
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
@@ -75,8 +75,8 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMax = 34.0
-			m_flRadiusMin = 32.0
+			m_flRadiusMax = 30.0
+			m_flRadiusMin = 22.0
 		},
 		{
 			_class = "C_INIT_RandomYawFlip"

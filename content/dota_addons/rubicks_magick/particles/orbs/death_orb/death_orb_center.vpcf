@@ -64,7 +64,7 @@
 	m_Children = 
 	[
 		{
-			m_ChildRef = resource:"particles/orbs/death_orb/death_orb_orb.vpcf"
+			m_ChildRef = resource:"particles/orbs/death_orb/death_orb_sphere.vpcf"
 		},
 	]
 }

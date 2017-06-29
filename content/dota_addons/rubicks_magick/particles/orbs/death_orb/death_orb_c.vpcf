@@ -5,7 +5,7 @@
 	m_nMaxParticles = 64
 	m_nInitialParticles = 2
 	m_flConstantRadius = 72.0
-	m_ConstantColor = [ 255, 96, 96, 255 ]
+	m_ConstantColor = [ 255, 96, 96, 157 ]
 	m_Renderers = 
 	[
 		{
@@ -24,6 +24,7 @@
 		},
 		{
 			_class = "C_OP_PositionLock"
+			m_nControlPointNumber = 3
 		},
 		{
 			_class = "C_OP_Decay"
@@ -53,7 +54,7 @@
 	[
 		{
 			_class = "C_INIT_CreateWithinSphere"
-			m_fRadiusMax = 20.0
+			m_fRadiusMax = 10.0
 			m_nControlPointNumber = 3
 		},
 		{
@@ -69,7 +70,7 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMax = 8.0
+			m_flRadiusMax = 4.0
 			m_flRadiusMin = 2.0
 		},
 		{
@@ -88,7 +89,7 @@
 	[
 		{
 			_class = "C_OP_ContinuousEmitter"
-			m_flEmitRate = 42.0
+			m_flEmitRate = 30.0
 		},
 	]
 	m_ForceGenerators = 
@@ -97,6 +98,7 @@
 			_class = "C_OP_AttractToControlPoint"
 			m_fFalloffPower = -0.2
 			m_fForceAmount = 500.0
+			m_nControlPointNumber = 3
 		},
 	]
 	m_Children = 

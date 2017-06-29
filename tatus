@@ -1,0 +1,345 @@
+[1mdiff --git a/content/dota_addons/rubicks_magick/particles/orbs/death_orb/death_orb_center.vpcf b/content/dota_addons/rubicks_magick/particles/orbs/death_orb/death_orb_center.vpcf[m
+[1mindex bca9952..d8ecef7 100644[m
+[1m--- a/content/dota_addons/rubicks_magick/particles/orbs/death_orb/death_orb_center.vpcf[m
+[1m+++ b/content/dota_addons/rubicks_magick/particles/orbs/death_orb/death_orb_center.vpcf[m
+[36m@@ -64,7 +64,7 @@[m
+ 	m_Children = [m
+ 	[[m
+ 		{[m
+[31m-			m_ChildRef = resource:"particles/orbs/death_orb/death_orb_orb.vpcf"[m
+[32m+[m			[32mm_ChildRef = resource:"particles/orbs/death_orb/death_orb_sphere.vpcf"[m
+ 		},[m
+ 	][m
+ }[m
+\ No newline at end of file[m
+[1mdiff --git a/content/dota_addons/rubicks_magick/particles/orbs/death_orb/death_orb_orb.vpcf b/content/dota_addons/rubicks_magick/particles/orbs/death_orb/death_orb_orb.vpcf[m
+[1mdeleted file mode 100644[m
+[1mindex e49b174..0000000[m
+[1m--- a/content/dota_addons/rubicks_magick/particles/orbs/death_orb/death_orb_orb.vpcf[m
+[1m+++ /dev/null[m
+[36m@@ -1,154 +0,0 @@[m
+[31m-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->[m
+[31m-{[m
+[31m-	_class = "CParticleSystemDefinition"[m
+[31m-	m_bShouldHitboxesFallbackToRenderBounds = false[m
+[31m-	m_nMaxParticles = 1[m
+[31m-	m_flConstantRadius = 350.0[m
+[31m-	m_nConstantSequenceNumber = 6[m
+[31m-	m_bShouldSort = false[m
+[31m-	m_Renderers = [m
+[31m-	[[m
+[31m-		{[m
+[31m-			_class = "C_OP_RenderDeferredLight"[m
+[31m-			m_flAlphaScale = 5.0[m
+[31m-			m_flStartFalloff = 0.0[m
+[31m-			m_ColorScale = [ 208, 0, 0 ][m
+[31m-			m_flRadiusScale = 0.75[m
+[31m-			m_hTexture = resource:"materials/particle/sparks/sparks.vtex"[m
+[31m-		},[m
+[31m-	][m
+[31m-	m_Operators = [m
+[31m-	[[m
+[31m-		{[m
+[31m-			_class = "C_OP_BasicMovement"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			_class = "C_OP_MaxVelocity"[m
+[31m-			m_flMaxVelocity = 600.0[m
+[31m-			m_nOverrideCP = 2[m
+[31m-			m_bDisableOperator = true[m
+[31m-		},[m
+[31m-		{[m
+[31m-			_class = "C_OP_Decay"[m
+[31m-			m_nOpEndCapState = 1[m
+[31m-		},[m
+[31m-		{[m
+[31m-			_class = "C_OP_SetControlPointsToParticle"[m
+[31m-			m_nFirstControlPoint = 3[m
+[31m-			m_bSetOrientation = true[m
+[31m-		},[m
+[31m-		{[m
+[31m-			_class = "C_OP_CPOffsetToPercentageBetweenCPs"[m
+[31m-			m_bScaleOffset = true[m
+[31m-			m_flInputBias = 0.125[m
+[31m-			m_vecOffset = [ 0.0, 0.0, 0.125 ][m
+[31m-			m_nOffsetCP = 1[m
+[31m-			m_flInputMax = 0.0[m
+[31m-			m_flInputMin = 1.0[m
+[31m-		},[m
+[31m-		{[m
+[31m-			_class = "C_OP_PositionLock"[m
+[31m-		},[m
+[31m-	][m
+[31m-	m_Initializers = [m
+[31m-	[[m
+[31m-		{[m
+[31m-			_class = "C_INIT_CreateWithinSphere"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			_class = "C_INIT_RandomLifeTime"[m
+[31m-		},[m
+[31m-	][m
+[31m-	m_Emitters = [m
+[31m-	[[m
+[31m-		{[m
+[31m-			_class = "C_OP_InstantaneousEmitter"[m
+[31m-			m_nParticlesToEmit = 1[m
+[31m-		},[m
+[31m-	][m
+[31m-	m_Children = [m
+[31m-	[[m
+[31m-		{[m
+[31m-			m_ChildRef = resource:"particles/orbs/death_orb/death_orb_a.vpcf"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			m_ChildRef = resource:"particles/orbs/death_orb/death_orb_b.vpcf"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			m_ChildRef = resource:"particles/orbs/death_orb/death_orb_c.vpcf"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			m_bEndCap = true[m
+[31m-			m_ChildRef = resource:"particles/orbs/death_orb/death_orb_e.vpcf"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			m_ChildRef = resource:"particles/orbs/death_orb/death_orb_g.vpcf"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			m_ChildRef = resource:"particles/orbs/death_orb/death_orb_parent.vpcf"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			m_ChildRef = resource:"particles/orbs/death_orb/death_orb_halo.vpcf"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			m_ChildRef = resource:"particles/orbs/death_orb/death_orb_core.vpcf"[m
+[31m-		},[m
+[31m-	][m
+[31m-	m_controlPointConfigurations = [m
+[31m-	[[m
+[31m-		{[m
+[31m-			m_name = "preview"[m
+[31m-			m_drivers = [m
+[31m-			[[m
+[31m-				{[m
+[31m-					m_iAttachType = "PATTACH_WORLDORIGIN"[m
+[31m-					m_vecOffset = [ 0.0, 0.0, 0.0 ][m
+[31m-					m_angOffset = [ null, null, null ][m
+[31m-					m_entityName = "self"[m
+[31m-				},[m
+[31m-				{[m
+[31m-					m_iControlPoint = 1[m
+[31m-					m_iAttachType = "PATTACH_WORLDORIGIN"[m
+[31m-					m_vecOffset = [ 0.0, 0.0, 0.0 ][m
+[31m-					m_angOffset = [ null, null, null ][m
+[31m-					m_entityName = "self"[m
+[31m-				},[m
+[31m-				{[m
+[31m-					m_iControlPoint = 2[m
+[31m-					m_iAttachType = "PATTACH_WORLDORIGIN"[m
+[31m-					m_vecOffset = [ 1.0, 0.0, 0.0 ][m
+[31m-					m_angOffset = [ null, null, null ][m
+[31m-					m_entityName = "self"[m
+[31m-				},[m
+[31m-				{[m
+[31m-					m_iControlPoint = 3[m
+[31m-					m_iAttachType = "PATTACH_WORLDORIGIN"[m
+[31m-					m_vecOffset = [ 0.0, 0.0, 0.0 ][m
+[31m-					m_angOffset = [ null, null, null ][m
+[31m-					m_entityName = "self"[m
+[31m-				},[m
+[31m-				{[m
+[31m-					m_iControlPoint = 4[m
+[31m-					m_iAttachType = "PATTACH_WORLDORIGIN"[m
+[31m-					m_vecOffset = [ 0.0, 0.0, 0.0 ][m
+[31m-					m_angOffset = [ null, null, null ][m
+[31m-					m_entityName = "self"[m
+[31m-				},[m
+[31m-				{[m
+[31m-					m_iControlPoint = 5[m
+[31m-					m_iAttachType = "PATTACH_WORLDORIGIN"[m
+[31m-					m_vecOffset = [ 0.0, 0.0, 0.0 ][m
+[31m-					m_angOffset = [ null, null, null ][m
+[31m-					m_entityName = "self"[m
+[31m-				},[m
+[31m-				{[m
+[31m-					m_iControlPoint = 9[m
+[31m-					m_iAttachType = "PATTACH_WORLDORIGIN"[m
+[31m-					m_vecOffset = [ 0.0, 0.0, 0.0 ][m
+[31m-					m_angOffset = [ null, null, null ][m
+[31m-					m_entityName = "self"[m
+[31m-				},[m
+[31m-			][m
+[31m-		},[m
+[31m-	][m
+[31m-}[m
+\ No newline at end of file[m
+[1mdiff --git a/content/dota_addons/rubicks_magick/particles/orbs/shield_orb/fire_orb.vpcf b/content/dota_addons/rubicks_magick/particles/orbs/shield_orb/fire_orb.vpcf[m
+[1mdeleted file mode 100644[m
+[1mindex da1aaed..0000000[m
+[1m--- a/content/dota_addons/rubicks_magick/particles/orbs/shield_orb/fire_orb.vpcf[m
+[1m+++ /dev/null[m
+[36m@@ -1,52 +0,0 @@[m
+[31m-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->[m
+[31m-{[m
+[31m-	_class = "CParticleSystemDefinition"[m
+[31m-	m_controlPointConfigurations = [m
+[31m-	[[m
+[31m-		{[m
+[31m-			m_name = "preview"[m
+[31m-			m_drivers = [m
+[31m-			[[m
+[31m-				{[m
+[31m-					m_iAttachType = "PATTACH_WORLDORIGIN"[m
+[31m-					m_vecOffset = [ 0.0, 0.0, 0.0 ][m
+[31m-					m_angOffset = [ null, null, null ][m
+[31m-					m_entityName = "self"[m
+[31m-				},[m
+[31m-			][m
+[31m-		},[m
+[31m-	][m
+[31m-	m_Operators = [m
+[31m-	[[m
+[31m-		{[m
+[31m-			_class = "C_OP_EndCapTimedDecay"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			_class = "C_OP_PositionLock"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			_class = "C_OP_SetChildControlPoints"[m
+[31m-		},[m
+[31m-	][m
+[31m-	m_Initializers = [m
+[31m-	[[m
+[31m-		{[m
+[31m-			_class = "C_INIT_PositionOffsetToCP"[m
+[31m-			m_nControlPointNumberStart = 1[m
+[31m-			m_nControlPointNumberEnd = 0[m
+[31m-		},[m
+[31m-	][m
+[31m-	m_Emitters = [m
+[31m-	[[m
+[31m-		{[m
+[31m-			_class = "C_OP_InstantaneousEmitter"[m
+[31m-			m_nParticlesToEmit = 1[m
+[31m-		},[m
+[31m-	][m
+[31m-	m_Children = [m
+[31m-	[[m
+[31m-		{[m
+[31m-			m_ChildRef = resource:"particles/orbs/fire_orb/fire_orb_center.vpcf"[m
+[31m-		},[m
+[31m-	][m
+[31m-}[m
+\ No newline at end of file[m
+[1mdiff --git a/content/dota_addons/rubicks_magick/particles/orbs/shield_orb/fire_orb_center.vpcf b/content/dota_addons/rubicks_magick/particles/orbs/shield_orb/fire_orb_center.vpcf[m
+[1mdeleted file mode 100644[m
+[1mindex c35c294..0000000[m
+[1m--- a/content/dota_addons/rubicks_magick/particles/orbs/shield_orb/fire_orb_center.vpcf[m
+[1m+++ /dev/null[m
+[36m@@ -1,70 +0,0 @@[m
+[31m-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->[m
+[31m-{[m
+[31m-	_class = "CParticleSystemDefinition"[m
+[31m-	m_controlPointConfigurations = [m
+[31m-	[[m
+[31m-		{[m
+[31m-			m_name = "preview"[m
+[31m-			m_drivers = [m
+[31m-			[[m
+[31m-				{[m
+[31m-					m_iAttachType = "PATTACH_WORLDORIGIN"[m
+[31m-					m_vecOffset = [ 0.0, 0.0, 0.0 ][m
+[31m-					m_angOffset = [ null, null, null ][m
+[31m-					m_entityName = "self"[m
+[31m-				},[m
+[31m-			][m
+[31m-		},[m
+[31m-	][m
+[31m-	m_Operators = [m
+[31m-	[[m
+[31m-		{[m
+[31m-			_class = "C_OP_EndCapTimedDecay"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			_class = "C_OP_SetControlPointToCenter"[m
+[31m-			m_nCP1 = 3[m
+[31m-		},[m
+[31m-		{[m
+[31m-			_class = "C_OP_SetChildControlPoints"[m
+[31m-			m_nFirstControlPoint = 3[m
+[31m-		},[m
+[31m-		{[m
+[31m-			_class = "C_OP_PositionLock"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			_class = "C_OP_MovementRotateParticleAroundAxis"[m
+[31m-			m_flRotRate = 240.0[m
+[31m-		},[m
+[31m-	][m
+[31m-	m_Renderers = [m
+[31m-	[[m
+[31m-		{[m
+[31m-			_class = "C_OP_RenderSprites"[m
+[31m-			m_bDisableOperator = true[m
+[31m-		},[m
+[31m-	][m
+[31m-	m_Initializers = [m
+[31m-	[[m
+[31m-		{[m
+[31m-			_class = "C_INIT_CreateWithinSphere"[m
+[31m-			m_vecDistanceBias = [ 30.0, 30.0, 0.0 ][m
+[31m-			m_fRadiusMin = 30.0[m
+[31m-			m_fRadiusMax = 30.0[m
+[31m-			m_flEndCPGrowthTime = 50.0[m
+[31m-		},[m
+[31m-	][m
+[31m-	m_Emitters = [m
+[31m-	[[m
+[31m-		{[m
+[31m-			_class = "C_OP_InstantaneousEmitter"[m
+[31m-			m_nParticlesToEmit = 1[m
+[31m-		},[m
+[31m-	][m
+[31m-	m_Children = [m
+[31m-	[[m
+[31m-		{[m
+[31m-			m_ChildRef = resource:"particles/units/heroes/hero_invoker/invoker_exort_orb_sphere.vpcf"[m
+[31m-		},[m
+[31m-	][m
+[31m-}[m
+\ No newline at end of file[m
+[1mdiff --git a/game/dota_addons/rubicks_magick/particles/orbs/death_orb/death_orb_center.vpcf_c b/game/dota_addons/rubicks_magick/particles/orbs/death_orb/death_orb_center.vpcf_c[m
+[1mindex ef7d1e1..06cbbd2 100644[m
+Binary files a/game/dota_addons/rubicks_magick/particles/orbs/death_orb/death_orb_center.vpcf_c and b/game/dota_addons/rubicks_magick/particles/orbs/death_orb/death_orb_center.vpcf_c differ
+[1mdiff --git a/game/dota_addons/rubicks_magick/scripts/vscripts/addon_game_mode.lua b/game/dota_addons/rubicks_magick/scripts/vscripts/addon_game_mode.lua[m
+[1mindex 5bc9386..660bfcb 100644[m
+[1m--- a/game/dota_addons/rubicks_magick/scripts/vscripts/addon_game_mode.lua[m
+[1m+++ b/game/dota_addons/rubicks_magick/scripts/vscripts/addon_game_mode.lua[m
+[36m@@ -15,6 +15,7 @@[m [mfunction Precache(context)[m
+ 	PrecacheResource("particle_folder", "particles/orbs/death_orb", context)[m
+ 	PrecacheResource("particle_folder", "particles/orbs/cold_orb", context)[m
+ 	PrecacheResource("particle_folder", "particles/orbs/lightning_orb", context)[m
+[32m+[m	[32mPrecacheResource("particle_folder", "particles/orbs/shield_orb", context)[m
+ end[m
+ [m
+ function Activate()[m
+[1mdiff --git a/game/dota_addons/rubicks_magick/scripts/vscripts/elements.lua b/game/dota_addons/rubicks_magick/scripts/vscripts/elements.lua[m
+[1mindex 5bad943..de7d181 100644[m
+[1m--- a/game/dota_addons/rubicks_magick/scripts/vscripts/elements.lua[m
+[1m+++ b/game/dota_addons/rubicks_magick/scripts/vscripts/elements.lua[m
+[36m@@ -23,7 +23,7 @@[m [mOPPOSITE_ELEMENTS[ELEMENT_FIRE] = 	   { ELEMENT_COLD }[m
+ ORB_PARTICLES = {}[m
+ ORB_PARTICLES[ELEMENT_WATER]     = "particles/orbs/fire_orb/fire_orb.vpcf"[m
+ ORB_PARTICLES[ELEMENT_LIFE]      = "particles/orbs/fire_orb/fire_orb.vpcf"[m
+[31m-ORB_PARTICLES[ELEMENT_SHIELD]    = "particles/orbs/fire_orb/fire_orb.vpcf"[m
+[32m+[m[32mORB_PARTICLES[ELEMENT_SHIELD]    = "particles/orbs/shield_orb/shield_orb.vpcf"[m
+ ORB_PARTICLES[ELEMENT_COLD]      = "particles/orbs/cold_orb/cold_orb.vpcf"[m
+ ORB_PARTICLES[ELEMENT_LIGHTNING] = "particles/orbs/lightning_orb/lightning_orb.vpcf"[m
+ ORB_PARTICLES[ELEMENT_DEATH]     = "particles/orbs/death_orb/death_orb.vpcf"[m
+[1mdiff --git a/game/dota_addons/rubicks_magick/tools_asset_info.bin b/game/dota_addons/rubicks_magick/tools_asset_info.bin[m
+[1mindex a72d438..d4e140d 100644[m
+Binary files a/game/dota_addons/rubicks_magick/tools_asset_info.bin and b/game/dota_addons/rubicks_magick/tools_asset_info.bin differ
+[1mdiff --git a/game/dota_addons/rubicks_magick/tools_thumbnail_cache.bin b/game/dota_addons/rubicks_magick/tools_thumbnail_cache.bin[m
+[1mindex e78e5bd..88a9ac4 100644[m
+Binary files a/game/dota_addons/rubicks_magick/tools_thumbnail_cache.bin and b/game/dota_addons/rubicks_magick/tools_thumbnail_cache.bin differ
