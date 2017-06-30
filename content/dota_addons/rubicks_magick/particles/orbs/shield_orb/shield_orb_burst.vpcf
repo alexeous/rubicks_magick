@@ -25,6 +25,7 @@
 		{
 			_class = "C_OP_PositionLock"
 			m_nControlPointNumber = 3
+			m_nOpEndCapState = 0
 		},
 		{
 			_class = "C_OP_RampScalarSpline"
@@ -47,14 +48,14 @@
 		},
 		{
 			_class = "C_OP_RampScalarLinear"
-			m_RateMin = -3.0
-			m_RateMax = 3.0
+			m_RateMin = -30.0
+			m_RateMax = 30.0
 			m_nField = 4
 		},
 		{
 			_class = "C_OP_FadeOut"
 			m_flFadeOutTimeMin = 0.6
-			m_flFadeOutTimeMax = 0.35
+			m_flFadeOutTimeMax = 1.0
 			m_flFadeBias = 0.1
 		},
 		{
@@ -114,7 +115,12 @@
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
-			m_nParticlesToEmit = 300
+		},
+	]
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/orbs/shield_orb/shield_orb_flare.vpcf"
 		},
 	]
 }

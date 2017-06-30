@@ -79,6 +79,10 @@
 			m_flStartTime = 0.0
 			m_flEndTime = 0.3
 		},
+		{
+			_class = "C_INIT_RandomSequence"
+			m_nSequenceMax = 15
+		},
 	]
 	m_Emitters = 
 	[

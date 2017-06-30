@@ -27,7 +27,7 @@ ORB_PARTICLES[ELEMENT_SHIELD]    = "particles/orbs/shield_orb/shield_orb.vpcf"
 ORB_PARTICLES[ELEMENT_COLD]      = "particles/orbs/cold_orb/cold_orb.vpcf"
 ORB_PARTICLES[ELEMENT_LIGHTNING] = "particles/orbs/lightning_orb/lightning_orb.vpcf"
 ORB_PARTICLES[ELEMENT_DEATH]     = "particles/orbs/death_orb/death_orb.vpcf"
-ORB_PARTICLES[ELEMENT_EARTH]     = "particles/orbs/fire_orb/fire_orb.vpcf"
+ORB_PARTICLES[ELEMENT_EARTH]     = "particles/orbs/earth_orb/earth_orb.vpcf"
 ORB_PARTICLES[ELEMENT_FIRE]      = "particles/orbs/fire_orb/fire_orb.vpcf"
 
 ORB_ORIGIN_OFFSETS = { Vector(73, -43, -200), Vector(-73,  -43, -200), Vector(0, 85, -200) }

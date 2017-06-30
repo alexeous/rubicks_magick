@@ -28,6 +28,7 @@
 		{
 			_class = "C_OP_PositionLock"
 			m_nControlPointNumber = 3
+			m_nOpEndCapState = 0
 		},
 		{
 			_class = "C_OP_OscillateScalar"

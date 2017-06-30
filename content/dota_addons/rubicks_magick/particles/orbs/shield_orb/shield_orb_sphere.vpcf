@@ -87,5 +87,15 @@
 		{
 			m_ChildRef = resource:"particles/orbs/shield_orb/shield_orb_burst.vpcf"
 		},
+		{
+			m_ChildRef = resource:"particles/orbs/shield_orb/shield_orb_glow.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/orbs/shield_orb/shield_orb_trail.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/orbs/shield_orb/shield_orb_end.vpcf"
+			m_bEndCap = true
+		},
 	]
 }

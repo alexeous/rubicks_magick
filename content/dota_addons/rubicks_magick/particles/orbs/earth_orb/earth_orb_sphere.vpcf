@@ -1,0 +1,112 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+{
+	_class = "CParticleSystemDefinition"
+	m_ConstantColor = [ 255, 255, 255, 101 ]
+	m_controlPointConfigurations = 
+	[
+		{
+			m_name = "preview"
+			m_drivers = 
+			[
+				{
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ null, null, null ]
+					m_entityName = "self"
+				},
+			]
+		},
+	]
+	m_Operators = 
+	[
+		{
+			_class = "C_OP_EndCapTimedDecay"
+		},
+		{
+			_class = "C_OP_PositionLock"
+			m_nControlPointNumber = 3
+		},
+		{
+			_class = "C_OP_OscillateScalar"
+			m_RateMin = 0.5
+			m_RateMax = 3.0
+			m_FrequencyMin = 0.7
+			m_FrequencyMax = 1.5
+			m_flEndTime_min = 100000000000000.0
+			m_flEndTime_max = 100000000000000.0
+		},
+		{
+			_class = "C_OP_RampScalarLinear"
+			m_RateMin = -2.0
+			m_RateMax = 2.0
+			m_nField = 4
+		},
+		{
+			_class = "C_OP_FadeIn"
+			m_flFadeInTimeMax = 0.35
+		},
+	]
+	m_Renderers = 
+	[
+		{
+			_class = "C_OP_RenderSprites"
+			m_bAdditive = true
+			m_hTexture = resource:"materials/particle/particle_swirl_04b.vtex"
+		},
+	]
+	m_Initializers = 
+	[
+		{
+			_class = "C_INIT_CreateWithinSphere"
+			m_nControlPointNumber = 3
+		},
+		{
+			_class = "C_INIT_RandomRadius"
+			m_flRadiusMin = 60.0
+			m_flRadiusMax = 100.0
+			m_Notes = "s"
+		},
+		{
+			_class = "C_INIT_RandomColor"
+			m_ColorMin = [ 78, 143, 78, 255 ]
+			m_ColorMax = [ 57, 86, 49, 255 ]
+		},
+		{
+			_class = "C_INIT_RandomRotation"
+		},
+		{
+			_class = "C_INIT_RandomAlpha"
+			m_nAlphaMin = 80
+			m_nAlphaMax = 80
+		},
+	]
+	m_Emitters = 
+	[
+		{
+			_class = "C_OP_InstantaneousEmitter"
+			m_nParticlesToEmit = 10
+		},
+	]
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/orbs/earth_orb/earth_orb_large_stones.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/orbs/earth_orb/earth_orb_core.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/orbs/earth_orb/earth_orb_small_stones.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/orbs/earth_orb/earth_orb_trail.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/orbs/earth_orb/earth_orb_burst.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/orbs/earth_orb/earth_orb_end.vpcf"
+			m_bEndCap = true
+		},
+	]
+}
