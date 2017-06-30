@@ -43,6 +43,14 @@ function RubicksMagickGameMode:OrderFilter(keys)
 end
 
 function RubicksMagickGameMode:OnThink()
-	--local state = GameRules:State_Get()
-	return 2
+	for playerID = 0, DOTA_MAX_PLAYERS - 1 do
+		local player = PlayerResource:GetPlayer(playerID)
+		if player ~= nil then
+			local heroEntity = player:GetAssignedHero()
+			if heroEntity ~= nil then
+				AddFOWViewer(heroEntity:GetTeamNumber(), heroEntity:GetAbsOrigin(), heroEntity:GetCurrentVisionRange() * 1.5, 1, true)
+			end
+		end
+	end
+	return 0.2
 end
