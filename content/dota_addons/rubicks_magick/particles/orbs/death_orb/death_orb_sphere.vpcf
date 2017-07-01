@@ -13,7 +13,7 @@
 			m_flAlphaScale = 5.0
 			m_flStartFalloff = 0.0
 			m_ColorScale = [ 208, 0, 0 ]
-			m_flRadiusScale = 0.75
+			m_flRadiusScale = 0.9
 			m_hTexture = resource:"materials/particle/sparks/sparks.vtex"
 		},
 	]

@@ -19,9 +19,6 @@
 			_class = "C_OP_BasicMovement"
 		},
 		{
-			_class = "C_OP_PositionLock"
-		},
-		{
 			_class = "C_OP_Decay"
 		},
 		{
