@@ -22,7 +22,7 @@ OPPOSITE_ELEMENTS[ELEMENT_FIRE] = 	   { ELEMENT_COLD }
 
 ORB_PARTICLES = {}
 ORB_PARTICLES[ELEMENT_WATER]     = "particles/orbs/fire_orb/fire_orb.vpcf"
-ORB_PARTICLES[ELEMENT_LIFE]      = "particles/orbs/fire_orb/fire_orb.vpcf"
+ORB_PARTICLES[ELEMENT_LIFE]      = "particles/orbs/life_orb/life_orb.vpcf"
 ORB_PARTICLES[ELEMENT_SHIELD]    = "particles/orbs/shield_orb/shield_orb.vpcf"
 ORB_PARTICLES[ELEMENT_COLD]      = "particles/orbs/cold_orb/cold_orb.vpcf"
 ORB_PARTICLES[ELEMENT_LIGHTNING] = "particles/orbs/lightning_orb/lightning_orb.vpcf"

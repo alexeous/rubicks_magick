@@ -94,13 +94,13 @@
 			m_ChildRef = resource:"particles/orbs/cold_orb/cold_orb_glow.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/units/heroes/hero_invoker/invoker_quas_orb_light.vpcf"
-		},
-		{
 			m_ChildRef = resource:"particles/units/heroes/hero_invoker/invoker_quas_orb_trail.vpcf"
 		},
 		{
 			m_ChildRef = resource:"particles/orbs/cold_orb/cold_orb_snowflakes.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/orbs/cold_orb/cold_orb_light.vpcf"
 		},
 	]
 	m_controlPointConfigurations = 

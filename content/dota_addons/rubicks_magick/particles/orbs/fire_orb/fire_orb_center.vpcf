@@ -66,5 +66,8 @@
 		{
 			m_ChildRef = resource:"particles/units/heroes/hero_invoker/invoker_exort_orb_sphere.vpcf"
 		},
+		{
+			m_ChildRef = resource:"particles/orbs/fire_orb/fire_orb_light.vpcf"
+		},
 	]
 }

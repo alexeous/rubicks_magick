@@ -111,4 +111,12 @@
 			m_nControlPointNumber = 3
 		},
 	]
+	m_Constraints = 
+	[
+		{
+			_class = "C_OP_ConstrainDistance"
+			m_fMaxDistance = 15.0
+			m_nControlPointNumber = 3
+		},
+	]
 }

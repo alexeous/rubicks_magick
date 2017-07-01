@@ -17,6 +17,7 @@ function Precache(context)
 	PrecacheResource("particle_folder", "particles/orbs/lightning_orb", context)
 	PrecacheResource("particle_folder", "particles/orbs/shield_orb", context)
 	PrecacheResource("particle_folder", "particles/orbs/earth_orb", context)
+	PrecacheResource("particle_folder", "particles/orbs/life_orb", context)
 end
 
 function Activate()
@@ -57,7 +58,7 @@ function RubicksMagickGameMode:OnThink()
 		if player ~= nil then
 			local heroEntity = player:GetAssignedHero()
 			if heroEntity ~= nil then
-				AddFOWViewer(heroEntity:GetTeamNumber(), heroEntity:GetAbsOrigin(), heroEntity:GetCurrentVisionRange() * 1.5, 1, true)
+				AddFOWViewer(heroEntity:GetTeamNumber(), heroEntity:GetAbsOrigin(), heroEntity:GetCurrentVisionRange() * 1.5, 1, false)
 			end
 		end
 	end
