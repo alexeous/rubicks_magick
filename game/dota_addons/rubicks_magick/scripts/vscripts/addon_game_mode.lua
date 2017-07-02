@@ -35,8 +35,8 @@ function RubicksMagickGameMode:InitGameMode()
 	GameRules:GetGameModeEntity():SetExecuteOrderFilter(Dynamic_Wrap(RubicksMagickGameMode, "OrderFilter"), self)
 	ListenToGameEvent("player_connect_full", Dynamic_Wrap(RubicksMagickGameMode, "OnConnectFull"), self)
 
-	RubicksMagickMoveController:Init()
-	RubicksMagickElements:Init()
+	MoveController:Init()
+	Elements:Init()
 end
 
 
@@ -45,8 +45,8 @@ function RubicksMagickGameMode:OnConnectFull(keys)
     local playerID = player:GetPlayerID()
     local heroEntity = CreateHeroForPlayer("npc_dota_hero_rubick", player)
     heroEntity:SetHullRadius(0)
-    RubicksMagickMoveController:PlayerConnected(playerID)
-    RubicksMagickElements:PlayerConnected(playerID)
+    MoveController:PlayerConnected(player)
+    Elements:PlayerConnected(player)
 end
 
 function RubicksMagickGameMode:OrderFilter(keys)
@@ -59,7 +59,7 @@ function RubicksMagickGameMode:OnThink()
 		if player ~= nil then
 			local heroEntity = player:GetAssignedHero()
 			if heroEntity ~= nil then
-				AddFOWViewer(heroEntity:GetTeamNumber(), heroEntity:GetAbsOrigin(), heroEntity:GetCurrentVisionRange() * 1.5, 1, false)
+				AddFOWViewer(heroEntity:GetTeamNumber(), heroEntity:GetAbsOrigin(), heroEntity:GetCurrentVisionRange(), 1, false)
 			end
 		end
 	end

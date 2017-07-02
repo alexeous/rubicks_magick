@@ -1,72 +1,63 @@
 
-if RubicksMagickMoveController == nil then
-	RubicksMagickMoveController = class({})
+if MoveController == nil then
+	MoveController = class({})
 end
 
-playersRightDown = {}
-playersLeftDown = {}
-playersMoveTo = {}
-moveToParticleIndices = {}
 
-
-
-function RubicksMagickMoveController:Init()
-	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(RubicksMagickMoveController, "OnMoveHeroesThink"), "MoveHeroesThink", 2)
+function MoveController:Init()	
+	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(MoveController, "OnMoveHeroesThink"), "MoveHeroesThink", 2)
 	
-	CustomGameEventManager:RegisterListener("me_mm", Dynamic_Wrap(RubicksMagickMoveController, "OnMouseMove"))
-	CustomGameEventManager:RegisterListener("me_rd", Dynamic_Wrap(RubicksMagickMoveController, "OnRightDown"))
-	CustomGameEventManager:RegisterListener("me_ru", Dynamic_Wrap(RubicksMagickMoveController, "OnRightUp"))
-	CustomGameEventManager:RegisterListener("me_ld", Dynamic_Wrap(RubicksMagickMoveController, "OnLeftDown"))
-	CustomGameEventManager:RegisterListener("me_lu", Dynamic_Wrap(RubicksMagickMoveController, "OnLeftUp"))
+	CustomGameEventManager:RegisterListener("me_mm", Dynamic_Wrap(MoveController, "OnMouseMove"))
+	CustomGameEventManager:RegisterListener("me_rd", Dynamic_Wrap(MoveController, "OnRightDown"))
+	CustomGameEventManager:RegisterListener("me_ru", Dynamic_Wrap(MoveController, "OnRightUp"))
+	CustomGameEventManager:RegisterListener("me_ld", Dynamic_Wrap(MoveController, "OnLeftDown"))
+	CustomGameEventManager:RegisterListener("me_lu", Dynamic_Wrap(MoveController, "OnLeftUp"))
 end
 
 THINK_PERIOD = 0.03
-function RubicksMagickMoveController:OnMoveHeroesThink()
+function MoveController:OnMoveHeroesThink()
 	for playerID = 0, DOTA_MAX_PLAYERS - 1 do
-		if playersMoveTo[playerID] ~= nil then
-			local player = PlayerResource:GetPlayer(playerID)
-			if player ~= nil then
-				local heroEntity = player:GetAssignedHero()
-				if heroEntity ~= nil then
-					local movePerThink = heroEntity:GetIdealSpeed() * THINK_PERIOD
-					local moveFrom = heroEntity:GetAbsOrigin()
-					local vec = playersMoveTo[playerID] - moveFrom
-					local distance = #vec
-					local newOrigin
-					if distance < movePerThink then
-						newOrigin = moveFrom + vec
-						heroEntity:FadeGesture(ACT_DOTA_RUN)
-						playersMoveTo[playerID] = nil
-		    			ParticleManager:DestroyParticle(moveToParticleIndices[playerID], false)
-					else
-						newOrigin = moveFrom + (vec / distance) * movePerThink
-					end
-					FindClearSpaceForUnit(heroEntity, newOrigin, false)
+		local player = PlayerResource:GetPlayer(playerID)
+		if player ~= nil and player.moveToPos ~= nil then
+			local heroEntity = player:GetAssignedHero()
+			if heroEntity ~= nil then
+				local movePerThink = heroEntity:GetIdealSpeed() * THINK_PERIOD
+				local moveFrom = heroEntity:GetAbsOrigin()
+				local vec = player.moveToPos - moveFrom
+				local distance = #vec
+				local newOrigin
+				if distance < movePerThink then
+					newOrigin = moveFrom + vec
+					heroEntity:FadeGesture(ACT_DOTA_RUN)
+					player.moveToPos = nil
+	    			ParticleManager:DestroyParticle(player.moveToParticle, false)
+				else
+					newOrigin = moveFrom + (vec / distance) * movePerThink
 				end
+				FindClearSpaceForUnit(heroEntity, newOrigin, false)
 			end
 		end
 	end
 	return THINK_PERIOD
 end
 
-function RubicksMagickMoveController:ShowMoveToParticle(playerID, pos)
-    local player = PlayerResource:GetPlayer(playerID)
+function MoveController:ShowMoveToParticle(player, pos)
     local PARTICLE_FILE = "particles/ui_mouseactions/clicked_basemove.vpcf"
-    if moveToParticleIndices[playerID] ~= nil then
-    	ParticleManager:DestroyParticle(moveToParticleIndices[playerID], false)
+    if player.moveToParticle ~= nil then
+    	ParticleManager:DestroyParticle(player.moveToParticle, false)
     end
-    moveToParticleIndices[playerID] = ParticleManager:CreateParticleForPlayer(PARTICLE_FILE, PATTACH_CUSTOMORIGIN, nil, player)
-	ParticleManager:SetParticleControl(moveToParticleIndices[playerID], 1, Vector(0, 255, 0))	-- green color
-    ParticleManager:SetParticleControl(moveToParticleIndices[playerID], 0, pos)
+    player.moveToParticle = ParticleManager:CreateParticleForPlayer(PARTICLE_FILE, PATTACH_CUSTOMORIGIN, nil, player)
+	ParticleManager:SetParticleControl(player.moveToParticle, 1, Vector(0, 255, 0))	-- green color
+    ParticleManager:SetParticleControl(player.moveToParticle, 0, pos)
 end
 
 
-function RubicksMagickMoveController:PlayerConnected(playerID)
-	playersRightDown[playerID] = false;
-    playersLeftDown[playerID] = false;
+function MoveController:PlayerConnected(player)
+	player.rightDown = false;
+    player.leftDown = false;
 end
 
-function HeroLookAt(heroEntity, targetPos)
+function MoveController:HeroLookAt(heroEntity, targetPos)
 	if heroEntity ~= nil then
 		local oldForward = heroEntity:GetForwardVector()
 		local forward = targetPos - heroEntity:GetAbsOrigin()
@@ -77,52 +68,55 @@ function HeroLookAt(heroEntity, targetPos)
 	end
 end
 
-function RubicksMagickMoveController:OnMouseMove(keys)
-	local heroEntity = PlayerResource:GetPlayer(keys.playerID):GetAssignedHero()
-	local cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
-	if playersLeftDown[keys.playerID] and heroEntity ~= nil then
-		HeroLookAt(heroEntity, cursorPos)
-	end
-	if playersRightDown[keys.playerID] and heroEntity ~= nil then
-		HeroLookAt(heroEntity, cursorPos)
-		if playersMoveTo[keys.playerID] == nil then
-			heroEntity:StartGesture(ACT_DOTA_RUN)
+function MoveController:OnMouseMove(keys)
+	local player = PlayerResource:GetPlayer(keys.playerID)
+	local heroEntity = player:GetAssignedHero()
+	if heroEntity ~= nil then
+		local cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
+		if player.leftDown then
+			MoveController:HeroLookAt(heroEntity, cursorPos)
 		end
-		playersMoveTo[keys.playerID] = cursorPos
-		RubicksMagickMoveController:ShowMoveToParticle(keys.playerID, cursorPos)
+		if player.rightDown then
+			if player.moveToPos == nil then
+				heroEntity:StartGesture(ACT_DOTA_RUN)
+			end
+			player.moveToPos = cursorPos
+			MoveController:HeroLookAt(heroEntity, cursorPos)
+			MoveController:ShowMoveToParticle(player, cursorPos)
+		end
 	end
 end	
 
 
-function RubicksMagickMoveController:OnRightDown(keys)
-	playersRightDown[keys.playerID] = true
-
-	local heroEntity = PlayerResource:GetPlayer(keys.playerID):GetAssignedHero()
+function MoveController:OnRightDown(keys)
+	local player = PlayerResource:GetPlayer(keys.playerID)
+	local heroEntity = player:GetAssignedHero()
 	if heroEntity ~= nil then
+		player.rightDown = true
 		local cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
-		HeroLookAt(heroEntity, cursorPos)
-		if playersMoveTo[keys.playerID] == nil then
+		if player.moveToPos == nil then
 			heroEntity:StartGesture(ACT_DOTA_RUN)
 		end
-		playersMoveTo[keys.playerID] = cursorPos
-		RubicksMagickMoveController:ShowMoveToParticle(keys.playerID, cursorPos)
+		player.moveToPos = cursorPos
+		MoveController:HeroLookAt(heroEntity, cursorPos)
+		MoveController:ShowMoveToParticle(player, cursorPos)
 	end
 end
 
-function RubicksMagickMoveController:OnRightUp(keys)
-	playersRightDown[keys.playerID] = false
+function MoveController:OnRightUp(keys)
+	PlayerResource:GetPlayer(keys.playerID).rightDown = false
 end
 
-
-function RubicksMagickMoveController:OnLeftDown(keys)
-	playersLeftDown[keys.playerID] = true
-	local heroEntity = PlayerResource:GetPlayer(keys.playerID):GetAssignedHero()
-	local cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
-
-	HeroLookAt(heroEntity, cursorPos)
-	--heroEntity:StartGesture(ACT_DOTA_CAST_ABILITY_6)
+function MoveController:OnLeftDown(keys)
+	local player = PlayerResource:GetPlayer(keys.playerID)
+	local heroEntity = player:GetAssignedHero()
+	if heroEntity ~= nil then
+		player.leftDown = true
+		local cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
+		MoveController:HeroLookAt(heroEntity, cursorPos)
+	end
 end
 
-function RubicksMagickMoveController:OnLeftUp(keys)
-	playersLeftDown[keys.playerID] = false
+function MoveController:OnLeftUp(keys)
+	PlayerResource:GetPlayer(keys.playerID).leftDown = false
 end
