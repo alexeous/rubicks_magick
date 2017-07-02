@@ -59,6 +59,10 @@ function RubicksMagickGameMode:OnThink()
 		if player ~= nil then
 			local heroEntity = player:GetAssignedHero()
 			if heroEntity ~= nil then
+				if heroEntity:HasAttackCapability() or heroEntity:HasMovementCapability() then
+					heroEntity:SetAttackCapability(DOTA_UNIT_CAP_NO_ATTACK)
+				    heroEntity:SetMoveCapability(DOTA_UNIT_CAP_MOVE_NONE)
+				end
 				AddFOWViewer(heroEntity:GetTeamNumber(), heroEntity:GetAbsOrigin(), heroEntity:GetCurrentVisionRange(), 1, false)
 			end
 		end
