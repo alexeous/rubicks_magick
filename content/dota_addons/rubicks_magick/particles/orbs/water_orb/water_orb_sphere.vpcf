@@ -28,8 +28,8 @@
 		},
 		{
 			_class = "C_OP_OscillateScalar"
-			m_RateMin = 9.0
-			m_RateMax = 9.0
+			m_RateMin = 7.2
+			m_RateMax = 7.2
 			m_FrequencyMin = 2.0
 			m_FrequencyMax = 2.0
 			m_nField = 3

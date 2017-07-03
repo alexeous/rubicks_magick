@@ -53,7 +53,7 @@
 		{
 			_class = "C_INIT_RingWave"
 			m_nControlPointNumber = 3
-			m_flInitialRadius = 21.0
+			m_flInitialRadius = 18.0
 		},
 		{
 			_class = "C_INIT_PositionOffset"
@@ -71,6 +71,11 @@
 		},
 		{
 			_class = "C_INIT_RandomRotation"
+		},
+		{
+			_class = "C_INIT_RandomLifeTime"
+			m_fLifetimeMin = 0.7
+			m_fLifetimeMax = 0.7
 		},
 	]
 	m_Emitters = 
