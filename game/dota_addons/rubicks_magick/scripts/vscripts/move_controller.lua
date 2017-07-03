@@ -3,7 +3,6 @@ if MoveController == nil then
 	MoveController = class({})
 end
 
-
 function MoveController:Init()	
 	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(MoveController, "OnMoveHeroesThink"), "MoveHeroesThink", 2)
 	
@@ -21,24 +20,56 @@ function MoveController:OnMoveHeroesThink()
 		if player ~= nil and player.moveToPos ~= nil then
 			local heroEntity = player:GetAssignedHero()
 			if heroEntity ~= nil then
-				local movePerThink = heroEntity:GetIdealSpeed() * THINK_PERIOD
-				local moveFrom = heroEntity:GetAbsOrigin()
-				local vec = player.moveToPos - moveFrom
-				local distance = #vec
-				local newOrigin
-				if distance < movePerThink then
-					newOrigin = moveFrom + vec
-					heroEntity:FadeGesture(ACT_DOTA_RUN)
-					player.moveToPos = nil
-	    			ParticleManager:DestroyParticle(player.moveToParticle, false)
+				local moveStep = heroEntity:GetIdealSpeed() * THINK_PERIOD
+				if player.moveToClearPos ~= nil then
+					MoveController:MoveTowardsClearPos(player, heroEntity, moveStep * 2)
 				else
-					newOrigin = moveFrom + (vec / distance) * movePerThink
+					MoveController:MoveTowardsCursorPos(player, heroEntity, moveStep)
 				end
-				FindClearSpaceForUnit(heroEntity, newOrigin, false)
 			end
 		end
 	end
 	return THINK_PERIOD
+end
+
+function MoveController:MoveTowardsClearPos(player, heroEntity, moveStep)
+	local oldOrigin = heroEntity:GetAbsOrigin()
+	local vector = player.moveToClearPos - oldOrigin
+	local distance = #vector
+	if distance < moveStep then
+		heroEntity:SetAbsOrigin(player.moveToClearPos)
+		player.moveToClearPos = nil
+	else
+		heroEntity:SetAbsOrigin(oldOrigin + (vector / distance) * moveStep)
+	end
+end
+
+function MoveController:MoveTowardsCursorPos(player, heroEntity, moveStep)
+	local oldOrigin = heroEntity:GetAbsOrigin()
+	local vector = player.moveToPos - oldOrigin
+	local distance = #vector
+	local to
+	if distance < moveStep then
+		to = player.moveToPos
+		player.moveToPos = nil
+		heroEntity:FadeGesture(ACT_DOTA_RUN)
+		ParticleManager:DestroyParticle(player.moveToParticle, false)
+	else
+		to = oldOrigin + (vector / distance) * moveStep
+	end
+	if GridNav:IsTraversable(to) and not GridNav:IsBlocked(to) then
+		heroEntity:SetAbsOrigin(to)
+	else
+		local offset
+		repeat
+			local trees = GridNav:GetAllTreesAroundPoint(to, 1, true)
+			local treePos = trees[1]:GetAbsOrigin()
+			local offset = (to - treePos):Normalized() * 10
+			offset.z = 0
+			to = to + offset
+		until GridNav:IsTraversable(to) and not GridNav:IsBlocked(to)
+		player.moveToClearPos = to
+	end
 end
 
 function MoveController:ShowMoveToParticle(player, pos)
