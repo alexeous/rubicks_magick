@@ -1,6 +1,7 @@
 
 require("move_controller")
 require("elements")
+require("spells")
 
 if RubicksMagickGameMode == nil then
 	RubicksMagickGameMode = class({})
@@ -11,6 +12,7 @@ function Precache(context)
 
 	MoveController:Precache(context)
 	Elements:Precache(context)
+	Spells:Precache(context)
 end
 
 function Activate()
@@ -29,6 +31,7 @@ function RubicksMagickGameMode:InitGameMode()
 
 	MoveController:Init()
 	Elements:Init()
+	Spells:Init()
 end
 
 

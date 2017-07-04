@@ -29,7 +29,7 @@ function MoveController:OnMoveHeroesThink()
 				if player.moveToClearPos ~= nil then
 					MoveController:MoveTowardsClearPos(player, heroEntity, moveStep * 2)
 				else
-					MoveController:MoveTowardsCursorPos(player, heroEntity, moveStep)
+					MoveController:MoveTowardsMoveToPos(player, heroEntity, moveStep)
 				end
 			end
 		end
@@ -49,7 +49,7 @@ function MoveController:MoveTowardsClearPos(player, heroEntity, moveStep)
 	end
 end
 
-function MoveController:MoveTowardsCursorPos(player, heroEntity, moveStep)
+function MoveController:MoveTowardsMoveToPos(player, heroEntity, moveStep)
 	local oldOrigin = heroEntity:GetAbsOrigin()
 	local vector = player.moveToPos - oldOrigin
 	local distance = #vector
@@ -108,17 +108,17 @@ function MoveController:OnMouseMove(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	local heroEntity = player:GetAssignedHero()
 	if heroEntity ~= nil then
-		local cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
+		player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
 		if player.leftDown then
-			MoveController:HeroLookAt(heroEntity, cursorPos)
+			MoveController:HeroLookAt(heroEntity, player.cursorPos)
 		end
 		if player.rightDown then
 			if player.moveToPos == nil then
 				heroEntity:StartGesture(ACT_DOTA_RUN)
 			end
-			player.moveToPos = cursorPos
-			MoveController:HeroLookAt(heroEntity, cursorPos)
-			MoveController:ShowMoveToParticle(player, cursorPos)
+			player.moveToPos = player.cursorPos
+			MoveController:HeroLookAt(heroEntity, player.cursorPos)
+			MoveController:ShowMoveToParticle(player, player.cursorPos)
 		end
 	end
 end	
@@ -129,13 +129,13 @@ function MoveController:OnRightDown(keys)
 	local heroEntity = player:GetAssignedHero()
 	if heroEntity ~= nil then
 		player.rightDown = true
-		local cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
+		player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
 		if player.moveToPos == nil then
 			heroEntity:StartGesture(ACT_DOTA_RUN)
 		end
-		player.moveToPos = cursorPos
-		MoveController:HeroLookAt(heroEntity, cursorPos)
-		MoveController:ShowMoveToParticle(player, cursorPos)
+		player.moveToPos = player.cursorPos
+		MoveController:HeroLookAt(heroEntity, player.cursorPos)
+		MoveController:ShowMoveToParticle(player, player.cursorPos)
 	end
 end
 
@@ -148,8 +148,8 @@ function MoveController:OnLeftDown(keys)
 	local heroEntity = player:GetAssignedHero()
 	if heroEntity ~= nil then
 		player.leftDown = true
-		local cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
-		MoveController:HeroLookAt(heroEntity, cursorPos)
+		player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
+		MoveController:HeroLookAt(heroEntity, player.cursorPos)
 	end
 end
 

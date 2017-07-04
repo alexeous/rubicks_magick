@@ -4,16 +4,10 @@ ELEMENT_SHIELD = 3
 ELEMENT_COLD = 4
 ELEMENT_LIGHTNING = 5
 ELEMENT_DEATH = 6
-
-if Elements == nil then
-	Elements = class({})
-end
-
 ELEMENT_EARTH = 7
 ELEMENT_FIRE = 8
 
 NUM_ELEMENTS = 8
-MAX_PICKED_ELEMENTS = 3
 
 OPPOSITE_ELEMENTS = {}
 OPPOSITE_ELEMENTS[ELEMENT_WATER] =     { ELEMENT_LIGHTNING }
@@ -37,6 +31,10 @@ ORB_PARTICLES[ELEMENT_FIRE]      = "particles/orbs/fire_orb/fire_orb.vpcf"
 
 ORB_ORIGIN_OFFSETS = { Vector(73, -43, -200), Vector(-73,  -43, -200), Vector(0, 85, -200) }
 CONTROL_OFFSET = 1
+
+if Elements == nil then
+	Elements = class({})
+end
 
 function Elements:Precache(context)
 	PrecacheResource("particle_folder", "particles/orbs/fire_orb", context)
@@ -68,12 +66,12 @@ end
 function Elements:PickElement(element)
 	local player = Convars:GetCommandClient()
 	-- trying to find an opposite
-	local oppositeIndex = Elements:FindIndexOfOpposite(player, element)
+	local oppositeIndex = Elements:IndexOfOpposite(player, element)
 	if oppositeIndex ~= nil then
 		Elements:RemoveElement(player, oppositeIndex)
 	else
 		-- trying to find an empty place for the new element
-		for i = 1, MAX_PICKED_ELEMENTS do
+		for i = 1, 3 do
 			if player.pickedElements[i] == nil then
 				Elements:AddElement(player, element, i)
 				break
@@ -82,7 +80,7 @@ function Elements:PickElement(element)
 	end
 end
 
-function Elements:FindIndexOfOpposite(player, element)
+function Elements:IndexOfOpposite(player, element)
 	for index, pickedElement in pairs(player.pickedElements) do
 		local pickedElementOpposites = OPPOSITE_ELEMENTS[pickedElement]
 		for _, opposite in pairs(pickedElementOpposites) do
@@ -103,6 +101,14 @@ end
 
 function Elements:RemoveElement(player, index)
 	player.pickedElements[index] = nil
-	ParticleManager:DestroyParticle(player.orbParticles[index], false)
-	ParticleManager:ReleaseParticleIndex(player.orbParticles[index])
+	if player.orbParticles[index] then
+		ParticleManager:DestroyParticle(player.orbParticles[index], false)
+		ParticleManager:ReleaseParticleIndex(player.orbParticles[index])
+	end
+end
+
+function Elements:RemoveAllElements(player)
+	Elements:RemoveElement(player, 1)
+	Elements:RemoveElement(player, 2)
+	Elements:RemoveElement(player, 3)
 end
