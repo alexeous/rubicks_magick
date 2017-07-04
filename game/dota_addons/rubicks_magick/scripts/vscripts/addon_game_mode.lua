@@ -8,17 +8,9 @@ end
 
 function Precache(context)
 	PrecacheUnitByNameSync("npc_dota_hero_rubick_rubicks_magick", context)
-	PrecacheResource("particle", "particles/ui_mouseactions/clicked_basemove.vpcf", context)
-	PrecacheResource("particle_folder", "particles/units/heroes/hero_invoker", context)
 
-	PrecacheResource("particle_folder", "particles/orbs/fire_orb", context)
-	PrecacheResource("particle_folder", "particles/orbs/death_orb", context)
-	PrecacheResource("particle_folder", "particles/orbs/cold_orb", context)
-	PrecacheResource("particle_folder", "particles/orbs/lightning_orb", context)
-	PrecacheResource("particle_folder", "particles/orbs/shield_orb", context)
-	PrecacheResource("particle_folder", "particles/orbs/earth_orb", context)
-	PrecacheResource("particle_folder", "particles/orbs/life_orb", context)
-	PrecacheResource("particle_folder", "particles/orbs/water_orb", context)
+	MoveController:Precache(context)
+	Elements:Precache(context)
 end
 
 function Activate()

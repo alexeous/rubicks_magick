@@ -3,6 +3,11 @@ if MoveController == nil then
 	MoveController = class({})
 end
 
+function MoveController:Precache(context)
+	PrecacheResource("particle", "particles/ui_mouseactions/clicked_basemove.vpcf", context)
+	PrecacheResource("particle_folder", "particles/units/heroes/hero_invoker", context)
+end
+
 function MoveController:Init()	
 	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(MoveController, "OnMoveHeroesThink"), "MoveHeroesThink", 2)
 	

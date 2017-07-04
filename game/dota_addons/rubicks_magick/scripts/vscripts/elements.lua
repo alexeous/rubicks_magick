@@ -38,6 +38,17 @@ ORB_PARTICLES[ELEMENT_FIRE]      = "particles/orbs/fire_orb/fire_orb.vpcf"
 ORB_ORIGIN_OFFSETS = { Vector(73, -43, -200), Vector(-73,  -43, -200), Vector(0, 85, -200) }
 CONTROL_OFFSET = 1
 
+function Elements:Precache(context)
+	PrecacheResource("particle_folder", "particles/orbs/fire_orb", context)
+	PrecacheResource("particle_folder", "particles/orbs/death_orb", context)
+	PrecacheResource("particle_folder", "particles/orbs/cold_orb", context)
+	PrecacheResource("particle_folder", "particles/orbs/lightning_orb", context)
+	PrecacheResource("particle_folder", "particles/orbs/shield_orb", context)
+	PrecacheResource("particle_folder", "particles/orbs/earth_orb", context)
+	PrecacheResource("particle_folder", "particles/orbs/life_orb", context)
+	PrecacheResource("particle_folder", "particles/orbs/water_orb", context)
+end
+
 function Elements:Init()
 	Convars:RegisterCommand("+rm_wtr",  function(...) return Elements:PickElement(ELEMENT_WATER) end, "Picked water element", 0)
 	Convars:RegisterCommand("+rm_lif",  function(...) return Elements:PickElement(ELEMENT_LIFE) end, "Picked life element", 0)
