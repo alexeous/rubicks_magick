@@ -11,6 +11,8 @@ function Spells:Precache(context)
 end
 
 function Spells:Init()
+	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(Spells, "OnSpellsThink"), "OnSpellsThink", 2)
+
 	CustomGameEventManager:RegisterListener("me_ld", Dynamic_Wrap(Spells, "OnLeftDown"))
 	CustomGameEventManager:RegisterListener("me_md", Dynamic_Wrap(Spells, "OnMiddleDown"))
 end
@@ -34,7 +36,9 @@ function Spells:OnLeftDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	local pickedElements = player.pickedElements
 
-	if next(pickedElements) == nil then 	-- no picked elements
+	if player.thinksToCastingEnd ~= nil then return end
+
+	if next(pickedElements) == nil then 	-- if player is casting a spell now or no picked elements
 		Spells:MeleeAttack(player)
 		return
 	end
@@ -186,7 +190,7 @@ function Spells:OnMiddleDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	local pickedElements = player.pickedElements
 
-	if next(pickedElements) == nil then 	-- no picked elements
+	if player.thinksToCastingEnd or next(pickedElements) == nil then 	-- if player is casting a spell now or no picked elements
 		return
 	end
 
@@ -283,12 +287,96 @@ end
 ---------------------------------------------------------------------
 ---------------------------------------------------------------------
 
+SPELLS_THINK_PERIOD = 0.03
+function Spells:OnSpellsThink()
+	for playerID = 0, DOTA_MAX_PLAYERS - 1 do
+		local player = PlayerResource:GetPlayer(playerID)
+		if player ~= nil and player.thinksToCastingEnd ~= nil then
+			if player.thinksToCastingEnd <= 0 then
+				Spells:StopCasting(player)
+			else
+
+				if player.spellThinkFunction ~= nil then
+					pcall(player.spellThinkFunction, player)
+				end
+				player.thinksToCastingEnd = player.thinksToCastingEnd - 1
+
+			end
+		end		
+	end
+	return SPELLS_THINK_PERIOD
+end
+
 ----------     ----------     ----------     ----------     ----------     ----------     ----------     ----------     ----------     ----------
+
+function Spells:TimeToThinks(time)
+	return time / SPELLS_THINK_PERIOD
+end
+
+function Spells:MarkStartedCasting(player, dontMove, duration)
+	player.dontMoveWhileCasting = dontMove
+	player.thinksToCastingEnd = Spells:TimeToThinks(duration)
+end
+
+function Spells:StopCasting(player)
+	player.dontMoveWhileCasting = nil
+	player.thinksToCastingEnd = nil
+	player.spellThinkFunction = nil
+	local heroEntity = player:GetAssignedHero()
+	if heroEntity ~= nil and player.castingGesture ~= nil then
+		heroEntity:FadeGesture(player.castingGesture)
+		if player.moveToPos ~= nil then
+			heroEntity:StartGesture(ACT_DOTA_RUN)
+		end
+		player.castingGesture = nil
+	end
+end
+
+function Spells:StartCastingGesture(player, gesture, playbackRate)
+	player.castingGesture = gesture
+	local heroEntity = player:GetAssignedHero()
+	if heroEntity == nil then return end
+
+	if player.moveToPos ~= nil then
+		heroEntity:FadeGesture(ACT_DOTA_RUN)
+	end
+	if playbackRate ~= nil then
+		heroEntity:StartGestureWithPlaybackRate(player.castingGesture, playbackRate)
+	else
+		heroEntity:StartGesture(player.castingGesture)
+	end
+end
 
 ------------------------- MELEE ATTACK ------------------------------
 
 function Spells:MeleeAttack(player)
-	-------- TODO ---------
+	Spells:StartCastingGesture(player, ACT_DOTA_ATTACK, 1.4)
+	player.spellThinkFunction = function(player)
+		if player.thinksToCastingEnd == Spells:TimeToThinks(0.3) then 	-- do damage only after a small delay
+			local heroEntity = player:GetAssignedHero()
+			local center = heroEntity:GetAbsOrigin() + heroEntity:GetForwardVector() * 110
+			Spells:ApplyElementDamageAoE(center, 110, heroEntity, ELEMENT_EARTH, 150, false)
+		end
+	end
+	Spells:MarkStartedCasting(player, true, 0.6)
+end
+
+
+------------------------- DAMAGE APPLYING  --------------------------
+
+function Spells:ApplyElementDamageAoE(center, radius, attacker, element, damage, doDamageAttacker)
+	local unitsToHurt = FindUnitsInRadius(attacker:GetTeamNumber(), center, nil, radius, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_ALL,
+	    DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, true)
+	for _, unit in pairs(unitsToHurt) do
+		if doDamageAttacker or unit ~= attacker then
+			Spells:ApplyElementDamage(unit, attacker, element, damage)
+		end
+	end
+end
+
+function Spells:ApplyElementDamage(unit, attacker, element, damage)
+	-------- TODO: TAKE SHIELD INTO ACCOUNT ---------
+	ApplyDamage({ victim = unit, attacker = attacker, damage = damage, damage_type = DAMAGE_TYPE_PURE })
 end
 
 ---------------------------------------------------------------------

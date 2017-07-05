@@ -56,11 +56,20 @@ function Elements:Init()
 	Convars:RegisterCommand("+rm_dth",  function(...) return Elements:PickElement(ELEMENT_DEATH) end, "Picked death element", 0)
 	Convars:RegisterCommand("+rm_ert",  function(...) return Elements:PickElement(ELEMENT_EARTH) end, "Picked earth element", 0)
 	Convars:RegisterCommand("+rm_fir",  function(...) return Elements:PickElement(ELEMENT_FIRE) end, "Picked fire element", 0)
+
+	ListenToGameEvent("entity_killed", Dynamic_Wrap(Elements, "OnEntityKilled"), self)
 end
 
 function Elements:PlayerConnected(player)
 	player.pickedElements = {}
 	player.orbParticles = {}
+end
+
+function Elements:OnEntityKilled(keys)
+	local killedUnit = EntIndexToHScript(keys.entindex_killed)
+	if killedUnit and killedUnit:IsRealHero() then
+		Elements:RemoveAllElements(killedUnit:GetPlayerOwner())
+	end
 end
 
 function Elements:PickElement(element)

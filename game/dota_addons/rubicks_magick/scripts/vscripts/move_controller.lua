@@ -22,7 +22,7 @@ THINK_PERIOD = 0.03
 function MoveController:OnMoveHeroesThink()
 	for playerID = 0, DOTA_MAX_PLAYERS - 1 do
 		local player = PlayerResource:GetPlayer(playerID)
-		if player ~= nil and player.moveToPos ~= nil then
+		if player ~= nil and not player.dontMoveWhileCasting and player.moveToPos ~= nil then
 			local heroEntity = player:GetAssignedHero()
 			if heroEntity ~= nil then
 				local moveStep = heroEntity:GetIdealSpeed() * THINK_PERIOD
@@ -95,6 +95,7 @@ end
 
 function MoveController:HeroLookAt(heroEntity, targetPos)
 	if heroEntity ~= nil then
+		targetPos.z = heroEntity:GetAbsOrigin().z
 		local oldForward = heroEntity:GetForwardVector()
 		local forward = targetPos - heroEntity:GetAbsOrigin()
 		if #forward < 1 then 	-- prevent from zero-vector
@@ -113,7 +114,7 @@ function MoveController:OnMouseMove(keys)
 			MoveController:HeroLookAt(heroEntity, player.cursorPos)
 		end
 		if player.rightDown then
-			if player.moveToPos == nil then
+			if player.moveToPos == nil and not player.dontMoveWhileCasting then
 				heroEntity:StartGesture(ACT_DOTA_RUN)
 			end
 			player.moveToPos = player.cursorPos
@@ -130,7 +131,7 @@ function MoveController:OnRightDown(keys)
 	if heroEntity ~= nil then
 		player.rightDown = true
 		player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
-		if player.moveToPos == nil then
+		if player.moveToPos == nil and not player.dontMoveWhileCasting then
 			heroEntity:StartGesture(ACT_DOTA_RUN)
 		end
 		player.moveToPos = player.cursorPos
