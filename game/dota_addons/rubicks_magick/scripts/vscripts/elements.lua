@@ -67,7 +67,7 @@ end
 
 function Elements:OnEntityKilled(keys)
 	local killedUnit = EntIndexToHScript(keys.entindex_killed)
-	if killedUnit and killedUnit:IsRealHero() then
+	if killedUnit ~= nil and killedUnit:IsRealHero() then
 		Elements:RemoveAllElements(killedUnit:GetPlayerOwner())
 	end
 end

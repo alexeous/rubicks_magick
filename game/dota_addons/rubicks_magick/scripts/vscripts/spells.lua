@@ -1,13 +1,29 @@
 
 require("elements")
 require("move_controller")
+require("modifiers/modifier_shield_water_lua")
+require("modifiers/modifier_shield_life_lua")
+require("modifiers/modifier_shield_cold_lua")
+require("modifiers/modifier_shield_lightning_lua")
+require("modifiers/modifier_shield_death_lua")
+require("modifiers/modifier_shield_earth_lua")
+require("modifiers/modifier_shield_fire_lua")
 
 if Spells == nil then
 	Spells = class({})
 end
 
-function Spells:Precache(context)
 
+function Spells:Precache(context)
+	LinkLuaModifier("modifier_shield_water_lua", "modifiers/modifier_shield_water_lua.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_shield_life_lua", "modifiers/modifier_shield_life_lua.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_shield_cold_lua", "modifiers/modifier_shield_cold_lua.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_shield_lightning_lua", "modifiers/modifier_shield_lightning_lua.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_shield_death_lua", "modifiers/modifier_shield_death_lua.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_shield_earth_lua", "modifiers/modifier_shield_earth_lua.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_shield_fire_lua", "modifiers/modifier_shield_fire_lua.lua", LUA_MODIFIER_MOTION_NONE)
+
+	PrecacheResource("particle_folder", "particles/shield_circles", context)
 end
 
 function Spells:Init()
@@ -16,6 +32,13 @@ function Spells:Init()
 	CustomGameEventManager:RegisterListener("me_ld", Dynamic_Wrap(Spells, "OnLeftDown"))
 	CustomGameEventManager:RegisterListener("me_md", Dynamic_Wrap(Spells, "OnMiddleDown"))
 end
+
+function Spells:PlayerConnected(player)
+	player.shieldElements = {}
+	player.shieldModifiers = {}
+end
+
+
 
 function Spells:IndexOfPicked(pickedElements, element)
 	for index, pickedElement in pairs(pickedElements) do
@@ -26,6 +49,14 @@ function Spells:IndexOfPicked(pickedElements, element)
 	return nil
 end
 
+function Spells:ClonePickedElements(player)
+	local result = {}
+	for index, element in pairs(player.pickedElements) do 
+		result[index] = element
+	end
+	return result
+end
+
 
 ---------------------------------------------------------------------
 ---------------------------------------------------------------------
@@ -34,9 +65,9 @@ end
 
 function Spells:OnLeftDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
-	local pickedElements = player.pickedElements
-
 	if player.thinksToCastingEnd ~= nil then return end
+
+	local pickedElements = Spells:ClonePickedElements(player)
 
 	if next(pickedElements) == nil then 	-- if player is casting a spell now or no picked elements
 		Spells:MeleeAttack(player)
@@ -188,7 +219,7 @@ end
 
 function Spells:OnMiddleDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
-	local pickedElements = player.pickedElements
+	local pickedElements = Spells:ClonePickedElements(player)
 
 	if player.thinksToCastingEnd or next(pickedElements) == nil then 	-- if player is casting a spell now or no picked elements
 		return
@@ -474,10 +505,46 @@ end
 ---------------------------------------------------------------------
 ------------------------- SELF CASTING ------------------------------
 
+MODIFIER_SHIELD_NAMES = {}
+MODIFIER_SHIELD_NAMES[ELEMENT_WATER]     = "modifier_shield_water_lua"
+MODIFIER_SHIELD_NAMES[ELEMENT_LIFE]      = "modifier_shield_life_lua"
+MODIFIER_SHIELD_NAMES[ELEMENT_COLD]      = "modifier_shield_cold_lua"
+MODIFIER_SHIELD_NAMES[ELEMENT_LIGHTNING] = "modifier_shield_lightning_lua"
+MODIFIER_SHIELD_NAMES[ELEMENT_DEATH]     = "modifier_shield_death_lua"
+MODIFIER_SHIELD_NAMES[ELEMENT_EARTH]     = "modifier_shield_earth_lua"
+MODIFIER_SHIELD_NAMES[ELEMENT_FIRE]      = "modifier_shield_fire_lua"
+
+SHIELD_DURATION = 5.0
 
 function Spells:ApplyElementSelfShield(player, shieldElements)
-	-------- TODO ---------
+	for _, currentModifier in pairs(player.shieldModifiers) do
+		if not currentModifier:IsNull() then
+			ParticleManager:DestroyParticle(currentModifier.particleIndex, false)
+		 	currentModifier:Destroy()
+		end
+	end
+
+	player.shieldElements = shieldElements
+	Spells:StartCastingGesture(player, ACT_DOTA_CAST_WILD_AXES_END, 2)
+	Spells:MarkStartedCasting(player, true, 0.2)
+
+	local circleRadius = 1
+	local heroEntity = player:GetAssignedHero()
+
+	-------- TODO: MODIFIER ICON TEXTURES ------------
+
+	if shieldElements[1] ~= nil then
+		local kv = { index = 1, circleRadius = circleRadius, duration = SHIELD_DURATION }
+		player.shieldModifiers[1] = heroEntity:AddNewModifier(heroEntity, nil, MODIFIER_SHIELD_NAMES[shieldElements[1]], kv)
+		circleRadius = 2
+	end
+
+	if shieldElements[2] ~= nil then
+		local kv = { index = 2, circleRadius = circleRadius, duration = SHIELD_DURATION }
+		player.shieldModifiers[2] = heroEntity:AddNewModifier(heroEntity, nil, MODIFIER_SHIELD_NAMES[shieldElements[2]], kv)
+	end
 end
+
 
 function Spells:EarthStomp(player, modifierElements)
 	-------- TODO ---------

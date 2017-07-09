@@ -42,6 +42,7 @@ function RubicksMagickGameMode:OnConnectFull(keys)
     heroEntity:SetHullRadius(0)
     MoveController:PlayerConnected(player)
     Elements:PlayerConnected(player)
+    Spells:PlayerConnected(player)
 end
 
 function RubicksMagickGameMode:OrderFilter(keys)
