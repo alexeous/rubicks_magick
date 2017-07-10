@@ -1,13 +1,6 @@
 
 require("elements")
 require("move_controller")
-require("modifiers/modifier_shield_water_lua")
-require("modifiers/modifier_shield_life_lua")
-require("modifiers/modifier_shield_cold_lua")
-require("modifiers/modifier_shield_lightning_lua")
-require("modifiers/modifier_shield_death_lua")
-require("modifiers/modifier_shield_earth_lua")
-require("modifiers/modifier_shield_fire_lua")
 
 if Spells == nil then
 	Spells = class({})
@@ -514,7 +507,7 @@ MODIFIER_SHIELD_NAMES[ELEMENT_DEATH]     = "modifier_shield_death_lua"
 MODIFIER_SHIELD_NAMES[ELEMENT_EARTH]     = "modifier_shield_earth_lua"
 MODIFIER_SHIELD_NAMES[ELEMENT_FIRE]      = "modifier_shield_fire_lua"
 
-SHIELD_DURATION = 5.0
+SHIELD_DURATION = 20.0
 
 function Spells:ApplyElementSelfShield(player, shieldElements)
 	for _, currentModifier in pairs(player.shieldModifiers) do
@@ -525,7 +518,7 @@ function Spells:ApplyElementSelfShield(player, shieldElements)
 	end
 
 	player.shieldElements = shieldElements
-	Spells:StartCastingGesture(player, ACT_DOTA_CAST_WILD_AXES_END, 2)
+	Spells:StartCastingGesture(player, ACT_DOTA_SPAWN, 2)
 	Spells:MarkStartedCasting(player, true, 0.2)
 
 	local circleRadius = 1
