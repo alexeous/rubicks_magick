@@ -36,7 +36,6 @@ end
 function SelfShield:ApplyElementSelfShield(player, shieldElements)
 	for _, currentModifier in pairs(player.shieldModifiers) do
 		if not currentModifier:IsNull() then
-			ParticleManager:DestroyParticle(currentModifier.particleIndex, false)
 		 	currentModifier:Destroy()
 		end
 	end

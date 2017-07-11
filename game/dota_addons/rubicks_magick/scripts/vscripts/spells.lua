@@ -417,7 +417,7 @@ function Spells:MeleeAttack(player)
 		if player.thinksToCastingEnd == Spells:TimeToThinks(0.3) then 	-- do damage only after a small delay
 			local heroEntity = player:GetAssignedHero()
 			local center = heroEntity:GetAbsOrigin() + heroEntity:GetForwardVector() * 110
-			Spells:ApplyElementDamageAoE(center, 110, heroEntity, ELEMENT_EARTH, 150, false)
+			Spells:ApplyElementDamageAoE(center, 110, heroEntity, ELEMENT_EARTH, 150, true)
 		end
 	end
 	Spells:MarkStartedCasting(player, true, 0.6)
@@ -426,17 +426,24 @@ end
 
 ------------------------- DAMAGE APPLYING  --------------------------
 
-function Spells:ApplyElementDamageAoE(center, radius, attacker, element, damage, doDamageAttacker)
+function Spells:ApplyElementDamageAoE(center, radius, attacker, element, damage, dontDamageAttacker)
 	local unitsToHurt = FindUnitsInRadius(attacker:GetTeamNumber(), center, nil, radius, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_ALL,
 	    DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, true)
 	for _, unit in pairs(unitsToHurt) do
-		if doDamageAttacker or unit ~= attacker then
+		if not (unit == attacker and dontDamageAttacker) then
 			Spells:ApplyElementDamage(unit, attacker, element, damage)
 		end
 	end
 end
 
-function Spells:ApplyElementDamage(unit, attacker, element, damage)
-	-------- TODO: TAKE SHIELD INTO ACCOUNT ---------
-	ApplyDamage({ victim = unit, attacker = attacker, damage = damage, damage_type = DAMAGE_TYPE_PURE })
+function Spells:ApplyElementDamage(victim, attacker, element, damage)
+	local player = attacker:GetPlayerOwner()
+	if (element ~= nil) and (player ~= nil) and (player.shieldElements ~= nil) then
+		local halfDamage = damage / 2
+		if player.shieldElements[1] == element then  damage = damage - halfDamage  end
+		if player.shieldElements[2] == element then	 damage = damage - halfDamage  end
+	end
+	if damage > 0.5 then
+		ApplyDamage({ victim = victim, attacker = attacker, damage = damage, damage_type = DAMAGE_TYPE_PURE })
+	end
 end
