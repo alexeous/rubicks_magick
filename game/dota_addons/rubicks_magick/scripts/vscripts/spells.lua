@@ -2,21 +2,45 @@
 require("elements")
 require("move_controller")
 
+require("spells/self_shield")
+require("spells/magic_shield")
+require("spells/stone_wall")
+require("spells/lightning_wall")
+require("spells/mines")
+require("spells/element_walls")
+require("spells/rock_throw")
+require("spells/lightning")
+require("spells/beams")
+require("spells/element_sprays")
+require("spells/ice_spikes")
+require("spells/earth_stomp")
+require("spells/self_heal")
+require("spells/omni_pulses")
+require("spells/omni_element_sprays")
+require("spells/omni_ice_spikes")
+
 if Spells == nil then
 	Spells = class({})
 end
 
 
 function Spells:Precache(context)
-	LinkLuaModifier("modifier_shield_water_lua", "modifiers/modifier_shield_water_lua.lua", LUA_MODIFIER_MOTION_NONE)
-	LinkLuaModifier("modifier_shield_life_lua", "modifiers/modifier_shield_life_lua.lua", LUA_MODIFIER_MOTION_NONE)
-	LinkLuaModifier("modifier_shield_cold_lua", "modifiers/modifier_shield_cold_lua.lua", LUA_MODIFIER_MOTION_NONE)
-	LinkLuaModifier("modifier_shield_lightning_lua", "modifiers/modifier_shield_lightning_lua.lua", LUA_MODIFIER_MOTION_NONE)
-	LinkLuaModifier("modifier_shield_death_lua", "modifiers/modifier_shield_death_lua.lua", LUA_MODIFIER_MOTION_NONE)
-	LinkLuaModifier("modifier_shield_earth_lua", "modifiers/modifier_shield_earth_lua.lua", LUA_MODIFIER_MOTION_NONE)
-	LinkLuaModifier("modifier_shield_fire_lua", "modifiers/modifier_shield_fire_lua.lua", LUA_MODIFIER_MOTION_NONE)
-
-	PrecacheResource("particle_folder", "particles/shield_circles", context)
+	SelfShield:Precache(context)
+	MagicShield:Precache(context)
+	StoneWall:Precache(context)
+	LightningWall:Precache(context)
+	Mines:Precache(context)
+	ElementWalls:Precache(context)
+	RockThrow:Precache(context)
+	Lightning:Precache(context)
+	Beams:Precache(context)
+	ElementSprays:Precache(context)
+	IceSpikes:Precache(context)
+	EarthStomp:Precache(context)
+	SelfHeal:Precache(context)
+	OmniPulses:Precache(context)
+	OmniElementSprays:Precache(context)
+	OmniIceSpikes:Precache(context)
 end
 
 function Spells:Init()
@@ -27,8 +51,22 @@ function Spells:Init()
 end
 
 function Spells:PlayerConnected(player)
-	player.shieldElements = {}
-	player.shieldModifiers = {}
+	SelfShield:PlayerConnected(player)
+	MagicShield:PlayerConnected(player)
+	StoneWall:PlayerConnected(player)
+	LightningWall:PlayerConnected(player)
+	Mines:PlayerConnected(player)
+	ElementWalls:PlayerConnected(player)
+	RockThrow:PlayerConnected(player)
+	Lightning:PlayerConnected(player)
+	Beams:PlayerConnected(player)
+	ElementSprays:PlayerConnected(player)
+	IceSpikes:PlayerConnected(player)
+	EarthStomp:PlayerConnected(player)
+	SelfHeal:PlayerConnected(player)
+	OmniPulses:PlayerConnected(player)
+	OmniElementSprays:PlayerConnected(player)
+	OmniIceSpikes:PlayerConnected(player)
 end
 
 
@@ -73,7 +111,7 @@ function Spells:OnLeftDown(keys)
 	if shieldInd ~= nil then
 		table.remove(pickedElements, shieldInd)
 		if next(pickedElements) == nil then 	-- if only shield orb is picked
-			Spells:PlaceMagicShield(player, true) 	-- then place magic shield
+			MagicShield:PlaceMagicShield(player, true) 	-- then place magic shield
 		else
 			Spells:DirectedDefensiveSpell(player, pickedElements) 	-- otherwise handle the other elements as a defensive combination
 		end
@@ -83,14 +121,14 @@ function Spells:OnLeftDown(keys)
 	local earthInd = Spells:IndexOfPicked(pickedElements, ELEMENT_EARTH)
 	if earthInd ~= nil then
 		table.remove(pickedElements, earthInd)
-		Spells:StartRockThrow(player, pickedElements) 	-- earth [+ <element>] [+ <element>] = throw rock
+		RockThrow:StartRockThrow(player, pickedElements) 	-- earth [+ <element>] [+ <element>] = throw rock
 		return
 	end
 
 	local lightningInd = Spells:IndexOfPicked(pickedElements, ELEMENT_LIGHTNING)
 	if lightningInd ~= nil then
 		table.remove(pickedElements, lightningInd)
-		Spells:DirectedLightning(player, pickedElements) 	-- lightning [+ <element>] [+ <element>] = lightning
+		Lightning:DirectedLightning(player, pickedElements) 	-- lightning [+ <element>] [+ <element>] = lightning
 		return
 	end
 
@@ -100,9 +138,9 @@ function Spells:OnLeftDown(keys)
 		local coldInd = Spells:IndexOfPicked(pickedElements, ELEMENT_COLD)
 		if not (waterInd and coldInd) then 		-- if not ice spikes
 			table.remove(pickedElements, lifeInd)
-			Spells:StartLifeBeam(player, pickedElements) 	-- otherwise life [+ <element>] [+ <element>] = life beam
+			Beams:StartLifeBeam(player, pickedElements) 	-- otherwise life [+ <element>] [+ <element>] = life beam
 		else
-			Spells:StartIceSpikes(player, ELEMENT_LIFE)
+			IceSpikes:StartIceSpikes(player, ELEMENT_LIFE)
 		end
 		return
 	end
@@ -113,9 +151,9 @@ function Spells:OnLeftDown(keys)
 		local coldInd = Spells:IndexOfPicked(pickedElements, ELEMENT_COLD)
 		if not (waterInd and coldInd) then 		-- if not ice spikes
 			table.remove(pickedElements, deathInd)
-			Spells:StartDeathBeam(player, pickedElements) 	-- otherwise death [+ <element>] [+ <element>] = death beam
+			Beams:StartDeathBeam(player, pickedElements) 	-- otherwise death [+ <element>] [+ <element>] = death beam
 		else
-			Spells:StartIceSpikes(player, ELEMENT_DEATH)
+			IceSpikes:StartIceSpikes(player, ELEMENT_DEATH)
 		end
 		return
 	end
@@ -127,55 +165,55 @@ function Spells:OnLeftDown(keys)
 		local fireInd = Spells:IndexOfPicked(pickedElements, ELEMENT_FIRE)
 		if fireInd ~= nil then
 			table.remove(pickedElements, fireInd)
-			Spells:StartSteamSpray(player, pickedElements[1]) 	-- water + fire [+ water/fire] = steam spray
+			ElementSprays:StartSteamSpray(player, pickedElements[1]) 	-- water + fire [+ water/fire] = steam spray
 			return
 		end
 
 		local coldInd = Spells:IndexOfPicked(pickedElements, ELEMENT_COLD)
 		if coldInd ~= nil then
 			table.remove(pickedElements, coldInd)
-			Spells:StartIceSpikes(player, pickedElements[1])	-- water + cold [+ cold/water] = ice spikes
+			IceSpikes:StartIceSpikes(player, pickedElements[1])	-- water + cold [+ cold/water] = ice spikes
 			return
 		end
 
-		Spells:StartWaterSpray(player, #pickedElements + 1) 	-- otherwise it is water spray (second arg is power of spray)
+		ElementSprays:StartWaterSpray(player, #pickedElements + 1) 	-- otherwise it is water spray (second arg is power of spray)
 	end
 
 	local fireInd = Spells:IndexOfPicked(pickedElements, ELEMENT_FIRE)
 	if fireInd ~= nil then
-		Spells:StartFireSpray(player, #pickedElements)
+		ElementSprays:StartFireSpray(player, #pickedElements)
 		return
 	end
 
-	Spells:StartColdSpray(player, #pickedElements)
+	ElementSprays:StartColdSpray(player, #pickedElements)
 end
 
 function Spells:DirectedDefensiveSpell(player, pickedElements)	-- picked shield and clicked left mouse
 	local earthInd = Spells:IndexOfPicked(pickedElements, ELEMENT_EARTH)
 	if earthInd ~= nil then 	-- shield + earth [+ <element>] = stone wall [perhaps modified by the last picked element]
 		table.remove(pickedElements, earthInd)
-		Spells:PlaceStoneWall(player, pickedElements[1])
+		StoneWall:PlaceStoneWall(player, pickedElements[1])
 		return
 	end
 
 	local lightningInd = Spells:IndexOfPicked(pickedElements, ELEMENT_LIGHTNING)
 	if lightningInd ~= nil then 	-- shield + lightning = lightning wall
 		table.remove(pickedElements, lightningInd)
-		Spells:PlaceLightningWall(player, pickedElements[1])
+		LightningWall:PlaceLightningWall(player, pickedElements[1])
 		return
 	end
 
 	local lifeInd = Spells:IndexOfPicked(pickedElements, ELEMENT_LIFE)
 	if lifeInd ~= nil then -- shield + life = life mines
 		table.remove(pickedElements, lifeInd)
-		Spells:PlaceLifeMines(player, pickedElements[1])
+		Mines:PlaceLifeMines(player, pickedElements[1])
 		return
 	end
 
 	local deathInd = Spells:IndexOfPicked(pickedElements, ELEMENT_DEATH)
 	if deathInd ~= nil then -- shield + death = death mines
 		table.remove(pickedElements, deathInd)
-		Spells:PlaceDeathMines(player, pickedElements[1])
+		Mines:PlaceDeathMines(player, pickedElements[1])
 		return
 	end
 
@@ -183,22 +221,22 @@ function Spells:DirectedDefensiveSpell(player, pickedElements)	-- picked shield 
 	if waterInd ~= nil then
 		table.remove(pickedElements, waterInd)
 		if pickedElements[1] == ELEMENT_COLD then 	-- shield + water + cold = ice wall
-			Spells:PlaceIceWall(player)
+			ElementWalls:PlaceIceWall(player)
 		elseif pickedElements[1] == ELEMENT_FIRE then 	-- shield + water + fire = steam wall
-			Spells:PlaceSteamWall(player)
+			ElementWalls:PlaceSteamWall(player)
 		else
-			Spells:PlaceWaterWall(player, pickedElements[1]) -- shield + water [+ water] = water wall
+			ElementWalls:PlaceWaterWall(player, pickedElements[1]) -- shield + water [+ water] = water wall
 		end
 		return
 	end
 
 	local fireInd = Spells:IndexOfPicked(pickedElements, ELEMENT_FIRE)
 	if fireInd ~= nil then 		-- shield + fire = fire wall
-		Spells:PlaceFireWall(player, pickedElements[2])
+		ElementWalls:PlaceFireWall(player, pickedElements[2])
 		return
 	end
 
-	Spells:PlaceColdWall(player, pickedElements[2]) 	-- otherwise it is shield + cold [+cold] = cold wall
+	ElementWalls:PlaceColdWall(player, pickedElements[2]) 	-- otherwise it is shield + cold [+cold] = cold wall
 end
 
 
@@ -224,9 +262,9 @@ function Spells:OnMiddleDown(keys)
 	if shieldInd ~= nil then
 		table.remove(pickedElements, shieldInd)
 		if next(pickedElements) == nil then 	-- if only shield orb is picked
-			Spells:PlaceMagicShield(player, false) 	-- then place magic shield
+			MagicShield:PlaceMagicShield(player, false) 	-- then place magic shield
 		else
-			Spells:ApplyElementSelfShield(player, pickedElements) 	-- otherwise apply element shield on caster
+			SelfShield:ApplyElementSelfShield(player, pickedElements) 	-- otherwise apply element shield on caster
 		end
 		return
 	end
@@ -234,14 +272,14 @@ function Spells:OnMiddleDown(keys)
 	local earthInd = Spells:IndexOfPicked(pickedElements, ELEMENT_EARTH)
 	if earthInd ~= nil then
 		table.remove(pickedElements, earthInd)
-		Spells:EarthStomp(player, pickedElements) 	-- earth + elements = stomp
+		EarthStomp:EarthStomp(player, pickedElements) 	-- earth + elements = stomp
 		return
 	end
 
 	local lightningInd = Spells:IndexOfPicked(pickedElements, ELEMENT_LIGHTNING)
 	if lightningInd ~= nil then
 		table.remove(pickedElements, lightningInd)
-		Spells:OmniLightning(player, pickedElements)
+		Lightning:OmniLightning(player, pickedElements)
 		return
 	end
 
@@ -254,12 +292,12 @@ function Spells:OnMiddleDown(keys)
 			local isLife1 = (pickedElements[1] == ELEMENT_LIFE) or (pickedElements[1] == nil)
 			local isLife2 = (pickedElements[2] == ELEMENT_LIFE) or (pickedElements[2] == nil)
 			if isLife1 and isLife2 then
-				Spells:StartSelfHeal(player, #pickedElements + 1) 	-- if only life is picked then self-healing
+				SelfHeal:StartSelfHeal(player, #pickedElements + 1) 	-- if only life is picked then self-healing
 			else
-				Spells:LifeOmniPulse(player, pickedElements) 	-- otherwise pulse of life
+				OmniPulses:OmniLifePulse(player, pickedElements) 	-- otherwise pulse of life
 			end
 		else
-			Spells:IceOmniSpikes(player, ELEMENT_LIFE)
+			OmniIceSpikes:OmniIceSpikes(player, ELEMENT_LIFE)
 		end
 		return
 	end
@@ -270,9 +308,9 @@ function Spells:OnMiddleDown(keys)
 		local waterInd = Spells:IndexOfPicked(pickedElements, ELEMENT_WATER)
 		local coldInd = Spells:IndexOfPicked(pickedElements, ELEMENT_COLD)
 		if not (waterInd and coldInd) then 		-- if not ice spikes
-			Spells:DeathOmniPulse(player, pickedElements)
+			OmniPulses:OmniDeathPulse(player, pickedElements)
 		else
-			Spells:IceOmniSpikes(player, ELEMENT_DEATH)
+			OmniIceSpikes:OmniIceSpikes(player, ELEMENT_DEATH)
 		end
 		return
 	end
@@ -284,27 +322,27 @@ function Spells:OnMiddleDown(keys)
 		local fireInd = Spells:IndexOfPicked(pickedElements, ELEMENT_FIRE)
 		if fireInd ~= nil then
 			table.remove(pickedElements, fireInd)
-			Spells:SteamOmniSpray(player, pickedElements[1]) 	-- water + fire [+ water/fire] = steam omni spray
+			OmniElementSprays:OmniSteamSpray(player, pickedElements[1]) 	-- water + fire [+ water/fire] = steam omni spray
 			return
 		end
 
 		local coldInd = Spells:IndexOfPicked(pickedElements, ELEMENT_COLD)
 		if coldInd ~= nil then
 			table.remove(pickedElements, coldInd)
-			Spells:IceOmniSpikes(player, pickedElements[1])	-- water + cold [+ cold/water] = ice omni spikes
+			OmniIceSpikes:OmniIceSpikes(player, pickedElements[1])	-- water + cold [+ cold/water] = ice omni spikes
 			return
 		end
 
-		Spells:WaterOmniSpray(player, #pickedElements + 1)
+		OmniElementSprays:OmniWaterpray(player, #pickedElements + 1)
 	end
 
 	local fireInd = Spells:IndexOfPicked(pickedElements, ELEMENT_FIRE)
 	if fireInd ~= nil then
-		Spells:FireOmniSpray(player, #pickedElements)
+		OmniElementSprays:OmniFireSpray(player, #pickedElements)
 		return
 	end
 
-	Spells:ColdOmniSpray(player, #pickedElements)
+	OmniElementSprays:OmniColdSpray(player, #pickedElements)
 end
 
 --------------------- MIDDLE MOUSE CLICK ----------------------------
@@ -402,183 +440,3 @@ function Spells:ApplyElementDamage(unit, attacker, element, damage)
 	-------- TODO: TAKE SHIELD INTO ACCOUNT ---------
 	ApplyDamage({ victim = unit, attacker = attacker, damage = damage, damage_type = DAMAGE_TYPE_PURE })
 end
-
----------------------------------------------------------------------
-------------------------- WALLS AND SHIELDS -------------------------
-
-
-function Spells:PlaceMagicShield(player, isDirected)
-	-------- TODO ---------
-end
-
-function Spells:PlaceStoneWall(player, modifierElement)
-	-------- TODO ---------
-end
-
-function Spells:PlaceLightningWall(player, modifierElement)
-	-------- TODO ---------
-end
-
-function Spells:PlaceLifeMines(player, modifierElement)
-	-------- TODO ---------
-end
-
-function Spells:PlaceDeathMines(player, modifierElement)
-	-------- TODO ---------
-end
-
-function Spells:PlaceIceWall(player)
-	-------- TODO ---------
-end
-
-function Spells:PlaceSteamWall(player)
-	-------- TODO ---------
-end
-
-function Spells:PlaceWaterWall(player, modifierElement)
-	-------- TODO ---------
-end
-
-function Spells:PlaceFireWall(player, modifierElement)
-	-------- TODO ---------
-end
-
-function Spells:PlaceColdWall(player, modifierElement)
-	-------- TODO ---------
-end
-
-
-------------------------- WALLS AND SHIELDS -------------------------
----------------------------------------------------------------------
-
----------------------------------------------------------------------
-------------------------- DIRECTED CASTING --------------------------
-
-
-function Spells:StartRockThrow(player, modifierElements)
-	-------- TODO ---------
-end
-
-function Spells:DirectedLightning(player, modifierElements)
-	-------- TODO ---------
-end
-
-function Spells:StartLifeBeam(player, modifierElements)
-	-------- TODO ---------
-end
-
-function Spells:StartDeathBeam(player, modifierElements)
-	-------- TODO ---------
-end
-
-function Spells:StartSteamSpray(player, modifierElement)
-	-------- TODO ---------
-end
-
-function Spells:StartIceSpikes(player, modifierElement)
-	-------- TODO ---------
-end
-
-function Spells:StartWaterSpray(player, power)
-	-------- TODO ---------
-end
-
-function Spells:StartFireSpray(player, power)
-	-------- TODO ---------
-end
-
-function Spells:StartColdSpray(player, power)
-	-------- TODO ---------
-end
-
-
-------------------------- DIRECTED CASTING --------------------------
----------------------------------------------------------------------
-
----------------------------------------------------------------------
-------------------------- SELF CASTING ------------------------------
-
-MODIFIER_SHIELD_NAMES = {}
-MODIFIER_SHIELD_NAMES[ELEMENT_WATER]     = "modifier_shield_water_lua"
-MODIFIER_SHIELD_NAMES[ELEMENT_LIFE]      = "modifier_shield_life_lua"
-MODIFIER_SHIELD_NAMES[ELEMENT_COLD]      = "modifier_shield_cold_lua"
-MODIFIER_SHIELD_NAMES[ELEMENT_LIGHTNING] = "modifier_shield_lightning_lua"
-MODIFIER_SHIELD_NAMES[ELEMENT_DEATH]     = "modifier_shield_death_lua"
-MODIFIER_SHIELD_NAMES[ELEMENT_EARTH]     = "modifier_shield_earth_lua"
-MODIFIER_SHIELD_NAMES[ELEMENT_FIRE]      = "modifier_shield_fire_lua"
-
-SHIELD_DURATION = 20.0
-
-function Spells:ApplyElementSelfShield(player, shieldElements)
-	for _, currentModifier in pairs(player.shieldModifiers) do
-		if not currentModifier:IsNull() then
-			ParticleManager:DestroyParticle(currentModifier.particleIndex, false)
-		 	currentModifier:Destroy()
-		end
-	end
-
-	player.shieldElements = shieldElements
-	Spells:StartCastingGesture(player, ACT_DOTA_SPAWN, 2)
-	Spells:MarkStartedCasting(player, true, 0.2)
-
-	local circleRadius = 1
-	local heroEntity = player:GetAssignedHero()
-
-	-------- TODO: MODIFIER ICON TEXTURES ------------
-
-	if shieldElements[1] ~= nil then
-		local kv = { index = 1, circleRadius = circleRadius, duration = SHIELD_DURATION }
-		player.shieldModifiers[1] = heroEntity:AddNewModifier(heroEntity, nil, MODIFIER_SHIELD_NAMES[shieldElements[1]], kv)
-		circleRadius = 2
-	end
-
-	if shieldElements[2] ~= nil then
-		local kv = { index = 2, circleRadius = circleRadius, duration = SHIELD_DURATION }
-		player.shieldModifiers[2] = heroEntity:AddNewModifier(heroEntity, nil, MODIFIER_SHIELD_NAMES[shieldElements[2]], kv)
-	end
-end
-
-
-function Spells:EarthStomp(player, modifierElements)
-	-------- TODO ---------
-end
-
-function Spells:OmniLightning(player, modifierElements)
-	-------- TODO ---------
-end
-
-function Spells:StartSelfHeal(player, power)
-	-------- TODO ---------
-end
-
-function Spells:LifeOmniPulse(player, modifierElements)
-	-------- TODO ---------
-end
-
-function Spells:DeathOmniPulse(player, modifierElements)
-	-------- TODO ---------
-end
-
-function Spells:SteamOmniSpray(player, modifierElement)
-	-------- TODO ---------
-end
-
-function Spells:IceOmniSpikes(player, modifierElement)
-	-------- TODO ---------
-end
-
-function Spells:WaterOmniSpray(player, power)
-	-------- TODO ---------
-end
-
-function Spells:FireOmniSpray(player, power)
-	-------- TODO ---------
-end
-
-function Spells:ColdOmniSpray(player, power)
-	-------- TODO ---------
-end
-
-
-------------------------- SELF CASTING ------------------------------
----------------------------------------------------------------------
