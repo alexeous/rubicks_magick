@@ -97,7 +97,7 @@ end
 
 function Spells:OnLeftDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
-	if player.thinksToCastingEnd ~= nil then return end
+	if player.spellCast ~= nil then return end
 
 	local pickedElements = Spells:ClonePickedElements(player)
 
@@ -253,7 +253,7 @@ function Spells:OnMiddleDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	local pickedElements = Spells:ClonePickedElements(player)
 
-	if player.thinksToCastingEnd or next(pickedElements) == nil then 	-- if player is casting a spell now or no picked elements
+	if player.spellCast ~= nil or next(pickedElements) == nil then 	-- if player is casting a spell now or no picked elements
 		return
 	end
 
@@ -372,8 +372,8 @@ function Spells:OnSpellsThink()
 		if player ~= nil and player.spellCast ~= nil then
 			if time > player.spellCast.endTime then
 				Spells:StopCasting(player)
-			elseif player.spellThinkFunction ~= nil then
-				pcall(player.spellThinkFunction, player)
+			elseif player.spellCast.thinkFunction ~= nil then
+				pcall(player.spellCast.thinkFunction, player)
 			end
 		end		
 	end
