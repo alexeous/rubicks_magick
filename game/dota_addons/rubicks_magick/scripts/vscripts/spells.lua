@@ -25,6 +25,8 @@ end
 
 
 function Spells:Precache(context)
+	LinkLuaModifier("modifier_slow_move", "modifiers/modifier_slow_move.lua", LUA_MODIFIER_MOTION_NONE)
+
 	SelfShield:Precache(context)
 	MagicShield:Precache(context)
 	StoneWall:Precache(context)
@@ -355,13 +357,17 @@ end
 
 function Spells:OnLeftUp(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
-
+	if player ~= nil and player.spellCast ~= nil then
+		if player.spellCast.castType ~= CAST_TYPE_INSTANT then
+			Spells:StopCasting(player)
+		end
+	end
 end
 
 --------------------- LEFT MOUSE UP ---------------------------------
 ---------------------------------------------------------------------
 
-
+----------     ----------     ----------     ----------     ----------     ----------     ----------     ----------     ----------     ----------
 
 
 SPELLS_THINK_PERIOD = 0.03
@@ -380,8 +386,6 @@ function Spells:OnSpellsThink()
 	return SPELLS_THINK_PERIOD
 end
 
-----------     ----------     ----------     ----------     ----------     ----------     ----------     ----------     ----------     ----------
-
 CAST_TYPE_INSTANT = 1
 CAST_TYPE_CONTINUOUS = 2
 CAST_TYPE_CHARGING = 3
@@ -395,29 +399,45 @@ function Spells:StartCasting(player, infoTable)
 	infoTable.endTime = infoTable.startTime + infoTable.duration
 	player.spellCast = infoTable
 
-	if player.spellCast.castingGesture ~= nil then
-		local heroEntity = player:GetAssignedHero()
-		if heroEntity == nil then return end
-
-		if player.moveToPos ~= nil then
-			heroEntity:FadeGesture(ACT_DOTA_RUN)
+	local heroEntity = player:GetAssignedHero()
+	if heroEntity ~= nil then
+		if player.spellCast.castingGesture ~= nil then
+			if player.moveToPos ~= nil then
+				heroEntity:FadeGesture(ACT_DOTA_RUN)
+			end
+			if player.spellCast.castingGestureRate ~= nil then
+				heroEntity:StartGestureWithPlaybackRate(player.spellCast.castingGesture, player.spellCast.castingGestureRate)
+			else
+				heroEntity:StartGesture(player.spellCast.castingGesture)
+			end
 		end
-		if player.spellCast.castingGestureRate ~= nil then
-			heroEntity:StartGestureWithPlaybackRate(player.spellCast.castingGesture, player.spellCast.castingGestureRate)
-		else
-			heroEntity:StartGesture(player.spellCast.castingGesture)
+
+		if player.spellCast.slowMovePercentage ~= nil then
+			local kv = { duration = player.spellCast.duration, slowMovePercentage = player.spellCast.slowMovePercentage }
+			heroEntity:AddNewModifier(heroEntity, nil, "modifier_slow_move", kv)
 		end
 	end
 end
 
 function Spells:StopCasting(player)
 	local heroEntity = player:GetAssignedHero()
-	if heroEntity ~= nil and player.spellCast.castingGesture ~= nil then
-		heroEntity:FadeGesture(player.spellCast.castingGesture)
-		if player.moveToPos ~= nil then
-			heroEntity:StartGesture(ACT_DOTA_RUN)
+	if heroEntity ~= nil then
+		if player.spellCast.castingGesture ~= nil then
+			heroEntity:FadeGesture(player.spellCast.castingGesture)
+			if player.moveToPos ~= nil then
+				heroEntity:StartGesture(ACT_DOTA_RUN)
+			end
+		end
+
+		if heroEntity:HasModifier("modifier_slow_move") then
+			heroEntity:RemoveModifierByName("modifier_slow_move")
 		end
 	end
+
+	if player.spellCast.endFunction ~= nil then
+		pcall(player.spellCast.endFunction, player)
+	end
+
 	player.spellCast = nil
 end
 

@@ -38,8 +38,10 @@ end
 function RubicksMagickGameMode:OnConnectFull(keys)
 	local player = PlayerInstanceFromIndex(keys.index + 1)
     local playerID = player:GetPlayerID()
+    
     local heroEntity = CreateHeroForPlayer("npc_dota_hero_rubick", player)
     heroEntity:SetHullRadius(0)
+
     MoveController:PlayerConnected(player)
     Elements:PlayerConnected(player)
     Spells:PlayerConnected(player)

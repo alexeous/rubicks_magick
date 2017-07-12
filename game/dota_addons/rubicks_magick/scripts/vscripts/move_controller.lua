@@ -32,6 +32,7 @@ function MoveController:OnMoveHeroesThink()
 					else
 						MoveController:MoveTowardsMoveToPos(player, heroEntity, moveStep)
 					end
+					MoveController:HeroLookAt(heroEntity, player.cursorPos)
 				end
 			end
 		end
@@ -116,7 +117,8 @@ function MoveController:OnMouseMove(keys)
 			MoveController:HeroLookAt(heroEntity, player.cursorPos)
 		end
 		if player.rightDown then
-			if player.moveToPos == nil and not player.dontMoveWhileCasting then
+			local dontChangeGesture = player.spellCast ~= nil and (player.spellCast.dontMoveWhileCasting or player.spellCast.castingGesture == nil)
+			if player.moveToPos == nil and not dontChangeGesture then
 				heroEntity:StartGesture(ACT_DOTA_RUN)
 			end
 			player.moveToPos = player.cursorPos
@@ -133,7 +135,8 @@ function MoveController:OnRightDown(keys)
 	if heroEntity ~= nil then
 		player.rightDown = true
 		player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
-		if player.moveToPos == nil and not player.dontMoveWhileCasting then
+		local dontChangeGesture = player.spellCast ~= nil and (player.spellCast.dontMoveWhileCasting or player.spellCast.castingGesture == nil)
+		if player.moveToPos == nil and not dontChangeGesture then
 			heroEntity:StartGesture(ACT_DOTA_RUN)
 		end
 		player.moveToPos = player.cursorPos

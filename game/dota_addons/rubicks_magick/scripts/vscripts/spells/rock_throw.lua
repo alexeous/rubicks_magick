@@ -12,5 +12,16 @@ end
 
 
 function RockThrow:StartRockThrow(player, modifierElements)
-	
+	local spellCastTable = {
+		castType = CAST_TYPE_CHARGING,
+		duration = 3.0,
+		castingGesture = ACT_DOTA_CHANNEL_ABILITY_5,
+		endFunction = Dynamic_Wrap(RockThrow, "ReleaseRock"),
+		slowMovePercentage = 30
+	}
+	Spells:StartCasting(player, spellCastTable)
+end
+
+function RockThrow:ReleaseRock(player)
+
 end
