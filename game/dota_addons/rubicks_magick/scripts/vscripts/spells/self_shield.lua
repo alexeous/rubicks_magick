@@ -41,8 +41,14 @@ function SelfShield:ApplyElementSelfShield(player, shieldElements)
 	end
 
 	player.shieldElements = shieldElements
-	Spells:StartCastingGesture(player, ACT_DOTA_SPAWN, 2)
-	Spells:MarkStartedCasting(player, true, 0.2)
+	local spellCastTable = {
+		castType = CAST_TYPE_INSTANT,
+		duration = 0.2,
+		dontMoveWhileCasting = true,
+		castingGesture = ACT_DOTA_SPAWN,
+		castingGestureRate = 2
+	}
+	Spells:StartCasting(player, spellCastTable)
 
 	local circleRadius = 1
 	local heroEntity = player:GetAssignedHero()

@@ -371,13 +371,23 @@ end
 
 ----------     ----------     ----------     ----------     ----------     ----------     ----------     ----------     ----------     ----------
 
+CAST_TYPE_INSTANT = 1
+CAST_TYPE_CONTINUOUS = 2
+CAST_TYPE_CHARGING = 3
+
 function Spells:TimeToThinks(time)
 	return time / SPELLS_THINK_PERIOD
 end
 
-function Spells:MarkStartedCasting(player, dontMove, duration)
-	player.dontMoveWhileCasting = dontMove
-	player.thinksToCastingEnd = Spells:TimeToThinks(duration)
+function Spells:StartCasting(player, infoTable)
+	player.dontMoveWhileCasting = infoTable.dontMoveWhileCasting
+	player.thinksToCastingEnd = Spells:TimeToThinks(infoTable.duration)
+	if infoTable.thinkFunction ~= nil then
+		player.spellThinkFunction = infoTable.thinkFunction
+	end
+	if infoTable.castingGesture ~= nil then
+		Spells:StartCastingGesture(player, infoTable.castingGesture, infoTable.castingGestureRate)
+	end
 end
 
 function Spells:StopCasting(player)
@@ -394,7 +404,7 @@ function Spells:StopCasting(player)
 	end
 end
 
-function Spells:StartCastingGesture(player, gesture, playbackRate)
+function Spells:StartCastingGesture(player, gesture, castingGestureRate)
 	player.castingGesture = gesture
 	local heroEntity = player:GetAssignedHero()
 	if heroEntity == nil then return end
@@ -402,8 +412,8 @@ function Spells:StartCastingGesture(player, gesture, playbackRate)
 	if player.moveToPos ~= nil then
 		heroEntity:FadeGesture(ACT_DOTA_RUN)
 	end
-	if playbackRate ~= nil then
-		heroEntity:StartGestureWithPlaybackRate(player.castingGesture, playbackRate)
+	if castingGestureRate ~= nil then
+		heroEntity:StartGestureWithPlaybackRate(player.castingGesture, castingGestureRate)
 	else
 		heroEntity:StartGesture(player.castingGesture)
 	end
@@ -412,15 +422,21 @@ end
 ------------------------- MELEE ATTACK ------------------------------
 
 function Spells:MeleeAttack(player)
-	Spells:StartCastingGesture(player, ACT_DOTA_ATTACK, 1.4)
-	player.spellThinkFunction = function(player)
+	local spellCastTable = {
+		castType = CAST_TYPE_INSTANT,
+		duration = 0.6,
+		dontMoveWhileCasting = true,
+		castingGesture = ACT_DOTA_ATTACK,
+		castingGestureRate = 1.4
+	}
+	spellCastTable.thinkFunction = function(player)
 		if player.thinksToCastingEnd == Spells:TimeToThinks(0.3) then 	-- do damage only after a small delay
 			local heroEntity = player:GetAssignedHero()
 			local center = heroEntity:GetAbsOrigin() + heroEntity:GetForwardVector() * 110
 			Spells:ApplyElementDamageAoE(center, 110, heroEntity, ELEMENT_EARTH, 150, true)
 		end
 	end
-	Spells:MarkStartedCasting(player, true, 0.6)
+	Spells:StartCasting(player, spellCastTable)
 end
 
 
