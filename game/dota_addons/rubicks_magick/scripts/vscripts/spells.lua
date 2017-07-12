@@ -48,6 +48,7 @@ function Spells:Init()
 
 	CustomGameEventManager:RegisterListener("me_ld", Dynamic_Wrap(Spells, "OnLeftDown"))
 	CustomGameEventManager:RegisterListener("me_md", Dynamic_Wrap(Spells, "OnMiddleDown"))
+	CustomGameEventManager:RegisterListener("me_lu", Dynamic_Wrap(Spells, "OnLeftUp"))
 end
 
 function Spells:PlayerConnected(player)
@@ -349,20 +350,30 @@ end
 ---------------------------------------------------------------------
 ---------------------------------------------------------------------
 
+---------------------------------------------------------------------
+--------------------- LEFT MOUSE UP ---------------------------------
+
+function Spells:OnLeftUp(keys)
+	local player = PlayerResource:GetPlayer(keys.playerID)
+
+end
+
+--------------------- LEFT MOUSE UP ---------------------------------
+---------------------------------------------------------------------
+
+
+
+
 SPELLS_THINK_PERIOD = 0.03
 function Spells:OnSpellsThink()
+	local time = GameRules:GetGameTime()
 	for playerID = 0, DOTA_MAX_PLAYERS - 1 do
 		local player = PlayerResource:GetPlayer(playerID)
-		if player ~= nil and player.thinksToCastingEnd ~= nil then
-			if player.thinksToCastingEnd <= 0 then
+		if player ~= nil and player.spellCast ~= nil then
+			if time > player.spellCast.endTime then
 				Spells:StopCasting(player)
-			else
-
-				if player.spellThinkFunction ~= nil then
-					pcall(player.spellThinkFunction, player)
-				end
-				player.thinksToCastingEnd = player.thinksToCastingEnd - 1
-
+			elseif player.spellThinkFunction ~= nil then
+				pcall(player.spellThinkFunction, player)
 			end
 		end		
 	end
@@ -375,48 +386,39 @@ CAST_TYPE_INSTANT = 1
 CAST_TYPE_CONTINUOUS = 2
 CAST_TYPE_CHARGING = 3
 
-function Spells:TimeToThinks(time)
-	return time / SPELLS_THINK_PERIOD
+function Spells:TimeElapsedSinceCast(player)
+	return GameRules:GetGameTime() - player.spellCast.startTime
 end
 
 function Spells:StartCasting(player, infoTable)
-	player.dontMoveWhileCasting = infoTable.dontMoveWhileCasting
-	player.thinksToCastingEnd = Spells:TimeToThinks(infoTable.duration)
-	if infoTable.thinkFunction ~= nil then
-		player.spellThinkFunction = infoTable.thinkFunction
-	end
-	if infoTable.castingGesture ~= nil then
-		Spells:StartCastingGesture(player, infoTable.castingGesture, infoTable.castingGestureRate)
+	infoTable.startTime = GameRules:GetGameTime()
+	infoTable.endTime = infoTable.startTime + infoTable.duration
+	player.spellCast = infoTable
+
+	if player.spellCast.castingGesture ~= nil then
+		local heroEntity = player:GetAssignedHero()
+		if heroEntity == nil then return end
+
+		if player.moveToPos ~= nil then
+			heroEntity:FadeGesture(ACT_DOTA_RUN)
+		end
+		if player.spellCast.castingGestureRate ~= nil then
+			heroEntity:StartGestureWithPlaybackRate(player.spellCast.castingGesture, player.spellCast.castingGestureRate)
+		else
+			heroEntity:StartGesture(player.spellCast.castingGesture)
+		end
 	end
 end
 
 function Spells:StopCasting(player)
-	player.dontMoveWhileCasting = nil
-	player.thinksToCastingEnd = nil
-	player.spellThinkFunction = nil
 	local heroEntity = player:GetAssignedHero()
-	if heroEntity ~= nil and player.castingGesture ~= nil then
-		heroEntity:FadeGesture(player.castingGesture)
+	if heroEntity ~= nil and player.spellCast.castingGesture ~= nil then
+		heroEntity:FadeGesture(player.spellCast.castingGesture)
 		if player.moveToPos ~= nil then
 			heroEntity:StartGesture(ACT_DOTA_RUN)
 		end
-		player.castingGesture = nil
 	end
-end
-
-function Spells:StartCastingGesture(player, gesture, castingGestureRate)
-	player.castingGesture = gesture
-	local heroEntity = player:GetAssignedHero()
-	if heroEntity == nil then return end
-
-	if player.moveToPos ~= nil then
-		heroEntity:FadeGesture(ACT_DOTA_RUN)
-	end
-	if castingGestureRate ~= nil then
-		heroEntity:StartGestureWithPlaybackRate(player.castingGesture, castingGestureRate)
-	else
-		heroEntity:StartGesture(player.castingGesture)
-	end
+	player.spellCast = nil
 end
 
 ------------------------- MELEE ATTACK ------------------------------
@@ -430,12 +432,17 @@ function Spells:MeleeAttack(player)
 		castingGestureRate = 1.4
 	}
 	spellCastTable.thinkFunction = function(player)
-		if player.thinksToCastingEnd == Spells:TimeToThinks(0.3) then 	-- do damage only after a small delay
+		local timeHasCome = Spells:TimeElapsedSinceCast(player) > 0.3 
+		if timeHasCome and not player.spellCast.hasAttacked then 		-- do damage only after a small delay
+			player.spellCast.hasAttacked = true
 			local heroEntity = player:GetAssignedHero()
 			local center = heroEntity:GetAbsOrigin() + heroEntity:GetForwardVector() * 110
 			Spells:ApplyElementDamageAoE(center, 110, heroEntity, ELEMENT_EARTH, 150, true)
 		end
 	end
+
+	spellCastTable.hasAttacked = false
+
 	Spells:StartCasting(player, spellCastTable)
 end
 

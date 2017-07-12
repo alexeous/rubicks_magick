@@ -21,14 +21,17 @@ THINK_PERIOD = 0.03
 function MoveController:OnMoveHeroesThink()
 	for playerID = 0, DOTA_MAX_PLAYERS - 1 do
 		local player = PlayerResource:GetPlayer(playerID)
-		if player ~= nil and not player.dontMoveWhileCasting and player.moveToPos ~= nil then
-			local heroEntity = player:GetAssignedHero()
-			if heroEntity ~= nil then
-				local moveStep = heroEntity:GetIdealSpeed() * THINK_PERIOD
-				if player.moveToClearPos ~= nil then
-					MoveController:MoveTowardsClearPos(player, heroEntity, moveStep * 2)
-				else
-					MoveController:MoveTowardsMoveToPos(player, heroEntity, moveStep)
+		if player ~= nil then
+			local dontMoveWhileCasting = player.spellCast ~= nil and player.spellCast.dontMoveWhileCasting
+			if not dontMoveWhileCasting and player.moveToPos ~= nil then
+				local heroEntity = player:GetAssignedHero()
+				if heroEntity ~= nil then
+					local moveStep = heroEntity:GetIdealSpeed() * THINK_PERIOD
+					if player.moveToClearPos ~= nil then
+						MoveController:MoveTowardsClearPos(player, heroEntity, moveStep * 2)
+					else
+						MoveController:MoveTowardsMoveToPos(player, heroEntity, moveStep)
+					end
 				end
 			end
 		end

@@ -12,5 +12,5 @@ end
 
 
 function RockThrow:StartRockThrow(player, modifierElements)
-	-------- TODO ---------
+	
 end
