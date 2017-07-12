@@ -51,6 +51,7 @@ function Spells:Init()
 	CustomGameEventManager:RegisterListener("me_ld", Dynamic_Wrap(Spells, "OnLeftDown"))
 	CustomGameEventManager:RegisterListener("me_md", Dynamic_Wrap(Spells, "OnMiddleDown"))
 	CustomGameEventManager:RegisterListener("me_lu", Dynamic_Wrap(Spells, "OnLeftUp"))
+	CustomGameEventManager:RegisterListener("me_mu", Dynamic_Wrap(Spells, "OnMiddleUp"))
 end
 
 function Spells:PlayerConnected(player)
@@ -99,7 +100,10 @@ end
 
 function Spells:OnLeftDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
-	if player.spellCast ~= nil then return end
+	if player.spellCast ~= nil then 
+		player.wantsToStartNewSpell_left = true
+		return
+	end
 
 	local pickedElements = Spells:ClonePickedElements(player)
 
@@ -253,9 +257,14 @@ end
 
 function Spells:OnMiddleDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
+	if player.spellCast ~= nil then 	-- if player is casting a spell now
+		player.wantsToStartNewSpell_middle = true
+		return
+	end
+
 	local pickedElements = Spells:ClonePickedElements(player)
 
-	if player.spellCast ~= nil or next(pickedElements) == nil then 	-- if player is casting a spell now or no picked elements
+	if next(pickedElements) == nil then
 		return
 	end
 
@@ -357,14 +366,31 @@ end
 
 function Spells:OnLeftUp(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
-	if player ~= nil and player.spellCast ~= nil then
-		if player.spellCast.castType ~= CAST_TYPE_INSTANT then
+	if player ~= nil then
+		player.wantsToStartNewSpell_left = false
+		if player.spellCast ~= nil and player.spellCast.castType ~= CAST_TYPE_INSTANT and not player.spellCast.isSelfCast then
 			Spells:StopCasting(player)
 		end
 	end
 end
 
 --------------------- LEFT MOUSE UP ---------------------------------
+---------------------------------------------------------------------
+
+---------------------------------------------------------------------
+--------------------- MIDDLE MOUSE UP -------------------------------
+
+function Spells:OnMiddleUp(keys)
+	local player = PlayerResource:GetPlayer(keys.playerID)
+	if player ~= nil then
+		player.wantsToStartNewSpell_middle = false
+		if player.spellCast ~= nil and player.spellCast.castType ~= CAST_TYPE_INSTANT and playerID.spellCast.isSelfCast then
+			Spells:StopCasting(player)
+		end
+	end
+end
+
+--------------------- MIDDLE MOUSE UP -------------------------------
 ---------------------------------------------------------------------
 
 ----------     ----------     ----------     ----------     ----------     ----------     ----------     ----------     ----------     ----------
@@ -439,6 +465,15 @@ function Spells:StopCasting(player)
 	end
 
 	player.spellCast = nil
+
+	if player.wantsToStartNewSpell_middle then
+		Spells:OnMiddleDown({ playerID = player:GetPlayerID() })
+		player.wantsToStartNewSpell_middle = false
+	end
+	if player.wantsToStartNewSpell_left then
+		Spells:OnLeftDown({ playerID = player:GetPlayerID() })
+		player.wantsToStartNewSpell_left = false
+	end
 end
 
 ------------------------- MELEE ATTACK ------------------------------
