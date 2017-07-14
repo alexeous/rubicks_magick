@@ -8,7 +8,9 @@ function modifier_slow_move:IsHidden()
 end
 
 function modifier_slow_move:OnCreated(kv)
-	self.percentage = -kv.slowMovePercentage
+	if kv.slowMovePercentage ~= nil then
+		self.percentage = -kv.slowMovePercentage
+	end
 end
 
 function modifier_slow_move:DeclareFunctions()

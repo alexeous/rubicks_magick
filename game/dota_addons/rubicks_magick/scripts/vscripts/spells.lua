@@ -1,4 +1,6 @@
 
+require("table_extension")
+
 require("elements")
 require("move_controller")
 
@@ -74,25 +76,6 @@ function Spells:PlayerConnected(player)
 end
 
 
-
-function Spells:IndexOfPicked(pickedElements, element)
-	for index, pickedElement in pairs(pickedElements) do
-		if pickedElement == element then
-			return index
-		end
-	end
-	return nil
-end
-
-function Spells:ClonePickedElements(player)
-	local result = {}
-	for index, element in pairs(player.pickedElements) do 
-		result[index] = element
-	end
-	return result
-end
-
-
 ---------------------------------------------------------------------
 ---------------------------------------------------------------------
 --------------------- LEFT MOUSE CLICK ------------------------------
@@ -105,7 +88,7 @@ function Spells:OnLeftDown(keys)
 		return
 	end
 
-	local pickedElements = Spells:ClonePickedElements(player)
+	local pickedElements = table.clone(player.pickedElements)
 
 	if next(pickedElements) == nil then 	-- if player is casting a spell now or no picked elements
 		Spells:MeleeAttack(player)
@@ -114,7 +97,7 @@ function Spells:OnLeftDown(keys)
 
 	Elements:RemoveAllElements(player)
 
-	local shieldInd = Spells:IndexOfPicked(pickedElements, ELEMENT_SHIELD)
+	local shieldInd = table.indexOf(pickedElements, ELEMENT_SHIELD)
 	if shieldInd ~= nil then
 		table.remove(pickedElements, shieldInd)
 		if next(pickedElements) == nil then 	-- if only shield orb is picked
@@ -125,24 +108,24 @@ function Spells:OnLeftDown(keys)
 		return
 	end
 
-	local earthInd = Spells:IndexOfPicked(pickedElements, ELEMENT_EARTH)
+	local earthInd = table.indexOf(pickedElements, ELEMENT_EARTH)
 	if earthInd ~= nil then
 		table.remove(pickedElements, earthInd)
 		RockThrow:StartRockThrow(player, pickedElements) 	-- earth [+ <element>] [+ <element>] = throw rock
 		return
 	end
 
-	local lightningInd = Spells:IndexOfPicked(pickedElements, ELEMENT_LIGHTNING)
+	local lightningInd = table.indexOf(pickedElements, ELEMENT_LIGHTNING)
 	if lightningInd ~= nil then
 		table.remove(pickedElements, lightningInd)
 		Lightning:DirectedLightning(player, pickedElements) 	-- lightning [+ <element>] [+ <element>] = lightning
 		return
 	end
 
-	local lifeInd = Spells:IndexOfPicked(pickedElements, ELEMENT_LIFE)
+	local lifeInd = table.indexOf(pickedElements, ELEMENT_LIFE)
 	if lifeInd ~= nil then
-		local waterInd = Spells:IndexOfPicked(pickedElements, ELEMENT_WATER)
-		local coldInd = Spells:IndexOfPicked(pickedElements, ELEMENT_COLD)
+		local waterInd = table.indexOf(pickedElements, ELEMENT_WATER)
+		local coldInd = table.indexOf(pickedElements, ELEMENT_COLD)
 		if not (waterInd and coldInd) then 		-- if not ice spikes
 			table.remove(pickedElements, lifeInd)
 			Beams:StartLifeBeam(player, pickedElements) 	-- otherwise life [+ <element>] [+ <element>] = life beam
@@ -152,10 +135,10 @@ function Spells:OnLeftDown(keys)
 		return
 	end
 
-	local deathInd = Spells:IndexOfPicked(pickedElements, ELEMENT_DEATH)
+	local deathInd = table.indexOf(pickedElements, ELEMENT_DEATH)
 	if deathInd ~= nil then
-		local waterInd = Spells:IndexOfPicked(pickedElements, ELEMENT_WATER)
-		local coldInd = Spells:IndexOfPicked(pickedElements, ELEMENT_COLD)
+		local waterInd = table.indexOf(pickedElements, ELEMENT_WATER)
+		local coldInd = table.indexOf(pickedElements, ELEMENT_COLD)
 		if not (waterInd and coldInd) then 		-- if not ice spikes
 			table.remove(pickedElements, deathInd)
 			Beams:StartDeathBeam(player, pickedElements) 	-- otherwise death [+ <element>] [+ <element>] = death beam
@@ -165,18 +148,18 @@ function Spells:OnLeftDown(keys)
 		return
 	end
 
-	local waterInd = Spells:IndexOfPicked(pickedElements, ELEMENT_WATER)
+	local waterInd = table.indexOf(pickedElements, ELEMENT_WATER)
 	if waterInd ~= nil then
 		table.remove(pickedElements, waterInd)
 		
-		local fireInd = Spells:IndexOfPicked(pickedElements, ELEMENT_FIRE)
+		local fireInd = table.indexOf(pickedElements, ELEMENT_FIRE)
 		if fireInd ~= nil then
 			table.remove(pickedElements, fireInd)
 			ElementSprays:StartSteamSpray(player, pickedElements[1]) 	-- water + fire [+ water/fire] = steam spray
 			return
 		end
 
-		local coldInd = Spells:IndexOfPicked(pickedElements, ELEMENT_COLD)
+		local coldInd = table.indexOf(pickedElements, ELEMENT_COLD)
 		if coldInd ~= nil then
 			table.remove(pickedElements, coldInd)
 			IceSpikes:StartIceSpikes(player, pickedElements[1])	-- water + cold [+ cold/water] = ice spikes
@@ -186,7 +169,7 @@ function Spells:OnLeftDown(keys)
 		ElementSprays:StartWaterSpray(player, #pickedElements + 1) 	-- otherwise it is water spray (second arg is power of spray)
 	end
 
-	local fireInd = Spells:IndexOfPicked(pickedElements, ELEMENT_FIRE)
+	local fireInd = table.indexOf(pickedElements, ELEMENT_FIRE)
 	if fireInd ~= nil then
 		ElementSprays:StartFireSpray(player, #pickedElements)
 		return
@@ -196,35 +179,35 @@ function Spells:OnLeftDown(keys)
 end
 
 function Spells:DirectedDefensiveSpell(player, pickedElements)	-- picked shield and clicked left mouse
-	local earthInd = Spells:IndexOfPicked(pickedElements, ELEMENT_EARTH)
+	local earthInd = table.indexOf(pickedElements, ELEMENT_EARTH)
 	if earthInd ~= nil then 	-- shield + earth [+ <element>] = stone wall [perhaps modified by the last picked element]
 		table.remove(pickedElements, earthInd)
 		StoneWall:PlaceStoneWall(player, pickedElements[1])
 		return
 	end
 
-	local lightningInd = Spells:IndexOfPicked(pickedElements, ELEMENT_LIGHTNING)
+	local lightningInd = table.indexOf(pickedElements, ELEMENT_LIGHTNING)
 	if lightningInd ~= nil then 	-- shield + lightning = lightning wall
 		table.remove(pickedElements, lightningInd)
 		LightningWall:PlaceLightningWall(player, pickedElements[1])
 		return
 	end
 
-	local lifeInd = Spells:IndexOfPicked(pickedElements, ELEMENT_LIFE)
+	local lifeInd = table.indexOf(pickedElements, ELEMENT_LIFE)
 	if lifeInd ~= nil then -- shield + life = life mines
 		table.remove(pickedElements, lifeInd)
 		Mines:PlaceLifeMines(player, pickedElements[1])
 		return
 	end
 
-	local deathInd = Spells:IndexOfPicked(pickedElements, ELEMENT_DEATH)
+	local deathInd = table.indexOf(pickedElements, ELEMENT_DEATH)
 	if deathInd ~= nil then -- shield + death = death mines
 		table.remove(pickedElements, deathInd)
 		Mines:PlaceDeathMines(player, pickedElements[1])
 		return
 	end
 
-	local waterInd = Spells:IndexOfPicked(pickedElements, ELEMENT_WATER)
+	local waterInd = table.indexOf(pickedElements, ELEMENT_WATER)
 	if waterInd ~= nil then
 		table.remove(pickedElements, waterInd)
 		if pickedElements[1] == ELEMENT_COLD then 	-- shield + water + cold = ice wall
@@ -237,7 +220,7 @@ function Spells:DirectedDefensiveSpell(player, pickedElements)	-- picked shield 
 		return
 	end
 
-	local fireInd = Spells:IndexOfPicked(pickedElements, ELEMENT_FIRE)
+	local fireInd = table.indexOf(pickedElements, ELEMENT_FIRE)
 	if fireInd ~= nil then 		-- shield + fire = fire wall
 		ElementWalls:PlaceFireWall(player, pickedElements[2])
 		return
@@ -262,7 +245,7 @@ function Spells:OnMiddleDown(keys)
 		return
 	end
 
-	local pickedElements = Spells:ClonePickedElements(player)
+	local pickedElements = table.clone(player.pickedElements)
 
 	if next(pickedElements) == nil then
 		return
@@ -270,7 +253,7 @@ function Spells:OnMiddleDown(keys)
 
 	Elements:RemoveAllElements(player)
 
-	local shieldInd = Spells:IndexOfPicked(pickedElements, ELEMENT_SHIELD)
+	local shieldInd = table.indexOf(pickedElements, ELEMENT_SHIELD)
 	if shieldInd ~= nil then
 		table.remove(pickedElements, shieldInd)
 		if next(pickedElements) == nil then 	-- if only shield orb is picked
@@ -281,25 +264,25 @@ function Spells:OnMiddleDown(keys)
 		return
 	end
 
-	local earthInd = Spells:IndexOfPicked(pickedElements, ELEMENT_EARTH)
+	local earthInd = table.indexOf(pickedElements, ELEMENT_EARTH)
 	if earthInd ~= nil then
 		table.remove(pickedElements, earthInd)
 		EarthStomp:EarthStomp(player, pickedElements) 	-- earth + elements = stomp
 		return
 	end
 
-	local lightningInd = Spells:IndexOfPicked(pickedElements, ELEMENT_LIGHTNING)
+	local lightningInd = table.indexOf(pickedElements, ELEMENT_LIGHTNING)
 	if lightningInd ~= nil then
 		table.remove(pickedElements, lightningInd)
 		Lightning:OmniLightning(player, pickedElements)
 		return
 	end
 
-	local lifeInd = Spells:IndexOfPicked(pickedElements, ELEMENT_LIFE)
+	local lifeInd = table.indexOf(pickedElements, ELEMENT_LIFE)
 	if lifeInd ~= nil then
 		table.remove(pickedElements, lifeInd)
-		local waterInd = Spells:IndexOfPicked(pickedElements, ELEMENT_WATER)
-		local coldInd = Spells:IndexOfPicked(pickedElements, ELEMENT_COLD)
+		local waterInd = table.indexOf(pickedElements, ELEMENT_WATER)
+		local coldInd = table.indexOf(pickedElements, ELEMENT_COLD)
 		if not (waterInd and coldInd) then 		-- if not ice spikes
 			local isLife1 = (pickedElements[1] == ELEMENT_LIFE) or (pickedElements[1] == nil)
 			local isLife2 = (pickedElements[2] == ELEMENT_LIFE) or (pickedElements[2] == nil)
@@ -314,11 +297,11 @@ function Spells:OnMiddleDown(keys)
 		return
 	end
 
-	local deathInd = Spells:IndexOfPicked(pickedElements, ELEMENT_DEATH)
+	local deathInd = table.indexOf(pickedElements, ELEMENT_DEATH)
 	if deathInd ~= nil then
 		table.remove(pickedElements, deathInd)
-		local waterInd = Spells:IndexOfPicked(pickedElements, ELEMENT_WATER)
-		local coldInd = Spells:IndexOfPicked(pickedElements, ELEMENT_COLD)
+		local waterInd = table.indexOf(pickedElements, ELEMENT_WATER)
+		local coldInd = table.indexOf(pickedElements, ELEMENT_COLD)
 		if not (waterInd and coldInd) then 		-- if not ice spikes
 			OmniPulses:OmniDeathPulse(player, pickedElements)
 		else
@@ -327,18 +310,18 @@ function Spells:OnMiddleDown(keys)
 		return
 	end
 
-	local waterInd = Spells:IndexOfPicked(pickedElements, ELEMENT_WATER)
+	local waterInd = table.indexOf(pickedElements, ELEMENT_WATER)
 	if waterInd ~= nil then
 		table.remove(pickedElements, waterInd)
 
-		local fireInd = Spells:IndexOfPicked(pickedElements, ELEMENT_FIRE)
+		local fireInd = table.indexOf(pickedElements, ELEMENT_FIRE)
 		if fireInd ~= nil then
 			table.remove(pickedElements, fireInd)
 			OmniElementSprays:OmniSteamSpray(player, pickedElements[1]) 	-- water + fire [+ water/fire] = steam omni spray
 			return
 		end
 
-		local coldInd = Spells:IndexOfPicked(pickedElements, ELEMENT_COLD)
+		local coldInd = table.indexOf(pickedElements, ELEMENT_COLD)
 		if coldInd ~= nil then
 			table.remove(pickedElements, coldInd)
 			OmniIceSpikes:OmniIceSpikes(player, pickedElements[1])	-- water + cold [+ cold/water] = ice omni spikes
@@ -348,7 +331,7 @@ function Spells:OnMiddleDown(keys)
 		OmniElementSprays:OmniWaterpray(player, #pickedElements + 1)
 	end
 
-	local fireInd = Spells:IndexOfPicked(pickedElements, ELEMENT_FIRE)
+	local fireInd = table.indexOf(pickedElements, ELEMENT_FIRE)
 	if fireInd ~= nil then
 		OmniElementSprays:OmniFireSpray(player, #pickedElements)
 		return
