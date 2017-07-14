@@ -23,20 +23,23 @@
 			m_Gravity = [ 0.0, 0.0, -100.0 ]
 		},
 		{
-			_class = "C_OP_MaxVelocity"
-			m_flMaxVelocity = 30.0
-			m_bDisableOperator = true
-		},
-		{
 			_class = "C_OP_Decay"
-		},
-		{
-			_class = "C_OP_FadeAndKill"
 		},
 		{
 			_class = "C_OP_Spin"
 			m_nSpinRateDegrees = 10
 			m_nSpinRateMinDegrees = 10
+		},
+		{
+			_class = "C_OP_RampScalarLinearSimple"
+			m_Rate = -1.0
+		},
+		{
+			_class = "C_OP_FadeInSimple"
+		},
+		{
+			_class = "C_OP_FadeOutSimple"
+			m_flFadeOutTime = 0.75
 		},
 	]
 	m_Renderers = 
@@ -44,6 +47,7 @@
 		{
 			_class = "C_OP_RenderSprites"
 			m_hTexture = resource:"materials/particle/snowflake/snowflakes_01.vtex"
+			m_flOverbrightFactor = 2.0
 		},
 	]
 	m_Initializers = 
@@ -57,21 +61,20 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 3.0
 			m_flRadiusMax = 6.0
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 90
-			m_nAlphaMax = 170
+			m_nAlphaMin = 127
+			m_nAlphaMax = 167
 		},
 		{
 			_class = "C_INIT_RandomRotation"
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.25
-			m_fLifetimeMax = 0.5
+			m_fLifetimeMin = 0.5
+			m_fLifetimeMax = 1.0
 		},
 		{
 			_class = "C_INIT_RemapScalar"
@@ -88,7 +91,7 @@
 	[
 		{
 			_class = "C_OP_ContinuousEmitter"
-			m_flEmitRate = 500.0
+			m_flEmitRate = 250.0
 		},
 	]
 	m_ForceGenerators = 

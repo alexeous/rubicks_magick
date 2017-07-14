@@ -55,6 +55,9 @@
 			m_nCP = 3
 			m_bLocalSpace = true
 		},
+		{
+			_class = "C_OP_FadeInSimple"
+		},
 	]
 	m_Initializers = 
 	[
@@ -78,13 +81,17 @@
 			m_ColorMin = [ 217, 226, 247, 255 ]
 			m_ColorMax = [ 114, 114, 150, 255 ]
 		},
+		{
+			_class = "C_INIT_RandomAlpha"
+			m_nAlphaMin = 187
+			m_nAlphaMax = 224
+		},
 	]
 	m_Emitters = 
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
 			m_nParticlesToEmit = 14
-			m_flStartTime = 0.3
 		},
 	]
 	m_controlPointConfigurations = 
