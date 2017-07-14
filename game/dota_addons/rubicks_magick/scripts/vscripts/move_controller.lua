@@ -22,17 +22,14 @@ function MoveController:OnMoveHeroesThink()
 	for playerID = 0, DOTA_MAX_PLAYERS - 1 do
 		local player = PlayerResource:GetPlayer(playerID)
 		if player ~= nil then
+			local heroEntity = player:GetAssignedHero()
 			local dontMoveWhileCasting = player.spellCast ~= nil and player.spellCast.dontMoveWhileCasting
-			if not dontMoveWhileCasting and player.moveToPos ~= nil then
-				local heroEntity = player:GetAssignedHero()
-				if heroEntity ~= nil then
-					local moveStep = heroEntity:GetIdealSpeed() * THINK_PERIOD
-					if player.moveToClearPos ~= nil then
-						MoveController:MoveTowardsClearPos(player, heroEntity, moveStep * 2)
-					else
-						MoveController:MoveTowardsMoveToPos(player, heroEntity, moveStep)
-					end
-					MoveController:HeroLookAt(heroEntity, player.cursorPos)
+			if heroEntity ~= nil and not dontMoveWhileCasting and player.moveToPos ~= nil then
+				local moveStep = heroEntity:GetIdealSpeed() * THINK_PERIOD
+				if player.moveToClearPos ~= nil then
+					MoveController:MoveTowardsClearPos(player, heroEntity, moveStep * 2)
+				else
+					MoveController:MoveTowardsMoveToPos(player, heroEntity, moveStep)
 				end
 			end
 		end
@@ -113,7 +110,8 @@ function MoveController:OnMouseMove(keys)
 	local heroEntity = player:GetAssignedHero()
 	if heroEntity ~= nil then
 		player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
-		if player.leftDown then
+		local dontMoveWhileCasting = player.spellCast ~= nil and player.spellCast.dontMoveWhileCasting
+		if not dontMoveWhileCasting then
 			MoveController:HeroLookAt(heroEntity, player.cursorPos)
 		end
 		if player.rightDown then
@@ -122,7 +120,6 @@ function MoveController:OnMouseMove(keys)
 				heroEntity:StartGesture(ACT_DOTA_RUN)
 			end
 			player.moveToPos = player.cursorPos
-			MoveController:HeroLookAt(heroEntity, player.cursorPos)
 			MoveController:ShowMoveToParticle(player, player.cursorPos)
 		end
 	end
