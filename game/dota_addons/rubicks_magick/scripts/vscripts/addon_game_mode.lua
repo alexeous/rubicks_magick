@@ -24,6 +24,7 @@ function RubicksMagickGameMode:InitGameMode()
 	GameRules:SetSameHeroSelectionEnabled(true)
 	GameRules:SetHeroSelectionTime(0.0)
 	GameRules:SetPreGameTime(20.0)
+	GameRules:GetGameModeEntity():SetCustomGameForceHero("npc_dota_hero_rubick")
 
 	GameRules:GetGameModeEntity():SetThink("OnThink", self, "GlobalThink", 2)
 	GameRules:GetGameModeEntity():SetExecuteOrderFilter(Dynamic_Wrap(RubicksMagickGameMode, "OrderFilter"), self)
@@ -37,10 +38,6 @@ end
 
 function RubicksMagickGameMode:OnConnectFull(keys)
 	local player = PlayerInstanceFromIndex(keys.index + 1)
-    local playerID = player:GetPlayerID()
-    
-    local heroEntity = CreateHeroForPlayer("npc_dota_hero_rubick", player)
-    heroEntity:SetHullRadius(0)
 
     MoveController:PlayerConnected(player)
     Elements:PlayerConnected(player)
