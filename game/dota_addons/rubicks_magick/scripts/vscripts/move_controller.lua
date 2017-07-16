@@ -10,6 +10,8 @@ end
 function MoveController:Init()	
 	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(MoveController, "OnMoveHeroesThink"), "MoveHeroesThink", 2)
 	
+	ListenToGameEvent("entity_killed", Dynamic_Wrap(MoveController, "OnEntityKilled"), self)
+
 	CustomGameEventManager:RegisterListener("me_mm", Dynamic_Wrap(MoveController, "OnMouseMove"))
 	CustomGameEventManager:RegisterListener("me_rd", Dynamic_Wrap(MoveController, "OnRightDown"))
 	CustomGameEventManager:RegisterListener("me_ru", Dynamic_Wrap(MoveController, "OnRightUp"))
@@ -23,8 +25,9 @@ function MoveController:OnMoveHeroesThink()
 		local player = PlayerResource:GetPlayer(playerID)
 		if player ~= nil then
 			local heroEntity = player:GetAssignedHero()
+			local isAble = (heroEntity ~= nil) and (heroEntity:IsAlive()) and (not heroEntity:IsStunned()) and (not heroEntity:IsFrozen())
 			local dontMoveWhileCasting = player.spellCast ~= nil and player.spellCast.dontMoveWhileCasting
-			if heroEntity ~= nil and not dontMoveWhileCasting and player.moveToPos ~= nil then
+			if isAble and not dontMoveWhileCasting and player.moveToPos ~= nil then
 				local moveStep = heroEntity:GetIdealSpeed() * THINK_PERIOD
 				if player.moveToClearPos ~= nil then
 					MoveController:MoveTowardsClearPos(player, heroEntity, moveStep * 2)
@@ -93,6 +96,17 @@ function MoveController:PlayerConnected(player)
     player.leftDown = false;
 end
 
+function MoveController:OnEntityKilled(keys)
+	local killedUnit = EntIndexToHScript(keys.entindex_killed)
+	if killedUnit ~= nil and killedUnit:IsRealHero() then
+		local player = killedUnit:GetPlayerOwner()
+		if player ~= nil then
+			player.moveToPos = nil
+			player.moveToClearPos = nil
+		end
+	end
+end
+
 function MoveController:HeroLookAt(heroEntity, targetPos)
 	if heroEntity ~= nil then
 		targetPos.z = heroEntity:GetAbsOrigin().z
@@ -108,7 +122,8 @@ end
 function MoveController:OnMouseMove(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	local heroEntity = player:GetAssignedHero()
-	if heroEntity ~= nil then
+	local isAble = (heroEntity ~= nil) and (heroEntity:IsAlive()) and (not heroEntity:IsStunned()) and (not heroEntity:IsFrozen())
+	if isAble then
 		player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
 		local dontMoveWhileCasting = player.spellCast ~= nil and player.spellCast.dontMoveWhileCasting
 		if not dontMoveWhileCasting then
@@ -129,7 +144,8 @@ end
 function MoveController:OnRightDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	local heroEntity = player:GetAssignedHero()
-	if heroEntity ~= nil then
+	local isAble = (heroEntity ~= nil) and (heroEntity:IsAlive()) and (not heroEntity:IsStunned()) and (not heroEntity:IsFrozen())
+	if isAble then
 		player.rightDown = true
 		player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
 		local dontChangeGesture = player.spellCast ~= nil and (player.spellCast.dontMoveWhileCasting or player.spellCast.castingGesture == nil)
@@ -149,7 +165,8 @@ end
 function MoveController:OnLeftDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	local heroEntity = player:GetAssignedHero()
-	if heroEntity ~= nil then
+	local isAble = (heroEntity ~= nil) and (heroEntity:IsAlive()) and (not heroEntity:IsStunned()) and (not heroEntity:IsFrozen())
+	if isAble then
 		player.leftDown = true
 		player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
 		MoveController:HeroLookAt(heroEntity, player.cursorPos)

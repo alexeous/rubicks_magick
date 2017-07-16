@@ -93,7 +93,7 @@ end
 function Spells:OnRightDown(keys)
 	local heroEntity = PlayerResource:GetPlayer(keys.playerID):GetAssignedHero()
 
-	if heroEntity ~= nil and heroEntity:IsFrozen() then 
+	if heroEntity ~= nil and heroEntity:IsAlive() and heroEntity:IsFrozen() then 
 		heroEntity:FindModifierByName("modifier_frozen"):ReleaseProgress()
 	end
 end
@@ -108,7 +108,9 @@ function Spells:OnLeftDown(keys)
 	local heroEntity = player:GetAssignedHero()
 
 	if heroEntity ~= nil then
-		if heroEntity:IsFrozen() then 
+		if heroEntity:IsStunned() or not heroEntity:IsAlive() then
+			return
+		elseif heroEntity:IsFrozen() then 
 			heroEntity:FindModifierByName("modifier_frozen"):ReleaseProgress()
 			return
 		end
@@ -274,7 +276,9 @@ function Spells:OnMiddleDown(keys)
 	local heroEntity = player:GetAssignedHero()
 
 	if heroEntity ~= nil then
-		if heroEntity:IsFrozen() then 
+		if heroEntity:IsStunned() or not heroEntity:IsAlive() then
+			return
+		elseif heroEntity:IsFrozen() then 
 			heroEntity:FindModifierByName("modifier_frozen"):ReleaseProgress()
 			return
 		end

@@ -68,12 +68,22 @@ end
 function Elements:OnEntityKilled(keys)
 	local killedUnit = EntIndexToHScript(keys.entindex_killed)
 	if killedUnit ~= nil and killedUnit:IsRealHero() then
-		Elements:RemoveAllElements(killedUnit:GetPlayerOwner())
+		local player = killedUnit:GetPlayerOwner()
+		if player ~= nil then
+			Elements:RemoveAllElements(killedUnit:GetPlayerOwner())
+		end
 	end
 end
 
 function Elements:PickElement(element)
 	local player = Convars:GetCommandClient()
+	
+	local heroEntity = player:GetAssignedHero()
+	local isAble = (heroEntity ~= nil) and (heroEntity:IsAlive()) and (not heroEntity:IsStunned()) and (not heroEntity:IsFrozen())
+	if not isAble then
+		return
+	end
+
 	-- trying to find an opposite
 	local oppositeIndex = Elements:IndexOfOpposite(player, element)
 	if oppositeIndex ~= nil then
