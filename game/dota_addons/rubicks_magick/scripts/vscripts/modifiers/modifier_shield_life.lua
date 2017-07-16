@@ -1,17 +1,17 @@
 
-if modifier_shield_life_lua == nil then
-	modifier_shield_life_lua = class({})
+if modifier_shield_life == nil then
+	modifier_shield_life = class({})
 end
 
-function modifier_shield_life_lua:IsDebuff()
+function modifier_shield_life:IsDebuff()
 	return false
 end
 
-function modifier_shield_life_lua:GetAttributes()
+function modifier_shield_life:GetAttributes()
 	return MODIFIER_ATTRIBUTE_MULTIPLE
 end
 
-function modifier_shield_cold_lua:OnDestroy()
+function modifier_shield_cold:OnDestroy()
 	if IsServer() then
 		self:GetParent():GetPlayerOwner().shieldElements[self.index] = nil
 		if self.particleIndex ~= nil then
@@ -20,23 +20,13 @@ function modifier_shield_cold_lua:OnDestroy()
 	end
 end
 
-function modifier_shield_life_lua:OnCreated(kv)
+function modifier_shield_life:OnCreated(kv)
 	self.index = kv.index
-	self.duration = kv.duration
 	if IsServer() then
 		self:GetParent():GetPlayerOwner().shieldElements[self.index] = ELEMENT_LIFE
-		self:SetDuration(self.duration, true)
-		self:StartIntervalThink(self.duration)
 
 		self.particleIndex = ParticleManager:CreateParticle("particles/shield_circles/shield_circle_life.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetParent())
 		ParticleManager:SetParticleControl(self.particleIndex, 1, Vector(kv.circleRadius, 0, 0))
 		self:AddParticle(self.particleIndex, false, false, -1, false, false)
-	end
-end
-
-function modifier_shield_cold_lua:OnIntervalThink()
-	if IsServer() then
-		self:StartIntervalThink(-1)
-		self:Destroy()
 	end
 end
