@@ -37,6 +37,8 @@ function Spells:Precache(context)
 	PrecacheResource("particle", "particles/wet_drips.vpcf", context)
 	PrecacheResource("particle", "particles/status_fx/status_effect_burn.vpcf.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_huskar/huskar_burning_spear_debuff.vpcf", context)
+	PrecacheResource("particle", "particles/units/heroes/hero_tusk/tusk_frozen_sigil_death.vpcf", context)
+	PrecacheResource("particle", "particles/units/heroes/hero_ancient_apparition/ancient_apparition_cold_feet_frozen.vpcf", context)
 
 	SelfShield:Precache(context)
 	MagicShield:Precache(context)
@@ -63,6 +65,7 @@ function Spells:Init()
 	CustomGameEventManager:RegisterListener("me_md", Dynamic_Wrap(Spells, "OnMiddleDown"))
 	CustomGameEventManager:RegisterListener("me_lu", Dynamic_Wrap(Spells, "OnLeftUp"))
 	CustomGameEventManager:RegisterListener("me_mu", Dynamic_Wrap(Spells, "OnMiddleUp"))
+	CustomGameEventManager:RegisterListener("me_rd", Dynamic_Wrap(Spells, "OnRightDown"))
 end
 
 function Spells:PlayerConnected(player)
@@ -85,6 +88,16 @@ function Spells:PlayerConnected(player)
 end
 
 
+---------------------- RIGHT MOUSE DOWN ------------------------------
+
+function Spells:OnRightDown(keys)
+	local heroEntity = PlayerResource:GetPlayer(keys.playerID):GetAssignedHero()
+
+	if heroEntity ~= nil and heroEntity:IsFrozen() then 
+		heroEntity:FindModifierByName("modifier_frozen"):ReleaseProgress()
+	end
+end
+
 ---------------------------------------------------------------------
 ---------------------------------------------------------------------
 --------------------- LEFT MOUSE CLICK ------------------------------
@@ -92,6 +105,15 @@ end
 
 function Spells:OnLeftDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
+	local heroEntity = player:GetAssignedHero()
+
+	if heroEntity ~= nil then
+		if heroEntity:IsFrozen() then 
+			heroEntity:FindModifierByName("modifier_frozen"):ReleaseProgress()
+			return
+		end
+	end
+
 	if player.spellCast ~= nil then 
 		player.wantsToStartNewSpell_left = true
 		return
@@ -249,6 +271,15 @@ end
 
 function Spells:OnMiddleDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
+	local heroEntity = player:GetAssignedHero()
+
+	if heroEntity ~= nil then
+		if heroEntity:IsFrozen() then 
+			heroEntity:FindModifierByName("modifier_frozen"):ReleaseProgress()
+			return
+		end
+	end
+
 	if player.spellCast ~= nil then 	-- if player is casting a spell now
 		player.wantsToStartNewSpell_middle = true
 		return

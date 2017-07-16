@@ -1,4 +1,6 @@
 
+LinkLuaModifier("modifier_frozen", "modifiers/modifier_frozen.lua", LUA_MODIFIER_MOTION_NONE)
+
 if modifier_chill == nil then
 	modifier_chill = class({})
 end
@@ -28,7 +30,9 @@ function modifier_chill:Enhance(value)
 	if IsServer() then
 		self:SetStackCount(self:GetStackCount() + value)
 		if self:GetStackCount() >= 30 then
-			------ TODO: FREEZE ------
+			self:StartIntervalThink(-1)
+			self:GetParent():AddNewModifier(self:GetCaster(), nil, "modifier_frozen", {})
+			self:Destroy()
 		else
 			self.enhanceTime = self:GetElapsedTime()
 		end
