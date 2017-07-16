@@ -28,6 +28,15 @@ end
 
 function Spells:Precache(context)
 	LinkLuaModifier("modifier_slow_move", "modifiers/modifier_slow_move.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_wet", "modifiers/modifier_wet.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_chill", "modifiers/modifier_chill.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_burn", "modifiers/modifier_burn.lua", LUA_MODIFIER_MOTION_NONE)
+
+	PrecacheResource("particle", "particles/status_fx/status_effect_snow_heavy.vpcf", context)
+	PrecacheResource("particle", "particles/status_fx/status_effect_slardar_amp_damage.vpcf", context)
+	PrecacheResource("particle", "particles/wet_drips.vpcf", context)
+	PrecacheResource("particle", "particles/status_fx/status_effect_burn.vpcf.vpcf", context)
+	PrecacheResource("particle", "particles/units/heroes/hero_huskar/huskar_burning_spear_debuff.vpcf", context)
 
 	SelfShield:Precache(context)
 	MagicShield:Precache(context)
@@ -328,7 +337,8 @@ function Spells:OnMiddleDown(keys)
 			return
 		end
 
-		OmniElementSprays:OmniWaterpray(player, #pickedElements + 1)
+		OmniElementSprays:OmniWaterSpray(player, #pickedElements + 1)
+		return
 	end
 
 	local fireInd = table.indexOf(pickedElements, ELEMENT_FIRE)
@@ -475,7 +485,7 @@ function Spells:MeleeAttack(player)
 			player.spellCast.hasAttacked = true
 			local heroEntity = player:GetAssignedHero()
 			local center = heroEntity:GetAbsOrigin() + heroEntity:GetForwardVector() * 110
-			Spells:ApplyElementDamageAoE(center, 110, heroEntity, ELEMENT_EARTH, 150, true)
+			Spells:ApplyElementDamageAoE(center, 110, heroEntity, ELEMENT_EARTH, 150, true, true)
 		end
 	end
 
@@ -487,24 +497,96 @@ end
 
 ------------------------- DAMAGE APPLYING  --------------------------
 
-function Spells:ApplyElementDamageAoE(center, radius, attacker, element, damage, dontDamageAttacker)
+function Spells:ApplyElementDamageAoE(center, radius, attacker, element, damage, dontDamageAttacker, applyModifiers)
 	local unitsToHurt = FindUnitsInRadius(attacker:GetTeamNumber(), center, nil, radius, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_ALL,
 	    DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, true)
 	for _, unit in pairs(unitsToHurt) do
 		if not (unit == attacker and dontDamageAttacker) then
-			Spells:ApplyElementDamage(unit, attacker, element, damage)
+			Spells:ApplyElementDamage(unit, attacker, element, damage, applyModifiers)
 		end
 	end
 end
 
-function Spells:ApplyElementDamage(victim, attacker, element, damage)
+function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModifiers)
 	local player = attacker:GetPlayerOwner()
 	if (element ~= nil) and (player ~= nil) and (player.shieldElements ~= nil) then
 		local halfDamage = damage / 2
 		if player.shieldElements[1] == element then  damage = damage - halfDamage  end
-		if player.shieldElements[2] == element then	 damage = damage - halfDamage  end
+		if player.shieldElements[2] == element then  damage = damage - halfDamage  end
+
+		if applyModifiers then
+			if element == ELEMENT_WATER then
+				Spells:ApplyWet(victim, attacker)
+			elseif element == ELEMENT_COLD then
+				local value = math.ceil(damage / 20)
+				Spells:ApplyChill(victim, attacker, value)
+			elseif element == ELEMENT_FIRE then
+				Spells:ApplyBurn(victim, attacker, damage)
+			end
+		end
+	end
+	if (element == ELEMENT_LIGHTNING) and victim:HasModifier("modifier_wet") and (not Spells:IsResistantTo(victim, ELEMENT_LIGHTNING)) then
+		damage = damage * 2
+		victim:RemoveModifierByName("modifier_wet")
 	end
 	if damage > 0.5 then
 		ApplyDamage({ victim = victim, attacker = attacker, damage = damage, damage_type = DAMAGE_TYPE_PURE })
+	end
+end
+
+function Spells:IsResistantTo(target, element)
+	local player = target:GetPlayerOwner()
+	return (player ~= nil) and (table.indexOf(player.shieldElements, element) ~= nil)
+end
+
+function Spells:ApplyWet(target, caster)
+	if Spells:IsResistantTo(target, ELEMENT_WATER) then
+		return
+	end
+
+	if target:HasModifier("modifier_burn") then
+		target:RemoveModifierByName("modifier_burn")
+	elseif not target:HasModifier("modifier_chill") then
+		target:AddNewModifier(caster, nil, "modifier_wet", {})
+	end
+end
+
+function Spells:ApplyChill(target, caster, power)
+	if Spells:IsResistantTo(target, ELEMENT_COLD) then
+		return
+	end
+
+	if target:HasModifier("modifier_burn") then
+		target:RemoveModifierByName("modifier_burn")
+	else
+		local currentChillModifier = target:FindModifierByName("modifier_chill")
+		if currentChillModifier ~= nil then
+			currentChillModifier:Enhance(power)
+		else
+			if target:HasModifier("modifier_wet") then
+				power = power * 2
+				target:RemoveModifierByName("modifier_wet")
+			end
+			target:AddNewModifier(caster, nil, "modifier_chill", { power = power })
+		end
+	end
+end
+
+function Spells:ApplyBurn(target, caster, damage)
+	if Spells:IsResistantTo(target, ELEMENT_FIRE) then
+		return
+	end
+
+	if target:HasModifier("modifier_wet") then
+		target:RemoveModifierByName("modifier_wet")
+	elseif target:HasModifier("modifier_chill") then
+		target:RemoveModifierByName("modifier_chill")
+	else
+		local currentBurnModifier = target:FindModifierByName("modifier_burn")
+		if currentBurnModifier ~= nil then
+			currentBurnModifier:Reapply(damage)
+		else
+			target:AddNewModifier(caster, nil, "modifier_burn", { startDamage = damage })
+		end
 	end
 end
