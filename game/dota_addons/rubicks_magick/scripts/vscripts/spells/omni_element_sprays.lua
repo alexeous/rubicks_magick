@@ -24,5 +24,6 @@ function OmniElementSprays:OmniFireSpray(player, power)
 end
 
 function OmniElementSprays:OmniColdSpray(player, power)
+	Spells:ApplyElementDamage(player:GetAssignedHero(), player:GetAssignedHero(), ELEMENT_COLD, 91, true)
 	-------- TODO ---------
 end

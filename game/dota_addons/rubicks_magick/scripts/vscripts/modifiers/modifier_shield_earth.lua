@@ -11,7 +11,7 @@ function modifier_shield_earth:GetAttributes()
 	return MODIFIER_ATTRIBUTE_MULTIPLE
 end
 
-function modifier_shield_cold:OnDestroy()
+function modifier_shield_earth:OnDestroy()
 	if IsServer() then
 		self:GetParent():GetPlayerOwner().shieldElements[self.index] = nil
 		if self.particleIndex ~= nil then

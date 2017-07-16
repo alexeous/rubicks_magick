@@ -1,13 +1,13 @@
 require("elements")
 
 MODIFIER_SHIELD_NAMES = {}
-MODIFIER_SHIELD_NAMES[ELEMENT_WATER]     = "modifier_shield_water_lua"
-MODIFIER_SHIELD_NAMES[ELEMENT_LIFE]      = "modifier_shield_life_lua"
-MODIFIER_SHIELD_NAMES[ELEMENT_COLD]      = "modifier_shield_cold_lua"
-MODIFIER_SHIELD_NAMES[ELEMENT_LIGHTNING] = "modifier_shield_lightning_lua"
-MODIFIER_SHIELD_NAMES[ELEMENT_DEATH]     = "modifier_shield_death_lua"
-MODIFIER_SHIELD_NAMES[ELEMENT_EARTH]     = "modifier_shield_earth_lua"
-MODIFIER_SHIELD_NAMES[ELEMENT_FIRE]      = "modifier_shield_fire_lua"
+MODIFIER_SHIELD_NAMES[ELEMENT_WATER]     = "modifier_shield_water"
+MODIFIER_SHIELD_NAMES[ELEMENT_LIFE]      = "modifier_shield_life"
+MODIFIER_SHIELD_NAMES[ELEMENT_COLD]      = "modifier_shield_cold"
+MODIFIER_SHIELD_NAMES[ELEMENT_LIGHTNING] = "modifier_shield_lightning"
+MODIFIER_SHIELD_NAMES[ELEMENT_DEATH]     = "modifier_shield_death"
+MODIFIER_SHIELD_NAMES[ELEMENT_EARTH]     = "modifier_shield_earth"
+MODIFIER_SHIELD_NAMES[ELEMENT_FIRE]      = "modifier_shield_fire"
 
 SHIELD_DURATION = 20.0
 
@@ -16,15 +16,16 @@ if SelfShield == nil then
 end
 
 function SelfShield:Precache(context)
-	LinkLuaModifier("modifier_shield_water_lua", "modifiers/modifier_shield_water_lua.lua", LUA_MODIFIER_MOTION_NONE)
-	LinkLuaModifier("modifier_shield_life_lua", "modifiers/modifier_shield_life_lua.lua", LUA_MODIFIER_MOTION_NONE)
-	LinkLuaModifier("modifier_shield_cold_lua", "modifiers/modifier_shield_cold_lua.lua", LUA_MODIFIER_MOTION_NONE)
-	LinkLuaModifier("modifier_shield_lightning_lua", "modifiers/modifier_shield_lightning_lua.lua", LUA_MODIFIER_MOTION_NONE)
-	LinkLuaModifier("modifier_shield_death_lua", "modifiers/modifier_shield_death_lua.lua", LUA_MODIFIER_MOTION_NONE)
-	LinkLuaModifier("modifier_shield_earth_lua", "modifiers/modifier_shield_earth_lua.lua", LUA_MODIFIER_MOTION_NONE)
-	LinkLuaModifier("modifier_shield_fire_lua", "modifiers/modifier_shield_fire_lua.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_shield_water", "modifiers/modifier_shield_water.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_shield_life", "modifiers/modifier_shield_life.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_shield_cold", "modifiers/modifier_shield_cold.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_shield_lightning", "modifiers/modifier_shield_lightning.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_shield_death", "modifiers/modifier_shield_death.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_shield_earth", "modifiers/modifier_shield_earth.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_shield_fire", "modifiers/modifier_shield_fire.lua", LUA_MODIFIER_MOTION_NONE)
 
 	PrecacheResource("particle_folder", "particles/shield_circles", context)
+	PrecacheResource("particle_folder", "particles/shield_life_healing", context)
 end
 
 function SelfShield:PlayerConnected(player)
