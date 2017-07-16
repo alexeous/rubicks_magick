@@ -39,8 +39,7 @@ function SelfShield:ApplyElementSelfShield(player, shieldElements)
 		 	currentModifier:Destroy()
 		end
 	end
-
-	player.shieldElements = shieldElements
+	
 	local spellCastTable = {
 		castType = CAST_TYPE_INSTANT,
 		duration = 0.2,
