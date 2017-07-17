@@ -34,8 +34,7 @@ end
 
 function modifier_shield_life:OnIntervalThink()
 	local parent = self:GetParent()
-	parent:Heal(25, parent)
-	SendOverheadEventMessage(parent, OVERHEAD_ALERT_HEAL, parent, 25, parent)
+	Spells:Heal(parent, 25, true)
 
 	ParticleManager:CreateParticle("particles/shield_life_healing/shield_life_healing.vpcf", PATTACH_ABSORIGIN_FOLLOW, parent)
 end

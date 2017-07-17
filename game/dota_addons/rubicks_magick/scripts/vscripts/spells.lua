@@ -578,6 +578,9 @@ function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModif
 	end
 end
 
+
+------------------------- MODIFIERS APPLYING --------------------------
+
 function Spells:IsResistantTo(target, element)
 	local player = target:GetPlayerOwner()
 	return (player ~= nil) and (table.indexOf(player.shieldElements, element) ~= nil)
@@ -588,9 +591,8 @@ function Spells:ApplyWet(target, caster)
 		return
 	end
 
-	if target:HasModifier("modifier_burn") then
-		target:RemoveModifierByName("modifier_burn")
-	elseif not target:HasModifier("modifier_chill") then
+	local wasBurning = Spells:Extinguish(target)
+	if not wasBurning and not target:HasModifier("modifier_chill") then
 		target:AddNewModifier(caster, nil, "modifier_wet", {})
 	end
 end
@@ -600,9 +602,8 @@ function Spells:ApplyChill(target, caster, power)
 		return
 	end
 
-	if target:HasModifier("modifier_burn") then
-		target:RemoveModifierByName("modifier_burn")
-	else
+	local wasBurning = Spells:Extinguish(target)
+	if not wasBurning then
 		local currentChillModifier = target:FindModifierByName("modifier_chill")
 		if currentChillModifier ~= nil then
 			currentChillModifier:Enhance(power)
@@ -621,16 +622,49 @@ function Spells:ApplyBurn(target, caster, damage)
 		return
 	end
 
-	if target:HasModifier("modifier_wet") then
-		target:RemoveModifierByName("modifier_wet")
-	elseif target:HasModifier("modifier_chill") then
-		target:RemoveModifierByName("modifier_chill")
-	else
+	local wasWetOrChilled = Spells:DryAndWarm(target)
+	if not wasWetOrChilled then
 		local currentBurnModifier = target:FindModifierByName("modifier_burn")
 		if currentBurnModifier ~= nil then
 			currentBurnModifier:Reapply(damage)
 		else
 			target:AddNewModifier(caster, nil, "modifier_burn", { startDamage = damage })
 		end
+	end
+end
+
+function Spells:DryAndWarm(target)
+	if target:HasModifier("modifier_wet") then
+		target:RemoveModifierByName("modifier_wet")
+		return true
+	elseif target:HasModifier("modifier_chill") then
+		target:RemoveModifierByName("modifier_chill")
+		return true
+	end
+	return false
+end
+
+function Spells:Extinguish(target)
+	if target:HasModifier("modifier_burn") then
+		target:RemoveModifierByName("modifier_burn")
+		return true
+	end
+	return false
+end
+
+
+------------------------- HEALING  --------------------------
+
+function Spells:Heal(target, heal, ignoreLifeShield)
+	local player = target:GetPlayerOwner()
+	if (player ~= nil) and (player.shieldElements ~= nil) and not ignoreLifeShield then
+		local halfHeal = heal / 2
+		if player.shieldElements[1] == element then  heal = heal - halfHeal  end
+		if player.shieldElements[2] == element then  heal = heal - halfHeal  end
+	end
+
+	if heal > 0.5 then
+		target:Heal(heal, target)
+		SendOverheadEventMessage(target, OVERHEAD_ALERT_HEAL, target, heal, target)
 	end
 end
