@@ -30,11 +30,23 @@ end
 
 function modifier_frozen:OnCreated(kv)
 	if IsServer() then
+		self:RemoveAllModifiers()
+
 		self.startOrigin = self:GetParent():GetAbsOrigin()
 		self:SetStackCount(10)
 
 		self.particleIndex = ParticleManager:CreateParticle("particles/units/heroes/hero_ancient_apparition/ancient_apparition_cold_feet_frozen.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetParent())
 		self:AddParticle(self.particleIndex, false, false, -1, false, false)
+	end
+end
+
+function modifier_frozen:RemoveAllModifiers()
+	local parent = self:GetParent()
+	local player = parent:GetPlayerOwner()
+	if player ~= nil then
+		Elements:RemoveAllElements(player)
+		Spells:StopCasting(player)
+		SelfShield:RemoveAllShields(player)
 	end
 end
 
@@ -81,7 +93,8 @@ end
 
 function modifier_frozen:CheckState()
 	local state = {
-		[MODIFIER_STATE_FROZEN] = true
+		[MODIFIER_STATE_FROZEN] = true,
+		[MODIFIER_STATE_INVULNERABLE] = true
 	} 
 	return state
 end

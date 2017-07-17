@@ -35,11 +35,7 @@ end
 
 
 function SelfShield:ApplyElementSelfShield(player, shieldElements)
-	for _, currentModifier in pairs(player.shieldModifiers) do
-		if not currentModifier:IsNull() then
-		 	currentModifier:Destroy()
-		end
-	end
+	SelfShield:RemoveAllShields(player)
 	
 	local spellCastTable = {
 		castType = CAST_TYPE_INSTANT,
@@ -67,3 +63,10 @@ function SelfShield:ApplyElementSelfShield(player, shieldElements)
 	end
 end
 
+function SelfShield:RemoveAllShields(player)
+	for _, currentModifier in pairs(player.shieldModifiers) do
+		if not currentModifier:IsNull() then
+		 	currentModifier:Destroy()
+		end
+	end
+end

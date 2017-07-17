@@ -474,6 +474,10 @@ function Spells:StartCasting(player, infoTable)
 end
 
 function Spells:StopCasting(player)
+	if player.spellCast == nil then
+		return
+	end
+
 	local heroEntity = player:GetAssignedHero()
 	if heroEntity ~= nil then
 		if player.spellCast.castingGesture ~= nil then
@@ -543,29 +547,34 @@ function Spells:ApplyElementDamageAoE(center, radius, attacker, element, damage,
 end
 
 function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModifiers)
+	if victim:IsInvulnerable() then
+		return
+	end
+
 	local player = attacker:GetPlayerOwner()
-	if (element ~= nil) and (player ~= nil) and (player.shieldElements ~= nil) then
+	if (player ~= nil) and (player.shieldElements ~= nil) then
 		local halfDamage = damage / 2
 		if player.shieldElements[1] == element then  damage = damage - halfDamage  end
 		if player.shieldElements[2] == element then  damage = damage - halfDamage  end
-
-		if applyModifiers then
-			if element == ELEMENT_WATER then
-				Spells:ApplyWet(victim, attacker)
-			elseif element == ELEMENT_COLD then
-				local value = math.ceil(damage / 20)
-				Spells:ApplyChill(victim, attacker, value)
-			elseif element == ELEMENT_FIRE then
-				Spells:ApplyBurn(victim, attacker, damage)
-			end
-		end
 	end
+
 	if (element == ELEMENT_LIGHTNING) and victim:HasModifier("modifier_wet") and (not Spells:IsResistantTo(victim, ELEMENT_LIGHTNING)) then
 		damage = damage * 2
 		victim:RemoveModifierByName("modifier_wet")
 	end
 	if damage > 0.5 then
 		ApplyDamage({ victim = victim, attacker = attacker, damage = damage, damage_type = DAMAGE_TYPE_PURE })
+	end
+
+	if applyModifiers then
+		if element == ELEMENT_WATER then
+			Spells:ApplyWet(victim, attacker)
+		elseif element == ELEMENT_COLD then
+			local value = math.ceil(damage / 20)
+			Spells:ApplyChill(victim, attacker, value)
+		elseif element == ELEMENT_FIRE then
+			Spells:ApplyBurn(victim, attacker, damage)
+		end
 	end
 end
 
@@ -575,7 +584,7 @@ function Spells:IsResistantTo(target, element)
 end
 
 function Spells:ApplyWet(target, caster)
-	if Spells:IsResistantTo(target, ELEMENT_WATER) then
+	if Spells:IsResistantTo(target, ELEMENT_WATER) or target:IsInvulnerable() then
 		return
 	end
 
@@ -587,7 +596,7 @@ function Spells:ApplyWet(target, caster)
 end
 
 function Spells:ApplyChill(target, caster, power)
-	if Spells:IsResistantTo(target, ELEMENT_COLD) then
+	if Spells:IsResistantTo(target, ELEMENT_COLD) or target:IsInvulnerable() then
 		return
 	end
 
@@ -608,7 +617,7 @@ function Spells:ApplyChill(target, caster, power)
 end
 
 function Spells:ApplyBurn(target, caster, damage)
-	if Spells:IsResistantTo(target, ELEMENT_FIRE) then
+	if Spells:IsResistantTo(target, ELEMENT_FIRE) or target:IsInvulnerable() then
 		return
 	end
 
