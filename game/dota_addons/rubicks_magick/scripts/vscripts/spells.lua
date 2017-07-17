@@ -361,7 +361,7 @@ function Spells:OnMiddleDown(keys)
 		local fireInd = table.indexOf(pickedElements, ELEMENT_FIRE)
 		if fireInd ~= nil then
 			table.remove(pickedElements, fireInd)
-			OmniElementSprays:OmniSteamSpray(player, pickedElements[1]) 	-- water + fire [+ water/fire] = steam omni spray
+			OmniElementSprays:OmniSteamSpraySpell(player, pickedElements[1]) 	-- water + fire [+ water/fire] = steam omni spray
 			return
 		end
 
@@ -372,17 +372,17 @@ function Spells:OnMiddleDown(keys)
 			return
 		end
 
-		OmniElementSprays:OmniWaterSpray(player, #pickedElements + 1)
+		OmniElementSprays:OmniWaterSpraySpell(player, #pickedElements + 1)
 		return
 	end
 
 	local fireInd = table.indexOf(pickedElements, ELEMENT_FIRE)
 	if fireInd ~= nil then
-		OmniElementSprays:OmniFireSpray(player, #pickedElements)
+		OmniElementSprays:OmniFireSpraySpell(player, #pickedElements)
 		return
 	end
 
-	OmniElementSprays:OmniColdSpray(player, #pickedElements)
+	OmniElementSprays:OmniColdSpraySpell(player, #pickedElements)
 end
 
 --------------------- MIDDLE MOUSE CLICK ----------------------------

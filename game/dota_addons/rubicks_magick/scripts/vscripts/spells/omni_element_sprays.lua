@@ -11,19 +11,18 @@ function OmniElementSprays:PlayerConnected(player)
 end
 
 
-function OmniElementSprays:OmniSteamSpray(player, modifierElement)
+function OmniElementSprays:OmniSteamSpraySpell(player, modifierElement)
 	-------- TODO ---------
 end
 
-function OmniElementSprays:OmniWaterSpray(player, power)
+function OmniElementSprays:OmniWaterSpraySpell(player, power)
 	-------- TODO ---------
 end
 
-function OmniElementSprays:OmniFireSpray(player, power)
+function OmniElementSprays:OmniFireSpraySpell(player, power)
 	-------- TODO ---------
 end
 
-function OmniElementSprays:OmniColdSpray(player, power)
-	Spells:ApplyElementDamage(player:GetAssignedHero(), player:GetAssignedHero(), ELEMENT_COLD, 91, true)
+function OmniElementSprays:OmniColdSpraySpell(player, power)
 	-------- TODO ---------
 end
