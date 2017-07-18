@@ -68,8 +68,8 @@ end
 
 
 function OmniElementSprays:OmniSteamSpray(caster, position, radius, ignoreCaster, damage, isWet)
-	Spells:ApplyElementDamageAoE(position, radius, caster, ELEMENT_WATER, damage / 2, ignoreCaster, isWet)
-	Spells:ApplyElementDamageAoE(position, radius, caster, ELEMENT_FIRE, damage / 2, ignoreCaster, false)
+	Spells:ApplyElementDamageAoE(position, radius, caster, ELEMENT_WATER, damage / 2, ignoreCaster, isWet, 1.0)
+	Spells:ApplyElementDamageAoE(position, radius, caster, ELEMENT_FIRE, damage / 2, ignoreCaster, false, 1.0)
 
 	local particle = ParticleManager:CreateParticle("particles/omni_sprays/omni_steam_spray/omni_steam_spray.vpcf", PATTACH_CUSTOMORIGIN, nil)
 	position.z = position.z + 40

@@ -536,26 +536,27 @@ end
 
 ------------------------- DAMAGE APPLYING  --------------------------
 
-function Spells:ApplyElementDamageAoE(center, radius, attacker, element, damage, dontDamageAttacker, applyModifiers)
+function Spells:ApplyElementDamageAoE(center, radius, attacker, element, damage, dontDamageAttacker, applyModifiers, blockPerShield)
 	local unitsToHurt = FindUnitsInRadius(attacker:GetTeamNumber(), center, nil, radius, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_ALL,
 	    DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, true)
 	for _, unit in pairs(unitsToHurt) do
 		if not (unit == attacker and dontDamageAttacker) then
-			Spells:ApplyElementDamage(unit, attacker, element, damage, applyModifiers)
+			Spells:ApplyElementDamage(unit, attacker, element, damage, applyModifiers, blockPerShield)
 		end
 	end
 end
 
-function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModifiers)
+function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModifiers, blockPerShield)
 	if victim:IsInvulnerable() then
 		return
 	end
 
 	local player = attacker:GetPlayerOwner()
 	if (player ~= nil) and (player.shieldElements ~= nil) then
-		local halfDamage = damage / 2
-		if player.shieldElements[1] == element then  damage = damage - halfDamage  end
-		if player.shieldElements[2] == element then  damage = damage - halfDamage  end
+		local blockFactor = (blockPerShield ~= nil) and blockPerShield or 0.5
+		local portion = damage * blockFactor
+		if player.shieldElements[1] == element then  damage = damage - portion  end
+		if player.shieldElements[2] == element then  damage = damage - portion  end
 	end
 
 	if (element == ELEMENT_LIGHTNING) and victim:HasModifier("modifier_wet") and (not Spells:IsResistantTo(victim, ELEMENT_LIGHTNING)) then
