@@ -59,6 +59,9 @@ function Spells:Precache(context)
 end
 
 function Spells:Init()
+	Spells.damagePool = {}
+	Spells.healPool = {}
+
 	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(Spells, "OnSpellsThink"), "OnSpellsThink", 2)
 
 	CustomGameEventManager:RegisterListener("me_ld", Dynamic_Wrap(Spells, "OnLeftDown"))
@@ -437,6 +440,21 @@ function Spells:OnSpellsThink()
 			end
 		end		
 	end
+
+	for victim, damageInfos in pairs(Spells.damagePool) do
+		for attacker, damage in pairs(damageInfos) do	
+			ApplyDamage({ victim = victim, attacker = attacker, damage = damage, damage_type = DAMAGE_TYPE_PURE })
+		end
+	end
+	Spells.damagePool = {}
+	for target, healInfos in pairs(Spells.healPool) do
+		for source, heal in pairs(healInfos) do
+			target:Heal(heal, source)
+			SendOverheadEventMessage(target, OVERHEAD_ALERT_HEAL, target, heal, target)
+		end
+	end
+	Spells.healPool = {}
+
 	return SPELLS_THINK_PERIOD
 end
 
@@ -564,7 +582,14 @@ function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModif
 		victim:RemoveModifierByName("modifier_wet")
 	end
 	if damage > 0.5 then
-		ApplyDamage({ victim = victim, attacker = attacker, damage = damage, damage_type = DAMAGE_TYPE_PURE })
+		if Spells.damagePool[victim] == nil then
+			Spells.damagePool[victim] = {}
+			Spells.damagePool[victim][attacker] = damage
+		elseif Spells.damagePool[victim][attacker] == nil then
+			Spells.damagePool[victim][attacker] = damage
+		else
+			Spells.damagePool[victim][attacker] = damage + Spells.damagePool[victim][attacker]
+		end
 	end
 
 	if applyModifiers then
@@ -656,16 +681,22 @@ end
 
 ------------------------- HEALING  --------------------------
 
-function Spells:Heal(target, heal, ignoreLifeShield)
+function Spells:Heal(target, source, heal, ignoreLifeShield)
 	local player = target:GetPlayerOwner()
 	if (player ~= nil) and (player.shieldElements ~= nil) and not ignoreLifeShield then
 		local halfHeal = heal / 2
-		if player.shieldElements[1] == element then  heal = heal - halfHeal  end
-		if player.shieldElements[2] == element then  heal = heal - halfHeal  end
+		if player.shieldElements[1] == ELEMENT_LIFE then  heal = heal - halfHeal  end
+		if player.shieldElements[2] == ELEMENT_LIFE then  heal = heal - halfHeal  end
 	end
 
 	if heal > 0.5 then
-		target:Heal(heal, target)
-		SendOverheadEventMessage(target, OVERHEAD_ALERT_HEAL, target, heal, target)
+		if Spells.healPool[target] == nil then
+			Spells.healPool[target] = {}
+			Spells.healPool[target][source] = heal
+		elseif Spells.healPool[target][source] == nil then
+			Spells.healPool[target][source] = heal
+		else
+			Spells.healPool[target][source] = heal + Spells.healPool[target][source]
+		end
 	end
 end
