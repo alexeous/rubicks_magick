@@ -81,7 +81,12 @@ function OmniElementSprays:OmniSteamSpray(caster, position, radius, ignoreCaster
 	ParticleManager:SetParticleControl(particle, 1, Vector(1, radius - 100, (isWet and 1 or 0)))
 end
 
-function OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, doPush)
+function OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, doPush, canPushCaster)
+	local casterPlayer = caster:GetPlayerOwner()
+	if casterPlayer ~= nil and casterPlayer.shieldElements ~= nil then
+		canPushCaster = canPushCaster and (table.indexOf(casterPlayer.shieldElements, ELEMENT_WATER) == nil)
+	end
+
 	local knockbackProperties = {
         center_x = position.x,
         center_y = position.y,
@@ -94,13 +99,37 @@ function OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster
 	    DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, true)
 	for _, unit in pairs(units) do
 		if not (unit == caster and ignoreCaster) then
-			Spells:ApplyElementDamage(unit, caster, ELEMENT_WATER, 1, true)
-			local distance = (position - unit:GetAbsOrigin()):Length2D()
-			knockbackProperties.knockback_distance = radius + 100 - distance
-    		unit:AddNewModifier(unit, nil, "modifier_knockback", knockbackProperties)
+			local unitPlayer = unit:GetPlayerOwner()
+			local isValid = (unitPlayer ~= nil and unitPlayer.shieldElements ~= nil)
+			if isValid and table.indexOf(unitPlayer.shieldElements, ELEMENT_WATER) ~= nil then
+				if (unitPlayer.shieldElements[1] == ELEMENT_WATER) and (unitPlayer.shieldElements[2] == ELEMENT_WATER) and canPushCaster then
+					local unitPos = unit:GetAbsOrigin()
+					local distance = (unitPos - caster:GetAbsOrigin()):Length2D()
+					local knockbackPropertiesSelf = {
+				        center_x = unitPos.x,
+				        center_y = unitPos.y,
+				        center_z = unitPos.z,
+				        duration = 0.35,
+				        knockback_duration = 0.35,
+				        knockback_height = 40,
+				        knockback_distance = radius + 100 - distance
+				    }	
+		    		caster:AddNewModifier(caster, nil, "modifier_knockback", knockbackPropertiesSelf)						
+				end
+			else
+				Spells:ApplyElementDamage(unit, caster, ELEMENT_WATER, 1, true)
+				local distance = (position - unit:GetAbsOrigin()):Length2D()
+				local multiplier = 1
+				if isValid then
+					if unitPlayer.shieldElements[1] == ELEMENT_EARTH then  multiplier = multiplier / 2  end
+					if unitPlayer.shieldElements[2] == ELEMENT_EARTH then  multiplier = multiplier / 2  end
+				end
+				knockbackProperties.knockback_distance = (radius + 100 - distance) * multiplier
+	    		unit:AddNewModifier(caster, nil, "modifier_knockback", knockbackProperties)
+	    	end
 		end
 	end
-	------------- TODO: SHIELDS INTO ACCOUNT + PARTICLES
+	------------- TODO: PARTICLES
 end
 
 function OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, damage)
