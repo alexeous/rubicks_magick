@@ -44,6 +44,10 @@ function OmniElementSprays:OmniWaterSpraySpell(player, power)
 		castingGesture = ACT_DOTA_SPAWN
 	}
 	Spells:StartCasting(player, spellCastTable)
+
+	local radius = 100 + power * 100
+	local heroEntity = player:GetAssignedHero()
+	OmniElementSprays:OmniWaterSpray(heroEntity, heroEntity:GetAbsOrigin(), radius, true, true)
 end
 
 function OmniElementSprays:OmniFireSpraySpell(player, power)
@@ -78,7 +82,25 @@ function OmniElementSprays:OmniSteamSpray(caster, position, radius, ignoreCaster
 end
 
 function OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, doPush)
-
+	local knockbackProperties = {
+        center_x = position.x,
+        center_y = position.y,
+        center_z = position.z,
+        duration = 0.35,
+        knockback_duration = 0.35,
+        knockback_height = 40
+    }
+	local units = FindUnitsInRadius(caster:GetTeamNumber(), position, nil, radius, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_ALL,
+	    DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, true)
+	for _, unit in pairs(units) do
+		if not (unit == caster and ignoreCaster) then
+			Spells:ApplyElementDamage(unit, caster, ELEMENT_WATER, 1, true)
+			local distance = (position - unit:GetAbsOrigin()):Length2D()
+			knockbackProperties.knockback_distance = radius + 100 - distance
+    		unit:AddNewModifier(unit, nil, "modifier_knockback", knockbackProperties)
+		end
+	end
+	------------- TODO: SHIELDS INTO ACCOUNT + PARTICLES
 end
 
 function OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, damage)
