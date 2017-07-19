@@ -569,7 +569,7 @@ function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModif
 		return
 	end
 
-	local player = attacker:GetPlayerOwner()
+	local player = victim:GetPlayerOwner()
 	if (player ~= nil) and (player.shieldElements ~= nil) then
 		local blockFactor = (blockPerShield ~= nil) and blockPerShield or 0.5
 		local portion = damage * blockFactor

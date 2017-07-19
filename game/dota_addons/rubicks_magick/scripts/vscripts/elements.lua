@@ -119,8 +119,10 @@ function Elements:AddElement(player, element, index)
 end
 
 function Elements:RemoveElement(player, index)
-	player.pickedElements[index] = nil
-	if player.orbParticles[index] then
+	if player.pickedElements ~= nil then
+		player.pickedElements[index] = nil
+	end
+	if player.orbParticles ~= nil and player.orbParticles[index] ~= nil then
 		ParticleManager:DestroyParticle(player.orbParticles[index], false)
 		ParticleManager:ReleaseParticleIndex(player.orbParticles[index])
 	end
