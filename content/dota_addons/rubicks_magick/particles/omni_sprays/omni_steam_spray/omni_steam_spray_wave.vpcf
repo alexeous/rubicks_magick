@@ -46,13 +46,13 @@
 			m_nCPInput = 1
 			m_nField = 1
 			m_flInputMax = 360.0
-			m_flOutputMin = 50.0
-			m_flOutputMax = 100.0
+			m_flOutputMin = 80.0
+			m_flOutputMax = 160.0
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 43
-			m_nAlphaMax = 63
+			m_nAlphaMin = 40
+			m_nAlphaMax = 54
 		},
 		{
 			_class = "C_INIT_Orient2DRelToCP"
@@ -60,28 +60,19 @@
 		},
 		{
 			_class = "C_INIT_VelocityRadialRandom"
-			m_fSpeedMin = -600.0
-			m_fSpeedMax = -800.0
+			m_fSpeedMin = -1400.0
+			m_fSpeedMax = -1600.0
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.6
-			m_fLifetimeMax = 0.6
+			m_fLifetimeMin = 0.1
+			m_fLifetimeMax = 0.2
 		},
 	]
 	m_Emitters = 
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
-			m_nParticlesToEmit = 30
-		},
-	]
-	m_Constraints = 
-	[
-		{
-			_class = "C_OP_ConstrainDistance"
-			m_fMaxDistance = 1.0
-			m_nScaleCP = 1
 		},
 	]
 }

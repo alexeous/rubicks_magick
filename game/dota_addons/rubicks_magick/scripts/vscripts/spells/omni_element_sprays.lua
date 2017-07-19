@@ -21,15 +21,15 @@ function OmniElementSprays:OmniSteamSpraySpell(player, modifierElement)
 	Spells:StartCasting(player, spellCastTable)
 
 	local isWet = false
-	local radius = 180
+	local radius = 200
 	local damage = 70
 	if modifierElement == ELEMENT_WATER then
 		isWet = true
 		damage = 100
-		radius = 240
+		radius = 300
 	elseif modifierElement == ELEMENT_FIRE then
 		damage = 150
-		radius = 240
+		radius = 300
 	end
 
 	local heroEntity = player:GetAssignedHero()

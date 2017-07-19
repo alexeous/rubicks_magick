@@ -36,8 +36,8 @@
 		},
 		{
 			_class = "C_OP_RampScalarLinear"
-			m_RateMin = -3.0
-			m_RateMax = 3.0
+			m_RateMin = -2.0
+			m_RateMax = 2.0
 			m_nField = 4
 		},
 		{
@@ -45,17 +45,11 @@
 			m_flRotRate = 20.0
 		},
 		{
-			_class = "C_OP_DistanceToCP"
-			m_flInputMin = 50.0
-			m_flInputMax = 210.0
-			m_flOutputMin = 40.0
-			m_flOutputMax = 150.0
-			m_bDisableOperator = true
-		},
-		{
 			_class = "C_OP_InterpolateRadius"
 			m_flEndTime = 0.2
-			m_flEndScale = 6.0
+			m_flEndScale = 8.0
+			m_flStartScale = 0.0
+			m_flBias = 0.0
 		},
 	]
 	m_Renderers = 
@@ -91,13 +85,13 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 20.0
-			m_flRadiusMax = 20.0
+			m_flRadiusMin = 15.0
+			m_flRadiusMax = 25.0
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 15
-			m_nAlphaMax = 35
+			m_nAlphaMin = 22
+			m_nAlphaMax = 27
 		},
 		{
 			_class = "C_INIT_VelocityRadialRandom"
@@ -118,11 +112,6 @@
 			_class = "C_OP_ConstrainDistance"
 			m_fMaxDistance = 1.0
 			m_nScaleCP = 1
-		},
-		{
-			_class = "C_OP_BoxConstraint"
-			m_vecMin = [ -1000.0, -1000.0, -5.0 ]
-			m_vecMax = [ 1000.0, 1000.0, 5.0 ]
 		},
 	]
 	m_Children = 
