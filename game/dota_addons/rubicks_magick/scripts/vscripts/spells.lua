@@ -609,7 +609,7 @@ end
 
 function Spells:IsResistantTo(target, element)
 	local player = target:GetPlayerOwner()
-	return (player ~= nil) and (table.indexOf(player.shieldElements, element) ~= nil)
+	return (player ~= nil) and (player.shieldElements ~= nil) and (table.indexOf(player.shieldElements, element) ~= nil)
 end
 
 function Spells:ApplyWet(target, caster)
