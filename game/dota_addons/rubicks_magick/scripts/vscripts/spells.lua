@@ -1,6 +1,8 @@
 
 require("table_extension")
 
+require("libraries/animations")
+
 require("elements")
 require("move_controller")
 
@@ -477,11 +479,13 @@ function Spells:StartCasting(player, infoTable)
 			if player.moveToPos ~= nil then
 				heroEntity:FadeGesture(ACT_DOTA_RUN)
 			end
-			if player.spellCast.castingGestureRate ~= nil then
-				heroEntity:StartGestureWithPlaybackRate(player.spellCast.castingGesture, player.spellCast.castingGestureRate)
-			else
-				heroEntity:StartGesture(player.spellCast.castingGesture)
-			end
+			local animationParams = {
+				duration = player.spellCast.castingGestureDuration or 1.0,
+				activity = player.spellCast.castingGesture,
+				rate = player.spellCast.castingGestureRate,
+				translate = player.spellCast.castingGestureTranslate
+			}
+			StartAnimation(heroEntity, animationParams)
 		end
 
 		if player.spellCast.slowMovePercentage ~= nil then
@@ -503,6 +507,7 @@ function Spells:StopCasting(player)
 			if player.moveToPos ~= nil then
 				heroEntity:StartGesture(ACT_DOTA_RUN)
 			end
+			MoveController:HeroLookAt(heroEntity, player.cursorPos)
 		end
 
 		if heroEntity:HasModifier("modifier_slow_move") then

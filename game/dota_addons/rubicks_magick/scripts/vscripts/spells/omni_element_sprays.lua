@@ -16,7 +16,9 @@ function OmniElementSprays:OmniSteamSpraySpell(player, modifierElement)
 		castType = CAST_TYPE_INSTANT,
 		duration = 0.8,
 		dontMoveWhileCasting = true,
-		castingGesture = ACT_DOTA_SPAWN
+		castingGesture = ACT_DOTA_CAST_ABILITY_5,
+		castingGestureRate = 1.3,
+		castingGestureTranslate = "am_blink"
 	}
 	Spells:StartCasting(player, spellCastTable)
 
@@ -41,7 +43,9 @@ function OmniElementSprays:OmniWaterSpraySpell(player, power)
 		castType = CAST_TYPE_INSTANT,
 		duration = 0.8,
 		dontMoveWhileCasting = true,
-		castingGesture = ACT_DOTA_SPAWN
+		castingGesture = ACT_DOTA_CAST_ABILITY_5,
+		castingGestureRate = 1.3,
+		castingGestureTranslate = "am_blink"
 	}
 	Spells:StartCasting(player, spellCastTable)
 
@@ -55,7 +59,9 @@ function OmniElementSprays:OmniFireSpraySpell(player, power)
 		castType = CAST_TYPE_INSTANT,
 		duration = 0.8,
 		dontMoveWhileCasting = true,
-		castingGesture = ACT_DOTA_SPAWN
+		castingGesture = ACT_DOTA_CAST_ABILITY_5,
+		castingGestureRate = 1.3,
+		castingGestureTranslate = "am_blink"
 	}
 	Spells:StartCasting(player, spellCastTable)
 end
@@ -65,7 +71,9 @@ function OmniElementSprays:OmniColdSpraySpell(player, power)
 		castType = CAST_TYPE_INSTANT,
 		duration = 0.8,
 		dontMoveWhileCasting = true,
-		castingGesture = ACT_DOTA_SPAWN
+		castingGesture = ACT_DOTA_CAST_ABILITY_5,
+		castingGestureRate = 1.3,
+		castingGestureTranslate = "am_blink"
 	}
 	Spells:StartCasting(player, spellCastTable)
 end

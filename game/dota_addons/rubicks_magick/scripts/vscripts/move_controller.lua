@@ -68,7 +68,6 @@ function MoveController:MoveTowardsMoveToPos(player, heroEntity, moveStep)
 	if GridNav:IsTraversable(to) and not GridNav:IsBlocked(to) then
 		heroEntity:SetAbsOrigin(to)
 	else
-		local offset
 		repeat
 			local trees = GridNav:GetAllTreesAroundPoint(to, 1, true)
 			local treePos = trees[1]:GetAbsOrigin()
