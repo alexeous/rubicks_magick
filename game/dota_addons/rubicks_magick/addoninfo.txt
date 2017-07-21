@@ -54,5 +54,11 @@
             "Command"   "+rm_fir"
             "Name"      "Fire Element"	
 		}
+		"09"
+		{
+			"Key"		"Space"
+			"Command"	"+rm_stp"
+			"Name"		"Stop Moving"
+		}
 	}
 }

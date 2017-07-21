@@ -17,6 +17,8 @@ function MoveController:Init()
 	CustomGameEventManager:RegisterListener("me_ru", Dynamic_Wrap(MoveController, "OnRightUp"))
 	CustomGameEventManager:RegisterListener("me_ld", Dynamic_Wrap(MoveController, "OnLeftDown"))
 	CustomGameEventManager:RegisterListener("me_lu", Dynamic_Wrap(MoveController, "OnLeftUp"))
+
+	Convars:RegisterCommand("+rm_stp",  function(...) return MoveController:StopMove(Convars:GetCommandClient()) end, "Stop move", 0)
 end
 
 THINK_PERIOD = 0.03
@@ -98,10 +100,17 @@ end
 function MoveController:OnEntityKilled(keys)
 	local killedUnit = EntIndexToHScript(keys.entindex_killed)
 	if killedUnit ~= nil and killedUnit:IsRealHero() then
-		local player = killedUnit:GetPlayerOwner()
-		if player ~= nil then
-			player.moveToPos = nil
-			player.moveToClearPos = nil
+		MoveController:StopMove(killedUnit:GetPlayerOwner())
+	end
+end
+
+function MoveController:StopMove(player)
+	if player ~= nil then
+		player.moveToPos = nil
+		player.moveToClearPos = nil
+		local heroEntity = player:GetAssignedHero()
+		if heroEntity ~= nil then
+			heroEntity:FadeGesture(ACT_DOTA_RUN)
 		end
 	end
 end
@@ -129,8 +138,8 @@ function MoveController:OnMouseMove(keys)
 			MoveController:HeroLookAt(heroEntity, player.cursorPos)
 		end
 		if player.rightDown then
-			local dontChangeGesture = player.spellCast ~= nil and (player.spellCast.dontMoveWhileCasting or player.spellCast.castingGesture == nil)
-			if player.moveToPos == nil and not dontChangeGesture then
+			local dontChangeGesture = player.spellCast ~= nil and player.spellCast.castingGesture ~= nil
+			if player.moveToPos == nil and not dontChangeGesture and not dontMoveWhileCasting then
 				heroEntity:StartGesture(ACT_DOTA_RUN)
 			end
 			player.moveToPos = player.cursorPos
@@ -147,8 +156,8 @@ function MoveController:OnRightDown(keys)
 	if isAble then
 		player.rightDown = true
 		player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
-		local dontChangeGesture = player.spellCast ~= nil and (player.spellCast.dontMoveWhileCasting or player.spellCast.castingGesture == nil)
-		if player.moveToPos == nil and not dontChangeGesture then
+		local dontChangeGesture = player.spellCast ~= nil and player.spellCast.castingGesture ~= nil
+		if player.moveToPos == nil and not dontChangeGesture and not dontMoveWhileCasting then
 			heroEntity:StartGesture(ACT_DOTA_RUN)
 		end
 		player.moveToPos = player.cursorPos
