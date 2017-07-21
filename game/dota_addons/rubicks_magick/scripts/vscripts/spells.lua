@@ -23,6 +23,10 @@ require("spells/omni_pulses")
 require("spells/omni_element_sprays")
 require("spells/omni_ice_spikes")
 
+
+OMNI_SPELLS_RADIUSES = { 200, 300, 400 }
+
+
 if Spells == nil then
 	Spells = class({})
 end
