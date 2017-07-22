@@ -132,7 +132,10 @@ function OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster
 	    	end
 		end
 	end
-	------------- TODO: PARTICLES
+	local particle = ParticleManager:CreateParticle("particles/omni_sprays/omni_water_spray/omni_water_spray.vpcf", PATTACH_CUSTOMORIGIN, nil)
+	position.z = position.z + 40
+	ParticleManager:SetParticleControl(particle, 0, position)
+	ParticleManager:SetParticleControl(particle, 1, Vector(radius / 250 + 0.2, radius, 0))
 end
 
 function OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, damage)

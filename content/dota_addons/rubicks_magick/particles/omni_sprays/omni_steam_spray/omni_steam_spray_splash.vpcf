@@ -54,14 +54,14 @@
 		},
 		{
 			_class = "C_INIT_VelocityRadialRandom"
-			m_fSpeedMin = -400.0
-			m_fSpeedMax = -450.0
+			m_fSpeedMin = -500.0
+			m_fSpeedMax = -900.0
 			m_vecLocalCoordinateSystemSpeedScale = [ 1.0, 1.0, 0.0 ]
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.5
-			m_fLifetimeMax = 0.8
+			m_fLifetimeMin = 0.4
+			m_fLifetimeMax = 0.5
 		},
 		{
 			_class = "C_INIT_RandomSequence"
@@ -84,6 +84,7 @@
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
+			m_nParticlesToEmit = 300
 		},
 	]
 }
