@@ -13,7 +13,7 @@ end
 
 function modifier_shield_water:OnDestroy()
 	if IsServer() then
-		self:GetParent():GetPlayerOwner().shieldElements[self.index] = nil
+		self:GetParent().shieldElements[self.index] = nil
 		if self.particleIndex ~= nil then
 			ParticleManager:DestroyParticle(self.particleIndex, false)
 		end
@@ -23,7 +23,7 @@ end
 function modifier_shield_water:OnCreated(kv)
 	self.index = kv.index
 	if IsServer() then
-		self:GetParent():GetPlayerOwner().shieldElements[self.index] = ELEMENT_WATER
+		self:GetParent().shieldElements[self.index] = ELEMENT_WATER
 
 		self.particleIndex = ParticleManager:CreateParticle("particles/shield_circles/shield_circle_water.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetParent())
 		ParticleManager:SetParticleControl(self.particleIndex, 1, Vector(kv.circleRadius, 0, 0))

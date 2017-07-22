@@ -312,7 +312,7 @@ function Spells:OnMiddleDown(keys)
 		if next(pickedElements) == nil then 	-- if only shield orb is picked
 			MagicShield:PlaceMagicShield(player, false) 	-- then place magic shield
 		else
-			SelfShield:ApplyElementSelfShield(player, pickedElements) 	-- otherwise apply element shield on caster
+			SelfShield:ApplyElementSelfShield(heroEntity, pickedElements) 	-- otherwise apply element shield on caster
 		end
 		return
 	end
@@ -578,12 +578,11 @@ function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModif
 		return
 	end
 
-	local player = victim:GetPlayerOwner()
-	if (player ~= nil) and (player.shieldElements ~= nil) then
+	if victim.shieldElements ~= nil then
 		local blockFactor = (blockPerShield ~= nil) and blockPerShield or 0.5
 		local portion = damage * blockFactor
-		if player.shieldElements[1] == element then  damage = damage - portion  end
-		if player.shieldElements[2] == element then  damage = damage - portion  end
+		if victim.shieldElements[1] == element then  damage = damage - portion  end
+		if victim.shieldElements[2] == element then  damage = damage - portion  end
 	end
 
 	if (element == ELEMENT_LIGHTNING) and victim:HasModifier("modifier_wet") and (not Spells:IsResistantTo(victim, ELEMENT_LIGHTNING)) then
@@ -617,8 +616,7 @@ end
 ------------------------- MODIFIERS APPLYING --------------------------
 
 function Spells:IsResistantTo(target, element)
-	local player = target:GetPlayerOwner()
-	return (player ~= nil) and (player.shieldElements ~= nil) and (table.indexOf(player.shieldElements, element) ~= nil)
+	return (target.shieldElements ~= nil) and (table.indexOf(target.shieldElements, element) ~= nil)
 end
 
 function Spells:ApplyWet(target, caster)
@@ -691,11 +689,10 @@ end
 ------------------------- HEALING  --------------------------
 
 function Spells:Heal(target, source, heal, ignoreLifeShield)
-	local player = target:GetPlayerOwner()
-	if (player ~= nil) and (player.shieldElements ~= nil) and not ignoreLifeShield then
+	if (target.shieldElements ~= nil) and not ignoreLifeShield then
 		local halfHeal = heal / 2
-		if player.shieldElements[1] == ELEMENT_LIFE then  heal = heal - halfHeal  end
-		if player.shieldElements[2] == ELEMENT_LIFE then  heal = heal - halfHeal  end
+		if target.shieldElements[1] == ELEMENT_LIFE then  heal = heal - halfHeal  end
+		if target.shieldElements[2] == ELEMENT_LIFE then  heal = heal - halfHeal  end
 	end
 
 	if heal > 0.5 then

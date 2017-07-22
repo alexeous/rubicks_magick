@@ -42,11 +42,12 @@ end
 
 function modifier_frozen:RemoveAllModifiers()
 	local parent = self:GetParent()
+	SelfShield:RemoveAllShields(parent)
+
 	local player = parent:GetPlayerOwner()
 	if player ~= nil then
 		Elements:RemoveAllElements(player)
 		Spells:StopCasting(player)
-		SelfShield:RemoveAllShields(player)
 	end
 end
 

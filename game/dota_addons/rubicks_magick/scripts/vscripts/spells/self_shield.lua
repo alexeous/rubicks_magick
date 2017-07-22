@@ -29,42 +29,48 @@ function SelfShield:Precache(context)
 end
 
 function SelfShield:PlayerConnected(player)
-	player.shieldElements = {}
-	player.shieldModifiers = {}
 end
 
 
-function SelfShield:ApplyElementSelfShield(player, shieldElements)
-	SelfShield:RemoveAllShields(player)
+function SelfShield:ApplyElementSelfShield(unit, shieldElements)
+	if unit.shieldElements == nil then  unit.shieldElements = {}  end
+	if unit.shieldModifiers == nil then  unit.shieldModifiers = {}  end
+
+	SelfShield:RemoveAllShields(unit)
 	
-	local spellCastTable = {
-		castType = CAST_TYPE_INSTANT,
-		duration = 0.2,
-		dontMoveWhileCasting = true,
-		castingGesture = ACT_DOTA_SPAWN,
-		castingGestureRate = 2
-	}
-	Spells:StartCasting(player, spellCastTable)
+	local player = unit:GetPlayerOwner()
+	if player ~= nil then
+		local spellCastTable = {
+			castType = CAST_TYPE_INSTANT,
+			duration = 0.2,
+			dontMoveWhileCasting = true,
+			castingGesture = ACT_DOTA_SPAWN,
+			castingGestureRate = 2
+		}
+		Spells:StartCasting(player, spellCastTable)
+	end
 
 	local circleRadius = 1
-	local heroEntity = player:GetAssignedHero()
 
 	-------- TODO: MODIFIER ICON TEXTURES ------------
 
 	if shieldElements[1] ~= nil then
 		local kv = { index = 1, circleRadius = circleRadius, duration = SHIELD_DURATION }
-		player.shieldModifiers[1] = heroEntity:AddNewModifier(heroEntity, nil, MODIFIER_SHIELD_NAMES[shieldElements[1]], kv)
+		unit.shieldModifiers[1] = unit:AddNewModifier(unit, nil, MODIFIER_SHIELD_NAMES[shieldElements[1]], kv)
 		circleRadius = 2
 	end
 
 	if shieldElements[2] ~= nil then
 		local kv = { index = 2, circleRadius = circleRadius, duration = SHIELD_DURATION }
-		player.shieldModifiers[2] = heroEntity:AddNewModifier(heroEntity, nil, MODIFIER_SHIELD_NAMES[shieldElements[2]], kv)
+		unit.shieldModifiers[2] = unit:AddNewModifier(unit, nil, MODIFIER_SHIELD_NAMES[shieldElements[2]], kv)
 	end
 end
 
-function SelfShield:RemoveAllShields(player)
-	for _, currentModifier in pairs(player.shieldModifiers) do
+function SelfShield:RemoveAllShields(unit)
+	if unit.shieldModifiers == nil then
+		return
+	end
+	for _, currentModifier in pairs(unit.shieldModifiers) do
 		if not currentModifier:IsNull() then
 		 	currentModifier:Destroy()
 		end

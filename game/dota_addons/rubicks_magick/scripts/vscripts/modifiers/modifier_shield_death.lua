@@ -13,7 +13,7 @@ end
 
 function modifier_shield_death:OnDestroy()
 	if IsServer() then
-		self:GetParent():GetPlayerOwner().shieldElements[self.index] = nil
+		self:GetParent().shieldElements[self.index] = nil
 		if self.particleIndex ~= nil then
 			ParticleManager:DestroyParticle(self.particleIndex, false)
 		end
@@ -23,7 +23,7 @@ end
 function modifier_shield_death:OnCreated(kv)
 	self.index = kv.index
 	if IsServer() then
-		self:GetParent():GetPlayerOwner().shieldElements[self.index] = ELEMENT_DEATH
+		self:GetParent().shieldElements[self.index] = ELEMENT_DEATH
 
 		self.particleIndex = ParticleManager:CreateParticle("particles/shield_circles/shield_circle_death.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetParent())
 		ParticleManager:SetParticleControl(self.particleIndex, 1, Vector(kv.circleRadius, 0, 0))

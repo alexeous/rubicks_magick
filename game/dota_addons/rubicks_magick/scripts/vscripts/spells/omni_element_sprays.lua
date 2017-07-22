@@ -90,10 +90,7 @@ function OmniElementSprays:OmniSteamSpray(caster, position, radius, ignoreCaster
 end
 
 function OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, doPush, canPushCaster)
-	local casterPlayer = caster:GetPlayerOwner()
-	if casterPlayer ~= nil and casterPlayer.shieldElements ~= nil then
-		canPushCaster = canPushCaster and (table.indexOf(casterPlayer.shieldElements, ELEMENT_WATER) == nil)
-	end
+	canPushCaster = canPushCaster and not Spells:IsResistantTo(caster, ELEMENT_WATER)
 
 	local knockbackProperties = {
         center_x = position.x,
@@ -107,10 +104,8 @@ function OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster
 	    DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, true)
 	for _, unit in pairs(units) do
 		if not (unit == caster and ignoreCaster) then
-			local unitPlayer = unit:GetPlayerOwner()
-			local isValid = (unitPlayer ~= nil and unitPlayer.shieldElements ~= nil)
-			if isValid and table.indexOf(unitPlayer.shieldElements, ELEMENT_WATER) ~= nil then
-				if (unitPlayer.shieldElements[1] == ELEMENT_WATER) and (unitPlayer.shieldElements[2] == ELEMENT_WATER) and canPushCaster then
+			if Spells:IsResistantTo(unit, ELEMENT_WATER) then
+				if (unit.shieldElements[1] == ELEMENT_WATER) and (unit.shieldElements[2] == ELEMENT_WATER) and canPushCaster then
 					local unitPos = unit:GetAbsOrigin()
 					local distance = (unitPos - caster:GetAbsOrigin()):Length2D()
 					local knockbackPropertiesSelf = {
@@ -128,9 +123,9 @@ function OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster
 				Spells:ApplyElementDamage(unit, caster, ELEMENT_WATER, 1, true)
 				local distance = (position - unit:GetAbsOrigin()):Length2D()
 				local multiplier = 1
-				if isValid then
-					if unitPlayer.shieldElements[1] == ELEMENT_EARTH then  multiplier = multiplier / 2  end
-					if unitPlayer.shieldElements[2] == ELEMENT_EARTH then  multiplier = multiplier / 2  end
+				if unit.shieldElements ~= nil then
+					if unit.shieldElements[1] == ELEMENT_EARTH then  multiplier = multiplier / 2  end
+					if unit.shieldElements[2] == ELEMENT_EARTH then  multiplier = multiplier / 2  end
 				end
 				knockbackProperties.knockback_distance = (radius + 100 - distance) * multiplier
 	    		unit:AddNewModifier(caster, nil, "modifier_knockback", knockbackProperties)
