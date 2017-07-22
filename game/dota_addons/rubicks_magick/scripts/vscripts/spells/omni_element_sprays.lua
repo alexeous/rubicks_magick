@@ -3,7 +3,9 @@ if OmniElementSprays == nil then
 end
 
 function OmniElementSprays:Precache(context)
-
+	PrecacheResource("particle_folder", "particles/omni_sprays/omni_steam_spray", context)
+	PrecacheResource("particle_folder", "particles/omni_sprays/omni_water_spray", context)
+	PrecacheResource("particle_folder", "particles/omni_sprays/omni_fire_spray", context)
 end
 
 function OmniElementSprays:PlayerConnected(player)
@@ -64,6 +66,11 @@ function OmniElementSprays:OmniFireSpraySpell(player, power)
 		castingGestureTranslate = "am_blink"
 	}
 	Spells:StartCasting(player, spellCastTable)
+
+	local radius = OMNI_SPELLS_RADIUSES[power]
+	local damage = 60 * power
+	local heroEntity = player:GetAssignedHero()
+	OmniElementSprays:OmniFireSpray(heroEntity, heroEntity:GetAbsOrigin(), radius, true, damage)
 end
 
 function OmniElementSprays:OmniColdSpraySpell(player, power)
@@ -139,7 +146,13 @@ function OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster
 end
 
 function OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, damage)
+	Spells:ApplyElementDamageAoE(position, radius, caster, ELEMENT_FIRE, damage, ignoreCaster, true)
 
+	local particle = ParticleManager:CreateParticle("particles/omni_sprays/omni_fire_spray/omni_fire_spray.vpcf", PATTACH_CUSTOMORIGIN, nil)
+	position.z = position.z + 20
+	radius = radius - 100
+	ParticleManager:SetParticleControl(particle, 0, position)
+	ParticleManager:SetParticleControl(particle, 1, Vector(radius / 250 + 0.2, radius, 0))
 end
 
 function OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, damage)
