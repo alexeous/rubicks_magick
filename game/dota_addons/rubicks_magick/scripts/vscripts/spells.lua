@@ -481,10 +481,10 @@ function Spells:StartCasting(player, infoTable)
 	if heroEntity ~= nil then
 		if player.spellCast.castingGesture ~= nil then
 			if player.moveToPos ~= nil then
-				MoveController:StopMove(player)
+				heroEntity:FadeGesture(ACT_DOTA_RUN)
 			end
 			local animationParams = {
-				duration = player.spellCast.castingGestureDuration or 1.0,
+				duration = player.spellCast.duration,
 				activity = player.spellCast.castingGesture,
 				rate = player.spellCast.castingGestureRate,
 				translate = player.spellCast.castingGestureTranslate
