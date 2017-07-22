@@ -30,3 +30,14 @@ function modifier_shield_earth:OnCreated(kv)
 		self:AddParticle(self.particleIndex, false, false, -1, false, false)
 	end
 end
+
+function modifier_shield_earth:DeclareFunctions()
+	local funcs = {
+		MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE
+	}
+	return funcs
+end
+
+function modifier_shield_earth:GetModifierMoveSpeedBonus_Percentage(params)
+	return -10.0
+end
