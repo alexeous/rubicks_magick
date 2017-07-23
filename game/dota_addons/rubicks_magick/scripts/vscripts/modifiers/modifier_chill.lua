@@ -31,7 +31,7 @@ function modifier_chill:Enhance(value)
 		self:SetStackCount(self:GetStackCount() + value)
 		if self:GetStackCount() >= 30 then
 			self:StartIntervalThink(-1)
-			self:GetParent():AddNewModifier(self:GetCaster(), nil, "modifier_frozen", {})
+			self:GetParent():AddNewModifier(self:GetCaster(), nil, "modifier_frozen", { duration = 15.0 })
 			self:Destroy()
 		else
 			self.enhanceTime = self:GetElapsedTime()
