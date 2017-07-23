@@ -24,9 +24,8 @@ end
 
 function modifier_burn:OnCreated(kv)
 	if IsServer() then
-		self.count = 10
-		self.damage = kv.startDamage / 2
-		self:SetStackCount(self.damage)
+		self:SetDamage(kv.damage)
+		
 		self:StartIntervalThink(0.5)
 
 		self.particleIndex = ParticleManager:CreateParticle("particles/units/heroes/hero_huskar/huskar_burning_spear_debuff.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetParent())
@@ -36,20 +35,33 @@ end
 
 function modifier_burn:Reapply(newDamage)
 	if IsServer() then
-		self.count = 10
-		self.damage = newDamage / 2
-		self:SetStackCount(self.damage)
+		self:SetDamage(newDamage)
 	end
+end
+
+function modifier_burn:SetDamage(damage)
+	self.count = 10
+	self:SetStackCount(self.count)
+
+	damage = 10 * math.ceil(damage / 10)	-- snap to tens: 10, 20, 30 and so on
+	self.damage = math.max(10, math.min(damage, 30))
+
+	self.thinksToReduce = math.random(2, 4)
 end
 
 function modifier_burn:OnIntervalThink()
 	if IsServer() then
 		Spells:ApplyElementDamage(self:GetParent(), self:GetCaster(), ELEMENT_FIRE, self.damage, false)
 		
-		self.damage = self.damage - 8
-		self:SetStackCount(self.damage)
+		self.thinksToReduce = self.thinksToReduce - 1
+		if self.thinksToReduce <= 0 then
+			self.thinksToReduce = math.random(2, 4)
+			self.damage = math.max(10, self.damage - 10)
+		end
+
 		self.count = self.count - 1
-		if self.count <= 0 or self.damage <= 0 then
+		self:SetStackCount(self.count)
+		if self.count <= 0 then
 			self:StartIntervalThink(-1)
 			self:Destroy()
 		end

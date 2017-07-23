@@ -661,7 +661,7 @@ function Spells:ApplyBurn(target, caster, damage)
 		if currentBurnModifier ~= nil then
 			currentBurnModifier:Reapply(damage)
 		else
-			target:AddNewModifier(caster, nil, "modifier_burn", { startDamage = damage })
+			target:AddNewModifier(caster, nil, "modifier_burn", { damage = damage })
 		end
 	end
 end
