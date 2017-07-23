@@ -46,12 +46,14 @@ function MoveController:MoveTowardsClearPos(player, heroEntity, moveStep)
 	local oldOrigin = heroEntity:GetAbsOrigin()
 	local vector = player.moveToClearPos - oldOrigin
 	local distance = #vector
+	local pos
 	if distance < moveStep then
-		heroEntity:SetAbsOrigin(player.moveToClearPos)
+		pos = player.moveToClearPos
 		player.moveToClearPos = nil
 	else
-		heroEntity:SetAbsOrigin(oldOrigin + (vector / distance) * moveStep)
+		pos = (oldOrigin + (vector / distance) * moveStep)
 	end
+	heroEntity:SetAbsOrigin(GetGroundPosition(pos, heroEntity))
 end
 
 function MoveController:MoveTowardsMoveToPos(player, heroEntity, moveStep)
@@ -68,7 +70,7 @@ function MoveController:MoveTowardsMoveToPos(player, heroEntity, moveStep)
 		to = oldOrigin + (vector / distance) * moveStep
 	end
 	if GridNav:IsTraversable(to) and not GridNav:IsBlocked(to) then
-		heroEntity:SetAbsOrigin(to)
+		heroEntity:SetAbsOrigin(GetGroundPosition(to, heroEntity))
 	else
 		repeat
 			local trees = GridNav:GetAllTreesAroundPoint(to, 1, true)
