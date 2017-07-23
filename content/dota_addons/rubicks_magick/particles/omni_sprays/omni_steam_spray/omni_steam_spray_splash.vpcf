@@ -20,7 +20,7 @@
 	[
 		{
 			_class = "C_OP_BasicMovement"
-			m_Gravity = [ 0.0, 0.0, -600.0 ]
+			m_Gravity = [ 0.0, 0.0, -1600.0 ]
 		},
 		{
 			_class = "C_OP_Decay"
@@ -38,30 +38,31 @@
 		{
 			_class = "C_OP_RenderSprites"
 			m_hTexture = resource:"materials/particle/droplets/droplets.vtex"
+			m_bAdditive = true
 		},
 	]
 	m_Initializers = 
 	[
 		{
 			_class = "C_INIT_CreateWithinSphere"
-			m_fRadiusMin = 10.0
-			m_fRadiusMax = 30.0
+			m_fRadiusMin = 50.0
+			m_fRadiusMax = 80.0
 		},
 		{
 			_class = "C_INIT_VelocityRandom"
 			m_LocalCoordinateSystemSpeedMin = [ 0.0, 0.0, 250.0 ]
-			m_LocalCoordinateSystemSpeedMax = [ 0.0, 0.0, 300.0 ]
+			m_LocalCoordinateSystemSpeedMax = [ 0.0, 0.0, 800.0 ]
 		},
 		{
 			_class = "C_INIT_VelocityRadialRandom"
-			m_fSpeedMin = -500.0
-			m_fSpeedMax = -900.0
+			m_fSpeedMin = -300.0
+			m_fSpeedMax = -500.0
 			m_vecLocalCoordinateSystemSpeedScale = [ 1.0, 1.0, 0.0 ]
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.4
-			m_fLifetimeMax = 0.5
+			m_fLifetimeMin = 0.6
+			m_fLifetimeMax = 0.8
 		},
 		{
 			_class = "C_INIT_RandomSequence"
@@ -69,8 +70,8 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 3.0
-			m_flRadiusMax = 4.0
+			m_flRadiusMin = 4.0
+			m_flRadiusMax = 5.0
 		},
 		{
 			_class = "C_INIT_RemapCPtoScalar"
@@ -79,12 +80,17 @@
 			m_nField = 2
 			m_flOutputMax = 180.0
 		},
+		{
+			_class = "C_INIT_RandomAlpha"
+			m_nAlphaMin = 57
+			m_nAlphaMax = 180
+		},
 	]
 	m_Emitters = 
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
-			m_nParticlesToEmit = 300
 		},
 	]
+	m_ConstantColor = [ 221, 233, 254, 255 ]
 }

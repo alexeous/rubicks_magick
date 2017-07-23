@@ -23,6 +23,11 @@
 		},
 		{
 			_class = "C_OP_FadeInSimple"
+			m_flFadeInTime = 0.05
+		},
+		{
+			_class = "C_OP_RampScalarLinearSimple"
+			m_Rate = 2500.0
 		},
 	]
 	m_Renderers = 
@@ -30,7 +35,8 @@
 		{
 			_class = "C_OP_RenderSprites"
 			m_nOrientationType = 2
-			m_hTexture = resource:"materials/particle/spotlight/spotlight_single_wide.vtex"
+			m_hTexture = resource:"materials/particle/burst01.vtex"
+			m_bAdditive = true
 		},
 	]
 	m_Initializers = 
@@ -42,39 +48,29 @@
 			m_vecDistanceBias = [ 1.0, 1.0, 0.0 ]
 		},
 		{
-			_class = "C_INIT_RemapCPtoScalar"
-			m_nCPInput = 1
-			m_nField = 1
-			m_flInputMax = 400.0
-			m_flOutputMin = 80.0
-			m_flOutputMax = 300.0
-		},
-		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 57
-			m_nAlphaMax = 83
+			m_nAlphaMin = 109
+			m_nAlphaMax = 158
 		},
 		{
 			_class = "C_INIT_Orient2DRelToCP"
 			m_flRotOffset = 180.0
 		},
 		{
-			_class = "C_INIT_VelocityRadialRandom"
-			m_fSpeedMin = -1200.0
-			m_fSpeedMax = -1400.0
-		},
-		{
-			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.15
-			m_fLifetimeMax = 0.25
+			_class = "C_INIT_RemapCPtoScalar"
+			m_nCPInput = 1
+			m_nFieldOutput = 1
+			m_nField = 1
+			m_flInputMax = 400.0
+			m_flOutputMax = 0.3
 		},
 	]
 	m_Emitters = 
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
-			m_nParticlesToEmit = 50
+			m_nParticlesToEmit = 10
 		},
 	]
-	m_ConstantColor = [ 173, 202, 254, 255 ]
+	m_ConstantColor = [ 227, 237, 255, 255 ]
 }

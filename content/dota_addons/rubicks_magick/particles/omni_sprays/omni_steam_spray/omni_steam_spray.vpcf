@@ -90,8 +90,8 @@
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 22
-			m_nAlphaMax = 27
+			m_nAlphaMin = 43
+			m_nAlphaMax = 79
 		},
 		{
 			_class = "C_INIT_VelocityRadialRandom"
