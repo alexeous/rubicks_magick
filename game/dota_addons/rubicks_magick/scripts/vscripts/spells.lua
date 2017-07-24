@@ -421,7 +421,7 @@ function Spells:OnMiddleUp(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	if player ~= nil then
 		player.wantsToStartNewSpell_middle = false
-		if player.spellCast ~= nil and player.spellCast.castType ~= CAST_TYPE_INSTANT and playerID.spellCast.isSelfCast then
+		if player.spellCast ~= nil and player.spellCast.castType ~= CAST_TYPE_INSTANT and player.spellCast.isSelfCast then
 			Spells:StopCasting(player)
 		end
 	end
