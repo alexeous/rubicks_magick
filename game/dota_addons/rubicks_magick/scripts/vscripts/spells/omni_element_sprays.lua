@@ -102,8 +102,8 @@ function OmniElementSprays:OmniSteamSpray(caster, position, radius, ignoreCaster
 	ParticleManager:SetParticleControl(particle, 1, Vector(1, radius - 100, (isWet and 1 or 0)))
 end
 
-function OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, doPush, canPushCaster)
-	canPushCaster = canPushCaster and not Spells:IsResistantTo(caster, ELEMENT_WATER)
+function OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, doPush)
+	local canPushCaster = ignoreCaster and doPush and not Spells:IsResistantTo(caster, ELEMENT_WATER)
 
 	local knockbackProperties = {
         center_x = position.x,
@@ -134,14 +134,16 @@ function OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster
 				end
 			else
 				Spells:ApplyElementDamage(unit, caster, ELEMENT_WATER, 1, true)
-				local distance = (position - unit:GetAbsOrigin()):Length2D()
-				local multiplier = 1
-				if unit.shieldElements ~= nil then
-					if unit.shieldElements[1] == ELEMENT_EARTH then  multiplier = multiplier / 2  end
-					if unit.shieldElements[2] == ELEMENT_EARTH then  multiplier = multiplier / 2  end
-				end
-				knockbackProperties.knockback_distance = (radius + 100 - distance) * multiplier
-	    		unit:AddNewModifier(caster, nil, "modifier_knockback", knockbackProperties)
+				if doPush then
+					local distance = (position - unit:GetAbsOrigin()):Length2D()
+					local multiplier = 1
+					if unit.shieldElements ~= nil then
+						if unit.shieldElements[1] == ELEMENT_EARTH then  multiplier = multiplier / 2  end
+						if unit.shieldElements[2] == ELEMENT_EARTH then  multiplier = multiplier / 2  end
+					end
+					knockbackProperties.knockback_distance = (radius + 100 - distance) * multiplier
+		    		unit:AddNewModifier(caster, nil, "modifier_knockback", knockbackProperties)
+		    	end
 	    	end
 		end
 	end
