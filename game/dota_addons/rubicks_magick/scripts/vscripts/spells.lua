@@ -342,7 +342,7 @@ function Spells:OnMiddleDown(keys)
 			if isLife1 and isLife2 then
 				SelfHeal:StartSelfHeal(player, #pickedElements + 1) 	-- if only life is picked then self-healing
 			else
-				OmniPulses:OmniLifePulse(player, pickedElements) 	-- otherwise pulse of life
+				OmniPulses:OmniLifePulseSpell(player, pickedElements) 	-- otherwise pulse of life
 			end
 		else
 			OmniIceSpikes:OmniIceSpikes(player, ELEMENT_LIFE)
@@ -356,7 +356,7 @@ function Spells:OnMiddleDown(keys)
 		local waterInd = table.indexOf(pickedElements, ELEMENT_WATER)
 		local coldInd = table.indexOf(pickedElements, ELEMENT_COLD)
 		if not (waterInd and coldInd) then 		-- if not ice spikes
-			OmniPulses:OmniDeathPulse(player, pickedElements)
+			OmniPulses:OmniDeathPulseSpell(player, pickedElements)
 		else
 			OmniIceSpikes:OmniIceSpikes(player, ELEMENT_DEATH)
 		end
