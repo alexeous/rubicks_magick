@@ -447,9 +447,32 @@ function Spells:OnSpellsThink()
 		end		
 	end
 
-	for victim, damageInfos in pairs(Spells.damagePool) do
-		for attacker, damage in pairs(damageInfos) do	
-			ApplyDamage({ victim = victim, attacker = attacker, damage = damage, damage_type = DAMAGE_TYPE_PURE })
+	for victim, damageSources in pairs(Spells.damagePool) do
+		for attacker, damageRecords in pairs(damageSources) do
+			local sum = 0
+			for _, damageRecord in pairs(damageRecords) do
+				sum = sum + damageRecord.damage
+			end
+			ApplyDamage({ victim = victim, attacker = attacker, damage = sum, damage_type = DAMAGE_TYPE_PURE })
+
+			if victim:IsAlive() then
+				for _, damageRecord in pairs(damageRecords) do
+					local damage = damageRecord.damage
+					local element = damageRecord.element
+					local applyModifiers = damageRecord.applyModifiers
+
+					if applyModifiers then
+						if element == ELEMENT_WATER then
+							Spells:ApplyWet(victim, attacker)
+						elseif element == ELEMENT_COLD then
+							local value = math.ceil(damage / 20)
+							Spells:ApplyChill(victim, attacker, value)
+						elseif element == ELEMENT_FIRE then
+							Spells:ApplyBurn(victim, attacker, damage)
+						end
+					end
+				end
+			end
 		end
 	end
 	Spells.damagePool = {}
@@ -590,25 +613,14 @@ function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModif
 		victim:RemoveModifierByName("modifier_wet")
 	end
 	if damage > 0.5 then
+		local info = { damage = damage, element = element, applyModifiers = applyModifiers }
 		if Spells.damagePool[victim] == nil then
 			Spells.damagePool[victim] = {}
-			Spells.damagePool[victim][attacker] = damage
-		elseif Spells.damagePool[victim][attacker] == nil then
-			Spells.damagePool[victim][attacker] = damage
-		else
-			Spells.damagePool[victim][attacker] = damage + Spells.damagePool[victim][attacker]
 		end
-	end
-
-	if applyModifiers then
-		if element == ELEMENT_WATER then
-			Spells:ApplyWet(victim, attacker)
-		elseif element == ELEMENT_COLD then
-			local value = math.ceil(damage / 20)
-			Spells:ApplyChill(victim, attacker, value)
-		elseif element == ELEMENT_FIRE then
-			Spells:ApplyBurn(victim, attacker, damage)
+		if Spells.damagePool[victim][attacker] == nil then
+			Spells.damagePool[victim][attacker] = {}
 		end
+		table.insert(Spells.damagePool[victim][attacker], info)
 	end
 end
 
