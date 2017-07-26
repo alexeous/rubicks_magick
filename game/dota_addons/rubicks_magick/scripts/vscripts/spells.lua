@@ -447,6 +447,13 @@ function Spells:OnSpellsThink()
 		end		
 	end
 
+	for target, healInfos in pairs(Spells.healPool) do
+		for source, heal in pairs(healInfos) do
+			target:Heal(heal, source)
+			SendOverheadEventMessage(target, OVERHEAD_ALERT_HEAL, target, heal, target)
+		end
+	end
+	Spells.healPool = {}
 	for victim, damageSources in pairs(Spells.damagePool) do
 		for attacker, damageRecords in pairs(damageSources) do
 			local sum = 0
@@ -476,13 +483,6 @@ function Spells:OnSpellsThink()
 		end
 	end
 	Spells.damagePool = {}
-	for target, healInfos in pairs(Spells.healPool) do
-		for source, heal in pairs(healInfos) do
-			target:Heal(heal, source)
-			SendOverheadEventMessage(target, OVERHEAD_ALERT_HEAL, target, heal, target)
-		end
-	end
-	Spells.healPool = {}
 
 	return SPELLS_THINK_PERIOD
 end
@@ -715,6 +715,16 @@ function Spells:Heal(target, source, heal, ignoreLifeShield)
 			Spells.healPool[target][source] = heal
 		else
 			Spells.healPool[target][source] = heal + Spells.healPool[target][source]
+		end
+	end
+end
+
+function Spells:HealAoE(center, radius, source, heal, dontHealSource)
+	local unitsToHeal = FindUnitsInRadius(source:GetTeamNumber(), center, nil, radius, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_ALL,
+	    DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, true)
+	for _, unit in pairs(unitsToHeal) do
+		if not (unit == source and dontHealSource) then
+			Spells:Heal(unit, source, heal, false)
 		end
 	end
 end
