@@ -95,6 +95,7 @@ end
 function modifier_frozen:CheckState()
 	local state = {
 		[MODIFIER_STATE_FROZEN] = true,
+		[MODIFIER_STATE_STUNNED] = true,
 		[MODIFIER_STATE_INVULNERABLE] = true
 	} 
 	return state
