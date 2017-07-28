@@ -1,0 +1,13 @@
+<root>
+	<styles>
+		<include src="file://{resources}/styles/custom_game/spell_charging_bar.css" />
+	</styles>
+	<scripts>
+		<include src="file://{resources}/scripts/custom_game/spell_charging_bar.js" />
+	</scripts>
+	<Panel>
+		<Panel class="SpellChargingBar" />
+		<Panel id = "SpellChargingBarInside1" class="SpellChargingBarInside1" />
+		<Panel id = "SpellChargingBarInside2" class="SpellChargingBarInside2" />
+	</Panel>
+</root>
