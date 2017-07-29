@@ -18,7 +18,7 @@ function MoveController:Init()
 	CustomGameEventManager:RegisterListener("me_ld", Dynamic_Wrap(MoveController, "OnLeftDown"))
 	CustomGameEventManager:RegisterListener("me_lu", Dynamic_Wrap(MoveController, "OnLeftUp"))
 
-	Convars:RegisterCommand("+rm_stp",  function(...) return MoveController:StopMove(Convars:GetCommandClient()) end, "Stop move", 0)
+	CustomGameEventManager:RegisterListener("stop_mv", Dynamic_Wrap(MoveController, "OnSpacePressed"))
 end
 
 THINK_PERIOD = 0.03
@@ -104,6 +104,11 @@ function MoveController:OnEntityKilled(keys)
 	if killedUnit ~= nil and killedUnit:IsRealHero() then
 		MoveController:StopMove(killedUnit:GetPlayerOwner())
 	end
+end
+
+function MoveController:OnSpacePressed(keys)
+	local player = PlayerResource:GetPlayer(keys.playerID)
+	MoveController:StopMove(player)
 end
 
 function MoveController:StopMove(player)

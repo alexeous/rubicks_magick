@@ -48,14 +48,7 @@ function Elements:Precache(context)
 end
 
 function Elements:Init()
-	Convars:RegisterCommand("+rm_wtr",  function(...) return Elements:PickElement(ELEMENT_WATER) end, "Picked water element", 0)
-	Convars:RegisterCommand("+rm_lif",  function(...) return Elements:PickElement(ELEMENT_LIFE) end, "Picked life element", 0)
-	Convars:RegisterCommand("+rm_shld", function(...) return Elements:PickElement(ELEMENT_SHIELD) end, "Picked shield element", 0)
-	Convars:RegisterCommand("+rm_cld",  function(...) return Elements:PickElement(ELEMENT_COLD) end, "Picked cold element", 0)
-	Convars:RegisterCommand("+rm_ltg",  function(...) return Elements:PickElement(ELEMENT_LIGHTNING) end, "Picked lightning element", 0)
-	Convars:RegisterCommand("+rm_dth",  function(...) return Elements:PickElement(ELEMENT_DEATH) end, "Picked death element", 0)
-	Convars:RegisterCommand("+rm_ert",  function(...) return Elements:PickElement(ELEMENT_EARTH) end, "Picked earth element", 0)
-	Convars:RegisterCommand("+rm_fir",  function(...) return Elements:PickElement(ELEMENT_FIRE) end, "Picked fire element", 0)
+	CustomGameEventManager:RegisterListener("pick_el", Dynamic_Wrap(Elements, "PickElement"))
 
 	ListenToGameEvent("entity_killed", Dynamic_Wrap(Elements, "OnEntityKilled"), self)
 end
@@ -75,9 +68,9 @@ function Elements:OnEntityKilled(keys)
 	end
 end
 
-function Elements:PickElement(element)
-	local player = Convars:GetCommandClient()
-	
+function Elements:PickElement(keys)
+	local player = PlayerResource:GetPlayer(keys.playerID)
+
 	local heroEntity = player:GetAssignedHero()
 	local isAble = (heroEntity ~= nil) and (heroEntity:IsAlive()) and (not heroEntity:IsStunned()) and (not heroEntity:IsFrozen())
 	if not isAble then
@@ -85,14 +78,14 @@ function Elements:PickElement(element)
 	end
 
 	-- trying to find an opposite
-	local oppositeIndex = Elements:IndexOfOpposite(player, element)
+	local oppositeIndex = Elements:IndexOfOpposite(player, keys.element)
 	if oppositeIndex ~= nil then
 		Elements:RemoveElement(player, oppositeIndex)
 	else
 		-- trying to find an empty place for the new element
 		for i = 1, 3 do
 			if player.pickedElements[i] == nil then
-				Elements:AddElement(player, element, i)
+				Elements:AddElement(player, keys.element, i)
 				break
 			end
 		end

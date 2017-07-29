@@ -10,5 +10,6 @@
 	</script>
 	<Panel>
 		<CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/mouse_events_catcher.xml" />
+		<CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/keybinds.xml" />
 	</Panel>
 </root>
