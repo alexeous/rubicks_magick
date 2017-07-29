@@ -449,8 +449,12 @@ function Spells:OnSpellsThink()
 
 	for target, healInfos in pairs(Spells.healPool) do
 		for source, heal in pairs(healInfos) do
-			target:Heal(heal, source)
-			SendOverheadEventMessage(target, OVERHEAD_ALERT_HEAL, target, heal, target)
+			local healthShortage = target:GetMaxHealth() - target:GetHealth()
+			heal = math.min(heal, healthShortage)
+			if heal > 0 then
+				target:Heal(heal, source)
+				SendOverheadEventMessage(target, OVERHEAD_ALERT_HEAL, target, heal, target)
+			end
 		end
 	end
 	Spells.healPool = {}
