@@ -25,8 +25,8 @@ function cycle() {
 
 cycle();
 
-inside1.style.transition = "width 1800.0ms linear 0.0ms;";
+inside1.style.transition = "width 2000.0ms linear 0.0ms;";
 inside1.style.width = "100px";
 
-inside2.style.transition = "width 500.0ms linear 1800.0ms;";
+inside2.style.transition = "width 500.0ms linear 2000.0ms;";
 inside2.style.width = "100px";

@@ -551,6 +551,9 @@ function Spells:StopCasting(player)
 
 	if player.spellCast.castType == CAST_TYPE_CHARGING then
 		CustomUI:DynamicHud_Destroy(player:GetPlayerID(), "spell_charging_bar")
+		if player.spellCast.chargingParticleID ~= nil then
+			ParticleManager:DestroyParticle(player.spellCast.chargingParticleID, false)
+		end
 	end
 
 	if player.spellCast.endFunction ~= nil then

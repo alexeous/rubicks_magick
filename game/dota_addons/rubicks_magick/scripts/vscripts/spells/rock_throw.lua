@@ -14,11 +14,11 @@ end
 function RockThrow:StartRockThrow(player, modifierElements)
 	local spellCastTable = {
 		castType = CAST_TYPE_CHARGING,
-		duration = 2.3,
+		duration = 2.5,
 		castingGesture = ACT_DOTA_CHANNEL_ABILITY_5,
 		endFunction = function(player) RockThrow:ReleaseRock(player) end,
 		slowMovePercentage = 30,
-		--chargingParticle = ""
+		chargingParticle = "particles/rock_throw/charging_particle/charging_particle.vpcf"
 	}
 	Spells:StartCasting(player, spellCastTable)
 end
