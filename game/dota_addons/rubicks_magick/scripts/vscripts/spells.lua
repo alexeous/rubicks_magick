@@ -541,7 +541,7 @@ function Spells:StopCasting(player)
 	local heroEntity = player:GetAssignedHero()
 	if heroEntity ~= nil then
 		if player.spellCast.castingGesture ~= nil then
-			heroEntity:FadeGesture(player.spellCast.castingGesture)
+			EndAnimation(heroEntity)
 			if player.moveToPos ~= nil then
 				heroEntity:StartGesture(ACT_DOTA_RUN)
 			end
