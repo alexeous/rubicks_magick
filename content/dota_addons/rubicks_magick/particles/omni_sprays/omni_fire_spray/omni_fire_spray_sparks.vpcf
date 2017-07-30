@@ -46,6 +46,7 @@
 			m_flOverbrightFactor = 2.0
 			m_hTexture = resource:"materials/particle/spark_02.vtex"
 			m_flRadiusScale = 2.0
+			m_flFinalTextureScaleV = -1.0
 		},
 	]
 	m_Initializers = 
