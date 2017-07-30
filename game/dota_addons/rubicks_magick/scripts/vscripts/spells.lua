@@ -117,10 +117,10 @@ function Spells:OnLeftDown(keys)
 	local heroEntity = player:GetAssignedHero()
 
 	if heroEntity ~= nil then
-		if heroEntity:IsStunned() or not heroEntity:IsAlive() then
-			return
-		elseif heroEntity:IsFrozen() then 
+		if heroEntity:IsFrozen() then
 			heroEntity:FindModifierByName("modifier_frozen"):ReleaseProgress()
+			return
+		elseif heroEntity:IsStunned() or not heroEntity:IsAlive() then
 			return
 		end
 	end
