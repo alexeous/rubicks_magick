@@ -622,8 +622,7 @@ function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModif
 	if victim.shieldElements ~= nil then
 		local blockFactor = (blockPerShield ~= nil) and blockPerShield or 0.5
 		local portion = damage * blockFactor
-		if victim.shieldElements[1] == element then  damage = damage - portion  end
-		if victim.shieldElements[2] == element then  damage = damage - portion  end
+		damage = damage - portion * Spells:ResistanceLevelTo(victim, element)
 	end
 
 	if (element == ELEMENT_LIGHTNING) and victim:HasModifier("modifier_wet") and (not Spells:IsResistantTo(victim, ELEMENT_LIGHTNING)) then
@@ -645,8 +644,18 @@ end
 
 ------------------------- MODIFIERS APPLYING --------------------------
 
+function Spells:ResistanceLevelTo(target, element)
+	if target == nil or target.shieldElements == nil then
+		return 0
+	end
+	local result = 0
+	if target.shieldElements[1] == element then  result = result + 1  end
+	if target.shieldElements[2] == element then  result = result + 1  end
+	return result
+end
+
 function Spells:IsResistantTo(target, element)
-	return (target.shieldElements ~= nil) and (table.indexOf(target.shieldElements, element) ~= nil)
+	return Spells:ResistanceLevelTo(target, element) > 0
 end
 
 function Spells:ApplyWet(target, caster)
@@ -654,7 +663,7 @@ function Spells:ApplyWet(target, caster)
 		return
 	end
 
-	local wasBurning = Spells:Extinguish(target)
+	local wasBurning = Spells:ExtinguishWithWater(target)
 	if not wasBurning and not target:HasModifier("modifier_chill") then
 		target:AddNewModifier(caster, nil, "modifier_wet", {})
 	end
@@ -665,7 +674,7 @@ function Spells:ApplyChill(target, caster, power)
 		return
 	end
 
-	local wasBurning = Spells:Extinguish(target)
+	local wasBurning = Spells:ExtinguishWithCold(target)
 	if not wasBurning then
 		local currentChillModifier = target:FindModifierByName("modifier_chill")
 		if currentChillModifier ~= nil then
@@ -697,6 +706,9 @@ function Spells:ApplyBurn(target, caster, damage)
 end
 
 function Spells:DryAndWarm(target)
+	if target == nil or Spells:IsResistantTo(target, ELEMENT_FIRE) then
+		return false
+	end
 	if target:HasModifier("modifier_wet") then
 		target:RemoveModifierByName("modifier_wet")
 		return true
@@ -707,7 +719,21 @@ function Spells:DryAndWarm(target)
 	return false
 end
 
-function Spells:Extinguish(target)
+function Spells:ExtinguishWithWater(target)
+	if target == nil or Spells:IsResistantTo(target, ELEMENT_WATER) then
+		return false
+	end
+	if target:HasModifier("modifier_burn") then
+		target:RemoveModifierByName("modifier_burn")
+		return true
+	end
+	return false
+end
+
+function Spells:ExtinguishWithCold(target)
+	if target == nil or Spells:IsResistantTo(target, ELEMENT_COLD) then
+		return false
+	end
 	if target:HasModifier("modifier_burn") then
 		target:RemoveModifierByName("modifier_burn")
 		return true
@@ -721,8 +747,7 @@ end
 function Spells:Heal(target, source, heal, ignoreLifeShield)
 	if (target.shieldElements ~= nil) and not ignoreLifeShield then
 		local halfHeal = heal / 2
-		if target.shieldElements[1] == ELEMENT_LIFE then  heal = heal - halfHeal  end
-		if target.shieldElements[2] == ELEMENT_LIFE then  heal = heal - halfHeal  end
+		heal = heal - halfHeal * Spells:ResistanceLevelTo(target, ELEMENT_LIFE)
 	end
 
 	if heal > 0.5 then
