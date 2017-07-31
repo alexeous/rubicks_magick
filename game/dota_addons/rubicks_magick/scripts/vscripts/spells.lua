@@ -616,8 +616,8 @@ function Spells:ApplyElementDamageAoE(center, radius, attacker, element, damage,
 	end
 end
 
-function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModifiers, blockPerShield, ignoreInvulnerable)
-	if victim:IsInvulnerable() and not ignoreInvulnerable then
+function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModifiers, blockPerShield)
+	if victim:IsInvulnerable() then
 		return
 	end
 
