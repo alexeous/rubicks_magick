@@ -1,8 +1,8 @@
 
 table.indexOf = function(t, key)
-	for i = 1, #t do
-		if t[i] == key then
-			return i 
+	for k, v in pairs(t) do
+		if v == key then
+			return k 
 		end
 	end
 	return nil
