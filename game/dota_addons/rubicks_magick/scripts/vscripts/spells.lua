@@ -75,6 +75,8 @@ function Spells:Init()
 	CustomGameEventManager:RegisterListener("me_lu", Dynamic_Wrap(Spells, "OnLeftUp"))
 	CustomGameEventManager:RegisterListener("me_mu", Dynamic_Wrap(Spells, "OnMiddleUp"))
 	CustomGameEventManager:RegisterListener("me_rd", Dynamic_Wrap(Spells, "OnRightDown"))
+
+	RockThrow:Init()
 end
 
 function Spells:PlayerConnected(player)
@@ -442,7 +444,7 @@ function Spells:OnSpellsThink()
 			if time > player.spellCast.endTime then
 				Spells:StopCasting(player)
 			elseif player.spellCast.thinkFunction ~= nil then
-				pcall(player.spellCast.thinkFunction, player)
+				player.spellCast.thinkFunction(player)
 			end
 		end		
 	end
@@ -561,7 +563,7 @@ function Spells:StopCasting(player)
 	end
 
 	if player.spellCast.endFunction ~= nil then
-		pcall(player.spellCast.endFunction, player)
+		player.spellCast.endFunction(player)
 	end
 
 	player.spellCast = nil
@@ -614,16 +616,12 @@ function Spells:ApplyElementDamageAoE(center, radius, attacker, element, damage,
 	end
 end
 
-function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModifiers, blockPerShield)
-	if victim:IsInvulnerable() then
+function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModifiers, blockPerShield, ignoreInvulnerable)
+	if victim:IsInvulnerable() and not ignoreInvulnerable then
 		return
 	end
 
-	if victim.shieldElements ~= nil then
-		local blockFactor = (blockPerShield ~= nil) and blockPerShield or 0.5
-		local portion = damage * blockFactor
-		damage = damage - portion * Spells:ResistanceLevelTo(victim, element)
-	end
+	damage = Spells:GetDamageAfterShields(victim, damage, blockPerShield)
 
 	if (element == ELEMENT_LIGHTNING) and victim:HasModifier("modifier_wet") and (not Spells:IsResistantTo(victim, ELEMENT_LIGHTNING)) then
 		damage = damage * 2
@@ -639,6 +637,15 @@ function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModif
 		end
 		table.insert(Spells.damagePool[victim][attacker], info)
 	end
+end
+
+function Spells:GetDamageAfterShields(victim, damage, blockPerShield)
+	if victim.shieldElements ~= nil then
+		local blockFactor = (blockPerShield ~= nil) and blockPerShield or 0.5
+		local portion = damage * blockFactor
+		damage = damage - portion * Spells:ResistanceLevelTo(victim, element)
+	end
+	return damage
 end
 
 
