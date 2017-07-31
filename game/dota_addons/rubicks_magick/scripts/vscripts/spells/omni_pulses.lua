@@ -97,7 +97,7 @@ function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, modifierElemen
 		end
 	end
 
-	Spells:HealAoE(position, radius, caster, heal, true)
+	Spells:HealAoE(position, radius, caster, heal, ignoreCaster)
 
 	local particle = ParticleManager:CreateParticle("particles/omni_pulses/omni_life_pulse/omni_life_pulse.vpcf", PATTACH_CUSTOMORIGIN, nil)
 	radius = radius * 0.87
@@ -199,7 +199,7 @@ function OmniPulses:OmniDeathPulse(caster, position, ignoreCaster, modifierEleme
 		end
 	end
 
-	Spells:ApplyElementDamageAoE(position, radius, caster, ELEMENT_DEATH, damage * deathPart, true)
+	Spells:ApplyElementDamageAoE(position, radius, caster, ELEMENT_DEATH, damage * deathPart, ignoreCaster)
 	
 	local particle = ParticleManager:CreateParticle("particles/omni_pulses/omni_death_pulse/omni_death_pulse.vpcf", PATTACH_CUSTOMORIGIN, nil)
 	ParticleManager:SetParticleControl(particle, 0, position)
