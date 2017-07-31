@@ -1,0 +1,75 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+{
+	_class = "CParticleSystemDefinition"
+	m_controlPointConfigurations = 
+	[
+		{
+			m_name = "preview"
+			m_drivers = 
+			[
+				{
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ null, null, null ]
+					m_entityName = "self"
+				},
+			]
+		},
+	]
+	m_Operators = 
+	[
+		{
+			_class = "C_OP_BasicMovement"
+		},
+		{
+			_class = "C_OP_EndCapTimedDecay"
+		},
+		{
+			_class = "C_OP_PositionLock"
+		},
+	]
+	m_Renderers = 
+	[
+		{
+			_class = "C_OP_RenderSprites"
+			m_bAdditive = true
+			m_flOverbrightFactor = 2.0
+			m_hTexture = resource:"materials/particle/crystal/crystal.vtex"
+		},
+	]
+	m_Initializers = 
+	[
+		{
+			_class = "C_INIT_CreateWithinSphere"
+			m_fRadiusMin = 10.0
+			m_fRadiusMax = 10.0
+		},
+		{
+			_class = "C_INIT_RandomRadius"
+			m_flRadiusMin = 20.0
+			m_flRadiusMax = 30.0
+		},
+		{
+			_class = "C_INIT_RandomSequence"
+			m_nSequenceMax = 12
+		},
+		{
+			_class = "C_INIT_RandomRotation"
+		},
+	]
+	m_Emitters = 
+	[
+		{
+			_class = "C_OP_InstantaneousEmitter"
+			m_nParticlesToEmit = 10
+			m_nScaleControlPoint = 1
+			m_nScaleControlPointField = 2
+		},
+	]
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/rock_throw/rock_ice_trail.vpcf"
+		},
+	]
+}
