@@ -27,8 +27,8 @@
 		{
 			_class = "C_OP_VectorNoise"
 			m_nFieldOutput = 0
-			m_vecOutputMin = [ -50.0, -50.0, -10.0 ]
-			m_vecOutputMax = [ 50.0, 50.0, 10.0 ]
+			m_vecOutputMin = [ -150.0, -150.0, -10.0 ]
+			m_vecOutputMax = [ 150.0, 150.0, 10.0 ]
 			m_fl4NoiseScale = 1.0
 			m_bAdditive = true
 		},
@@ -72,19 +72,20 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 3.0
-			m_flRadiusMax = 7.0
+			m_flRadiusMin = 2.0
+			m_flRadiusMax = 4.0
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 1.0
-			m_fLifetimeMax = 1.5
+			m_fLifetimeMin = 0.8
+			m_fLifetimeMax = 1.0
 		},
 	]
 	m_Emitters = 
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
+			m_nParticlesToEmit = 200
 		},
 	]
 }
