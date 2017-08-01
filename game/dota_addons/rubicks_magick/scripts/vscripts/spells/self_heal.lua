@@ -18,6 +18,7 @@ function SelfHeal:StartSelfHeal(player, power)
 		dontMoveWhileCasting = true,
 		castingGesture = ACT_DOTA_CHANNEL_ABILITY_5,
 		thinkFunction = function(player) SelfHeal:SelfHealThink(player) end,
+		thinkPeriod = 0.5,
 		endFunction = function(player) SelfHeal:SelfHealEnd(player) end,
 		selfHeal_ExpMultiplier = 0.3 + power * 0.07,
 		selfHeal_BaseHeal = 33 * power,
@@ -40,11 +41,7 @@ function SelfHeal:StartSelfHeal(player, power)
 end
 
 function SelfHeal:SelfHealThink(player)
-	local time = GameRules:GetGameTime()
-	if time - player.spellCast.selfHeal_LastTime >= 0.5 then
-		player.spellCast.selfHeal_LastTime = time
-		SelfHeal:DoHeal(player)
-	end
+	SelfHeal:DoHeal(player)
 end
 
 function SelfHeal:SelfHealEnd(player)

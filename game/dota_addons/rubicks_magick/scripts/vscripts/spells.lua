@@ -77,6 +77,7 @@ function Spells:Init()
 	CustomGameEventManager:RegisterListener("me_rd", Dynamic_Wrap(Spells, "OnRightDown"))
 
 	RockThrow:Init()
+	ElementSprays:Init()
 end
 
 function Spells:PlayerConnected(player)
@@ -444,7 +445,11 @@ function Spells:OnSpellsThink()
 			if time > player.spellCast.endTime then
 				Spells:StopCasting(player)
 			elseif player.spellCast.thinkFunction ~= nil then
-				player.spellCast.thinkFunction(player)
+				local time = GameRules:GetGameTime()
+				if player.spellCast.thinkPeriod == nil or time - player.spellCast.lastThinkTime >= player.spellCast.thinkPeriod then
+					player.spellCast.thinkFunction(player)
+					player.spellCast.lastThinkTime = time
+				end
 			end
 		end		
 	end
@@ -504,6 +509,7 @@ end
 function Spells:StartCasting(player, infoTable)
 	infoTable.startTime = GameRules:GetGameTime()
 	infoTable.endTime = infoTable.startTime + infoTable.duration
+	infoTable.lastThinkTime = GameRules:GetGameTime()
 	player.spellCast = infoTable
 
 	local heroEntity = player:GetAssignedHero()
