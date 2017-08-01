@@ -70,6 +70,8 @@ function Spells:Init()
 
 	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(Spells, "OnSpellsThink"), "OnSpellsThink", 2)
 
+	ListenToGameEvent("entity_killed", Dynamic_Wrap(Spells, "OnEntityKilled"), self)
+
 	CustomGameEventManager:RegisterListener("me_ld", Dynamic_Wrap(Spells, "OnLeftDown"))
 	CustomGameEventManager:RegisterListener("me_md", Dynamic_Wrap(Spells, "OnMiddleDown"))
 	CustomGameEventManager:RegisterListener("me_lu", Dynamic_Wrap(Spells, "OnLeftUp"))
@@ -99,6 +101,15 @@ function Spells:PlayerConnected(player)
 	OmniIceSpikes:PlayerConnected(player)
 end
 
+function Spells:OnEntityKilled(keys)
+	local killedUnit = EntIndexToHScript(keys.entindex_killed)
+	if killedUnit ~= nil and killedUnit:IsRealHero() then
+		local player = killedUnit:GetPlayerOwner()
+		if player ~= nil then
+			Spells:StopCasting(player)
+		end
+	end
+end
 
 ---------------------- RIGHT MOUSE DOWN ------------------------------
 
