@@ -9,6 +9,7 @@ end
 
 function Precache(context)
 	PrecacheUnitByNameSync("npc_dota_hero_rubick_rubicks_magick", context)
+	PrecacheUnitByNameSync("npc_dummy_blank", context)
 
 	MoveController:Precache(context)
 	Elements:Precache(context)

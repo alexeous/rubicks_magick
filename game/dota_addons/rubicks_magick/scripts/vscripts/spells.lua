@@ -533,7 +533,7 @@ function Spells:StartCasting(player, infoTable)
 		end
 
 		if player.spellCast.castType == CAST_TYPE_CHARGING then
-			CustomUI:DynamicHud_Create(player:GetPlayerID(), "spell_charging_bar", "file://{resources}/layout/custom_game/spell_charging_bar.xml", nil)
+			CustomGameEventManager:Send_ServerToPlayer(player, "rm_cb_e", {})
 			if player.spellCast.chargingParticle ~= nil then
 				player.spellCast.chargingParticleID = ParticleManager:CreateParticle(player.spellCast.chargingParticle, PATTACH_ABSORIGIN_FOLLOW, heroEntity)
 			end
@@ -562,7 +562,7 @@ function Spells:StopCasting(player)
 	end
 
 	if player.spellCast.castType == CAST_TYPE_CHARGING then
-		CustomUI:DynamicHud_Destroy(player:GetPlayerID(), "spell_charging_bar")
+		CustomGameEventManager:Send_ServerToPlayer(player, "rm_cb_d", {})
 		if player.spellCast.chargingParticleID ~= nil then
 			ParticleManager:DestroyParticle(player.spellCast.chargingParticleID, false)
 		end
