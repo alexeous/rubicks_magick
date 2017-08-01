@@ -627,7 +627,7 @@ function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModif
 		return
 	end
 
-	damage = Spells:GetDamageAfterShields(victim, damage, blockPerShield)
+	damage = Spells:GetDamageAfterShields(victim, damage, element, blockPerShield)
 
 	if (element == ELEMENT_LIGHTNING) and victim:HasModifier("modifier_wet") and (not Spells:IsResistantTo(victim, ELEMENT_LIGHTNING)) then
 		damage = damage * 2
@@ -645,9 +645,9 @@ function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModif
 	end
 end
 
-function Spells:GetDamageAfterShields(victim, damage, blockPerShield)
+function Spells:GetDamageAfterShields(victim, damage, element, blockPerShield)
 	if victim.shieldElements ~= nil then
-		local blockFactor = (blockPerShield ~= nil) and blockPerShield or 0.5
+		local blockFactor = blockPerShield or 0.5
 		local portion = damage * blockFactor
 		damage = damage - portion * Spells:ResistanceLevelTo(victim, element)
 	end

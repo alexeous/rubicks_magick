@@ -209,7 +209,7 @@ function RockThrow:OnRockThink()
 								break
 							end
 						else
-							local damageAfterShields = Spells:GetDamageAfterShields(unit, damage)
+							local damageAfterShields = Spells:GetDamageAfterShields(unit, damage, ELEMENT_EARTH)
 							if rockDummy.rockSize == 3 and unit:GetHealth() - damageAfterShields <= 0 then
 								Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damageAfterShields, false)
 							else
