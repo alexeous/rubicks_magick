@@ -29,12 +29,15 @@ function MoveController:OnMoveHeroesThink()
 			local heroEntity = player:GetAssignedHero()
 			local isAble = (heroEntity ~= nil) and (heroEntity:IsAlive()) and (not heroEntity:IsStunned()) and (not heroEntity:IsFrozen())
 			local dontMoveWhileCasting = player.spellCast ~= nil and player.spellCast.dontMoveWhileCasting
-			if isAble and not dontMoveWhileCasting and player.moveToPos ~= nil then
-				local moveStep = heroEntity:GetIdealSpeed() * THINK_PERIOD
-				if player.moveToClearPos ~= nil then
-					MoveController:MoveTowardsClearPos(player, heroEntity, moveStep * 2)
-				else
-					MoveController:MoveTowardsMoveToPos(player, heroEntity, moveStep)
+			if isAble and not dontMoveWhileCasting then
+				MoveController:HeroLookAt(heroEntity, player.cursorPos)
+				if player.moveToPos ~= nil then
+					local moveStep = heroEntity:GetIdealSpeed() * THINK_PERIOD
+					if player.moveToClearPos ~= nil then
+						MoveController:MoveTowardsClearPos(player, heroEntity, moveStep * 2)
+					else
+						MoveController:MoveTowardsMoveToPos(player, heroEntity, moveStep)
+					end
 				end
 			end
 		end
@@ -97,6 +100,7 @@ end
 function MoveController:PlayerConnected(player)
 	player.rightDown = false;
     player.leftDown = false;
+    player.cursorPos = Vector(0, 0, 0)
 end
 
 function MoveController:OnEntityKilled(keys)
@@ -124,13 +128,17 @@ end
 
 function MoveController:HeroLookAt(heroEntity, targetPos)
 	if heroEntity ~= nil then
-		targetPos.z = heroEntity:GetAbsOrigin().z
-		local oldForward = heroEntity:GetForwardVector()
-		local forward = targetPos - heroEntity:GetAbsOrigin()
-		if #forward < 1 then 	-- prevent from zero-vector
-			forward = oldForward 
+		local yaw = heroEntity:GetAngles().y
+		local targetYaw = VectorToAngles(targetPos - heroEntity:GetAbsOrigin()).y
+
+		local player = heroEntity:GetPlayerOwner()
+		if player ~= nil and player.spellCast ~= nil and player.spellCast.turnDegsPerSec ~= nil then
+			local clampValue = player.spellCast.turnDegsPerSec * THINK_PERIOD
+			local diff = AngleDiff(targetYaw, yaw)
+			targetYaw = yaw + math.max(-clampValue, math.min(diff, clampValue))
 		end
-		heroEntity:SetForwardVector(forward)
+
+		heroEntity:SetAngles(0, targetYaw, 0)
 	end
 end
 
@@ -141,9 +149,6 @@ function MoveController:OnMouseMove(keys)
 	if isAble then
 		player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
 		local dontMoveWhileCasting = player.spellCast ~= nil and player.spellCast.dontMoveWhileCasting
-		if not dontMoveWhileCasting then
-			MoveController:HeroLookAt(heroEntity, player.cursorPos)
-		end
 		if player.rightDown then
 			local dontChangeGesture = player.spellCast ~= nil and player.spellCast.castingGesture ~= nil
 			if player.moveToPos == nil and not dontChangeGesture and not dontMoveWhileCasting then
@@ -168,7 +173,6 @@ function MoveController:OnRightDown(keys)
 			heroEntity:StartGesture(ACT_DOTA_RUN)
 		end
 		player.moveToPos = player.cursorPos
-		MoveController:HeroLookAt(heroEntity, player.cursorPos)
 		MoveController:ShowMoveToParticle(player, player.cursorPos)
 	end
 end
@@ -184,7 +188,6 @@ function MoveController:OnLeftDown(keys)
 	if isAble then
 		player.leftDown = true
 		player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
-		MoveController:HeroLookAt(heroEntity, player.cursorPos)
 	end
 end
 
