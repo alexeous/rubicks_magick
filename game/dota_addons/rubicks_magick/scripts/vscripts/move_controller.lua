@@ -30,7 +30,9 @@ function MoveController:OnMoveHeroesThink()
 			local isAble = (heroEntity ~= nil) and (heroEntity:IsAlive()) and (not heroEntity:IsStunned()) and (not heroEntity:IsFrozen())
 			local dontMoveWhileCasting = player.spellCast ~= nil and player.spellCast.dontMoveWhileCasting
 			if isAble and not dontMoveWhileCasting then
-				MoveController:HeroLookAt(heroEntity, player.cursorPos)
+				if player.cursorPos ~= nil then
+					MoveController:HeroLookAt(heroEntity, player.cursorPos)
+				end
 				if player.moveToPos ~= nil then
 					local moveStep = heroEntity:GetIdealSpeed() * THINK_PERIOD
 					if player.moveToClearPos ~= nil then
@@ -98,9 +100,8 @@ end
 
 
 function MoveController:PlayerConnected(player)
-	player.rightDown = false;
-    player.leftDown = false;
-    player.cursorPos = Vector(0, 0, 0)
+	player.rightDown = false
+    player.leftDown = false
 end
 
 function MoveController:OnEntityKilled(keys)
