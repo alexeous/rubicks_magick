@@ -5,7 +5,6 @@ if RockThrow == nil then
 end
 
 function RockThrow:Precache(context)
-	LinkLuaModifier("modifier_dummy", "modifiers/modifier_dummy.lua", LUA_MODIFIER_MOTION_NONE)
 	PrecacheResource("paritcle_folder", "particles/rock_throw", context)
 	PrecacheResource("paritcle_folder", "particles/rock_throw/charging_particle", context)
 	PrecacheResource("model", "models/particle/meteor.vmdl", context)
@@ -154,20 +153,16 @@ function RockThrow:ReleaseRock(player)
 	end
 
 	local rockRadius = rockSize * 8 + 4
+	local distance = ROCK_FLY_DISTANCES[rockSize] * disatnceFactor
 	local startOrigin = caster:GetAbsOrigin() + Vector(0, 0, ROCK_START_HEIGHT + rockRadius)
-	local rockDummy = CreateUnitByName("npc_dummy_blank", startOrigin, false, caster, caster, caster:GetTeam())
-	rockDummy:SetAbsOrigin(startOrigin)
-	rockDummy.startOrigin = startOrigin
-	rockDummy:AddNewModifier(rockDummy, nil, "modifier_dummy", {})
+	local rockDummy = Dummy:Create(startOrigin, caster)
 	rockDummy.caster = caster
-	rockDummy.radius = rockRadius
-	rockDummy.distance = ROCK_FLY_DISTANCES[rockSize] * disatnceFactor
 	rockDummy.time = 0.0
-	rockDummy.moveStep = caster:GetForwardVector():Normalized() * (rockDummy.distance * (ROCK_THINK_PERIOD / ROCK_FLY_TIME))
+	rockDummy.startZ = startOrigin.z
+	rockDummy.moveStep = caster:GetForwardVector():Normalized() * (distance * (ROCK_THINK_PERIOD / ROCK_FLY_TIME))
 	rockDummy.moveStep.z = 0
 	rockDummy.rockSize = rockSize
 	rockDummy.rockDamage = rockDamage
-	rockDummy.earthOnly = earthOnly
 	rockDummy.onImpactFunction = onImpactFunction
 	local particle = ParticleManager:CreateParticle("particles/rock_throw/rock.vpcf", PATTACH_ABSORIGIN_FOLLOW, rockDummy)
 	ParticleManager:SetParticleControl(particle, 1, Vector(rockSize, earthOnly and 1 or 0, ice))
@@ -187,7 +182,7 @@ function RockThrow:OnRockThink()
 
 			local oldOrigin = origin
 			origin = origin + rockDummy.moveStep
-			origin.z = rockDummy.startOrigin.z - ROCK_FALL_G_CONST * rockDummy.time * rockDummy.time / 2
+			origin.z = rockDummy.startZ - ROCK_FALL_G_CONST * rockDummy.time * rockDummy.time / 2
 			rockDummy:SetAbsOrigin(origin)
 			
 			local caster = rockDummy.caster

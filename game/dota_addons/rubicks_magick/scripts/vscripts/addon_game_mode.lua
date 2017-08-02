@@ -1,6 +1,7 @@
 
 require("move_controller")
 require("elements")
+require("dummy")
 require("spells")
 
 if RubicksMagickGameMode == nil then
@@ -9,10 +10,10 @@ end
 
 function Precache(context)
 	PrecacheUnitByNameSync("npc_dota_hero_rubick_rubicks_magick", context)
-	PrecacheUnitByNameSync("npc_dummy_blank", context)
 
 	MoveController:Precache(context)
 	Elements:Precache(context)
+	Dummy:Precache(context)
 	Spells:Precache(context)
 end
 
