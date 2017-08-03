@@ -202,6 +202,7 @@ function RockThrow:OnRockThink()
 								unit:RemoveModifierByName("modifier_frozen")
 								Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage * 4, false, 0.0, true)
 							else
+								rockDummy:SetAbsOrigin(unit:GetAbsOrigin())
 								RockThrow:ImpactRock(rockDummy)
 								break
 							end
@@ -210,6 +211,7 @@ function RockThrow:OnRockThink()
 							if rockDummy.rockSize == 3 and unit:GetHealth() - damageAfterShields <= 0 then
 								Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damageAfterShields, false)
 							else
+								rockDummy:SetAbsOrigin(unit:GetAbsOrigin())
 								RockThrow:ImpactRock(rockDummy)
 								break
 							end
