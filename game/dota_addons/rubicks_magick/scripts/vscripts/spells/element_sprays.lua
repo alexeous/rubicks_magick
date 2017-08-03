@@ -4,14 +4,16 @@ if ElementSprays == nil then
 	ElementSprays = class({})
 end
 
-function ElementSprays:Precache(context)
+function ElementSprays:Precache(context)	
+	PrecacheResource("particle_folder", "particles/element_sprays/steam_spray", context)
+	PrecacheResource("particle_folder", "particles/element_sprays/fire_spray", context)
 end
 
 function ElementSprays:PlayerConnected(player)
 
 end
 
-ELEMENT_SPRAY_DISTANCES = { 260, 450, 600 }
+ELEMENT_SPRAY_DISTANCES = { 250, 450, 650 }
 ELEMENT_SPRAY_THINK_PERIOD = 0.05
 ELEMENT_SPRAY_MOVE_SPEED = 720
 ELEMENT_SPRAY_MOVE_STEP = ELEMENT_SPRAY_MOVE_SPEED * ELEMENT_SPRAY_THINK_PERIOD
@@ -25,7 +27,41 @@ end
 function ElementSprays:StartSteamSpray(player, modifierElement)
 	local isWet = modifierElement == ELEMENT_WATER
 	local damage = (modifierElement == ELEMENT_FIRE) and 60 or 30
+	local distance = ELEMENT_SPRAY_DISTANCES[1]
 	local heroEntity = player:GetAssignedHero()
+	local onTouchFunction = function(unit)
+		Spells:ApplyElementDamage(unit, heroEntity, ELEMENT_WATER, damage / 2, isWet, 1.0)
+		Spells:ApplyElementDamage(unit, heroEntity, ELEMENT_FIRE, damage / 2, false, 1.0)
+	end
+	local particle = ParticleManager:CreateParticle("particles/element_sprays/steam_spray/steam_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, heroEntity)
+	ParticleManager:SetParticleControl(particle, 2, Vector(isWet and 1 or 0, 0, 0))
+	ElementSprays:StartElementSprayCasting(player, distance, onTouchFunction, particle, 110)
+end
+
+function ElementSprays:StartWaterSpray(player, power)
+	-------- TODO ---------
+end
+
+function ElementSprays:StartFireSpray(player, power)
+	local damage = power * 15
+	local distance = ELEMENT_SPRAY_DISTANCES[power]
+	local heroEntity = player:GetAssignedHero()
+	local onTouchFunction = function(unit)
+		Spells:ApplyElementDamage(unit, heroEntity, ELEMENT_FIRE, damage, true)
+	end
+	local radius = 90 + power * 25
+	local particle = ParticleManager:CreateParticle("particles/element_sprays/fire_spray/fire_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, heroEntity)
+	ParticleManager:SetParticleControl(particle, 1, Vector(1 + power * 0.5, 0, 0))
+	ParticleManager:SetParticleControl(particle, 2, Vector(0.2 + power * 0.8, 0, 0))
+	ElementSprays:StartElementSprayCasting(player, distance, onTouchFunction, particle, radius)
+end
+
+function ElementSprays:StartColdSpray(player, power)
+	-------- TODO ---------
+end
+
+
+function ElementSprays:StartElementSprayCasting(player, distance, onTouchFunction, particle, radius)
 	local spellCastTable = {
 		castType = CAST_TYPE_CONTINUOUS,
 		duration = 5.0,
@@ -36,40 +72,23 @@ function ElementSprays:StartSteamSpray(player, modifierElement)
 		castingGestureRate = 1.5,
 		thinkFunction = function(player) ElementSprays:SpawnSprayDummy(player) end,
 		thinkPeriod = 0.3,
-		elementSprays_Distance = ELEMENT_SPRAY_DISTANCES[1],
-		elementSprays_OnTouchFunction = function(unit)
-			Spells:ApplyElementDamage(unit, heroEntity, ELEMENT_WATER, damage / 2, isWet, 1.0)
-			Spells:ApplyElementDamage(unit, heroEntity, ELEMENT_FIRE, damage / 2, false, 1.0)
-		end,
+		elementSprays_Distance = distance,
+		elementSprays_Radius = radius,
+		elementSprays_OnTouchFunction = onTouchFunction,
+		particle = particle,
 		endFunction = function(player) ParticleManager:DestroyParticle(player.spellCast.particle, false) end
 	}
-	local particle = ParticleManager:CreateParticle("particles/element_sprays/steam_spray/steam_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, heroEntity)
-	ParticleManager:SetParticleControl(particle, 2, Vector(isWet and 1 or 0, 0, 0))
-	spellCastTable.particle = particle
 	Spells:StartCasting(player, spellCastTable)
-	ElementSprays:SpawnSprayDummy(player)
 end
-
-function ElementSprays:StartWaterSpray(player, power)
-	-------- TODO ---------
-end
-
-function ElementSprays:StartFireSpray(player, power)
-	-------- TODO ---------
-end
-
-function ElementSprays:StartColdSpray(player, power)
-	-------- TODO ---------
-end
-
 
 function ElementSprays:SpawnSprayDummy(player)
 	local heroEntity = player:GetAssignedHero()
 	local position = heroEntity:GetAbsOrigin() + heroEntity:GetForwardVector():Normalized() * 60 + Vector(0, 0, 100)
-	local duration = player.spellCast.elementSprays_Distance / ELEMENT_SPRAY_MOVE_SPEED
 	local sprayDummy = Dummy:Create(position, heroEntity)
 	sprayDummy.caster = heroEntity
-	sprayDummy.endTime = GameRules:GetGameTime() + duration
+	sprayDummy.startTime = GameRules:GetGameTime()
+	sprayDummy.duration = player.spellCast.elementSprays_Distance / ELEMENT_SPRAY_MOVE_SPEED
+	sprayDummy.radius = player.spellCast.elementSprays_Radius
 	sprayDummy.moveStep = heroEntity:GetForwardVector():Normalized() * ELEMENT_SPRAY_MOVE_STEP
 	sprayDummy.touchedUnits = {}
 	sprayDummy.onTouchFunction = player.spellCast.elementSprays_OnTouchFunction
@@ -77,8 +96,9 @@ function ElementSprays:SpawnSprayDummy(player)
 end
 
 function ElementSprays:OnElementSprayThink()
+	local time = GameRules:GetGameTime()
 	for _, sprayDummy in pairs(ElementSprays.sprayDummiesList) do
-		if GameRules:GetGameTime() > sprayDummy.endTime then
+		if time > sprayDummy.startTime + sprayDummy.duration then
 			ElementSprays:DestroySprayDummy(sprayDummy)
 		else
 			local origin = sprayDummy:GetAbsOrigin() + sprayDummy.moveStep
@@ -88,7 +108,9 @@ function ElementSprays:OnElementSprayThink()
 			if next(trees) ~= nil then
 				ElementSprays:DestroySprayDummy(sprayDummy)
 			else
-				local unitsTouched = FindUnitsInRadius(sprayDummy.caster:GetTeamNumber(), origin, nil, 100, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_ALL, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, true)
+				local timeFactor = (time - sprayDummy.startTime) / sprayDummy.duration
+				local radius = sprayDummy.radius * (0.4 + 0.6 * timeFactor)
+				local unitsTouched = FindUnitsInRadius(sprayDummy.caster:GetTeamNumber(), origin, nil, radius, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_ALL, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, true)
 				for _, unit in pairs(unitsTouched) do
 					if unit ~= sprayDummy.caster and not sprayDummy.touchedUnits[unit] then
 						sprayDummy.touchedUnits[unit] = true

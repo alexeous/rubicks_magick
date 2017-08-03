@@ -92,11 +92,15 @@
 			m_fLifetimeMin = 0.8
 			m_fLifetimeMax = 0.8
 		},
+		{
+			_class = "C_INIT_InheritVelocity"
+		},
 	]
 	m_Emitters = 
 	[
 		{
 			_class = "C_OP_ContinuousEmitter"
+			m_flStartTime = 0.1
 		},
 	]
 }
