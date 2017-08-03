@@ -162,6 +162,7 @@ function RockThrow:ReleaseRock(player)
 	rockDummy.moveStep = caster:GetForwardVector():Normalized() * (distance * (ROCK_THINK_PERIOD / ROCK_FLY_TIME))
 	rockDummy.moveStep.z = 0
 	rockDummy.rockSize = rockSize
+	rockDummy.collisionRadius = rockSize * 15 + 15
 	rockDummy.rockDamage = rockDamage
 	rockDummy.onImpactFunction = onImpactFunction
 	local particle = ParticleManager:CreateParticle("particles/rock_throw/rock.vpcf", PATTACH_ABSORIGIN_FOLLOW, rockDummy)
@@ -186,12 +187,12 @@ function RockThrow:OnRockThink()
 			rockDummy:SetAbsOrigin(origin)
 			
 			local caster = rockDummy.caster
-			local trees = GridNav:GetAllTreesAroundPoint(origin, 40, true)
+			local trees = GridNav:GetAllTreesAroundPoint(origin, rockDummy.collisionRadius, true)
 			if next(trees) ~= nil then
 				RockThrow:ImpactRock(rockDummy)
 			else
 				local damage = rockDummy.rockDamage
-				local unitsTouched = FindUnitsInLine(caster:GetTeamNumber(), oldOrigin, origin, nil, 40, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_ALL, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
+				local unitsTouched = FindUnitsInLine(caster:GetTeamNumber(), oldOrigin, origin, nil, rockDummy.collisionRadius, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_ALL, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
 				for _, unit in pairs(unitsTouched) do
 					if unit ~= rockDummy and unit ~= caster then
 						if unit:IsFrozen() then
@@ -199,7 +200,6 @@ function RockThrow:OnRockThink()
 								unit:RemoveModifierByName("modifier_frozen")
 								Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage * 4, false, 0.0, true)
 							else
-								rockDummy:SetAbsOrigin(unit:GetAbsOrigin())
 								RockThrow:ImpactRock(rockDummy)
 								break
 							end
@@ -208,7 +208,6 @@ function RockThrow:OnRockThink()
 							if rockDummy.rockSize == 3 and unit:GetHealth() - damageAfterShields <= 0 then
 								Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damageAfterShields, false)
 							else
-								rockDummy:SetAbsOrigin(unit:GetAbsOrigin())
 								RockThrow:ImpactRock(rockDummy)
 								break
 							end
@@ -229,7 +228,7 @@ function RockThrow:ImpactRock(rockDummy)
 	if rockDummy.onImpactFunction ~= nil then
 		rockDummy.onImpactFunction(origin)
 	end
-	Spells:ApplyElementDamageAoE(origin, 30, rockDummy.caster, ELEMENT_EARTH, rockDummy.rockDamage, true, false)
+	Spells:ApplyElementDamageAoE(origin, rockDummy.collisionRadius + 10, rockDummy.caster, ELEMENT_EARTH, rockDummy.rockDamage, true, false)
 	ParticleManager:SetParticleControl(rockDummy.particle, 0, origin)
 	ParticleManager:DestroyParticle(rockDummy.particle, false)
 	Timers:CreateTimer(2.0, function() rockDummy:Destroy() end)
