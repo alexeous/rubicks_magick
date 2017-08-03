@@ -23,7 +23,7 @@ function OmniPulses:OmniLifePulseSpell(player, modifierElements)
 	Spells:StartCasting(player, spellCastTable)
 
 	local heroEntity = player:GetAssignedHero()
-	OmniPulses:OmniLifePulse(heroEntity, heroEntity:GetAbsOrigin(), true, modifierElements, 1.0)
+	OmniPulses:OmniLifePulse(heroEntity, heroEntity:GetAbsOrigin(), true, modifierElements)
 end
 
 function OmniPulses:OmniDeathPulseSpell(player, modifierElements)
@@ -38,25 +38,27 @@ function OmniPulses:OmniDeathPulseSpell(player, modifierElements)
 	Spells:StartCasting(player, spellCastTable)
 
 	local heroEntity = player:GetAssignedHero()
-	OmniPulses:OmniDeathPulse(heroEntity, heroEntity:GetAbsOrigin(), true, modifierElements, 1.0)
+	OmniPulses:OmniDeathPulse(heroEntity, heroEntity:GetAbsOrigin(), true, modifierElements)
 end
 
-function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, modifierElements, factor)
-	local radius = OMNI_SPELLS_RADIUSES[1] * factor
-	local heal = 100 * factor
+function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, modifierElements, radiusFactor, healFactor)
+	radiusFactor = radiusFactor or 1.0
+	healFactor = healFactor or 1.0
+	local radius = OMNI_SPELLS_RADIUSES[1] * radiusFactor
+	local heal = 100 * healFactor
 	local modifierDamage = 0
 
 	local lifeInd = table.indexOf(modifierElements, ELEMENT_LIFE)
 	if lifeInd ~= nil then
 		table.remove(modifierElements, lifeInd)
 
-		radius = OMNI_SPELLS_RADIUSES[2] * factor
-		heal = 160 * factor
+		radius = OMNI_SPELLS_RADIUSES[2] * radiusFactor
+		heal = 160 * healFactor
 		if modifierElements[1] == ELEMENT_FIRE then
-			modifierDamage = 20 * factor
+			modifierDamage = 20 * healFactor
 			OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, modifierDamage)
 		elseif modifierElements[1] == ELEMENT_COLD then
-			modifierDamage = 20 * factor
+			modifierDamage = 20 * healFactor
 			OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, modifierDamage)
 		elseif modifierElements[1] == ELEMENT_WATER then
 			OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, false, false)
@@ -67,13 +69,11 @@ function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, modifierElemen
 			table.remove(modifierElements, fireInd)
 			
 			if modifierElements[1] == ELEMENT_WATER then
-				modifierDamage = 50 * factor
+				modifierDamage = 50 * healFactor
 				OmniElementSprays:OmniSteamSpray(caster, position, radius, ignoreCaster, modifierDamage, false)
 			else
-				modifierDamage = 20 * factor
-				if modifierElements[1] == ELEMENT_FIRE then
-					modifierDamage = 40 * factor
-				end
+				modifierDamage = 20 * healFactor
+				if modifierElements[1] == ELEMENT_FIRE then  modifierDamage = 40 * healFactor  end
 				OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, modifierDamage)
 			end
 		else
@@ -89,8 +89,8 @@ function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, modifierElemen
 				if coldInd ~= nil then
 					table.remove(modifierElements, coldInd)
 
-					modifierDamage = 20 * factor
-					if modifierElements[1] == ELEMENT_COLD then  modifierDamage = 40 * factor  end
+					modifierDamage = 20 * healFactor
+					if modifierElements[1] == ELEMENT_COLD then  modifierDamage = 40 * healFactor  end
 					OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, modifierDamage)
 				end
 			end
@@ -106,9 +106,11 @@ function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, modifierElemen
 	ParticleManager:SetParticleControl(particle, 2, Vector(radius / 250 + 0.2, 0, 0))	
 end
 
-function OmniPulses:OmniDeathPulse(caster, position, ignoreCaster, modifierElements, factor)
-	local radius = OMNI_SPELLS_RADIUSES[1] * factor
-	local damage = 100 * factor
+function OmniPulses:OmniDeathPulse(caster, position, ignoreCaster, modifierElements, radiusFactor, damageFactor)
+	radiusFactor = radiusFactor or 1.0
+	damageFactor = damageFactor or 1.0
+	local radius = OMNI_SPELLS_RADIUSES[1] * radiusFactor
+	local damage = 100 * damageFactor
 	local deathPart = 0.33
 	local color = Vector(255, 0, 0)
 	local deathOnly = true
@@ -117,26 +119,26 @@ function OmniPulses:OmniDeathPulse(caster, position, ignoreCaster, modifierEleme
 	if deathInd ~= nil then
 		table.remove(modifierElements, deathInd)
 		deathPart = 0.67
-		damage = damage + 50 * factor
-		radius = OMNI_SPELLS_RADIUSES[2] * factor
+		damage = damage + 50 * damageFactor
+		radius = OMNI_SPELLS_RADIUSES[2] * radiusFactor
 		if modifierElements[1] == ELEMENT_DEATH then
 			modifierElements[1] = nil
 			deathPart = 1.0
-			radius = OMNI_SPELLS_RADIUSES[3] * factor
-			damage = damage + 50 * factor
+			radius = OMNI_SPELLS_RADIUSES[3] * radiusFactor
+			damage = damage + 50 * damageFactor
 		elseif modifierElements[1] == ELEMENT_FIRE then
-			damage = damage + 75 * factor
+			damage = damage + 75 * damageFactor
 			color = Vector(255, 100, 0)
 			deathOnly = false
 			OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, damage * 0.33)
 		elseif modifierElements[1] == ELEMENT_COLD then
-			damage = damage + 30 * factor
+			damage = damage + 30 * damageFactor
 			color = Vector(163, 222, 255)
 			deathOnly = false
 			OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, damage * 0.33)
 		elseif modifierElements[1] == ELEMENT_WATER then
 			deathPart = 1.0
-			damage = damage + 20 * factor
+			damage = damage + 20 * damageFactor
 			color = Vector(0, 72, 255)
 			deathOnly = false
 			OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, false, false)
@@ -148,14 +150,14 @@ function OmniPulses:OmniDeathPulse(caster, position, ignoreCaster, modifierEleme
 		if fireInd ~= nil then
 			table.remove(modifierElements, fireInd)
 
-			damage = damage + 50 * factor
+			damage = damage + 50 * damageFactor
 			deathOnly = false
 			if modifierElements[1] == ELEMENT_FIRE then
-				damage = damage + 60 * factor
+				damage = damage + 60 * damageFactor
 				color = Vector(255, 100, 0)
 				OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, damage * 0.67)
 			elseif modifierElements[1] == ELEMENT_WATER then
-				damage = damage + 125 * factor
+				damage = damage + 125 * damageFactor
 				color = Vector(160, 160, 160)
 				OmniElementSprays:OmniSteamSpray(caster, position, radius, ignoreCaster, damage * 0.67, false)
 			else
@@ -169,11 +171,11 @@ function OmniPulses:OmniDeathPulse(caster, position, ignoreCaster, modifierEleme
 				table.remove(modifierElements, waterInd)
 
 				deathPart = 1.0
-				damage = damage + 10 * factor
+				damage = damage + 10 * damageFactor
 				color = Vector(0, 72, 255)
 				deathOnly = false
 				if modifierElements[1] == ELEMENT_WATER then
-					damage = damage + 10 * factor
+					damage = damage + 10 * damageFactor
 					OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, true)
 				else
 					OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, false)
@@ -182,11 +184,11 @@ function OmniPulses:OmniDeathPulse(caster, position, ignoreCaster, modifierEleme
 				local coldInd = table.indexOf(modifierElements, ELEMENT_COLD)
 				if coldInd ~= nil then
 					table.remove(modifierElements, coldInd)
-					damage = damage + 30 * factor
+					damage = damage + 30 * damageFactor
 					color = Vector(163, 222, 255)
 					deathOnly = false
 					if modifierElements[1] == ELEMENT_COLD then
-						damage = damage + 30 * factor
+						damage = damage + 30 * damageFactor
 						OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, damage * 0.67)
 					else
 						deathPart = 0.5

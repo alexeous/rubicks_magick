@@ -42,10 +42,12 @@ function RockThrow:ReleaseRock(player)
 	local caster = player:GetAssignedHero()
 	local modifierElements = player.spellCast.rockThrow_ModifierElements
 	local onImpactFunction = nil
-	local factor = 0.4 + 0.6 * Spells:TimeElapsedSinceCast(player) / player.spellCast.duration
-	local disatnceFactor = 0.05 + 0.95 * 	Spells:TimeElapsedSinceCast(player) / player.spellCast.duration
+	local d = Spells:TimeElapsedSinceCast(player) / player.spellCast.duration
+	local damageFactor = 0.1 + 0.9 * d
+	local radiusFactor = 0.4 + 0.6 * d
+	local disatnceFactor = 0.05 + 0.95 * d
 	local rockSize = 1
-	local rockDamage = 200 * factor
+	local rockDamage = 200 * damageFactor
 	local earthOnly = false
 
 	local waterTrail = 0
@@ -79,22 +81,22 @@ function RockThrow:ReleaseRock(player)
 	if earthInd ~= nil then
 		table.remove(modifierElements, earthInd)
 		rockSize = 2
-		rockDamage = 400 * factor
+		rockDamage = 400 * damageFactor
 		if modifierElements[1] == ELEMENT_EARTH then
 			rockSize = 3
-			rockDamage = 600 * factor
+			rockDamage = 600 * damageFactor
 			earthOnly = true
 		elseif modifierElements[1] == ELEMENT_DEATH then
-			onImpactFunction = function(pos) OmniPulses:OmniDeathPulse(caster, pos, false, {}, factor) end
+			onImpactFunction = function(pos) OmniPulses:OmniDeathPulse(caster, pos, false, {}, radiusFactor, damageFactor) end
 		elseif modifierElements[1] == ELEMENT_LIFE then
 			rockDamage = 0
-			onImpactFunction = function(pos) OmniPulses:OmniLifePulse(caster, pos, false, {}, factor) end
+			onImpactFunction = function(pos) OmniPulses:OmniLifePulse(caster, pos, false, {}, radiusFactor, damageFactor) end
 		elseif modifierElements[1] == ELEMENT_FIRE then
-			onImpactFunction = function(pos) OmniElementSprays:OmniFireSpray(caster, pos, OMNI_SPELLS_RADIUSES[1] * factor, false, 80 * factor) end
+			onImpactFunction = function(pos) OmniElementSprays:OmniFireSpray(caster, pos, OMNI_SPELLS_RADIUSES[1] * radiusFactor, false, 80 * damageFactor) end
 		elseif modifierElements[1] == ELEMENT_COLD then
-			onImpactFunction = function(pos) OmniElementSprays:OmniColdSpray(caster, pos, OMNI_SPELLS_RADIUSES[1] * factor, false, 60 * factor) end
+			onImpactFunction = function(pos) OmniElementSprays:OmniColdSpray(caster, pos, OMNI_SPELLS_RADIUSES[1] * radiusFactor, false, 60 * damageFactor) end
 		elseif modifierElements[1] == ELEMENT_WATER then
-			onImpactFunction = function(pos) OmniElementSprays:OmniWaterSpray(caster, pos, OMNI_SPELLS_RADIUSES[1] * factor, false, false) end
+			onImpactFunction = function(pos) OmniElementSprays:OmniWaterSpray(caster, pos, OMNI_SPELLS_RADIUSES[1] * radiusFactor, false, false) end
 		else
 			earthOnly = true
 		end
@@ -102,23 +104,23 @@ function RockThrow:ReleaseRock(player)
 		local deathInd = table.indexOf(modifierElements, ELEMENT_DEATH)
 		if deathInd ~= nil then
 			table.remove(modifierElements, deathInd)
-			onImpactFunction = function(pos) OmniPulses:OmniDeathPulse(caster, pos, false, modifierElements, factor) end
+			onImpactFunction = function(pos) OmniPulses:OmniDeathPulse(caster, pos, false, modifierElements, radiusFactor, damageFactor) end
 		else
 			local lifeInd = table.indexOf(modifierElements, ELEMENT_LIFE)
 			if lifeInd ~= nil then
 				table.remove(modifierElements, lifeInd)
 				rockDamage = 0
-				onImpactFunction = function(pos) OmniPulses:OmniLifePulse(caster, pos, false, modifierElements, factor) end
+				onImpactFunction = function(pos) OmniPulses:OmniLifePulse(caster, pos, false, modifierElements, radiusFactor, damageFactor) end
 			else
 				local fireInd = table.indexOf(modifierElements, ELEMENT_FIRE)
 				if fireInd ~= nil then
 					table.remove(modifierElements, fireInd)
 					if modifierElements[1] == ELEMENT_WATER then
-						onImpactFunction = function(pos) OmniElementSprays:OmniSteamSpray(caster, pos, OMNI_SPELLS_RADIUSES[1] * factor, false, 160 * factor, false) end
+						onImpactFunction = function(pos) OmniElementSprays:OmniSteamSpray(caster, pos, OMNI_SPELLS_RADIUSES[1] * radiusFactor, false, 160 * damageFactor, false) end
 					elseif modifierElements[1] == ELEMENT_FIRE then
-						onImpactFunction = function(pos) OmniElementSprays:OmniFireSpray(caster, pos, OMNI_SPELLS_RADIUSES[2] * factor, false, 120 * factor) end
+						onImpactFunction = function(pos) OmniElementSprays:OmniFireSpray(caster, pos, OMNI_SPELLS_RADIUSES[2] * radiusFactor, false, 120 * damageFactor) end
 					else
-						onImpactFunction = function(pos) OmniElementSprays:OmniFireSpray(caster, pos, OMNI_SPELLS_RADIUSES[1] * factor, false, 80 * factor) end
+						onImpactFunction = function(pos) OmniElementSprays:OmniFireSpray(caster, pos, OMNI_SPELLS_RADIUSES[1] * radiusFactor, false, 80 * damageFactor) end
 					end
 				else
 					local waterInd = table.indexOf(modifierElements, ELEMENT_WATER)
@@ -126,22 +128,22 @@ function RockThrow:ReleaseRock(player)
 						table.remove(modifierElements, waterInd)
 						if modifierElements[1] == ELEMENT_COLD then
 							onImpactFunction = function(pos)
-								Spells:ApplyElementDamageAoE(pos, 30, caster, ELEMENT_COLD,  125 * factor, true, false, 1.0)
-								Spells:ApplyElementDamageAoE(pos, 30, caster, ELEMENT_WATER, 125 * factor, true, false, 1.0)
+								Spells:ApplyElementDamageAoE(pos, 30, caster, ELEMENT_COLD,  125 * damageFactor, true, false, 1.0)
+								Spells:ApplyElementDamageAoE(pos, 30, caster, ELEMENT_WATER, 125 * damageFactor, true, false, 1.0)
 							end
 						elseif modifierElements[1] == ELEMENT_WATER then							
-							onImpactFunction = function(pos) OmniElementSprays:OmniWaterSpray(caster, pos, OMNI_SPELLS_RADIUSES[2] * factor, false, false) end
+							onImpactFunction = function(pos) OmniElementSprays:OmniWaterSpray(caster, pos, OMNI_SPELLS_RADIUSES[2] * radiusFactor, false, false) end
 						else
-							onImpactFunction = function(pos) OmniElementSprays:OmniWaterSpray(caster, pos, OMNI_SPELLS_RADIUSES[1] * factor, false, false) end
+							onImpactFunction = function(pos) OmniElementSprays:OmniWaterSpray(caster, pos, OMNI_SPELLS_RADIUSES[1] * radiusFactor, false, false) end
 						end
 					else
 						local coldInd = table.indexOf(modifierElements, ELEMENT_COLD)
 						if coldInd ~= nil then
 							table.remove(modifierElements, coldInd)
 							if modifierElements[1] == ELEMENT_COLD then
-								onImpactFunction = function(pos) OmniElementSprays:OmniColdSpray(caster, pos, OMNI_SPELLS_RADIUSES[2] * factor, false, 100 * factor) end
+								onImpactFunction = function(pos) OmniElementSprays:OmniColdSpray(caster, pos, OMNI_SPELLS_RADIUSES[2] * radiusFactor, false, 100 * damageFactor) end
 							else
-								onImpactFunction = function(pos) OmniElementSprays:OmniColdSpray(caster, pos, OMNI_SPELLS_RADIUSES[1] * factor, false, 60 * factor) end
+								onImpactFunction = function(pos) OmniElementSprays:OmniColdSpray(caster, pos, OMNI_SPELLS_RADIUSES[1] * radiusFactor, false, 60 * damageFactor) end
 							end
 						else
 							earthOnly = true
@@ -228,7 +230,7 @@ function RockThrow:ImpactRock(rockDummy)
 	if rockDummy.onImpactFunction ~= nil then
 		rockDummy.onImpactFunction(origin)
 	end
-	Spells:ApplyElementDamageAoE(origin, rockDummy.collisionRadius + 10, rockDummy.caster, ELEMENT_EARTH, rockDummy.rockDamage, true, false)
+	Spells:ApplyElementDamageAoE(origin, rockDummy.collisionRadius + 20, rockDummy.caster, ELEMENT_EARTH, rockDummy.rockDamage, true, false)
 	ParticleManager:SetParticleControl(rockDummy.particle, 0, origin)
 	ParticleManager:DestroyParticle(rockDummy.particle, false)
 	Timers:CreateTimer(2.0, function() rockDummy:Destroy() end)
