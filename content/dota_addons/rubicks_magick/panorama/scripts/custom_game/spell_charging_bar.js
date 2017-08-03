@@ -13,7 +13,6 @@ GameEvents.Subscribe("rm_cb_e", enable);
 GameEvents.Subscribe("rm_cb_d", disable);
 
 function enable(params) {
-	panelStyle.visibility = "visible";
 	enabled = true;
 	cycle();
 	
@@ -25,7 +24,8 @@ function enable(params) {
 }
 
 function disable(params) {
-	panelStyle.visibility = "collapse";
+	panelStyle.x = "-10000px";
+	panelStyle.y = "-10000px";
 	enabled = false;
 
 	inside1.style.transition = null;
