@@ -13,7 +13,7 @@ function ElementSprays:PlayerConnected(player)
 
 end
 
-ELEMENT_SPRAY_DISTANCES = { 250, 450, 650 }
+ELEMENT_SPRAY_DISTANCES = { 250, 550, 850 }
 ELEMENT_SPRAY_THINK_PERIOD = 0.05
 ELEMENT_SPRAY_MOVE_SPEED = 720
 ELEMENT_SPRAY_MOVE_STEP = ELEMENT_SPRAY_MOVE_SPEED * ELEMENT_SPRAY_THINK_PERIOD
@@ -34,8 +34,11 @@ function ElementSprays:StartSteamSpray(player, modifierElement)
 		Spells:ApplyElementDamage(unit, heroEntity, ELEMENT_FIRE, damage / 2, false, 1.0)
 	end
 	local particle = ParticleManager:CreateParticle("particles/element_sprays/steam_spray/steam_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, heroEntity)
-	ParticleManager:SetParticleControl(particle, 2, Vector(isWet and 1 or 0, 0, 0))
-	ElementSprays:StartElementSprayCasting(player, distance, onTouchFunction, particle, 110)
+	local particleRecalcFunction = function(factor)
+		ParticleManager:SetParticleControl(particle, 1, Vector(factor, 0, 0))		
+		ParticleManager:SetParticleControl(particle, 2, Vector(isWet and 1 or 0, 0, 0))		
+	end	
+	ElementSprays:StartElementSprayCasting(player, distance, onTouchFunction, particle, particleRecalcFunction, 110)
 end
 
 function ElementSprays:StartWaterSpray(player, power)
@@ -51,9 +54,11 @@ function ElementSprays:StartFireSpray(player, power)
 	end
 	local radius = 90 + power * 25
 	local particle = ParticleManager:CreateParticle("particles/element_sprays/fire_spray/fire_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, heroEntity)
-	ParticleManager:SetParticleControl(particle, 1, Vector(1 + power * 0.5, 0, 0))
-	ParticleManager:SetParticleControl(particle, 2, Vector(0.2 + power * 0.8, 0, 0))
-	ElementSprays:StartElementSprayCasting(player, distance, onTouchFunction, particle, radius)
+	local particleRecalcFunction = function(factor)
+		ParticleManager:SetParticleControl(particle, 1, Vector(1 + power * 0.5, 0, 0))
+		ParticleManager:SetParticleControl(particle, 2, Vector(factor * (0.2 + power * 0.8), 0, 0))
+	end
+	ElementSprays:StartElementSprayCasting(player, distance, onTouchFunction, particle, particleRecalcFunction, radius)
 end
 
 function ElementSprays:StartColdSpray(player, power)
@@ -61,7 +66,7 @@ function ElementSprays:StartColdSpray(player, power)
 end
 
 
-function ElementSprays:StartElementSprayCasting(player, distance, onTouchFunction, particle, radius)
+function ElementSprays:StartElementSprayCasting(player, distance, onTouchFunction, particle, particleRecalcFunction, radius)
 	local spellCastTable = {
 		castType = CAST_TYPE_CONTINUOUS,
 		duration = 5.0,
@@ -75,16 +80,20 @@ function ElementSprays:StartElementSprayCasting(player, distance, onTouchFunctio
 		elementSprays_Distance = distance,
 		elementSprays_Radius = radius,
 		elementSprays_OnTouchFunction = onTouchFunction,
+		elementSprays_ParticleRecalcFunction = particleRecalcFunction,
 		particle = particle,
 		endFunction = function(player) ParticleManager:DestroyParticle(player.spellCast.particle, false) end
 	}
 	Spells:StartCasting(player, spellCastTable)
+	particleRecalcFunction(1.0)
+	ElementSprays:SpawnSprayDummy(player, true)
 end
 
-function ElementSprays:SpawnSprayDummy(player)
+function ElementSprays:SpawnSprayDummy(player, isTest)
 	local heroEntity = player:GetAssignedHero()
 	local position = heroEntity:GetAbsOrigin() + heroEntity:GetForwardVector():Normalized() * 60 + Vector(0, 0, 100)
 	local sprayDummy = Dummy:Create(position, heroEntity)
+	sprayDummy.isTest = isTest
 	sprayDummy.caster = heroEntity
 	sprayDummy.startTime = GameRules:GetGameTime()
 	sprayDummy.duration = player.spellCast.elementSprays_Distance / ELEMENT_SPRAY_MOVE_SPEED
@@ -92,6 +101,7 @@ function ElementSprays:SpawnSprayDummy(player)
 	sprayDummy.moveStep = heroEntity:GetForwardVector():Normalized() * ELEMENT_SPRAY_MOVE_STEP
 	sprayDummy.touchedUnits = {}
 	sprayDummy.onTouchFunction = player.spellCast.elementSprays_OnTouchFunction
+	sprayDummy.particleRecalcFunction = player.spellCast.elementSprays_ParticleRecalcFunction
 	table.insert(ElementSprays.sprayDummiesList, sprayDummy)
 end
 
@@ -107,7 +117,7 @@ function ElementSprays:OnElementSprayThink()
 			local trees = GridNav:GetAllTreesAroundPoint(origin, 40, true)
 			if next(trees) ~= nil then
 				ElementSprays:DestroySprayDummy(sprayDummy)
-			else
+			elseif not sprayDummy.isTest then
 				local timeFactor = (time - sprayDummy.startTime) / sprayDummy.duration
 				local radius = sprayDummy.radius * (0.4 + 0.6 * timeFactor)
 				local unitsTouched = FindUnitsInRadius(sprayDummy.caster:GetTeamNumber(), origin, nil, radius, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_ALL, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, true)
@@ -126,5 +136,7 @@ end
 function ElementSprays:DestroySprayDummy(sprayDummy)
 	local index = table.indexOf(ElementSprays.sprayDummiesList, sprayDummy)
 	table.remove(ElementSprays.sprayDummiesList, index)
+	local factor = (GameRules:GetGameTime() - sprayDummy.startTime) / sprayDummy.duration
+	sprayDummy.particleRecalcFunction(factor)
 	sprayDummy:Destroy()
 end

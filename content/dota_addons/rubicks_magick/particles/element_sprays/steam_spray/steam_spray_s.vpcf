@@ -24,7 +24,7 @@
 		},
 		{
 			_class = "C_OP_BasicMovement"
-			m_Gravity = [ 0.0, 0.0, 50.0 ]
+			m_Gravity = [ 0.0, 0.0, 150.0 ]
 		},
 		{
 			_class = "C_OP_FadeInSimple"
@@ -37,11 +37,12 @@
 			_class = "C_OP_InterpolateRadius"
 			m_flEndTime = 0.8
 			m_flEndScale = 1.5
+			m_flStartScale = 0.5
 		},
 		{
 			_class = "C_OP_RampScalarLinear"
-			m_RateMin = -0.5
-			m_RateMax = 0.5
+			m_RateMin = -2.0
+			m_RateMax = 2.0
 			m_nField = 4
 		},
 	]
@@ -58,6 +59,11 @@
 			_class = "C_INIT_NormalAlignToCP"
 		},
 		{
+			_class = "C_INIT_NormalOffset"
+			m_OffsetMin = [ 0.0, 0.0, -0.2 ]
+			m_OffsetMax = [ 0.0, 0.0, -0.2 ]
+		},
+		{
 			_class = "C_INIT_CreateWithinSphere"
 		},
 		{
@@ -67,8 +73,8 @@
 		},
 		{
 			_class = "C_INIT_VelocityFromNormal"
-			m_fSpeedMin = 300.0
-			m_fSpeedMax = 300.0
+			m_fSpeedMin = 400.0
+			m_fSpeedMax = 500.0
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
@@ -89,11 +95,17 @@
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.8
-			m_fLifetimeMax = 0.8
+			m_fLifetimeMin = 0.6
+			m_fLifetimeMax = 0.6
 		},
 		{
 			_class = "C_INIT_InheritVelocity"
+		},
+		{
+			_class = "C_INIT_GlobalScale"
+			m_nScaleControlPointNumber = 1
+			m_bScaleRadius = false
+			m_bScalePosition = false
 		},
 	]
 	m_Emitters = 

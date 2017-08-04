@@ -63,5 +63,8 @@
 		{
 			m_ChildRef = resource:"particles/element_sprays/fire_spray/fire_spray_s.vpcf"
 		},
+		{
+			m_ChildRef = resource:"particles/element_sprays/fire_spray/fire_spray_sparks.vpcf"
+		},
 	]
 }

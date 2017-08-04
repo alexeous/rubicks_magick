@@ -24,7 +24,7 @@
 		},
 		{
 			_class = "C_OP_BasicMovement"
-			m_Gravity = [ 0.0, 0.0, 150.0 ]
+			m_Gravity = [ 0.0, 0.0, 250.0 ]
 		},
 		{
 			_class = "C_OP_FadeInSimple"
@@ -36,8 +36,9 @@
 		},
 		{
 			_class = "C_OP_InterpolateRadius"
-			m_flEndScale = 2.3
+			m_flEndScale = 1.5
 			m_flStartScale = 0.3
+			m_flEndTime = 0.8
 		},
 		{
 			_class = "C_OP_RampScalarLinear"
@@ -56,10 +57,10 @@
 			m_RateMin = [ 2.0, 2.0, 2.0 ]
 			m_RateMax = [ 2.0, 2.0, 2.0 ]
 			m_nField = 6
-			m_flOscAdd = 1.0
+			m_flOscAdd = 0.85
 			m_flStartTime_min = 0.2
 			m_flStartTime_max = 0.2
-			m_flOscMult = 1.2
+			m_flOscMult = 0.8
 		},
 	]
 	m_Renderers = 
@@ -67,7 +68,7 @@
 		{
 			_class = "C_OP_RenderSprites"
 			m_hTexture = resource:"materials/particle/fire_particle_4/fire_particle_4_flat.vtex"
-			m_flAnimationRate = 1.0
+			m_flAnimationRate = 0.5
 			m_bSaturateColorPreAlphaBlend = false
 			m_flAddSelfAmount = 6.0
 		},
@@ -76,6 +77,11 @@
 	[
 		{
 			_class = "C_INIT_NormalAlignToCP"
+		},
+		{
+			_class = "C_INIT_NormalOffset"
+			m_OffsetMin = [ 0.0, 0.0, -0.1 ]
+			m_OffsetMax = [ 0.0, 0.0, -0.15 ]
 		},
 		{
 			_class = "C_INIT_CreateWithinSphere"
@@ -87,8 +93,8 @@
 		},
 		{
 			_class = "C_INIT_VelocityFromNormal"
-			m_fSpeedMin = 300.0
-			m_fSpeedMax = 300.0
+			m_fSpeedMin = 350.0
+			m_fSpeedMax = 350.0
 		},
 		{
 			_class = "C_INIT_VelocityRandom"
@@ -114,8 +120,8 @@
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 1.2
-			m_fLifetimeMax = 1.4
+			m_fLifetimeMin = 1.0
+			m_fLifetimeMax = 1.2
 		},
 		{
 			_class = "C_INIT_GlobalScale"
