@@ -223,6 +223,7 @@ function Spells:OnLeftDown(keys)
 		end
 
 		ElementSprays:StartWaterSpray(player, #pickedElements + 1) 	-- otherwise it is water spray (second arg is power of spray)
+		return
 	end
 
 	local fireInd = table.indexOf(pickedElements, ELEMENT_FIRE)
