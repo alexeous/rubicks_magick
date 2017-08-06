@@ -8,9 +8,11 @@ var inside2 = $.GetContextPanel().FindChild("SpellChargingBarInside2");
 var scaleX = 1920.0 / Game.GetScreenWidth();
 var scaleY = 1080.0 / Game.GetScreenHeight();
 
+var inside2scheduled = null;
 
 GameEvents.Subscribe("rm_cb_e", enable);
 GameEvents.Subscribe("rm_cb_d", disable);
+disable(null);
 
 function enable(params) {
 	enabled = true;
@@ -19,8 +21,10 @@ function enable(params) {
 	inside1.style.transition = "width 2000.0ms linear 0.0ms;";
 	inside1.style.width = "100px";
 
-	inside2.style.transition = "width 500.0ms linear 2000.0ms;";
-	inside2.style.width = "100px";
+	inside2scheduled = $.Schedule(2.0, function() {
+		inside2.style.transition = "width 500.0ms linear 0.0ms;";
+		inside2.style.width = "100px";
+	});
 }
 
 function disable(params) {
@@ -33,6 +37,10 @@ function disable(params) {
 
 	inside2.style.transition = null;
 	inside2.style.width = "0px";
+	if(inside2scheduled != null) {
+		$.CancelScheduled(inside2scheduled);
+		inside2scheduled = null;
+	}
 }
 
 function cycle(params) {
