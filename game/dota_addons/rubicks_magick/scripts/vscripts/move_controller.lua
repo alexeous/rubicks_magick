@@ -1,3 +1,4 @@
+require("libraries/physics")
 
 if MoveController == nil then
 	MoveController = class({})
@@ -29,63 +30,31 @@ function MoveController:OnMoveHeroesThink()
 			local heroEntity = player:GetAssignedHero()
 			local isAble = (heroEntity ~= nil) and (heroEntity:IsAlive()) and (not heroEntity:IsStunned()) and (not heroEntity:IsFrozen())
 			local dontMoveWhileCasting = player.spellCast ~= nil and player.spellCast.dontMoveWhileCasting
-			if isAble and not dontMoveWhileCasting then
-				if player.cursorPos ~= nil then
-					MoveController:HeroLookAt(heroEntity, player.cursorPos)
-				end
-				if player.moveToPos ~= nil then
-					local moveStep = heroEntity:GetIdealSpeed() * THINK_PERIOD
-					if player.moveToClearPos ~= nil then
-						MoveController:MoveTowardsClearPos(player, heroEntity, moveStep * 2)
-					else
-						MoveController:MoveTowardsMoveToPos(player, heroEntity, moveStep)
+			if isAble then 
+				if not dontMoveWhileCasting then
+					if not IsPhysicsUnit(heroEntity) then
+						Physics:Unit(heroEntity)
 					end
+					if player.cursorPos ~= nil then
+						MoveController:HeroLookAt(heroEntity, player.cursorPos)
+					end
+					if player.moveToPos ~= nil then
+						local origin = heroEntity:GetAbsOrigin()
+						local vec = player.moveToPos - origin
+						if vec:Length2D() > 20 then
+							vec = Physics:CalcSlope(origin, heroEntity, vec)
+							heroEntity:SetPhysicsVelocity(vec * heroEntity:GetIdealSpeed())
+						else
+							MoveController:StopMove(player)
+						end
+					end
+				else
+					heroEntity:SetPhysicsVelocity(Vector(0, 0, 0))
 				end
 			end
 		end
 	end
 	return THINK_PERIOD
-end
-
-function MoveController:MoveTowardsClearPos(player, heroEntity, moveStep)
-	local oldOrigin = heroEntity:GetAbsOrigin()
-	local vector = player.moveToClearPos - oldOrigin
-	local distance = #vector
-	local pos
-	if distance < moveStep then
-		pos = player.moveToClearPos
-		player.moveToClearPos = nil
-	else
-		pos = (oldOrigin + (vector / distance) * moveStep)
-	end
-	heroEntity:SetAbsOrigin(GetGroundPosition(pos, heroEntity))
-end
-
-function MoveController:MoveTowardsMoveToPos(player, heroEntity, moveStep)
-	local oldOrigin = heroEntity:GetAbsOrigin()
-	local vector = player.moveToPos - oldOrigin
-	local distance = #vector
-	local to
-	if distance < moveStep then
-		to = player.moveToPos
-		player.moveToPos = nil
-		heroEntity:FadeGesture(ACT_DOTA_RUN)
-		ParticleManager:DestroyParticle(player.moveToParticle, false)
-	else
-		to = oldOrigin + (vector / distance) * moveStep
-	end
-	if GridNav:IsTraversable(to) and not GridNav:IsBlocked(to) then
-		heroEntity:SetAbsOrigin(GetGroundPosition(to, heroEntity))
-	else
-		repeat
-			local trees = GridNav:GetAllTreesAroundPoint(to, 1, true)
-			local treePos = trees[1]:GetAbsOrigin()
-			local offset = (to - treePos):Normalized() * 10
-			offset.z = 0
-			to = to + offset
-		until GridNav:IsTraversable(to) and not GridNav:IsBlocked(to)
-		player.moveToClearPos = to
-	end
 end
 
 function MoveController:ShowMoveToParticle(player, pos)
@@ -122,6 +91,7 @@ function MoveController:StopMove(player)
 		player.moveToClearPos = nil
 		local heroEntity = player:GetAssignedHero()
 		if heroEntity ~= nil then
+			heroEntity:SetPhysicsVelocity(Vector(0, 0, 0))
 			heroEntity:FadeGesture(ACT_DOTA_RUN)
 		end
 	end
