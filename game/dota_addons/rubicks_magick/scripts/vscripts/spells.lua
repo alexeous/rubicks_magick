@@ -621,11 +621,11 @@ function Spells:MeleeAttack(player)
 end
 
 
-------------------------- DAMAGE APPLYING  --------------------------
+
+------------------------- HEALTH MANIPULATION  --------------------------
 
 function Spells:ApplyElementDamageAoE(center, radius, attacker, element, damage, dontDamageAttacker, applyModifiers, blockPerShield)
-	local unitsToHurt = FindUnitsInRadius(attacker:GetTeamNumber(), center, nil, radius, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_ALL,
-	    DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, true)
+	local unitsToHurt = Util:FindUnitsInRadius(center, radius)
 	for _, unit in pairs(unitsToHurt) do
 		if not (unit == attacker and dontDamageAttacker) then
 			Spells:ApplyElementDamage(unit, attacker, element, damage, applyModifiers, blockPerShield)
@@ -653,6 +653,32 @@ function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModif
 			Spells.damagePool[victim][attacker] = {}
 		end
 		table.insert(Spells.damagePool[victim][attacker], info)
+	end
+end
+
+function Spells:HealAoE(center, radius, source, heal, dontHealSource)
+	local unitsToHeal = Util:FindUnitsInRadius(center, radius)
+	for _, unit in pairs(unitsToHeal) do
+		if not (unit == source and dontHealSource) then
+			Spells:Heal(unit, source, heal, false)
+		end
+	end
+end
+
+function Spells:Heal(target, source, heal, ignoreLifeShield)
+	if not ignoreLifeShield then
+		heal = Spells:GetDamageAfterShields(target, heal, ELEMENT_LIFE)
+	end
+
+	if heal > 0.5 then
+		if Spells.healPool[target] == nil then
+			Spells.healPool[target] = {}
+			Spells.healPool[target][source] = heal
+		elseif Spells.healPool[target][source] == nil then
+			Spells.healPool[target][source] = heal
+		else
+			Spells.healPool[target][source] = heal + Spells.healPool[target][source]
+		end
 	end
 end
 
@@ -763,35 +789,4 @@ function Spells:ExtinguishWithCold(target)
 		return true
 	end
 	return false
-end
-
-
-------------------------- HEALING  --------------------------
-
-function Spells:Heal(target, source, heal, ignoreLifeShield)
-	if (target.shieldElements ~= nil) and not ignoreLifeShield then
-		local halfHeal = heal / 2
-		heal = heal - halfHeal * Spells:ResistanceLevelTo(target, ELEMENT_LIFE)
-	end
-
-	if heal > 0.5 then
-		if Spells.healPool[target] == nil then
-			Spells.healPool[target] = {}
-			Spells.healPool[target][source] = heal
-		elseif Spells.healPool[target][source] == nil then
-			Spells.healPool[target][source] = heal
-		else
-			Spells.healPool[target][source] = heal + Spells.healPool[target][source]
-		end
-	end
-end
-
-function Spells:HealAoE(center, radius, source, heal, dontHealSource)
-	local unitsToHeal = FindUnitsInRadius(source:GetTeamNumber(), center, nil, radius, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_ALL,
-	    DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, true)
-	for _, unit in pairs(unitsToHeal) do
-		if not (unit == source and dontHealSource) then
-			Spells:Heal(unit, source, heal, false)
-		end
-	end
 end

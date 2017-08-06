@@ -7,6 +7,7 @@ end
 function ElementSprays:Precache(context)	
 	PrecacheResource("particle_folder", "particles/element_sprays/steam_spray", context)
 	PrecacheResource("particle_folder", "particles/element_sprays/fire_spray", context)
+	PrecacheResource("particle_folder", "particles/element_sprays/cold_spray", context)
 end
 
 function ElementSprays:PlayerConnected(player)
@@ -132,7 +133,7 @@ function ElementSprays:OnElementSprayThink()
 			elseif not sprayDummy.isTest then
 				local timeFactor = (time - sprayDummy.startTime) / sprayDummy.duration
 				local radius = sprayDummy.radius * (0.4 + 0.6 * timeFactor)
-				local unitsTouched = FindUnitsInRadius(sprayDummy.caster:GetTeamNumber(), origin, nil, radius, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_ALL, DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, true)
+				local unitsTouched = Util:FindUnitsInRadius(origin, radius)
 				for _, unit in pairs(unitsTouched) do
 					if unit ~= sprayDummy.caster and not sprayDummy.touchedUnits[unit] then
 						sprayDummy.touchedUnits[unit] = true

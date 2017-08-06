@@ -194,7 +194,7 @@ function RockThrow:OnRockThink()
 				RockThrow:ImpactRock(rockDummy)
 			else
 				local damage = rockDummy.rockDamage
-				local unitsTouched = FindUnitsInLine(caster:GetTeamNumber(), oldOrigin, origin, nil, rockDummy.collisionRadius, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_ALL, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
+				local unitsTouched = Util:FindUnitsInLine(oldOrigin, origin, rockDummy.collisionRadius, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
 				for _, unit in pairs(unitsTouched) do
 					if unit ~= rockDummy and unit ~= caster then
 						if unit:IsFrozen() then

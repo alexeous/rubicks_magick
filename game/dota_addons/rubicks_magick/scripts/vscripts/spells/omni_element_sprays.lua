@@ -108,8 +108,7 @@ end
 function OmniElementSprays:OmniWaterSpray(caster, position, radius, isSelfCast, doPush)
 	local canPushCaster = isSelfCast and Spells:ResistanceLevelTo(caster, ELEMENT_WATER) < 2
 	
-	local units = FindUnitsInRadius(caster:GetTeamNumber(), position, nil, radius, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_ALL,
-	    DOTA_UNIT_TARGET_FLAG_NONE, FIND_ANY_ORDER, true)
+	local units = Util:FindUnitsInRadius(position, radius)
 	for _, unit in pairs(units) do
 		if not (unit == caster and isSelfCast) then
 			Spells:ApplyElementDamage(unit, caster, ELEMENT_WATER, 1, true, 1.0)
