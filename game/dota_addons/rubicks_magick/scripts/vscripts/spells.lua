@@ -37,6 +37,7 @@ function Spells:Precache(context)
 	LinkLuaModifier("modifier_wet", "modifiers/modifier_wet.lua", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_chill", "modifiers/modifier_chill.lua", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_burn", "modifiers/modifier_burn.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_water_push", "modifiers/modifier_water_push.lua", LUA_MODIFIER_MOTION_NONE)
 
 	PrecacheResource("particle", "particles/status_fx/status_effect_snow_heavy.vpcf", context)
 	PrecacheResource("particle", "particles/status_fx/status_effect_slardar_amp_damage.vpcf", context)
@@ -790,4 +791,29 @@ function Spells:ExtinguishWithCold(target)
 		return true
 	end
 	return false
+end
+
+------------------- WATER PUSH ------------------------
+
+function Spells:AddWaterPush(target, caster, velocity, acceleration)
+	local waterResist = Spells:ResistanceLevelTo(target, ELEMENT_WATER)
+	if waterResist == 2 then
+		return false
+	end
+
+	local earthResist = Spells:ResistanceLevelTo(target, ELEMENT_EARTH)
+	local reduceFactor = math.pow(0.5, earthResist)
+	velocity = (velocity or Vector(0, 0, 0)) * reduceFactor
+	acceleration = (acceleration or Vector(0, 0, 0)) * reduceFactor
+	local currentModifier = target:FindModifierByName("modifier_water_push")
+	if currentModifier ~= nil then
+		currentModifier:Enhance(velocity, acceleration)
+	else
+		local kv = {
+			vel_x = velocity.x, vel_y = velocity.y, vel_z = velocity.z,
+			acc_x = acceleration.x, acc_y = acceleration.y, acc_z = acceleration.z				
+		}
+		target:AddNewModifier(caster, nil, "modifier_water_push", kv)
+	end
+	return true
 end
