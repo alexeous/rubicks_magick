@@ -24,7 +24,7 @@
 		},
 		{
 			_class = "C_OP_BasicMovement"
-			m_Gravity = [ 0.0, 0.0, 250.0 ]
+			m_Gravity = [ 0.0, 0.0, 100.0 ]
 		},
 		{
 			_class = "C_OP_FadeInSimple"
@@ -79,11 +79,6 @@
 			_class = "C_INIT_NormalAlignToCP"
 		},
 		{
-			_class = "C_INIT_NormalOffset"
-			m_OffsetMin = [ 0.0, 0.0, -0.1 ]
-			m_OffsetMax = [ 0.0, 0.0, -0.15 ]
-		},
-		{
 			_class = "C_INIT_CreateWithinSphere"
 		},
 		{
@@ -93,8 +88,8 @@
 		},
 		{
 			_class = "C_INIT_VelocityFromNormal"
-			m_fSpeedMin = 350.0
-			m_fSpeedMax = 350.0
+			m_fSpeedMin = 600.0
+			m_fSpeedMax = 600.0
 		},
 		{
 			_class = "C_INIT_VelocityRandom"
@@ -120,8 +115,8 @@
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 1.0
-			m_fLifetimeMax = 1.2
+			m_fLifetimeMin = 0.5
+			m_fLifetimeMax = 0.55
 		},
 		{
 			_class = "C_INIT_GlobalScale"

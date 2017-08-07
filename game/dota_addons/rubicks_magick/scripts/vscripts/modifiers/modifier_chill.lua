@@ -5,6 +5,13 @@ if modifier_chill == nil then
 	modifier_chill = class({})
 end
 
+
+THINK_PERIOD = 0.1
+FREEZE_POINT = 300
+FULL_WARM_TIME = 10.0
+REDUCE_PER_THINK = FREEZE_POINT / (FULL_WARM_TIME / THINK_PERIOD)
+
+
 function modifier_chill:IsHidden()
 	return false
 end
@@ -19,8 +26,9 @@ end
 
 function modifier_chill:OnCreated(kv)
 	if IsServer() then
-		self:SetStackCount(kv.power)
-		self:StartIntervalThink(0.6)
+		self.value = kv.power
+		self:SetStackCount(self.value / 30)
+		self:StartIntervalThink(THINK_PERIOD)
 
 		self.enhanceTime = 0
 	end
@@ -28,12 +36,13 @@ end
 
 function modifier_chill:Enhance(value)
 	if IsServer() then
-		self:SetStackCount(self:GetStackCount() + value)
-		if self:GetStackCount() >= 30 then
+		self.value = self.value + value
+		if self.value >= FREEZE_POINT then
 			self:StartIntervalThink(-1)
-			self:GetParent():AddNewModifier(self:GetCaster(), nil, "modifier_frozen", { duration = 15.0 })
+			self:GetParent():AddNewModifier(self:GetCaster(), nil, "modifier_frozen", { duration = 10.0 })
 			self:Destroy()
 		else
+			self:SetStackCount(self.value / 30)
 			self.enhanceTime = self:GetElapsedTime()
 		end
 	end
@@ -41,14 +50,16 @@ end
 
 function modifier_chill:OnIntervalThink()
 	if IsServer() then
-		if self:GetElapsedTime() - self.enhanceTime < 2.0 then
+		if self:GetElapsedTime() - self.enhanceTime < 1.0 then
 			return
 		end
 
-		self:DecrementStackCount()
-		if self:GetStackCount() == 0 then
+		self.value = self.value - REDUCE_PER_THINK
+		if self.value <= 0 then
 			self:StartIntervalThink(-1)
 			self:Destroy()
+		else
+			self:SetStackCount(self.value / 30)
 		end
 	end
 end

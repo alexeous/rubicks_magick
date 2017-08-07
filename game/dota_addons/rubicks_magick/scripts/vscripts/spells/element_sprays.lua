@@ -15,7 +15,7 @@ function ElementSprays:PlayerConnected(player)
 
 end
 
-ELEMENT_SPRAY_DISTANCES = { 250, 550, 850 }
+ELEMENT_SPRAY_DISTANCES = { 350, 600, 900 }
 ELEMENT_SPRAY_THINK_PERIOD = 0.05
 ELEMENT_SPRAY_MOVE_SPEED = 1500
 ELEMENT_SPRAY_MOVE_STEP = ELEMENT_SPRAY_MOVE_SPEED * ELEMENT_SPRAY_THINK_PERIOD
@@ -28,8 +28,8 @@ end
 
 function ElementSprays:StartSteamSpray(player, modifierElement)
 	local isWet = modifierElement == ELEMENT_WATER
-	local damage = (modifierElement == ELEMENT_FIRE) and 60 or 30
-	local distance = ELEMENT_SPRAY_DISTANCES[1]
+	local damage = (modifierElement == ELEMENT_FIRE) and 75 or 63
+	local distanceInd = (modifierElement == ELEMENT_WATER) and 2 or 1
 	local heroEntity = player:GetAssignedHero()
 	local onTouchFunction = function(unit)
 		Spells:ApplyElementDamage(unit, heroEntity, ELEMENT_WATER, damage / 2, isWet, 1.0)
@@ -37,10 +37,10 @@ function ElementSprays:StartSteamSpray(player, modifierElement)
 	end
 	local particle = ParticleManager:CreateParticle("particles/element_sprays/steam_spray/steam_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, heroEntity)
 	local particleRecalcFunction = function(factor)
-		ParticleManager:SetParticleControl(particle, 1, Vector(factor, 0, 0))		
+		ParticleManager:SetParticleControl(particle, 1, Vector(factor * (0.2 + distanceInd * 0.8), 0, 0))
 		ParticleManager:SetParticleControl(particle, 2, Vector(isWet and 1 or 0, 0, 0))		
 	end	
-	ElementSprays:StartElementSprayCasting(player, distance, onTouchFunction, particle, particleRecalcFunction, 110)
+	ElementSprays:StartElementSprayCasting(player, ELEMENT_SPRAY_DISTANCES[distanceInd], onTouchFunction, particle, particleRecalcFunction, 110)
 end
 
 function ElementSprays:StartWaterSpray(player, power)
@@ -70,11 +70,11 @@ function ElementSprays:StartWaterSpray(player, power)
 end
 
 function ElementSprays:StartFireSpray(player, power)
-	local damage = power * 15
+	local damages = { 40, 48, 53 }
 	local distance = ELEMENT_SPRAY_DISTANCES[power]
 	local heroEntity = player:GetAssignedHero()
 	local onTouchFunction = function(unit)
-		Spells:ApplyElementDamage(unit, heroEntity, ELEMENT_FIRE, damage, true)
+		Spells:ApplyElementDamage(unit, heroEntity, ELEMENT_FIRE, damages[power], true)
 	end
 	local radius = 90 + power * 25
 	local particle = ParticleManager:CreateParticle("particles/element_sprays/fire_spray/fire_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, heroEntity)
@@ -86,11 +86,11 @@ function ElementSprays:StartFireSpray(player, power)
 end
 
 function ElementSprays:StartColdSpray(player, power)
-	local damage = power * 13
+	local damages = { 20, 24, 27 }
 	local distance = ELEMENT_SPRAY_DISTANCES[power]
 	local heroEntity = player:GetAssignedHero()
 	local onTouchFunction = function(unit)
-		Spells:ApplyElementDamage(unit, heroEntity, ELEMENT_COLD, damage, true)
+		Spells:ApplyElementDamage(unit, heroEntity, ELEMENT_COLD, damages[power], true)
 	end
 	local radius = 90 + power * 25
 	local particle = ParticleManager:CreateParticle("particles/element_sprays/cold_spray/cold_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, heroEntity)

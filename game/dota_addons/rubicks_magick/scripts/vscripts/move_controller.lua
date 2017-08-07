@@ -16,8 +16,6 @@ function MoveController:Init()
 	CustomGameEventManager:RegisterListener("me_mm", Dynamic_Wrap(MoveController, "OnMouseMove"))
 	CustomGameEventManager:RegisterListener("me_rd", Dynamic_Wrap(MoveController, "OnRightDown"))
 	CustomGameEventManager:RegisterListener("me_ru", Dynamic_Wrap(MoveController, "OnRightUp"))
-	CustomGameEventManager:RegisterListener("me_ld", Dynamic_Wrap(MoveController, "OnLeftDown"))
-	CustomGameEventManager:RegisterListener("me_lu", Dynamic_Wrap(MoveController, "OnLeftUp"))
 
 	CustomGameEventManager:RegisterListener("stop_mv", Dynamic_Wrap(MoveController, "OnSpacePressed"))
 end
@@ -70,7 +68,6 @@ end
 
 function MoveController:PlayerConnected(player)
 	player.rightDown = false
-    player.leftDown = false
 end
 
 function MoveController:OnEntityKilled(keys)
@@ -113,33 +110,12 @@ function MoveController:HeroLookAt(heroEntity, targetPos)
 	end
 end
 
-function MoveController:OnMouseMove(keys)
-	local player = PlayerResource:GetPlayer(keys.playerID)
+function MoveController:MoveToCursorCommand(player)
 	local heroEntity = player:GetAssignedHero()
 	local isAble = (heroEntity ~= nil) and (heroEntity:IsAlive()) and (not heroEntity:IsStunned()) and (not heroEntity:IsFrozen())
 	if isAble then
-		player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
-		local dontMoveWhileCasting = player.spellCast ~= nil and player.spellCast.dontMoveWhileCasting
-		if player.rightDown then
-			local dontChangeGesture = player.spellCast ~= nil and player.spellCast.castingGesture ~= nil
-			if player.moveToPos == nil and not dontChangeGesture and not dontMoveWhileCasting then
-				heroEntity:StartGesture(ACT_DOTA_RUN)
-			end
-			player.moveToPos = player.cursorPos
-			MoveController:ShowMoveToParticle(player, player.cursorPos)
-		end
-	end
-end	
-
-
-function MoveController:OnRightDown(keys)
-	local player = PlayerResource:GetPlayer(keys.playerID)
-	local heroEntity = player:GetAssignedHero()
-	local isAble = (heroEntity ~= nil) and (heroEntity:IsAlive()) and (not heroEntity:IsStunned()) and (not heroEntity:IsFrozen())
-	if isAble then
-		player.rightDown = true
-		player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
 		local dontChangeGesture = player.spellCast ~= nil and player.spellCast.castingGesture ~= nil
+		local dontMoveWhileCasting = player.spellCast ~= nil and player.spellCast.dontMoveWhileCasting
 		if player.moveToPos == nil and not dontChangeGesture and not dontMoveWhileCasting then
 			heroEntity:StartGesture(ACT_DOTA_RUN)
 		end
@@ -148,20 +124,22 @@ function MoveController:OnRightDown(keys)
 	end
 end
 
+function MoveController:OnMouseMove(keys)
+	local player = PlayerResource:GetPlayer(keys.playerID)
+	player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
+	if player.rightDown then
+		MoveController:MoveToCursorCommand(player)
+	end
+end	
+
+
+function MoveController:OnRightDown(keys)
+	local player = PlayerResource:GetPlayer(keys.playerID)
+	player.rightDown = true
+	player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
+	MoveController:MoveToCursorCommand(player)
+end
+
 function MoveController:OnRightUp(keys)
 	PlayerResource:GetPlayer(keys.playerID).rightDown = false
-end
-
-function MoveController:OnLeftDown(keys)
-	local player = PlayerResource:GetPlayer(keys.playerID)
-	local heroEntity = player:GetAssignedHero()
-	local isAble = (heroEntity ~= nil) and (heroEntity:IsAlive()) and (not heroEntity:IsStunned()) and (not heroEntity:IsFrozen())
-	if isAble then
-		player.leftDown = true
-		player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
-	end
-end
-
-function MoveController:OnLeftUp(keys)
-	PlayerResource:GetPlayer(keys.playerID).leftDown = false
 end

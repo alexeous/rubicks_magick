@@ -17,26 +17,17 @@ end
 function OmniElementSprays:OmniSteamSpraySpell(player, modifierElement)
 	local spellCastTable = {
 		castType = CAST_TYPE_INSTANT,
-		duration = 0.8,
+		duration = 1.0,
 		dontMoveWhileCasting = true,
 		castingGesture = ACT_DOTA_CAST_ABILITY_5,
-		castingGestureRate = 1.3,
+		castingGestureRate = 1.0,
 		castingGestureTranslate = "am_blink"
 	}
 	Spells:StartCasting(player, spellCastTable)
 
-	local isWet = false
-	local radius = OMNI_SPELLS_RADIUSES[1]
-	local damage = 70
-	if modifierElement == ELEMENT_WATER then
-		isWet = true
-		damage = 100
-		radius = OMNI_SPELLS_RADIUSES[2]
-	elseif modifierElement == ELEMENT_FIRE then
-		damage = 150
-		radius = OMNI_SPELLS_RADIUSES[2]
-	end
-
+	local isWet = (modifierElement == ELEMENT_WATER)
+	local radius = OMNI_SPELLS_RADIUSES[(modifierElement == ELEMENT_WATER) and 2 or 1]
+	local damage = (modifierElement == ELEMENT_FIRE) and 177 or 125
 	local heroEntity = player:GetAssignedHero()
 	OmniElementSprays:OmniSteamSpray(heroEntity, heroEntity:GetAbsOrigin(), radius, true, damage, isWet)
 end
@@ -44,10 +35,10 @@ end
 function OmniElementSprays:OmniWaterSpraySpell(player, power)
 	local spellCastTable = {
 		castType = CAST_TYPE_INSTANT,
-		duration = 0.8,
+		duration = 1.0,
 		dontMoveWhileCasting = true,
 		castingGesture = ACT_DOTA_CAST_ABILITY_5,
-		castingGestureRate = 1.3,
+		castingGestureRate = 1.0,
 		castingGestureTranslate = "am_blink"
 	}
 	Spells:StartCasting(player, spellCastTable)
@@ -60,35 +51,35 @@ end
 function OmniElementSprays:OmniFireSpraySpell(player, power)
 	local spellCastTable = {
 		castType = CAST_TYPE_INSTANT,
-		duration = 0.8,
+		duration = 1.0,
 		dontMoveWhileCasting = true,
 		castingGesture = ACT_DOTA_CAST_ABILITY_5,
-		castingGestureRate = 1.3,
+		castingGestureRate = 1.0,
 		castingGestureTranslate = "am_blink"
 	}
 	Spells:StartCasting(player, spellCastTable)
 
 	local radius = OMNI_SPELLS_RADIUSES[power]
-	local damage = 60 * power
+	local damages = { 75, 106, 130 }
 	local heroEntity = player:GetAssignedHero()
-	OmniElementSprays:OmniFireSpray(heroEntity, heroEntity:GetAbsOrigin(), radius, true, damage)
+	OmniElementSprays:OmniFireSpray(heroEntity, heroEntity:GetAbsOrigin(), radius, true, damages[power])
 end
 
 function OmniElementSprays:OmniColdSpraySpell(player, power)
 	local spellCastTable = {
 		castType = CAST_TYPE_INSTANT,
-		duration = 0.8,
+		duration = 1.0,
 		dontMoveWhileCasting = true,
 		castingGesture = ACT_DOTA_CAST_ABILITY_5,
-		castingGestureRate = 1.3,
+		castingGestureRate = 1.0,
 		castingGestureTranslate = "am_blink"
 	}
 	Spells:StartCasting(player, spellCastTable)
 
 	local radius = OMNI_SPELLS_RADIUSES[power]
-	local damage = 40 * power
+	local damages = { 45, 64, 78 }
 	local heroEntity = player:GetAssignedHero()
-	OmniElementSprays:OmniColdSpray(heroEntity, heroEntity:GetAbsOrigin(), radius, true, damage)
+	OmniElementSprays:OmniColdSpray(heroEntity, heroEntity:GetAbsOrigin(), radius, true, damages[power])
 end
 
 

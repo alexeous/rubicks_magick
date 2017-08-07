@@ -31,7 +31,7 @@
 		},
 		{
 			_class = "C_OP_FadeOutSimple"
-			m_flFadeOutTime = 0.5
+			m_flFadeOutTime = 0.4
 		},
 		{
 			_class = "C_OP_InterpolateRadius"
@@ -60,8 +60,8 @@
 		},
 		{
 			_class = "C_INIT_NormalOffset"
-			m_OffsetMin = [ 0.0, 0.0, -0.2 ]
-			m_OffsetMax = [ 0.0, 0.0, -0.2 ]
+			m_OffsetMin = [ 0.0, 0.0, -0.1 ]
+			m_OffsetMax = [ 0.0, 0.0, -0.1 ]
 		},
 		{
 			_class = "C_INIT_CreateWithinSphere"

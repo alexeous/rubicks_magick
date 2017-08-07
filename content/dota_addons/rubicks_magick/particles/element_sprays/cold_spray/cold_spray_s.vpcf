@@ -31,7 +31,7 @@
 		},
 		{
 			_class = "C_OP_FadeOutSimple"
-			m_flFadeOutTime = 1.0
+			m_flFadeOutTime = 0.3
 		},
 		{
 			_class = "C_OP_InterpolateRadius"
@@ -82,8 +82,8 @@
 		},
 		{
 			_class = "C_INIT_VelocityFromNormal"
-			m_fSpeedMin = 350.0
-			m_fSpeedMax = 350.0
+			m_fSpeedMin = 450.0
+			m_fSpeedMax = 600.0
 		},
 		{
 			_class = "C_INIT_VelocityRandom"
@@ -109,8 +109,8 @@
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 1.0
-			m_fLifetimeMax = 1.2
+			m_fLifetimeMin = 0.45
+			m_fLifetimeMax = 0.5
 		},
 		{
 			_class = "C_INIT_GlobalScale"

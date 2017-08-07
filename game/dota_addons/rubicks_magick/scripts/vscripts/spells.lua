@@ -496,8 +496,7 @@ function Spells:OnSpellsThink()
 						if element == ELEMENT_WATER then
 							Spells:ApplyWet(victim, attacker)
 						elseif element == ELEMENT_COLD then
-							local value = math.ceil(damage / 20)
-							Spells:ApplyChill(victim, attacker, value)
+							Spells:ApplyChill(victim, attacker, damage)
 						elseif element == ELEMENT_FIRE then
 							Spells:ApplyBurn(victim, attacker, damage)
 						end
@@ -529,6 +528,9 @@ function Spells:StartCasting(player, infoTable)
 	if heroEntity ~= nil then
 		if player.spellCast.castingGesture ~= nil then
 			if player.moveToPos ~= nil then
+				if player.spellCast.dontMoveWhileCasting then
+					MoveController:StopMove(player)
+				end
 				heroEntity:FadeGesture(ACT_DOTA_RUN)
 			end
 			local animationParams = {
@@ -613,7 +615,7 @@ function Spells:MeleeAttack(player)
 			player.spellCast.hasAttacked = true
 			local heroEntity = player:GetAssignedHero()
 			local center = heroEntity:GetAbsOrigin() + heroEntity:GetForwardVector() * 110
-			Spells:ApplyElementDamageAoE(center, 110, heroEntity, ELEMENT_EARTH, 150, true, true)
+			Spells:ApplyElementDamageAoE(center, 110, heroEntity, ELEMENT_EARTH, 210, true, true)
 		end
 	end
 
@@ -642,7 +644,7 @@ function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModif
 
 	damage = Spells:GetDamageAfterShields(victim, damage, element, blockPerShield)
 
-	if (element == ELEMENT_LIGHTNING) and victim:HasModifier("modifier_wet") and (not Spells:IsResistantTo(victim, ELEMENT_LIGHTNING)) then
+	if victim:HasModifier("modifier_wet") and ((element == ELEMENT_LIGHTNING) or (element == ELEMENT_COLD)) then
 		damage = damage * 2
 		victim:RemoveModifierByName("modifier_wet")
 	end
@@ -733,7 +735,6 @@ function Spells:ApplyChill(target, caster, power)
 			currentChillModifier:Enhance(power)
 		else
 			if target:HasModifier("modifier_wet") then
-				power = power * 2
 				target:RemoveModifierByName("modifier_wet")
 			end
 			target:AddNewModifier(caster, nil, "modifier_chill", { power = power })
