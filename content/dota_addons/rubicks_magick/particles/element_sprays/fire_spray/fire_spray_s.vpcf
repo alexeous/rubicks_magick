@@ -141,16 +141,6 @@
 			m_ColorMax = [ 0, 50, 255, 255 ]
 		},
 		{
-			_class = "C_INIT_RemapCPtoScalar"
-			m_nCPInput = 2
-			m_nFieldOutput = 11
-		},
-		{
-			_class = "C_INIT_RemapCPtoScalar"
-			m_nCPInput = 1
-			m_nFieldOutput = 10
-		},
-		{
 			_class = "C_INIT_InheritVelocity"
 		},
 	]

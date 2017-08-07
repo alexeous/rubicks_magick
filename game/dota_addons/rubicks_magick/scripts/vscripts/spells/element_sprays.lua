@@ -8,6 +8,7 @@ function ElementSprays:Precache(context)
 	PrecacheResource("particle_folder", "particles/element_sprays/steam_spray", context)
 	PrecacheResource("particle_folder", "particles/element_sprays/fire_spray", context)
 	PrecacheResource("particle_folder", "particles/element_sprays/cold_spray", context)
+	PrecacheResource("particle_folder", "particles/element_sprays/water_spray", context)
 end
 
 function ElementSprays:PlayerConnected(player)
@@ -16,7 +17,7 @@ end
 
 ELEMENT_SPRAY_DISTANCES = { 250, 550, 850 }
 ELEMENT_SPRAY_THINK_PERIOD = 0.05
-ELEMENT_SPRAY_MOVE_SPEED = 720
+ELEMENT_SPRAY_MOVE_SPEED = 1500
 ELEMENT_SPRAY_MOVE_STEP = ELEMENT_SPRAY_MOVE_SPEED * ELEMENT_SPRAY_THINK_PERIOD
 
 function ElementSprays:Init()
@@ -43,7 +44,29 @@ function ElementSprays:StartSteamSpray(player, modifierElement)
 end
 
 function ElementSprays:StartWaterSpray(player, power)
-	-------- TODO ---------
+	local distance = ELEMENT_SPRAY_DISTANCES[power] * 0.8
+	local heroEntity = player:GetAssignedHero()
+	local onTouchFunction = function(unit)
+		Spells:ApplyElementDamage(unit, heroEntity, ELEMENT_WATER, 1, true)
+		local unitToCasterVec = heroEntity:GetAbsOrigin() - unit:GetAbsOrigin()
+		local distanceFactor = 1 - math.min(1, #unitToCasterVec / distance)
+		local vec = heroEntity:GetForwardVector():Normalized() * distanceFactor
+		local upVelocity = Vector(0, 0, 10) * distanceFactor
+		local success = Spells:AddWaterPush(unit, heroEntity, vec * 50 + upVelocity, vec * 250)
+		if success then
+			unit:SetForwardVector(unitToCasterVec)
+		else
+			vec = unitToCasterVec:Normalized() * 100 + Vector(0, 0, 10)
+			Spells:AddWaterPush(heroEntity, heroEntity, vec, nil)
+		end
+	end
+	local radius = 90 + power * 25
+	local particle = ParticleManager:CreateParticle("particles/element_sprays/water_spray/water_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, heroEntity)
+	local particleRecalcFunction = function(factor)
+		ParticleManager:SetParticleControl(particle, 1, Vector(1 + power * 0.5, 0, 0))
+		ParticleManager:SetParticleControl(particle, 2, Vector(factor * (0.2 + power * 0.58), 0, 0))
+	end
+	ElementSprays:StartElementSprayCasting(player, distance, onTouchFunction, particle, particleRecalcFunction, radius, 0.1)
 end
 
 function ElementSprays:StartFireSpray(player, power)
@@ -79,7 +102,7 @@ function ElementSprays:StartColdSpray(player, power)
 end
 
 
-function ElementSprays:StartElementSprayCasting(player, distance, onTouchFunction, particle, particleRecalcFunction, radius)
+function ElementSprays:StartElementSprayCasting(player, distance, onTouchFunction, particle, particleRecalcFunction, radius, dummySpawnPeriod)
 	local spellCastTable = {
 		castType = CAST_TYPE_CONTINUOUS,
 		duration = 5.0,
@@ -89,7 +112,7 @@ function ElementSprays:StartElementSprayCasting(player, distance, onTouchFunctio
 		castingGestureTranslate = "black_hole",
 		castingGestureRate = 1.5,
 		thinkFunction = function(player) ElementSprays:SpawnSprayDummy(player) end,
-		thinkPeriod = 0.3,
+		thinkPeriod = dummySpawnPeriod or 0.3,
 		elementSprays_Distance = distance,
 		elementSprays_Radius = radius,
 		elementSprays_OnTouchFunction = onTouchFunction,

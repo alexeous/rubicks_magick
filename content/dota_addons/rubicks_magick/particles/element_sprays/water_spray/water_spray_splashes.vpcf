@@ -1,7 +1,7 @@
 <!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
 {
 	_class = "CParticleSystemDefinition"
-	m_ConstantColor = [ 175, 182, 186, 255 ]
+	m_ConstantColor = [ 189, 218, 255, 255 ]
 	m_controlPointConfigurations = 
 	[
 		{
@@ -24,19 +24,19 @@
 		},
 		{
 			_class = "C_OP_BasicMovement"
+			m_Gravity = [ 0.0, 0.0, -1100.0 ]
 		},
 		{
 			_class = "C_OP_FadeInSimple"
-			m_flFadeInTime = 0.15
+			m_flFadeInTime = 0.05
 		},
 		{
 			_class = "C_OP_FadeOutSimple"
-			m_flFadeOutTime = 1.0
 		},
 		{
 			_class = "C_OP_InterpolateRadius"
 			m_flEndScale = 1.5
-			m_flStartScale = 0.3
+			m_flStartScale = 0.5
 			m_flEndTime = 0.8
 		},
 		{
@@ -58,8 +58,8 @@
 	[
 		{
 			_class = "C_OP_RenderSprites"
-			m_hTexture = resource:"materials/particle/smoke1/smoke1.vtex"
-			m_flAnimationRate = 0.5
+			m_hTexture = resource:"materials/particle/water/splash.vtex"
+			m_flAnimationRate = 1.0
 			m_bSaturateColorPreAlphaBlend = false
 			m_flAddSelfAmount = 3.0
 		},
@@ -71,6 +71,8 @@
 		},
 		{
 			_class = "C_INIT_NormalOffset"
+			m_OffsetMin = [ 0.0, 0.0, 0.1 ]
+			m_OffsetMax = [ 0.0, 0.0, 0.3 ]
 		},
 		{
 			_class = "C_INIT_CreateWithinSphere"
@@ -82,8 +84,8 @@
 		},
 		{
 			_class = "C_INIT_VelocityFromNormal"
-			m_fSpeedMin = 350.0
-			m_fSpeedMax = 350.0
+			m_fSpeedMin = 600.0
+			m_fSpeedMax = 700.0
 		},
 		{
 			_class = "C_INIT_VelocityRandom"
@@ -92,25 +94,25 @@
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 109
-			m_nAlphaMax = 127
+			m_nAlphaMin = 68
+			m_nAlphaMax = 109
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 65.0
-			m_flRadiusMax = 75.0
+			m_flRadiusMin = 45.0
+			m_flRadiusMax = 55.0
 		},
 		{
 			_class = "C_INIT_RandomRotation"
 		},
 		{
 			_class = "C_INIT_RandomSequence"
-			m_nSequenceMax = 15
+			m_nSequenceMax = 3
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 1.0
-			m_fLifetimeMax = 1.2
+			m_fLifetimeMin = 0.5
+			m_fLifetimeMax = 0.6
 		},
 		{
 			_class = "C_INIT_GlobalScale"
@@ -137,16 +139,8 @@
 	[
 		{
 			_class = "C_OP_ContinuousEmitter"
-			m_flEmitRate = 50.0
 			m_flStartTime = 0.1
-		},
-	]
-	m_ForceGenerators = 
-	[
-		{
-			_class = "C_OP_CurlNoiseForce"
-			m_vecNoiseFreq = [ 0.2, 0.2, 0.2 ]
-			m_vecNoiseScale = [ 500.0, 500.0, 800.0 ]
+			m_flEmitRate = 50.0
 		},
 	]
 }
