@@ -34,6 +34,7 @@ function MoveController:OnMoveHeroesThink()
 				if not dontMoveWhileCasting then
 					if not IsPhysicsUnit(heroEntity) then
 						Physics:Unit(heroEntity)
+						heroEntity:SetGroundBehavior(PHYSICS_GROUND_LOCK)
 					end
 					if player.cursorPos ~= nil then
 						MoveController:HeroLookAt(heroEntity, player.cursorPos)
@@ -42,8 +43,7 @@ function MoveController:OnMoveHeroesThink()
 						local origin = heroEntity:GetAbsOrigin()
 						local vec = player.moveToPos - origin
 						if vec:Length2D() > 20 then
-							vec = Physics:CalcSlope(origin, heroEntity, vec)
-							heroEntity:SetPhysicsVelocity(vec * heroEntity:GetIdealSpeed())
+							heroEntity:SetPhysicsVelocity(vec:Normalized() * heroEntity:GetIdealSpeed())
 						else
 							MoveController:StopMove(player)
 						end
