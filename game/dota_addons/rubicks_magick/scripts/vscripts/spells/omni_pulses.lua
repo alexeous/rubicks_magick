@@ -11,7 +11,7 @@ function OmniPulses:PlayerConnected(player)
 end
 
 
-function OmniPulses:OmniLifePulseSpell(player, modifierElements)
+function OmniPulses:OmniLifePulseSpell(player, pickedElements)
 	local spellCastTable = {
 		castType = CAST_TYPE_INSTANT,
 		duration = 1.0,
@@ -23,10 +23,10 @@ function OmniPulses:OmniLifePulseSpell(player, modifierElements)
 	Spells:StartCasting(player, spellCastTable)
 
 	local heroEntity = player:GetAssignedHero()
-	OmniPulses:OmniLifePulse(heroEntity, heroEntity:GetAbsOrigin(), true, modifierElements)
+	OmniPulses:OmniLifePulse(heroEntity, heroEntity:GetAbsOrigin(), true, pickedElements)
 end
 
-function OmniPulses:OmniDeathPulseSpell(player, modifierElements)
+function OmniPulses:OmniDeathPulseSpell(player, pickedElements)
 	local spellCastTable = {
 		castType = CAST_TYPE_INSTANT,
 		duration = 1.0,
@@ -38,58 +38,48 @@ function OmniPulses:OmniDeathPulseSpell(player, modifierElements)
 	Spells:StartCasting(player, spellCastTable)
 
 	local heroEntity = player:GetAssignedHero()
-	OmniPulses:OmniDeathPulse(heroEntity, heroEntity:GetAbsOrigin(), true, modifierElements)
+	OmniPulses:OmniDeathPulse(heroEntity, heroEntity:GetAbsOrigin(), true, pickedElements)
 end
 
-function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, modifierElements, radiusFactor, healFactor)
+function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, pickedElements, radiusFactor, healFactor)
+	while pickedElements[1] ~= ELEMENT_LIFE do
+		table.remove(pickedElements, 1)
+	end
 	radiusFactor = radiusFactor or 1.0
 	healFactor = healFactor or 1.0
 	local radius = OMNI_SPELLS_RADIUSES[1] * radiusFactor
 	local heal = 100 * healFactor
-
-	local lifeInd = table.indexOf(modifierElements, ELEMENT_LIFE)
-	if lifeInd ~= nil then
-		table.remove(modifierElements, lifeInd)
-
+	if pickedElements[2] == ELEMENT_LIFE then
 		radius = OMNI_SPELLS_RADIUSES[2] * radiusFactor
 		heal = 140 * healFactor
-		if modifierElements[1] == ELEMENT_FIRE then
-			OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, 73 * healFactor)
-		elseif modifierElements[1] == ELEMENT_COLD then
-			OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, 43 * healFactor)
-		elseif modifierElements[1] == ELEMENT_WATER then
-			OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, false, false)
-		end
-	else
-		local fireInd = table.indexOf(modifierElements, ELEMENT_FIRE)
-		if fireInd ~= nil then
-			table.remove(modifierElements, fireInd)
-			
-			if modifierElements[1] == ELEMENT_WATER then
-				OmniElementSprays:OmniSteamSpray(caster, position, radius, ignoreCaster, 125 * healFactor, false)
-			else
-				local damage = ((modifierElements[1] == ELEMENT_FIRE) and 106 or 75) * healFactor
-				OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, damage)
-			end
-		else
-			local waterInd = table.indexOf(modifierElements, ELEMENT_WATER)
-			if waterInd ~= nil then
-				table.remove(modifierElements, waterInd)
-
-				local doPush = (modifierElements[1] == ELEMENT_WATER)
-				OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, doPush)
-			else
-				local coldInd = table.indexOf(modifierElements, ELEMENT_COLD)
-				if coldInd ~= nil then
-					table.remove(modifierElements, coldInd)
-
-					local damage = ((modifierElements[1] == ELEMENT_COLD) and 104 or 56) * healFactor
-					OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, damage)
-				end
-			end
-		end
 	end
 
+	local lifePulseTable = {
+		[ELEMENT_LIFE] = {
+			[ELEMENT_LIFE] = {
+				[ELEMENT_WATER] = function() OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, false, false) end,
+				[ELEMENT_FIRE]  = function() OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, 73 * healFactor) end,
+				[ELEMENT_COLD]  = function() OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, 43 * healFactor) end
+			},
+			[ELEMENT_WATER] = {
+				[ELEMENT_FIRE]  = function() OmniElementSprays:OmniSteamSpray(caster, position, radius, ignoreCaster, 125 * healFactor, false) end,
+				[DEFAULT]       = function() OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, (pickedElements[3] == ELEMENT_WATER)) end
+			},
+			[ELEMENT_FIRE] = {
+				[ELEMENT_FIRE]  = function() OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, 106 * healFactor) end,
+				[EMPTY]         = function() OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, 75 * healFactor) end
+			},
+			[ELEMENT_COLD] = {
+				[ELEMENT_COLD]  = function() OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, 104 * healFactor) end,
+				[EMPTY]         = function() OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, 56 * healFactor) end
+			}
+		}
+	}
+	local func = table.serialRetrieve(lifePulseTable, pickedElements)
+	if func ~= nil then
+		func()
+	end
+	
 	Spells:HealAoE(position, radius, caster, heal, ignoreCaster)
 
 	local particle = ParticleManager:CreateParticle("particles/omni_pulses/omni_life_pulse/omni_life_pulse.vpcf", PATTACH_CUSTOMORIGIN, nil)
@@ -99,65 +89,61 @@ function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, modifierElemen
 	ParticleManager:SetParticleControl(particle, 2, Vector(radius / 250 + 0.2, 0, 0))	
 end
 
-function OmniPulses:OmniDeathPulse(caster, position, ignoreCaster, modifierElements, radiusFactor, damageFactor)
+function OmniPulses:OmniDeathPulse(caster, position, ignoreCaster, pickedElements, radiusFactor, damageFactor)
+	while pickedElements[1] ~= ELEMENT_DEATH do
+		table.remove(pickedElements, 1)
+	end
 	radiusFactor = radiusFactor or 1.0
 	damageFactor = damageFactor or 1.0
-	local radius = OMNI_SPELLS_RADIUSES[1] * radiusFactor
-	local deathDamage = 100 * damageFactor
+	local power = table.count(pickedElements, ELEMENT_DEATH)
+	local radius = OMNI_SPELLS_RADIUSES[power] * radiusFactor
+	local deathDamages = { 100, 140, 174 }
+	local deathDamage = deathDamages[power] * damageFactor
 	local color = Vector(255, 0, 0)
 
-	local deathInd = table.indexOf(modifierElements, ELEMENT_DEATH)
-	if deathInd ~= nil then
-		table.remove(modifierElements, deathInd)
-		deathDamage  = 140 * damageFactor
-		radius = OMNI_SPELLS_RADIUSES[2] * radiusFactor
-		if modifierElements[1] == ELEMENT_DEATH then
-			radius = OMNI_SPELLS_RADIUSES[3] * radiusFactor
-			deathDamage = 174 * damageFactor
-		elseif modifierElements[1] == ELEMENT_FIRE then
-			color = Vector(255, 100, 0)
-			OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, 76 * damageFactor)
-		elseif modifierElements[1] == ELEMENT_COLD then
-			color = Vector(163, 222, 255)
-			OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, 46 * damageFactor)
-		elseif modifierElements[1] == ELEMENT_WATER then
-			color = Vector(0, 72, 255)
-			OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, false)
-		end
-	else
-		local fireInd = table.indexOf(modifierElements, ELEMENT_FIRE)
-		if fireInd ~= nil then
-			table.remove(modifierElements, fireInd)
-
-			if modifierElements[1] == ELEMENT_WATER then
-				color = Vector(160, 160, 160)
-				OmniElementSprays:OmniSteamSpray(caster, position, radius, ignoreCaster, 125 * damageFactor, false)
-			else
-				color = Vector(255, 100, 0)
-				local damage = ((modifierElements[1] == ELEMENT_FIRE) and 106 or 75) * damageFactor
-				OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, damage)
-			end
-		else
-			local waterInd = table.indexOf(modifierElements, ELEMENT_WATER)
-			if waterInd ~= nil then
-				table.remove(modifierElements, waterInd)
-
-				color = Vector(0, 72, 255)
-				local doPush = (modifierElements[1] == ELEMENT_WATER)
-				OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, doPush)
-			else
-				local coldInd = table.indexOf(modifierElements, ELEMENT_COLD)
-				if coldInd ~= nil then
-					table.remove(modifierElements, coldInd)
-
+	local deathPulseTable = {
+		[ELEMENT_DEATH] = {
+			[ELEMENT_DEATH] = {
+				[ELEMENT_WATER] = function()
+					color = Vector(0, 72, 255)
+					OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, false)
+				end,
+				[ELEMENT_FIRE] = function()
+					color = Vector(255, 100, 0)
+					OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, 76 * damageFactor)
+				end,
+				[ELEMENT_COLD] = function()
 					color = Vector(163, 222, 255)
-					local damage = ((modifierElements[1] == ELEMENT_COLD) and 63 or 45) * damageFactor
-					OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, damage)
+					OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, 46 * damageFactor)
 				end
+			},
+			[ELEMENT_WATER] = {
+				[ELEMENT_FIRE] = function()
+					color = Vector(160, 160, 160)
+					OmniElementSprays:OmniSteamSpray(caster, position, radius, ignoreCaster, 125 * damageFactor, false)					
+				end,
+				[DEFAULT] = function()
+					color = Vector(0, 72, 255)
+					OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, (pickedElements[3] == ELEMENT_WATER))
+				end
+			},
+			[ELEMENT_FIRE] = function()
+				color = Vector(255, 100, 0)
+				local damage = (pickedElements[3] == ELEMENT_FIRE) and 106 or 75
+				OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, damage * damageFactor)
+			end,
+			[ELEMENT_COLD] = function() 
+				color = Vector(163, 222, 255)
+				local damage = (pickedElements[1] == ELEMENT_COLD) and 63 or 45
+				OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, damage * damageFactor)
 			end
-		end
+		}
+	}
+	local func = table.serialRetrieve(deathPulseTable, pickedElements)
+	if func ~= nil then
+		func()
 	end
-
+	
 	Spells:ApplyElementDamageAoE(position, radius, caster, ELEMENT_DEATH, deathDamage, ignoreCaster)
 	
 	local deathOnly = (color == Vector(255, 0, 0)) and 1 or 0
