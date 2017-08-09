@@ -38,8 +38,8 @@
 			_class = "C_OP_RenderSprites"
 			m_nOrientationType = 2
 			m_bSaturateColorPreAlphaBlend = false
-			m_flOverbrightFactor = 0.6
-			m_hTexture = resource:"materials/particle/particle_ring_softouter.vtex"
+			m_flOverbrightFactor = 2.0
+			m_hTexture = resource:"materials/particle/particle_crescent.vtex"
 		},
 	]
 	m_Initializers = 
@@ -51,7 +51,7 @@
 			_class = "C_INIT_RemapCPtoScalar"
 			m_nCPInput = 1
 			m_flInputMax = 300.0
-			m_flOutputMax = 300.0
+			m_flOutputMax = 360.0
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
@@ -67,6 +67,9 @@
 			_class = "C_INIT_RandomLifeTime"
 			m_fLifetimeMin = 0.2
 			m_fLifetimeMax = 0.2
+		},
+		{
+			_class = "C_INIT_RandomRotation"
 		},
 	]
 	m_Emitters = 

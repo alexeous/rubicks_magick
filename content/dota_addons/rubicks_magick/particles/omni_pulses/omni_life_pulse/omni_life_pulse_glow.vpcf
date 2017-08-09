@@ -44,6 +44,7 @@
 			m_flAddSelfAmount = 2.0
 			m_bAdditive = true
 			m_hTexture = resource:"materials/particle/particle_flares/particle_flare_006_white.vtex"
+			m_flOverbrightFactor = 2.0
 		},
 	]
 	m_Initializers = 

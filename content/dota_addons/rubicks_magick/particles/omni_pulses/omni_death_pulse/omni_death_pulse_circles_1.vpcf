@@ -30,6 +30,12 @@
 			m_RateMax = 0.5
 			m_nField = 12
 		},
+		{
+			_class = "C_OP_RampScalarLinear"
+			m_RateMin = -2.0
+			m_RateMax = 2.0
+			m_nField = 4
+		},
 	]
 	m_Renderers = 
 	[
@@ -38,6 +44,8 @@
 			m_nOrientationType = 2
 			m_bAdditive = true
 			m_hTexture = resource:"materials/particle/particle_ring_wavy.vtex"
+			m_bSaturateColorPreAlphaBlend = false
+			m_flOverbrightFactor = 2.0
 		},
 	]
 	m_Initializers = 
@@ -74,7 +82,7 @@
 		{
 			_class = "C_INIT_VelocityRandom"
 			m_LocalCoordinateSystemSpeedMin = [ 0.0, 0.0, 100.0 ]
-			m_LocalCoordinateSystemSpeedMax = [ 0.0, 0.0, 600.0 ]
+			m_LocalCoordinateSystemSpeedMax = [ 0.0, 0.0, 400.0 ]
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
@@ -93,13 +101,6 @@
 		{
 			_class = "C_OP_InstantaneousEmitter"
 			m_nParticlesToEmit = 10
-		},
-	]
-	m_Constraints = 
-	[
-		{
-			_class = "C_OP_ConstrainDistance"
-			m_fMaxDistance = 200.0
 		},
 	]
 }
