@@ -1,5 +1,6 @@
 
 require("util")
+require("camera_slider")
 require("move_controller")
 require("elements")
 require("spells")
@@ -32,6 +33,7 @@ function RubicksMagickGameMode:InitGameMode()
 	GameRules:GetGameModeEntity():SetExecuteOrderFilter(Dynamic_Wrap(RubicksMagickGameMode, "OrderFilter"), self)
 	ListenToGameEvent("player_connect_full", Dynamic_Wrap(RubicksMagickGameMode, "OnConnectFull"), self)
 
+	CameraSlider:Init()
 	MoveController:Init()
 	Elements:Init()
 	Spells:Init()
