@@ -136,10 +136,7 @@ function Spells:OnLeftDown(keys)
 	if heroEntity == nil then
 		return
 	end
-	if heroEntity:IsFrozen() then
-		heroEntity:FindModifierByName("modifier_frozen"):ReleaseProgress()
-		return
-	elseif heroEntity:IsStunned() or not heroEntity:IsAlive() then
+	if heroEntity:IsStunned() or not heroEntity:IsAlive() then
 		return
 	end
 	if player.spellCast ~= nil then 
@@ -215,9 +212,6 @@ function Spells:OnMiddleDown(keys)
 		return 
 	end	
 	if heroEntity:IsStunned() or not heroEntity:IsAlive() then
-		return
-	elseif heroEntity:IsFrozen() then 
-		heroEntity:FindModifierByName("modifier_frozen"):ReleaseProgress()
 		return
 	end
 	if player.spellCast ~= nil then
