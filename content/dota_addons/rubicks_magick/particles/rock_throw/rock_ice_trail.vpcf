@@ -33,6 +33,10 @@
 			_class = "C_OP_InterpolateRadius"
 			m_flEndScale = 0.8
 		},
+		{
+			_class = "C_OP_BasicMovement"
+			m_Gravity = [ 0.0, 0.0, -200.0 ]
+		},
 	]
 	m_Renderers = 
 	[
@@ -49,8 +53,8 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 30.0
-			m_flRadiusMax = 40.0
+			m_flRadiusMin = 45.0
+			m_flRadiusMax = 55.0
 		},
 		{
 			_class = "C_INIT_RandomRotation"
@@ -66,8 +70,8 @@
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 36
-			m_nAlphaMax = 88
+			m_nAlphaMin = 81
+			m_nAlphaMax = 109
 		},
 	]
 	m_Emitters = 
@@ -76,6 +80,7 @@
 			_class = "C_OP_ContinuousEmitter"
 			m_nScaleControlPoint = 1
 			m_nScaleControlPointField = 2
+			m_flEmitRate = 180.0
 		},
 	]
 }

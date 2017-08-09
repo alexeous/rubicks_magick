@@ -87,4 +87,13 @@
 			m_nScaleControlPoint = 3
 		},
 	]
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/rock_throw/rock_death_trail_circles.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/rock_throw/rock_death_trail_glow.vpcf"
+		},
+	]
 }

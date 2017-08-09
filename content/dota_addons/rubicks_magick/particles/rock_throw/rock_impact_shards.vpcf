@@ -24,7 +24,7 @@
 		},
 		{
 			_class = "C_OP_BasicMovement"
-			m_Gravity = [ 0.0, 0.0, -1000.0 ]
+			m_Gravity = [ 0.0, 0.0, -1600.0 ]
 		},
 		{
 			_class = "C_OP_RampScalarLinear"
@@ -73,7 +73,7 @@
 			m_flInputMin = 1.0
 			m_flInputMax = 3.0
 			m_flOutputMin = 0.4
-			m_flOutputMax = 0.6
+			m_flOutputMax = 0.8
 		},
 		{
 			_class = "C_INIT_RandomSequence"
@@ -91,6 +91,11 @@
 			m_fSpeedMin = -300.0
 			m_fSpeedMax = -400.0
 			m_vecLocalCoordinateSystemSpeedScale = [ 1.0, 1.0, 2.0 ]
+		},
+		{
+			_class = "C_INIT_RandomLifeTime"
+			m_fLifetimeMin = 2.0
+			m_fLifetimeMax = 2.0
 		},
 	]
 	m_Emitters = 

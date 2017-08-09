@@ -48,8 +48,8 @@
 			m_nCPInput = 1
 			m_flInputMin = 1.0
 			m_flInputMax = 3.0
-			m_flOutputMin = 0.13
-			m_flOutputMax = 0.3
+			m_flOutputMin = 0.18
+			m_flOutputMax = 0.35
 		},
 	]
 	m_Emitters = 
@@ -65,10 +65,6 @@
 			m_ChildRef = resource:"particles/rock_throw/rock_stone_dust.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/rock_throw/rock_impact.vpcf"
-			m_bEndCap = true
-		},
-		{
 			m_ChildRef = resource:"particles/rock_throw/rock_water_trail.vpcf"
 		},
 		{
@@ -82,7 +78,6 @@
 		},
 		{
 			m_ChildRef = resource:"particles/rock_throw/rock_death_trail.vpcf"
-			m_bDisableChild = true
 		},
 		{
 			m_ChildRef = resource:"particles/rock_throw/rock_life_trail.vpcf"

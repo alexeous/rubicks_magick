@@ -31,6 +31,14 @@
 		{
 			_class = "C_OP_BasicMovement"
 		},
+		{
+			_class = "C_OP_VectorNoise"
+			m_nFieldOutput = 0
+			m_vecOutputMin = [ -40.0, -40.0, -40.0 ]
+			m_vecOutputMax = [ 40.0, 40.0, 40.0 ]
+			m_fl4NoiseScale = 1.0
+			m_bAdditive = true
+		},
 	]
 	m_Renderers = 
 	[
@@ -54,13 +62,13 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 2.0
-			m_flRadiusMax = 3.0
+			m_flRadiusMin = 4.0
+			m_flRadiusMax = 5.0
 		},
 		{
 			_class = "C_INIT_VelocityRadialRandom"
-			m_fSpeedMin = -25.0
-			m_fSpeedMax = -50.0
+			m_fSpeedMin = -85.0
+			m_fSpeedMax = -150.0
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"

@@ -63,13 +63,13 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 40.0
-			m_flRadiusMax = 50.0
+			m_flRadiusMin = 60.0
+			m_flRadiusMax = 70.0
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
 			m_fLifetimeMin = 0.3
-			m_fLifetimeMax = 0.4
+			m_fLifetimeMax = 0.3
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
@@ -81,9 +81,15 @@
 	[
 		{
 			_class = "C_OP_ContinuousEmitter"
-			m_flEmitRate = 150.0
+			m_flEmitRate = 220.0
 			m_nScaleControlPoint = 2
 			m_nScaleControlPointField = 1
+		},
+	]
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/rock_throw/rock_fire_trail_fire.vpcf"
 		},
 	]
 }

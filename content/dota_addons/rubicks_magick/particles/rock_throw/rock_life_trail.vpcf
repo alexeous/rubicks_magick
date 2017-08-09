@@ -36,6 +36,11 @@
 			_class = "C_OP_InterpolateRadius"
 			m_flEndScale = 0.5
 		},
+		{
+			_class = "C_OP_RampScalarLinearSimple"
+			m_Rate = 10.0
+			m_nField = 4
+		},
 	]
 	m_Renderers = 
 	[
@@ -44,7 +49,8 @@
 			m_bSaturateColorPreAlphaBlend = false
 			m_flAddSelfAmount = 1.0
 			m_bAdditive = true
-			m_hTexture = resource:"materials/particle/particle_modulate_02.vtex"
+			m_hTexture = resource:"materials/particle/particle_hexagon_edgeglow.vtex"
+			m_flOverbrightFactor = 3.0
 		},
 	]
 	m_Initializers = 
@@ -54,27 +60,34 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 20.0
-			m_flRadiusMax = 20.0
+			m_flRadiusMin = 35.0
+			m_flRadiusMax = 35.0
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 127
-			m_nAlphaMax = 147
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
 			m_fLifetimeMin = 0.2
-			m_fLifetimeMax = 0.3
+			m_fLifetimeMax = 0.2
+		},
+		{
+			_class = "C_INIT_RandomRotation"
 		},
 	]
 	m_Emitters = 
 	[
 		{
 			_class = "C_OP_ContinuousEmitter"
-			m_flEmitRate = 200.0
+			m_flEmitRate = 150.0
 			m_nScaleControlPoint = 3
 			m_nScaleControlPointField = 1
+		},
+	]
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/rock_throw/rock_life_trail_glow.vpcf"
 		},
 	]
 }

@@ -26,7 +26,7 @@
 		},
 		{
 			_class = "C_OP_RampScalarLinearSimple"
-			m_Rate = 10.0
+			m_Rate = 45.0
 			m_flEndTime = 0.3
 			m_nField = 10
 		},
@@ -46,13 +46,18 @@
 		{
 			_class = "C_OP_PositionLock"
 		},
+		{
+			_class = "C_OP_ColorInterpolate"
+			m_ColorFade = [ 80, 80, 80, 255 ]
+			m_flFadeEndTime = 0.6
+		},
 	]
 	m_Renderers = 
 	[
 		{
 			_class = "C_OP_RenderTrails"
 			m_flMaxLength = 300.0
-			m_flRadiusTaper = 2.0
+			m_flRadiusTaper = 3.0
 			m_vEndTrailTintFactor = [ 1.0, 1.0, 1.0, 0.0 ]
 			m_hTexture = resource:"materials/particle/beam_noise05.vtex"
 		},
@@ -77,12 +82,13 @@
 		},
 		{
 			_class = "C_INIT_RandomTrailLength"
-			m_flMaxLength = 0.2
+			m_flMaxLength = 0.4
+			m_flMinLength = 0.2
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 86
-			m_nAlphaMax = 129
+			m_nAlphaMin = 45
+			m_nAlphaMax = 72
 		},
 		{
 			_class = "C_INIT_RandomRadius"
@@ -94,6 +100,19 @@
 			m_fSpeedMin = 50.0
 			m_fSpeedMax = 50.0
 		},
+		{
+			_class = "C_INIT_RandomColor"
+			m_ColorMin = [ 170, 170, 170, 255 ]
+			m_ColorMax = [ 145, 143, 143, 255 ]
+		},
+		{
+			_class = "C_INIT_RemapCPtoScalar"
+			m_nCPInput = 1
+			m_flInputMin = 1.0
+			m_flInputMax = 3.0
+			m_flOutputMin = 10.0
+			m_flOutputMax = 30.0
+		},
 	]
 	m_Emitters = 
 	[
@@ -102,11 +121,16 @@
 			m_nParticlesToEmit = 50
 		},
 	]
-	m_ConstantColor = [ 150, 150, 150, 255 ]
 	m_Children = 
 	[
 		{
 			m_ChildRef = resource:"particles/rock_throw/rock_impact_shards.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/rock_throw/rock_impact_dust.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/rock_throw/rock_impact_cracks.vpcf"
 		},
 	]
 }
