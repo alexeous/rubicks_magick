@@ -128,7 +128,7 @@ end
 function ElementSprays:SpawnSprayDummy(player, isTest)
 	local heroEntity = player:GetAssignedHero()
 	local position = heroEntity:GetAbsOrigin() + heroEntity:GetForwardVector():Normalized() * 60 + Vector(0, 0, 100)
-	local sprayDummy = Dummy:Create(position, heroEntity)
+	local sprayDummy = Util:CreateDummy(position, heroEntity)
 	sprayDummy.isTest = isTest
 	sprayDummy.caster = heroEntity
 	sprayDummy.startTime = GameRules:GetGameTime()

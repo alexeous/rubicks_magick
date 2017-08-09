@@ -123,7 +123,7 @@ function RockThrow:ReleaseRock(player)
 	local rockRadius = rockSize * 8 + 4
 	local distance = ROCK_FLY_DISTANCES[rockSize] * distanceFactor
 	local startOrigin = caster:GetAbsOrigin() + Vector(0, 0, ROCK_START_HEIGHT + rockRadius)
-	local rockDummy = Dummy:Create(startOrigin, caster)
+	local rockDummy = Util:CreateDummy(startOrigin, caster)
 	rockDummy.caster = caster
 	rockDummy.time = 0.0
 	rockDummy.startZ = startOrigin.z
