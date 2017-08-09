@@ -49,10 +49,10 @@ function ElementSprays:StartWaterSpray(player, power)
 	local onTouchFunction = function(unit)
 		Spells:ApplyElementDamage(unit, heroEntity, ELEMENT_WATER, 1, true)
 		local unitToCasterVec = heroEntity:GetAbsOrigin() - unit:GetAbsOrigin()
-		local distanceFactor = 1 - math.min(1, #unitToCasterVec / distance)
+		local distanceFactor = 1.2 - math.min(1, #unitToCasterVec / distance)
 		local vec = heroEntity:GetForwardVector():Normalized() * distanceFactor
 		local upVelocity = Vector(0, 0, 10) * distanceFactor
-		local success = Spells:AddWaterPush(unit, heroEntity, vec * 50 + upVelocity, vec * 250)
+		local success = Spells:AddWaterPush(unit, heroEntity, vec * 50 + upVelocity, vec * 200)
 		if success then
 			unit:SetForwardVector(unitToCasterVec)
 		else

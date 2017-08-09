@@ -84,7 +84,7 @@ function RockThrow:ReleaseRock(player)
 	local rockDamages = { 125, 300, 600 }
 	local rockDamage = rockDamages[rockSize] * damageFactor
 	if rockSize == 1 and earthOnly == 1 then
-		rockDamage = 135
+		rockDamage = 135 * damageFactor
 	end
 	local radiuses = GetScaledRadiuses(radiusFactor)
 
