@@ -13,7 +13,7 @@ function MoveController:Init()
 	
 	ListenToGameEvent("entity_killed", Dynamic_Wrap(MoveController, "OnEntityKilled"), self)
 
-	CustomGameEventManager:RegisterListener("me_mm", Dynamic_Wrap(MoveController, "OnMouseMove"))
+	CustomGameEventManager:RegisterListener("me_mc", Dynamic_Wrap(MoveController, "OnMouseCycle"))
 	CustomGameEventManager:RegisterListener("me_rd", Dynamic_Wrap(MoveController, "OnRightDown"))
 	CustomGameEventManager:RegisterListener("me_ru", Dynamic_Wrap(MoveController, "OnRightUp"))
 
@@ -124,7 +124,7 @@ function MoveController:MoveToCursorCommand(player)
 	end
 end
 
-function MoveController:OnMouseMove(keys)
+function MoveController:OnMouseCycle(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
 	if player.rightDown then
