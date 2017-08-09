@@ -68,6 +68,20 @@ function Elements:OnEntityKilled(keys)
 	end
 end
 
+function Elements:GetPickedElements(player)
+	if player == nil or player.pickedElements == nil then
+		return nil
+	end
+
+	local result = {}
+	for _, pickedElement in pairs(player.pickedElements) do
+		if pickedElement ~= nil then
+			table.insert(result, pickedElement)
+		end
+	end
+	return result
+end
+
 function Elements:PickElement(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 

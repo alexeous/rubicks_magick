@@ -143,12 +143,12 @@ function Spells:OnLeftDown(keys)
 		player.wantsToStartNewSpell_left = true
 		return
 	end
-	if next(player.pickedElements) == nil then
+
+	local pickedElements = Elements:GetPickedElements(player)
+	if next(pickedElements) == nil then
 		Spells:MeleeAttack(player)
 		return
-	end
-
-	local pickedElements = table.clone(player.pickedElements)
+	end	
 	table.sort(pickedElements)
 	Elements:RemoveAllElements(player)
 
@@ -218,11 +218,11 @@ function Spells:OnMiddleDown(keys)
 		player.wantsToStartNewSpell_middle = true
 		return
 	end
-	if next(player.pickedElements) == nil then
-		return
-	end
 
-	local pickedElements = table.clone(player.pickedElements)
+	local pickedElements = Elements:GetPickedElements(player)
+	if next(pickedElements) == nil then
+		return
+	end	
 	table.sort(pickedElements)
 	Elements:RemoveAllElements(player)
 
