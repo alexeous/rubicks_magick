@@ -42,7 +42,7 @@ function OmniPulses:OmniDeathPulseSpell(player, pickedElements)
 end
 
 function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, pickedElements, radiusFactor, healFactor)
-	while pickedElements[1] ~= ELEMENT_LIFE do
+	while pickedElements[1] ~= ELEMENT_LIFE and pickedElements[1] ~= nil do
 		table.remove(pickedElements, 1)
 	end
 	radiusFactor = radiusFactor or 1.0
@@ -90,7 +90,7 @@ function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, pickedElements
 end
 
 function OmniPulses:OmniDeathPulse(caster, position, ignoreCaster, pickedElements, radiusFactor, damageFactor)
-	while pickedElements[1] ~= ELEMENT_DEATH do
+	while pickedElements[1] ~= ELEMENT_DEATH and pickedElements[1] ~= nil do
 		table.remove(pickedElements, 1)
 	end
 	radiusFactor = radiusFactor or 1.0
