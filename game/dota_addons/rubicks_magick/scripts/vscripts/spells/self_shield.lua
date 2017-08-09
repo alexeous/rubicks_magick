@@ -32,7 +32,7 @@ function SelfShield:PlayerConnected(player)
 end
 
 
-function SelfShield:ApplyElementSelfShield(unit, shieldElements)
+function SelfShield:ApplyElementSelfShield(unit, pickedElements)
 	if unit.shieldElements == nil then  unit.shieldElements = {}  end
 	if unit.shieldModifiers == nil then  unit.shieldModifiers = {}  end
 
@@ -54,15 +54,16 @@ function SelfShield:ApplyElementSelfShield(unit, shieldElements)
 
 	-------- TODO: MODIFIER ICON TEXTURES ------------
 
-	if shieldElements[1] ~= nil then
+	table.remove(pickedElements, 1)  -- remove ELEMENT_SHIELD
+	if pickedElements[1] ~= nil then
 		local kv = { index = 1, circleRadius = circleRadius, duration = SHIELD_DURATION }
-		unit.shieldModifiers[1] = unit:AddNewModifier(unit, nil, MODIFIER_SHIELD_NAMES[shieldElements[1]], kv)
+		unit.shieldModifiers[1] = unit:AddNewModifier(unit, nil, MODIFIER_SHIELD_NAMES[pickedElements[1]], kv)
 		circleRadius = 2
 	end
 
-	if shieldElements[2] ~= nil then
+	if pickedElements[2] ~= nil then
 		local kv = { index = 2, circleRadius = circleRadius, duration = SHIELD_DURATION }
-		unit.shieldModifiers[2] = unit:AddNewModifier(unit, nil, MODIFIER_SHIELD_NAMES[shieldElements[2]], kv)
+		unit.shieldModifiers[2] = unit:AddNewModifier(unit, nil, MODIFIER_SHIELD_NAMES[pickedElements[2]], kv)
 	end
 end
 

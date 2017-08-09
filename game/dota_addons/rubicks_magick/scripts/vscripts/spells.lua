@@ -187,6 +187,7 @@ function Spells:OnLeftDown(keys)
 		[ELEMENT_WATER] = {
 			[ELEMENT_WATER] = {
 				[ELEMENT_FIRE] = function() ElementSprays:StartSteamSpray(player, ELEMENT_WATER) end,
+				[ELEMENT_COLD] = function() IceSpikes:StartIceSpikes(player, ELEMENT_WATER) end,
 				[DEFAULT]      = function() ElementSprays:StartWaterSpray(player, #pickedElements) end,
 			},
 			[ELEMENT_FIRE] = function() ElementSprays:StartSteamSpray(player, pickedElements[3]) end,
@@ -259,6 +260,7 @@ function Spells:OnMiddleDown(keys)
 		[ELEMENT_WATER] = {
 			[ELEMENT_WATER] = {
 				[ELEMENT_FIRE] = function() OmniElementSprays:OmniSteamSpraySpell(player, ELEMENT_WATER) end,
+				[ELEMENT_COLD] = function() OmniIceSpikes:OmniIceSpikes(player, ELEMENT_WATER) end,
 				[DEFAULT]      = function() OmniElementSprays:OmniWaterSpraySpell(player, #pickedElements) end
 			},
 			[ELEMENT_FIRE] = function() OmniElementSprays:OmniSteamSpraySpell(player, pickedElements[3]) end,
