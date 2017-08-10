@@ -85,6 +85,7 @@ function Spells:Init()
 
 	RockThrow:Init()
 	ElementSprays:Init()
+	MagicShield:Init()
 end
 
 function Spells:PlayerConnected(player)
@@ -159,13 +160,13 @@ function Spells:OnLeftDown(keys)
 			[ELEMENT_LIFE]      = function() Mines:PlaceLifeMines(player, pickedElements[3]) end,
 			[ELEMENT_DEATH]     = function() Mines:PlaceDeathMines(player, pickedElements[3]) end,
 			[ELEMENT_WATER] = {
-				[ELEMENT_COLD] = function() ElementWalls:PlaceIceWall(player) end,
 				[ELEMENT_FIRE] = function() ElementWalls:PlaceSteamWall(player) end,
+				[ELEMENT_COLD] = function() ElementWalls:PlaceIceWall(player) end,
 				[DEFAULT]	   = function() ElementWalls:PlaceWaterWall(player, pickedElements[3]) end
 			},
 			[ELEMENT_FIRE] = function() ElementWalls:PlaceFireWall(player, pickedElements[3]) end,
 			[ELEMENT_COLD] = function() ElementWalls:PlaceColdWall(player, pickedElements[3]) end,
-			[EMPTY]        = function() MagicShield:PlaceMagicShield(player, true) end,
+			[EMPTY]        = function() MagicShield:PlaceFlatMagicShieldSpell(player) end,
 		},
 		[ELEMENT_EARTH] 	= function() RockThrow:StartRockThrow(player, pickedElements) end,
 		[ELEMENT_LIGHTNING] = function() Lightning:DirectedLightning(player, pickedElements) end,
@@ -228,7 +229,7 @@ function Spells:OnMiddleDown(keys)
 
 	local castTable = {
 		[ELEMENT_SHIELD] = {
-			[EMPTY]   = function() MagicShield:PlaceMagicShield(player, false) end,
+			[EMPTY]   = function() MagicShield:PlaceRoundMagicShieldSpell(player) end,
 			[DEFAULT] = function() SelfShield:ApplyElementSelfShield(heroEntity, pickedElements) end
 		},
 		[ELEMENT_EARTH]     = function() EarthStomp:EarthStomp(player, pickedElements) end,

@@ -1,0 +1,20 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "global_lit_simple.vfx"
+
+	//---- Scroll UV ----
+	F_SCROLL_UV 1 // Scroll Color Only
+
+	//---- Color ----
+	g_vColorTint "[1.000000 1.000000 1.000000 0.000000]"
+	g_vTexCoordOffset "[0.000 0.000]"
+	g_vTexCoordScale "[1.000 1.000]"
+	TextureColor "materials/magic_shield/magic_shield.psd"
+
+	//---- Scroll UV ----
+	g_flScrollUvSpeed "1.000"
+	g_vScrollUvDirection "[1.000 0.000]"
+	TextureScrollSpeed "materials/default/default.tga"
+}

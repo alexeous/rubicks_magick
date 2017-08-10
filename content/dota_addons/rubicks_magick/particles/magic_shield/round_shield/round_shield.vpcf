@@ -1,0 +1,113 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+{
+	_class = "CParticleSystemDefinition"
+	m_ConstantColor = [ 0, 0, 0, 255 ]
+	m_controlPointConfigurations = 
+	[
+		{
+			m_name = "preview"
+			m_drivers = 
+			[
+				{
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 0.0, 0.0 ]
+					m_angOffset = [ null, null, null ]
+					m_entityName = "self"
+				},
+			]
+		},
+	]
+	m_Operators = 
+	[
+		{
+			_class = "C_OP_EndCapTimedDecay"
+		},
+		{
+			_class = "C_OP_RampScalarLinear"
+			m_RateMin = -0.4
+			m_RateMax = 0.4
+			m_nField = 4
+			m_flEndTime_min = 10000000000.0
+			m_flEndTime_max = 10000000000.0
+		},
+		{
+			_class = "C_OP_RampScalarLinear"
+			m_RateMin = -0.3
+			m_RateMax = 0.3
+			m_nField = 12
+			m_flEndTime_min = 1000000000000.0
+			m_flEndTime_max = 10000000000000.0
+		},
+		{
+			_class = "C_OP_FadeInSimple"
+			m_flFadeInTime = 0.5
+		},
+		{
+			_class = "C_OP_ColorInterpolate"
+			m_ColorFade = [ 255, 195, 0, 255 ]
+			m_flFadeStartTime = 0.1
+			m_flFadeEndTime = 0.3
+		},
+	]
+	m_Renderers = 
+	[
+		{
+			_class = "C_OP_RenderModels"
+			m_ModelList = 
+			[
+				{
+					m_model = resource:"models/particle/sphere.vmdl"
+				},
+			]
+			m_nSkin = 5
+		},
+	]
+	m_Initializers = 
+	[
+		{
+			_class = "C_INIT_CreateWithinSphere"
+		},
+		{
+			_class = "C_INIT_RandomRadius"
+			m_flRadiusMin = 50.5
+			m_flRadiusMax = 51.5
+		},
+		{
+			_class = "C_INIT_RandomRotation"
+			m_flDegreesMin = 90.0
+			m_flDegreesMax = 90.0
+			m_nFieldOutput = 20
+		},
+		{
+			_class = "C_INIT_RandomRotation"
+		},
+	]
+	m_Emitters = 
+	[
+		{
+			_class = "C_OP_InstantaneousEmitter"
+			m_nParticlesToEmit = 3
+		},
+	]
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/magic_shield/round_shield/round_shield_rim_ground.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/magic_shield/round_shield/round_shield_flash.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/magic_shield/round_shield/round_shield_warp.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/magic_shield/round_shield/round_shield_rim_ground_pulse.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/magic_shield/round_shield/round_shield_particles.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/magic_shield/round_shield/round_shield_particles_b.vpcf"
+		},
+	]
+}
