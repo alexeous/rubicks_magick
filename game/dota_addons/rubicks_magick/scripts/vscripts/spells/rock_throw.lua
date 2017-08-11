@@ -32,7 +32,7 @@ function RockThrow:StartRockThrow(player, pickedElements)
 	Spells:StartCasting(player, spellCastTable)
 end
 
-ROCK_FLY_DISTANCES = { 2000, 1600, 1400 }
+ROCK_FLY_DISTANCES = { 1600, 1375, 1200 }
 ROCK_FLY_TIME = 0.12
 ROCK_START_HEIGHT = 100
 ROCK_FALL_G_CONST = 2 * ROCK_START_HEIGHT / (ROCK_FLY_TIME * ROCK_FLY_TIME)
@@ -174,7 +174,7 @@ function RockThrow:OnRockThink()
 						else
 							local damageAfterShields = Spells:GetDamageAfterShields(unit, damage, ELEMENT_EARTH)
 							if rockDummy.rockSize == 3 and unit:GetHealth() - damageAfterShields <= 0 then
-								Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damageAfterShields, false)
+								Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage, false)
 								RockThrow:ImpactParticle(origin, 1)
 							else
 								RockThrow:ImpactRock(rockDummy, unitsTouched)
@@ -197,8 +197,14 @@ function RockThrow:ImpactRock(rockDummy, unitsTouched)
 	if rockDummy.onImpactFunction ~= nil then
 		rockDummy.onImpactFunction(origin)
 	end
-	for _, unit in pairs(unitsTouched) do
-		Spells:ApplyElementDamage(unit, rockDummy.caster, ELEMENT_EARTH, rockDummy.rockDamage)
+	if next(unitsTouched) == nil then
+		Spells:ApplyElementDamageAoE(origin, rockDummy.collisionRadius, rockDummy.caster, ELEMENT_EARTH, rockDummy.rockDamage, true)
+	else
+		for _, unit in pairs(unitsTouched) do
+			if unit ~= rockDummy.caster then
+				Spells:ApplyElementDamage(unit, rockDummy.caster, ELEMENT_EARTH, rockDummy.rockDamage)
+			end
+		end
 	end
 	
 	ParticleManager:SetParticleControl(rockDummy.particle, 0, origin)
