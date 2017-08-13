@@ -24,6 +24,7 @@
 			m_bRefract = true
 			m_flRefractAmount = -0.04
 			m_hTexture = resource:"materials/particle/warp_spiral01.vtex"
+			m_bAnimateInFPS = true
 		},
 	]
 	m_Operators = 

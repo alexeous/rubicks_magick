@@ -7,6 +7,10 @@ Layer0
 	//---- Scroll UV ----
 	F_SCROLL_UV 1 // Scroll Color Only
 
+	//---- Translucent ----
+	F_ADDITIVE_BLEND 1
+	F_TRANSLUCENT 1
+
 	//---- Color ----
 	g_vColorTint "[1.000000 1.000000 1.000000 0.000000]"
 	g_vTexCoordOffset "[0.000 0.000]"
@@ -15,6 +19,10 @@ Layer0
 
 	//---- Scroll UV ----
 	g_flScrollUvSpeed "1.000"
-	g_vScrollUvDirection "[1.000 0.000]"
+	g_vScrollUvDirection "[0.000 -1.000]"
 	TextureScrollSpeed "materials/default/default.tga"
+
+	//---- Translucent ----
+	g_flOpacityScale "1.000"
+	TextureTranslucency "[1.000000 1.000000 1.000000 0.000000]"
 }

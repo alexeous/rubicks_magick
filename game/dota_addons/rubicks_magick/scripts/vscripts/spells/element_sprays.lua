@@ -40,7 +40,7 @@ function ElementSprays:StartSteamSpray(player, modifierElement)
 		ParticleManager:SetParticleControl(particle, 1, Vector(factor * (0.2 + distanceInd * 0.8), 0, 0))
 		ParticleManager:SetParticleControl(particle, 2, Vector(isWet and 1 or 0, 0, 0))		
 	end	
-	ElementSprays:StartElementSprayCasting(player, ELEMENT_SPRAY_DISTANCES[distanceInd], onTouchFunction, particle, particleRecalcFunction, 110)
+	ElementSprays:StartElementSprayCasting(player, ELEMENT_SPRAY_DISTANCES[distanceInd], 4.0, onTouchFunction, particle, particleRecalcFunction, 110)
 end
 
 function ElementSprays:StartWaterSpray(player, power)
@@ -66,7 +66,7 @@ function ElementSprays:StartWaterSpray(player, power)
 		ParticleManager:SetParticleControl(particle, 1, Vector(1 + power * 0.5, 0, 0))
 		ParticleManager:SetParticleControl(particle, 2, Vector(factor * (0.2 + power * 0.58), 0, 0))
 	end
-	ElementSprays:StartElementSprayCasting(player, distance, onTouchFunction, particle, particleRecalcFunction, radius, 0.1)
+	ElementSprays:StartElementSprayCasting(player, distance, 7.0, onTouchFunction, particle, particleRecalcFunction, radius, 0.1)
 end
 
 function ElementSprays:StartFireSpray(player, power)
@@ -82,7 +82,7 @@ function ElementSprays:StartFireSpray(player, power)
 		ParticleManager:SetParticleControl(particle, 1, Vector(1 + power * 0.5, 0, 0))
 		ParticleManager:SetParticleControl(particle, 2, Vector(factor * (0.2 + power * 0.8), 0, 0))
 	end
-	ElementSprays:StartElementSprayCasting(player, distance, onTouchFunction, particle, particleRecalcFunction, radius)
+	ElementSprays:StartElementSprayCasting(player, distance, 7.0, onTouchFunction, particle, particleRecalcFunction, radius)
 end
 
 function ElementSprays:StartColdSpray(player, power)
@@ -98,14 +98,14 @@ function ElementSprays:StartColdSpray(player, power)
 		ParticleManager:SetParticleControl(particle, 1, Vector(1 + power * 0.5, 0, 0))
 		ParticleManager:SetParticleControl(particle, 2, Vector(factor * (0.2 + power * 0.8), 0, 0))
 	end
-	ElementSprays:StartElementSprayCasting(player, distance, onTouchFunction, particle, particleRecalcFunction, radius)
+	ElementSprays:StartElementSprayCasting(player, distance, 7.0, onTouchFunction, particle, particleRecalcFunction, radius)
 end
 
 
-function ElementSprays:StartElementSprayCasting(player, distance, onTouchFunction, particle, particleRecalcFunction, radius, dummySpawnPeriod)
+function ElementSprays:StartElementSprayCasting(player, distance, duration, onTouchFunction, particle, particleRecalcFunction, radius, dummySpawnPeriod)
 	local spellCastTable = {
 		castType = CAST_TYPE_CONTINUOUS,
-		duration = 5.0,
+		duration = duration,
 		slowMovePercentage = 30,
 		turnDegsPerSec = 120.0,
 		castingGesture = ACT_DOTA_CHANNEL_ABILITY_5,
@@ -151,14 +151,14 @@ function ElementSprays:OnElementSprayThink()
 			sprayDummy:SetAbsOrigin(origin)
 
 			local trees = GridNav:GetAllTreesAroundPoint(origin, 40, true)
-			if next(trees) ~= nil then
+			if next(trees) ~= nil or MagicShield:DoesPointOverlapShields(origin) then
 				ElementSprays:DestroySprayDummy(sprayDummy)
 			elseif not sprayDummy.isTest then
 				local timeFactor = (time - sprayDummy.startTime) / sprayDummy.duration
 				local radius = sprayDummy.radius * (0.4 + 0.6 * timeFactor)
 				local unitsTouched = Util:FindUnitsInRadius(origin, radius)
 				for _, unit in pairs(unitsTouched) do
-					if unit ~= sprayDummy.caster and not sprayDummy.touchedUnits[unit] then
+					if unit ~= sprayDummy.caster and not sprayDummy.touchedUnits[unit] and not MagicShield:DoesPointOverlapShields(unit:GetAbsOrigin()) then
 						sprayDummy.touchedUnits[unit] = true
 						sprayDummy.onTouchFunction(unit)
 					end
@@ -173,6 +173,6 @@ function ElementSprays:DestroySprayDummy(sprayDummy)
 	local index = table.indexOf(ElementSprays.sprayDummiesList, sprayDummy)
 	table.remove(ElementSprays.sprayDummiesList, index)
 	local factor = (GameRules:GetGameTime() - sprayDummy.startTime) / sprayDummy.duration
-	sprayDummy.particleRecalcFunction(factor)
+	sprayDummy.particleRecalcFunction(0.2 + 0.8 * factor)
 	sprayDummy:Destroy()
 end

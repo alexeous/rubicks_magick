@@ -86,7 +86,7 @@
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
-			m_nParticlesToEmit = 3
+			m_nParticlesToEmit = 4
 		},
 	]
 	m_Children = 

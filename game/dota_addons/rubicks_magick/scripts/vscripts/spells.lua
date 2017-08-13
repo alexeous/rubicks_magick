@@ -413,6 +413,10 @@ function Spells:StopCasting(player)
 		return
 	end
 
+	if player.spellCast.endFunction ~= nil then
+		player.spellCast.endFunction(player)
+	end
+
 	local heroEntity = player:GetAssignedHero()
 	if heroEntity ~= nil then
 		if player.spellCast.castingGesture ~= nil then
@@ -433,10 +437,6 @@ function Spells:StopCasting(player)
 		if player.spellCast.chargingParticleID ~= nil then
 			ParticleManager:DestroyParticle(player.spellCast.chargingParticleID, false)
 		end
-	end
-
-	if player.spellCast.endFunction ~= nil then
-		player.spellCast.endFunction(player)
 	end
 
 	player.spellCast = nil
