@@ -26,28 +26,32 @@ function MoveController:OnMoveHeroesThink()
 		local player = PlayerResource:GetPlayer(playerID)
 		if player ~= nil then
 			local heroEntity = player:GetAssignedHero()
-			local isAble = (heroEntity ~= nil) and (heroEntity:IsAlive()) and (not heroEntity:IsStunned()) and (not heroEntity:IsFrozen())
-			local dontMoveWhileCasting = player.spellCast ~= nil and player.spellCast.dontMoveWhileCasting
-			if isAble then 
-				if not dontMoveWhileCasting then
-					if not IsPhysicsUnit(heroEntity) then
-						Physics:Unit(heroEntity)
-						heroEntity:SetGroundBehavior(PHYSICS_GROUND_LOCK)
-					end
-					if player.cursorPos ~= nil then
-						MoveController:HeroLookAt(heroEntity, player.cursorPos)
-					end
-					if player.moveToPos ~= nil then
-						local origin = heroEntity:GetAbsOrigin()
-						local vec = player.moveToPos - origin
-						if vec:Length2D() > 20 then
-							heroEntity:SetPhysicsVelocity(vec:Normalized() * heroEntity:GetIdealSpeed())
-						else
-							MoveController:StopMove(player)
+			if heroEntity ~= nil then
+				local isAble = heroEntity:IsAlive() and not heroEntity:IsStunned() and not heroEntity:IsFrozen()
+				local dontMoveWhileCasting = player.spellCast ~= nil and player.spellCast.dontMoveWhileCasting
+				if isAble then 
+					if not dontMoveWhileCasting then
+						if not IsPhysicsUnit(heroEntity) then
+							Physics:Unit(heroEntity)
+							heroEntity:SetGroundBehavior(PHYSICS_GROUND_LOCK)
 						end
+						if player.cursorPos ~= nil then
+							MoveController:HeroLookAt(heroEntity, player.cursorPos)
+						end
+						if player.moveToPos ~= nil then
+							local origin = heroEntity:GetAbsOrigin()
+							local vec = player.moveToPos - origin
+							if vec:Length2D() > 20 then
+								heroEntity:SetPhysicsVelocity(vec:Normalized() * heroEntity:GetIdealSpeed())
+							else
+								MoveController:StopMove(player)
+							end
+						end
+					else
+						heroEntity:SetPhysicsVelocity(Vector(0, 0, 0))
 					end
-				else
-					heroEntity:SetPhysicsVelocity(Vector(0, 0, 0))
+				elseif player.moveToPos ~= nil then
+					MoveController:StopMove(player)
 				end
 			end
 		end
