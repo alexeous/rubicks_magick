@@ -115,55 +115,56 @@ function MagicShield:AddShield(player, shield)
 end
 
 function MagicShield:ResolveRoundShieldIntersections(newShield)
-	local destroy = false
+	local destroyList = {}
 	for _, shield in pairs(MagicShield.shields) do
 		if shield ~= newShield then
 			if shield.type == ROUND_SHIELD then
 				local distance = (shield.center - newShield.center):Length2D()
-				if distance < ROUND_SHIELD_RADIUS then
-					destroy = true
-					shield.destroy()
+				if distance < ROUND_SHIELD_RADIUS * 2 then
+					table.insert(destroyList, shield)
 				end
 			elseif shield.type == FLAT_SHIELD then
 				for _, corner in pairs(shield.corners) do
 					local distance = (corner - newShield.center):Length2D()
 					if distance < ROUND_SHIELD_RADIUS + 20 then
-						destroy = true
-						shield.destroy()
+						table.insert(destroyList, shield)
 						break
 					end
 				end
 			end
 		end
 	end
-	if destroy then
+	if next(destroyList) ~= nil then
+		for _, shield in pairs(destroyList) do
+			shield.destroy()
+		end
 		newShield.destroy()
 	end
 end
 
 function MagicShield:ResolveFlatShieldIntersections(newShield)
-	local destroy = false
+	local destroyList = {}
 	for _, shield in pairs(MagicShield.shields) do
 		if shield ~= newShield then
 			if shield.type == ROUND_SHIELD then
 				for _, corner in pairs(newShield.corners) do
 					local distance = (corner - shield.center):Length2D()
 					if distance < ROUND_SHIELD_RADIUS + 20 then
-						destroy = true
-						shield.destroy()
+						table.insert(destroyList, shield)
 						break
 					end
 				end
 			elseif shield.type == FLAT_SHIELD then
 				if MagicShield:Overlaps1Way(shield, newShield) and MagicShield:Overlaps1Way(newShield, shield) then
-					destroy = true
-					shield.destroy()
-					break
+					table.insert(destroyList, shield)
 				end
 			end
 		end
 	end
-	if destroy then
+	if next(destroyList) ~= nil then
+		for _, shield in pairs(destroyList) do
+			shield.destroy()
+		end
 		newShield.destroy()
 	end
 end
@@ -180,7 +181,7 @@ function MagicShield:Overlaps1Way(shield1, shield2)
 				tMax = t
 			end
 		end
-		if (tMin > 1 + shield1.origin[i]) or (tMax < origin[i]) then
+		if (tMin > 1 + shield1.origin[i]) or (tMax < shield1.origin[i]) then
 			return false
 		end
 	end
