@@ -42,6 +42,7 @@ function Spells:Precache(context)
 	LinkLuaModifier("modifier_chill", "modifiers/modifier_chill.lua", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_burn", "modifiers/modifier_burn.lua", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_water_push", "modifiers/modifier_water_push.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_knockdown", "modifiers/modifier_knockdown.lua", LUA_MODIFIER_MOTION_NONE)
 
 	PrecacheResource("particle", "particles/status_fx/status_effect_snow_heavy.vpcf", context)
 	PrecacheResource("particle", "particles/status_fx/status_effect_slardar_amp_damage.vpcf", context)

@@ -76,7 +76,8 @@ function RockThrow:ReleaseRock(player)
 		coldTrail = 0
 		ice = 1
 	end
-	local timeFactor = math.min(2.0, Spells:TimeElapsedSinceCast(player)) / 2.0
+	local timeElapsed = Spells:TimeElapsedSinceCast(player)
+	local timeFactor = math.min(2.0, timeElapsed) / 2.0
 	local damageFactor = timeFactor
 	local radiusFactor = 0.4 + 0.6 * timeFactor
 	local distanceFactor = 0.02 + 0.98 * timeFactor
@@ -138,6 +139,12 @@ function RockThrow:ReleaseRock(player)
 	ParticleManager:SetParticleControl(particle, 3, Vector(deathTrail, lifeTrail, steamTrail))
 	rockDummy.particle = particle
 	table.insert(RockThrow.rockDummiesList, rockDummy)
+
+	if timeElapsed >= 2.4 then
+		Timers:CreateTimer(0.02, function()
+			caster:AddNewModifier(caster, nil, "modifier_knockdown", { duration = 0.8 })
+		end)
+	end
 end
 
 function RockThrow:OnRockThink()
