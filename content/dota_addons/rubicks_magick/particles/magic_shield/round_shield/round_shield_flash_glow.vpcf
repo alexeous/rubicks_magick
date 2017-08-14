@@ -56,16 +56,16 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 200.0
-			m_flRadiusMax = 450.0
+			m_flRadiusMin = 250.0
+			m_flRadiusMax = 500.0
 		},
 		{
 			_class = "C_INIT_RandomRotation"
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.3
-			m_fLifetimeMax = 0.4
+			m_fLifetimeMin = 0.2
+			m_fLifetimeMax = 0.3
 		},
 	]
 	m_Emitters = 

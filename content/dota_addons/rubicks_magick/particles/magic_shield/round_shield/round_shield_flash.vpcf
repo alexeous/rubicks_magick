@@ -83,5 +83,8 @@
 		{
 			m_ChildRef = resource:"particles/magic_shield/round_shield/round_shield_flash_wave.vpcf"
 		},
+		{
+			m_ChildRef = resource:"particles/magic_shield/round_shield/round_shield_flash_wave_b.vpcf"
+		},
 	]
 }
