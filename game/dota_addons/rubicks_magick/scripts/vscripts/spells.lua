@@ -307,7 +307,8 @@ function Spells:OnSpellsThink()
 	for playerID = 0, DOTA_MAX_PLAYERS - 1 do
 		local player = PlayerResource:GetPlayer(playerID)
 		if player ~= nil and player.spellCast ~= nil then
-			if time > player.spellCast.endTime then
+			local heroEntity = player:GetAssignedHero()
+			if time > player.spellCast.endTime or not heroEntity:IsAlive() or heroEntity:IsStunned() then
 				Spells:StopCasting(player)
 			elseif player.spellCast.thinkFunction ~= nil then
 				local time = GameRules:GetGameTime()
