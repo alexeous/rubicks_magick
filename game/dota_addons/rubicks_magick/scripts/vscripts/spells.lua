@@ -87,6 +87,7 @@ function Spells:Init()
 	RockThrow:Init()
 	ElementSprays:Init()
 	MagicShield:Init()
+	Beams:Init()
 end
 
 function Spells:PlayerConnected(player)

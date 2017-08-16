@@ -207,7 +207,7 @@ function MagicShield:DoesPointOverlapShields(point)
 	return false
 end
 
-function MagicShield:CastLine(pStart, pEnd)
+function MagicShield:TraceLine(pStart, pEnd)
 	local result = nil
 	local minDistance
 	local vecNormalized = (pEnd - pStart):Normalized()
@@ -254,7 +254,7 @@ function MagicShield:CastLine(pStart, pEnd)
 					local distance = (pStart - intersectPoint):Length2D()
 					if result == nil or distance < minDistance then
 						local vec = (sPoint2 - sPoint1):Normalized()
-						result = { point = intersectPoint, normal = Vector(-vec.y, vec.x, 0) }
+						result = { point = intersectPoint, normal = Vector(-vec.y, vec.x, 0), distance = distance }
 						minDistance = distance
 					end
 				end
@@ -268,7 +268,7 @@ function MagicShield:CastLine(pStart, pEnd)
 			result.normal = -result.normal
 			dot = -dot
 		end
-		result.reflectedDirection = 2*dot*result.normal - vecNormalized
+		result.reflectedDirection = (2*dot*result.normal - vecNormalized):Normalized()
 	end
 	return result
 end
