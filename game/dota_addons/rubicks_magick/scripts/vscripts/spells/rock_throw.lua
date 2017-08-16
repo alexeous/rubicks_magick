@@ -142,7 +142,7 @@ function RockThrow:ReleaseRock(player)
 
 	if timeElapsed >= 2.4 then
 		Timers:CreateTimer(0.02, function()
-			caster:AddNewModifier(caster, nil, "modifier_knockdown", { duration = 0.8 })
+			caster:AddNewModifier(caster, nil, "modifier_knockdown", { duration = 2.0 })
 		end)
 	end
 end
