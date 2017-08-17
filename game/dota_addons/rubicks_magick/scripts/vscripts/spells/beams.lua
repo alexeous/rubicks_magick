@@ -10,6 +10,8 @@ BEAM_TREE_DETECTION_RADIUS = (BEAM_MAX_LENGTH / BEAM_TREE_DETECTION_STEPS) / 2
 BEAM_MIN_BEAMS_ANGLE_DEG = 8
 BEAM_COS_MIN_BEAMS_ANGLE = math.cos(math.rad(BEAM_MIN_BEAMS_ANGLE_DEG))
 
+BEAMS_THINK_PERIOD = 0.01
+
 function Beams:Precache(context)	
 	LinkLuaModifier("modifier_beam_cast", "modifiers/modifier_beam_cast.lua", LUA_MODIFIER_MOTION_NONE)
 	PrecacheResource("particle_folder", "particles/beams/life_beam", context)
@@ -18,6 +20,7 @@ end
 
 function Beams:Init()
 	Beams.beamSegments = {}
+	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(Beams, "OnBeamsThink"), "BeamsThink", BEAMS_THINK_PERIOD)
 end
 
 function Beams:PlayerConnected(player)
@@ -111,7 +114,6 @@ function Beams:CreateBeam(player, particleName, color, mainElement, effectFuncti
 		castingGesture = ACT_DOTA_CHANNEL_ABILITY_5,
 		castingGestureTranslate = "black_hole",
 		castingGestureRate = 1.5,
-		thinkFunction = function(player) Beams:OnBeamsThink(player) end,
 		endFunction = function(player) Beams:OnBeamStop(player) end,
 		beams_Power = 1,
 		beams_EffectFunction = effectFunction
@@ -153,6 +155,54 @@ function Beams:CreateBeamSegment(player, startPos, direction, parentSegment, mai
 	
 	table.insert(Beams.beamSegments, beamSegment)
 	return beamSegment
+end
+
+function Beams:UpdateParticle(beamSegment)
+	if beamSegment ~= nil and beamSegment.player.spellCast ~= nil then
+		ParticleManager:SetParticleControl(beamSegment.particle, 0, beamSegment.startPos + Vector(0, 0, 100))
+		ParticleManager:SetParticleControl(beamSegment.particle, 1, beamSegment.endPos + Vector(0, 0, 100))
+		ParticleManager:SetParticleControl(beamSegment.particle, 2, Vector(beamSegment.player.spellCast.beams_Power * 0.25, 0, 0))
+	end
+end
+
+function Beams:OnBeamsThink()
+	local beamsToRecalc = {}
+	for playerID = 0, DOTA_MAX_PLAYERS - 1 do
+		local player = PlayerResource:GetPlayer(playerID)
+		if player ~= nil and player.spellCast ~= nil and player.beam ~= nil then
+			local heroEntity = player:GetAssignedHero()
+			local origin = heroEntity:GetAbsOrigin()
+			player.beam.direction = heroEntity:GetForwardVector():Normalized()
+			player.beam.startPos = origin + player.beam.direction * 120
+			player.spellCast.beams_Modifier:ResetTarget()
+			table.insert(beamsToRecalc, player.beam)
+		end
+	end
+	for _, beam in pairs(beamsToRecalc) do
+		Beams:RecalcBeamSegment(beam)
+	end
+	return BEAMS_THINK_PERIOD
+end
+
+function Beams:OnBeamStop(player)
+	if player.beam ~= nil then
+		player.beam.destroy(false)
+		player.beam = nil
+	end
+	player.spellCast.beams_Modifier:Destroy()
+end
+
+function Beams:Interrupt(player)
+	if player.beam ~= nil then
+		Beams:UpdateParticle(player.beam)
+		player.beam.destroy(true)
+		player.beam = nil
+	end
+	local heroEntity = player:GetAssignedHero()
+	Timers:CreateTimer(0.02, function() Spells:StopCasting(player) end)
+	Timers:CreateTimer(0.1, function() 
+		heroEntity:AddNewModifier(heroEntity, nil, "modifier_knockdown", { duration = 1.5 })
+	end)
 end
 
 function Beams:RecalcBeamSegment(beamSegment)
@@ -211,9 +261,9 @@ function Beams:RecalcBeamSegment(beamSegment)
 				return
 			else
 				noChild = false
-				local olderSegment = beamSegment
+				local olderSegment, youngerSegment = beamSegment, closestHit.segment
 				if closestHit.segment.creationTime < beamSegment.creationTime then
-					olderSegment = closestHit.segment
+					olderSegment, youngerSegment = closestHit.segment, beamSegment
 				end
 				local childDirection = (beamSegment.direction + closestHit.segment.direction):Normalized()
 				beamSegment.endPos = closestHit.point - beamSegment.direction * 0.05
@@ -221,6 +271,7 @@ function Beams:RecalcBeamSegment(beamSegment)
 				local childStart = olderSegment.endPos + childDirection * 0.05
 				if olderSegment.child == nil then
 					olderSegment.child = Beams:CreateBeamSegment(olderSegment.player, childStart, childDirection, olderSegment, olderSegment.mainElement)
+					olderSegment.child.secondParent = youngerSegment
 				else
 					olderSegment.child.startPos = childStart
 					olderSegment.child.direction = childDirection
@@ -229,15 +280,6 @@ function Beams:RecalcBeamSegment(beamSegment)
 			end
 		elseif closestHit.entity ~= nil and closestHit.entity.IsStunned ~= nil then 	-- hit an entity. IsStunned ~= nil is check for NPC
 			beamTarget = closestHit.entity
---[[
-			if beamSegment.entityTarget ~= nil and beamSegment.entityTarget ~= closestHit.entity then
-				beamSegment.entityTarget:RemoveModifierByName("modifier_beam_cast")
-			end
-			beamSegment.entityTarget = closestHit.entity
-			if beamSegment.entityTarget:FindModifierByName("modifier_beam_cast") == nil then
-				local kv = { effectFunction = beamSegment.player.spellCast.beams_EffectFunction }
-				beamSegment.entityTarget:AddNewModifier(beamSegment.player:GetAssignedHero(), nil, "modifier_beam_cast", kv)
-			end]]
 		end
 	end
 
@@ -247,66 +289,6 @@ function Beams:RecalcBeamSegment(beamSegment)
 		beamSegment.child.destroy(false)
 		beamSegment.child = nil
 	end
-	
-	--if noEntityTarget then
-		--[[beamSegment.player.spellCast.beams_Power = 1 + beamSegment.player.spellCast.beams_Power
-		if beamSegment.entityTarget ~= nil then
-			beamSegment.entityTarget:RemoveModifierByName("modifier_beam_cast")
-		end]]
-	--else
-		--beamSegment.player.spellCast.beams_Power = beamSegment.player.spellCast.beams_Power - 1
-	--end
-
---[[
-	if traceTable.hit and #(traceTable.pos - traceTable.startpos) <= minDistance then
-		if traceTable.enthit.IsStunned ~= nil then
-			DebugDrawLine(traceTable.startpos, traceTable.pos, 255, 0, 0, false, 1)
-		else
-			DebugDrawLine(traceTable.startpos, traceTable.pos, 0, 0, 0, false, 1)
-		end
-	else
-		DebugDrawLine(startPos + Vector(0, 0, 100), startPos + forward * minDistance + Vector(0, 0, 100), 0, 0, 0, false, 1)
-	end]]
-end
-
-function Beams:UpdateParticle(beamSegment)
-	if beamSegment ~= nil and beamSegment.player.spellCast ~= nil then
-		ParticleManager:SetParticleControl(beamSegment.particle, 0, beamSegment.startPos + Vector(0, 0, 100))
-		ParticleManager:SetParticleControl(beamSegment.particle, 1, beamSegment.endPos + Vector(0, 0, 100))
-		ParticleManager:SetParticleControl(beamSegment.particle, 2, Vector(beamSegment.player.spellCast.beams_Power * 0.25, 0, 0))
-	end
-end
-
-function Beams:OnBeamsThink(player)
-	if player.beam ~= nil and player.spellCast ~= nil then
-		local heroEntity = player:GetAssignedHero()
-		local origin = heroEntity:GetAbsOrigin()
-		player.beam.direction = heroEntity:GetForwardVector():Normalized()
-		player.beam.startPos = origin + player.beam.direction * 120
-		player.spellCast.beams_Modifier:ResetTarget()
-		Beams:RecalcBeamSegment(player.beam)
-	end
-end
-
-function Beams:OnBeamStop(player)
-	if player.beam ~= nil then
-		player.beam.destroy(false)
-		player.beam = nil
-	end
-	player.spellCast.beams_Modifier:Destroy()
-end
-
-function Beams:Interrupt(player)
-	if player.beam ~= nil then
-		Beams:UpdateParticle(player.beam)
-		player.beam.destroy(true)
-		player.beam = nil
-	end
-	local heroEntity = player:GetAssignedHero()
-	Timers:CreateTimer(0.02, function() Spells:StopCasting(player) end)
-	Timers:CreateTimer(0.1, function() 
-		heroEntity:AddNewModifier(heroEntity, nil, "modifier_knockdown", { duration = 1.5 })
-	end)
 end
 
 function Beams:BeamsTrace(pBeamSegment)
@@ -322,7 +304,9 @@ function Beams:BeamsTrace(pBeamSegment)
 	local minDistance = BEAM_MAX_LENGTH
 	local result = nil
 	for _, beamSegment in pairs(Beams.beamSegments) do
-		if beamSegment ~= pBeamSegment and beamSegment ~= pBeamSegment.parent and pBeamSegment ~= beamSegment.parent then
+		local isNotParent = beamSegment ~= pBeamSegment.parent and pBeamSegment ~= beamSegment.parent
+		local isNotSecondParent = beamSegment ~= pBeamSegment.secondParent and pBeamSegment ~= beamSegment.secondParent
+		if beamSegment ~= pBeamSegment and isNotParent and isNotSecondParent then
 			local startPos = beamSegment.startPos
 			local endPos = beamSegment.endPos
 			local xMin, xMax = startPos.x, endPos.x
@@ -346,17 +330,6 @@ function Beams:BeamsTrace(pBeamSegment)
 end
 
 function Beams:EntitiesTrace(beamSegment)
-	--[[local traceTable = {
-		startpos = beamSegment.startPos + Vector(0, 0, 30),
-		endpos = beamSegment.endPos + Vector(0, 0, 30),
-		ignore = beamSegment.player:GetAssignedHero(),
-		min = Vector(-BEAM_COLLISION_WIDTH / 2, -BEAM_COLLISION_WIDTH / 2, -25),
-		max = Vector(BEAM_COLLISION_WIDTH / 2, BEAM_COLLISION_WIDTH / 2, 25)
-	}
-	TraceHull(traceTable)
-	if traceTable.hit then
-		return { entity = traceTable.enthit, distance = (traceTable.pos - traceTable.startpos):Length2D(), point = traceTable.pos }
-	end]]
 	local units = Util:FindUnitsInLine(beamSegment.startPos, beamSegment.endPos, BEAM_COLLISION_WIDTH, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
 	local resultUnit = nil
 	local minDistance = BEAM_MAX_LENGTH

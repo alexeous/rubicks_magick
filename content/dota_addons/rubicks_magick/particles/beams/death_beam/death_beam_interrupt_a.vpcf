@@ -52,8 +52,8 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 400.0
-			m_flRadiusMax = 600.0
+			m_flRadiusMin = 200.0
+			m_flRadiusMax = 500.0
 		},
 		{
 			_class = "C_INIT_RandomRotation"
@@ -68,8 +68,8 @@
 	[
 		{
 			_class = "C_OP_ContinuousEmitter"
-			m_flEmissionDuration = 0.05
-			m_flEmitRate = 2000.0
+			m_flEmissionDuration = 0.1
+			m_flEmitRate = 1000.0
 			m_nScaleControlPoint = 4
 		},
 	]
