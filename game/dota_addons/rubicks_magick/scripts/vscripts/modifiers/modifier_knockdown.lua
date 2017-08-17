@@ -32,7 +32,7 @@ function modifier_knockdown:GetOverrideAnimation(params)
 end
 
 function modifier_knockdown:GetOverrideAnimationRate(params)
-	return 1.2
+	return 0.8
 end
 
 function modifier_knockdown:GetActivityTranslationModifiers(params)

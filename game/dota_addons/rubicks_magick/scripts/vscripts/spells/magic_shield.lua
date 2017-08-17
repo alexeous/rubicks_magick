@@ -232,7 +232,7 @@ function MagicShield:TraceLine(pStart, pEnd)
 					if intersectPoints[i].x >= pxMin and intersectPoints[i].x <= pxMax then
 						local distance = (pStart - intersectPoints[i]):Length2D()
 						if result == nil or distance < minDistance then
-							result = { point = intersectPoints[i], normal = (intersectPoints[i] - shield.center):Normalized() }
+							result = { point = intersectPoints[i], normal = (intersectPoints[i] - shield.center):Normalized(), distance = distance }
 							minDistance = distance
 						end
 					end

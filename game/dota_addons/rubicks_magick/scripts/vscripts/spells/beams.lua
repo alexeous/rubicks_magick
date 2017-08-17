@@ -7,15 +7,17 @@ BEAM_COLLISION_WIDTH = 80
 BEAM_TREE_DETECTION_STEPS = 5
 BEAM_TREE_DETECTION_RADIUS = (BEAM_MAX_LENGTH / BEAM_TREE_DETECTION_STEPS) / 2
 
-BEAM_MIN_BEAMS_ANGLE_DEG = 5
+BEAM_MIN_BEAMS_ANGLE_DEG = 8
 BEAM_COS_MIN_BEAMS_ANGLE = math.cos(math.rad(BEAM_MIN_BEAMS_ANGLE_DEG))
 
 function Beams:Precache(context)	
-	LinkLuaModifier("modifier_beam_target", "modifiers/modifier_beam_target.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_beam_cast", "modifiers/modifier_beam_cast.lua", LUA_MODIFIER_MOTION_NONE)
+	PrecacheResource("particle_folder", "particles/beams/life_beam", context)
+	PrecacheResource("particle_folder", "particles/beams/death_beam", context)
 end
 
 function Beams:Init()
-	Beams.beams = {}
+	Beams.beamSegments = {}
 end
 
 function Beams:PlayerConnected(player)
@@ -27,15 +29,80 @@ function Beams:StartLifeBeam(player, pickedElements)
 end
 
 function Beams:StartDeathBeam(player, pickedElements)
-	local particle = ParticleManager:CreateParticle("", PATTACH_CUSTOMORIGIN, nil)
-	
-	local effectFunction = function(target)
+	local caster = player:GetAssignedHero()
 
+	local deathCount = table.count(pickedElements, ELEMENT_DEATH)
+	local mul = ({ 17.9, 25.8, 30.5 })[deathCount]
+	local pow = ({ 0.50, 0.49, 0.53 })[deathCount]
+	
+	local color = Vector(200, 0, 0)
+	local addFunc = nil
+	local additionalEffectTable = {
+		[ELEMENT_DEATH] = {
+			[ELEMENT_DEATH] = {
+				[ELEMENT_FIRE]  = function()
+					color = Vector(255, 100, 0)
+					addFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 2.75 * math.pow(power, 0.96), true) end
+				end,
+				[ELEMENT_COLD]  = function()
+					color = Vector(130, 200, 240)
+					addFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 2.19 * math.pow(power, 0.62), true) end
+				end,
+				[ELEMENT_WATER] = function()
+					color = Vector(20, 80, 220)
+					addFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 1, true) end
+				end
+			},
+			[ELEMENT_WATER] = {
+				[ELEMENT_FIRE] = function()
+					color = Vector(160, 160, 170)
+					addFunc = function(target, power)
+						Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 4.05 * math.pow(power, 0.49), false, 1.0)
+						Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 4.05 * math.pow(power, 0.49), false, 1.0)
+					end
+				end,
+				[DEFAULT] = function()
+					color = Vector(20, 80, 220)
+					addFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 1, true) end
+				end
+			},
+			[ELEMENT_FIRE] = {
+				[ELEMENT_FIRE] = function()
+					color = Vector(255, 100, 0)
+					addFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 4.97 * math.pow(power, 0.52), true) end
+				end,
+				[EMPTY] = function()
+					color = Vector(255, 100, 0)
+					addFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 3.3 * math.pow(power, 0.57), true) end
+				end
+			},
+			[ELEMENT_COLD] = {
+				[ELEMENT_COLD] = function()
+					color = Vector(130, 200, 240)
+					addFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 3.9 * math.pow(power, 0.48), true) end
+				end,
+				[EMPTY] = function()
+					color = Vector(130, 200, 240)
+					addFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 2.6 * math.pow(power, 0.72), true) end
+				end
+			}
+		}
+	}
+	local additionalEffectFunc = table.serialRetrieve(additionalEffectTable, pickedElements)
+	if additionalEffectFunc ~= nil then
+		additionalEffectFunc()
 	end
-	Beams:CreateBeam(player, particle, ELEMENT_DEATH, effectFunction)
+	local effectFunction = function(target, power)
+		Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, mul * math.pow(power, pow))
+		if addFunc ~= nil then
+			addFunc(target, power)
+		end
+	end
+	Beams:CreateBeam(player, "particles/beams/death_beam/death_beam.vpcf", color, ELEMENT_DEATH, effectFunction)
 end
 
-function Beams:CreateBeam(player, particle, mainElement, effectFunction)
+function Beams:CreateBeam(player, particleName, color, mainElement, effectFunction)
+	local heroEntity = player:GetAssignedHero()
 	local spellCastTable = {
 		castType = CAST_TYPE_CONTINUOUS,
 		duration = 7.0,
@@ -46,52 +113,54 @@ function Beams:CreateBeam(player, particle, mainElement, effectFunction)
 		castingGestureRate = 1.5,
 		thinkFunction = function(player) Beams:OnBeamsThink(player) end,
 		endFunction = function(player) Beams:OnBeamStop(player) end,
-		beams_Power = 0,
+		beams_Power = 1,
 		beams_EffectFunction = effectFunction
 	}
 	Spells:StartCasting(player, spellCastTable)
+	player.spellCast.beams_Modifier = heroEntity:AddNewModifier(heroEntity, nil, "modifier_beam_cast", {})
 	
-	local heroEntity = player:GetAssignedHero()
 	local origin = heroEntity:GetAbsOrigin()
 	local direction = heroEntity:GetForwardVector():Normalized()
-	local startPos = origin + direction * 100
-	player.beam = Beams:CreateBeamSegment(player, startPos, direction, nil, mainElement, particle)
+	local startPos = origin + direction * 120
+	player.beam = Beams:CreateBeamSegment(player, startPos, direction, nil, mainElement, particleName, color)
 end
 
-function Beams:CreateBeamSegment(player, startPos, direction, parentSegment, mainElement, particle)
+function Beams:CreateBeamSegment(player, startPos, direction, parentSegment, mainElement, particleName, color)
 	local beamSegment = {
 		player = player,
 		parent = parentSegment,
 		mainElement = mainElement,
-		particle = particle,
+		particleName = particleName or parentSegment.particleName,
+		color = color or parentSegment.color,
 		startPos = startPos,
 		direction = direction,
 		endPos = startPos,
 		creationTime = GameRules:GetGameTime()
 	}
+	beamSegment.particle = ParticleManager:CreateParticle(beamSegment.particleName, PATTACH_CUSTOMORIGIN, nil)
+	ParticleManager:SetParticleControl(beamSegment.particle, 3, beamSegment.color)
 	Beams:UpdateParticle(beamSegment)
 	beamSegment.destroy = function(isInterrupt)
 		if beamSegment.child ~= nil then
 			beamSegment.child.destroy(isInterrupt)
 		end
-		if beamSegment.entityTarget ~= nil then
-			beamSegment.entityTarget:RemoveModifierByName("modifier_beam_target")
-		end
+		ParticleManager:SetParticleControl(beamSegment.particle, 4, Vector(isInterrupt and 1 or 0, 0, 0))
 		ParticleManager:DestroyParticle(beamSegment.particle, false)
-		-- if isInterrupt then //start interrupt effect
-
 		local index = table.indexOf(Beams.beamSegments, beamSegment)
 		table.remove(Beams.beamSegments, index)
 	end
-	Timers:CreateTimer(0.1, function() Beams:RecalcBeamSegment(beamSegment) end)
+	Timers:CreateTimer(0.01, function() Beams:RecalcBeamSegment(beamSegment) end)
 	
 	table.insert(Beams.beamSegments, beamSegment)
 	return beamSegment
 end
 
 function Beams:RecalcBeamSegment(beamSegment)
+	if beamSegment == nil or beamSegment.player.spellCast == nil then
+		return
+	end
 	if MagicShield:DoesPointOverlapShields(beamSegment.startPos) then
-		Beams:Interrupt(player)
+		Beams:Interrupt(beamSegment.player)
 		return
 	end
 
@@ -103,7 +172,8 @@ function Beams:RecalcBeamSegment(beamSegment)
 	table.insert(hitList, MagicShield:TraceLine(beamSegment.startPos, beamSegment.endPos))
 
 	local noChild = true
-	local noEntityTarget = true
+	--local noEntityTarget = true
+	local beamTarget = nil
 	local minDistance = BEAM_MAX_LENGTH
 	local closestHit = nil
 	for _, hit in pairs(hitList) do
@@ -113,15 +183,16 @@ function Beams:RecalcBeamSegment(beamSegment)
 		end
 	end
 	if closestHit ~= nil then
-		beamSegment.endPos = hit.point
+		beamSegment.endPos = closestHit.point
 		if closestHit.reflectedDirection ~= nil then		-- hit magic shield
 			noChild = false
 			if beamSegment.direction:Dot(-closestHit.reflectedDirection) >= BEAM_COS_MIN_BEAMS_ANGLE then
 				Beams:Interrupt(beamSegment.player)
 				return
 			else
-				local childStart = beamSegment.endPos + closestHit.reflectedDirection * 0.01
+				local childStart = beamSegment.endPos + closestHit.reflectedDirection * 0.05
 				if beamSegment.child == nil then
+					print("new child")
 					beamSegment.child = Beams:CreateBeamSegment(beamSegment.player, childStart, closestHit.reflectedDirection, beamSegment, beamSegment.mainElement)
 				else
 					beamSegment.child.startPos = childStart
@@ -129,7 +200,7 @@ function Beams:RecalcBeamSegment(beamSegment)
 					Beams:RecalcBeamSegment(beamSegment.child)
 				end
 			end
-		elseif closestHit.segment ~= nil then		-- hit another beam
+		elseif closestHit.segment ~= nil then	-- hit another beam
 			local cosDirsAngle = beamSegment.direction:Dot(-closestHit.segment.direction)
 			if closestHit.segment.player == beamSegment.player then
 				Beams:Interrupt(beamSegment.player)
@@ -145,9 +216,9 @@ function Beams:RecalcBeamSegment(beamSegment)
 					olderSegment = closestHit.segment
 				end
 				local childDirection = (beamSegment.direction + closestHit.segment.direction):Normalized()
-				beamSegment.endPos = hit.point - beamSegment.direction * 0.01
-				closestHit.segment.endPos = hit.point - closestHit.segment.direction * 0.01
-				local childStart = olderSegment.endPos + childDirection * 0.01
+				beamSegment.endPos = closestHit.point - beamSegment.direction * 0.05
+				closestHit.segment.endPos = closestHit.point - closestHit.segment.direction * 0.05
+				local childStart = olderSegment.endPos + childDirection * 0.05
 				if olderSegment.child == nil then
 					olderSegment.child = Beams:CreateBeamSegment(olderSegment.player, childStart, childDirection, olderSegment, olderSegment.mainElement)
 				else
@@ -157,31 +228,34 @@ function Beams:RecalcBeamSegment(beamSegment)
 				end
 			end
 		elseif closestHit.entity ~= nil and closestHit.entity.IsStunned ~= nil then 	-- hit an entity. IsStunned ~= nil is check for NPC
-			noEntityTarget = false
+			beamTarget = closestHit.entity
+--[[
 			if beamSegment.entityTarget ~= nil and beamSegment.entityTarget ~= closestHit.entity then
-				beamSegment.entityTarget:RemoveModifierByName("modifier_beam_target")
+				beamSegment.entityTarget:RemoveModifierByName("modifier_beam_cast")
 			end
 			beamSegment.entityTarget = closestHit.entity
-			if beamSegment.entityTarget:FindModifierByName("modifier_beam_target") == nil then
+			if beamSegment.entityTarget:FindModifierByName("modifier_beam_cast") == nil then
 				local kv = { effectFunction = beamSegment.player.spellCast.beams_EffectFunction }
-				beamSegment.entityTarget:AddNewModifier(beamSegment.player:GetAssignedHero(), nil, "modifier_beam_target", kv)
-			end
+				beamSegment.entityTarget:AddNewModifier(beamSegment.player:GetAssignedHero(), nil, "modifier_beam_cast", kv)
+			end]]
 		end
 	end
 
 	Beams:UpdateParticle(beamSegment)
+	beamSegment.player.spellCast.beams_Modifier:SetTarget(beamTarget)
 	if beamSegment.child ~= nil and noChild then
 		beamSegment.child.destroy(false)
 		beamSegment.child = nil
 	end
-	if noEntityTarget then
-		beamSegment.player.spellCast.beams_Power = 1 + beamSegment.player.spellCast.beams_Power
+	
+	--if noEntityTarget then
+		--[[beamSegment.player.spellCast.beams_Power = 1 + beamSegment.player.spellCast.beams_Power
 		if beamSegment.entityTarget ~= nil then
-			beamSegment.entityTarget:RemoveModifierByName("modifier_beam_target")
-		end
-	else
-		beamSegment.player.spellCast.beams_Power = beamSegment.player.spellCast.beams_Power - 1
-	end
+			beamSegment.entityTarget:RemoveModifierByName("modifier_beam_cast")
+		end]]
+	--else
+		--beamSegment.player.spellCast.beams_Power = beamSegment.player.spellCast.beams_Power - 1
+	--end
 
 --[[
 	if traceTable.hit and #(traceTable.pos - traceTable.startpos) <= minDistance then
@@ -196,15 +270,22 @@ function Beams:RecalcBeamSegment(beamSegment)
 end
 
 function Beams:UpdateParticle(beamSegment)
-
+	if beamSegment ~= nil and beamSegment.player.spellCast ~= nil then
+		ParticleManager:SetParticleControl(beamSegment.particle, 0, beamSegment.startPos + Vector(0, 0, 100))
+		ParticleManager:SetParticleControl(beamSegment.particle, 1, beamSegment.endPos + Vector(0, 0, 100))
+		ParticleManager:SetParticleControl(beamSegment.particle, 2, Vector(beamSegment.player.spellCast.beams_Power * 0.25, 0, 0))
+	end
 end
 
 function Beams:OnBeamsThink(player)
-	local heroEntity = player:GetAssignedHero()
-	local origin = heroEntity:GetAbsOrigin()
-	player.beam.direction = heroEntity:GetForwardVector():Normalized()
-	player.beam.startPos = origin + player.beam.direction * 100
-	Beams:RecalcBeamSegment(player.beam)
+	if player.beam ~= nil and player.spellCast ~= nil then
+		local heroEntity = player:GetAssignedHero()
+		local origin = heroEntity:GetAbsOrigin()
+		player.beam.direction = heroEntity:GetForwardVector():Normalized()
+		player.beam.startPos = origin + player.beam.direction * 120
+		player.spellCast.beams_Modifier:ResetTarget()
+		Beams:RecalcBeamSegment(player.beam)
+	end
 end
 
 function Beams:OnBeamStop(player)
@@ -212,16 +293,19 @@ function Beams:OnBeamStop(player)
 		player.beam.destroy(false)
 		player.beam = nil
 	end
+	player.spellCast.beams_Modifier:Destroy()
 end
 
 function Beams:Interrupt(player)
 	if player.beam ~= nil then
+		Beams:UpdateParticle(player.beam)
 		player.beam.destroy(true)
 		player.beam = nil
 	end
 	local heroEntity = player:GetAssignedHero()
-	Timers:CreateTimer(0.02, function()
-		heroEntity:AddNewModifier(heroEntity, nil, "modifier_knockdown", { duration = 0.8 })
+	Timers:CreateTimer(0.02, function() Spells:StopCasting(player) end)
+	Timers:CreateTimer(0.1, function() 
+		heroEntity:AddNewModifier(heroEntity, nil, "modifier_knockdown", { duration = 1.5 })
 	end)
 end
 
@@ -238,7 +322,7 @@ function Beams:BeamsTrace(pBeamSegment)
 	local minDistance = BEAM_MAX_LENGTH
 	local result = nil
 	for _, beamSegment in pairs(Beams.beamSegments) do
-		if beamSegment ~= pBeamSegment then
+		if beamSegment ~= pBeamSegment and beamSegment ~= pBeamSegment.parent and pBeamSegment ~= beamSegment.parent then
 			local startPos = beamSegment.startPos
 			local endPos = beamSegment.endPos
 			local xMin, xMax = startPos.x, endPos.x
@@ -262,7 +346,7 @@ function Beams:BeamsTrace(pBeamSegment)
 end
 
 function Beams:EntitiesTrace(beamSegment)
-	local traceTable = {
+	--[[local traceTable = {
 		startpos = beamSegment.startPos + Vector(0, 0, 30),
 		endpos = beamSegment.endPos + Vector(0, 0, 30),
 		ignore = beamSegment.player:GetAssignedHero(),
@@ -272,6 +356,19 @@ function Beams:EntitiesTrace(beamSegment)
 	TraceHull(traceTable)
 	if traceTable.hit then
 		return { entity = traceTable.enthit, distance = (traceTable.pos - traceTable.startpos):Length2D(), point = traceTable.pos }
+	end]]
+	local units = Util:FindUnitsInLine(beamSegment.startPos, beamSegment.endPos, BEAM_COLLISION_WIDTH, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
+	local resultUnit = nil
+	local minDistance = BEAM_MAX_LENGTH
+	for _, unit in pairs(units) do
+		local distance = (unit:GetAbsOrigin() - beamSegment.startPos):Length2D()
+		if distance < minDistance then
+			minDistance = distance
+			resultUnit = unit
+		end
+	end
+	if resultUnit ~= nil then
+		return { entity = resultUnit, distance = minDistance, point = beamSegment.startPos + beamSegment.direction * minDistance }
 	end
 	return nil
 end
