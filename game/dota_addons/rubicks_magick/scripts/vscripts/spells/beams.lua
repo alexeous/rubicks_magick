@@ -170,12 +170,14 @@ function Beams:OnBeamsThink()
 	for playerID = 0, DOTA_MAX_PLAYERS - 1 do
 		local player = PlayerResource:GetPlayer(playerID)
 		if player ~= nil and player.spellCast ~= nil and player.beam ~= nil then
+			local beam = player.beam
 			local heroEntity = player:GetAssignedHero()
 			local origin = heroEntity:GetAbsOrigin()
-			player.beam.direction = heroEntity:GetForwardVector():Normalized()
-			player.beam.startPos = origin + player.beam.direction * 120
+			beam.direction = heroEntity:GetForwardVector():Normalized()
+			beam.startPos = origin + beam.direction * 120
+			beam.endPos = beam.startPos + beam.direction * BEAM_MAX_LENGTH
 			player.spellCast.beams_Modifier:ResetTarget()
-			table.insert(beamsToRecalc, player.beam)
+			table.insert(beamsToRecalc, beam)
 		end
 	end
 	for _, beam in pairs(beamsToRecalc) do
@@ -210,11 +212,11 @@ function Beams:RecalcBeamSegment(beamSegment)
 		return
 	end
 	if MagicShield:DoesPointOverlapShields(beamSegment.startPos) then
+		beamSegment.endPos = beamSegment.startPos + beamSegment.direction * 50
 		Beams:Interrupt(beamSegment.player)
 		return
 	end
 
-	beamSegment.endPos = beamSegment.startPos + beamSegment.direction * BEAM_MAX_LENGTH
 	local hitList = {}
 	table.insert(hitList, Beams:EntitiesTrace(beamSegment))
 	table.insert(hitList, Beams:TreesTrace(beamSegment))
@@ -245,8 +247,9 @@ function Beams:RecalcBeamSegment(beamSegment)
 					print("new child")
 					beamSegment.child = Beams:CreateBeamSegment(beamSegment.player, childStart, closestHit.reflectedDirection, beamSegment, beamSegment.mainElement)
 				else
-					beamSegment.child.startPos = childStart
 					beamSegment.child.direction = closestHit.reflectedDirection
+					beamSegment.child.startPos = childStart
+					beamSegment.child.endPos = childStart + closestHit.reflectedDirection * BEAM_MAX_LENGTH
 					Beams:RecalcBeamSegment(beamSegment.child)
 				end
 			end
@@ -273,8 +276,9 @@ function Beams:RecalcBeamSegment(beamSegment)
 					olderSegment.child = Beams:CreateBeamSegment(olderSegment.player, childStart, childDirection, olderSegment, olderSegment.mainElement)
 					olderSegment.child.secondParent = youngerSegment
 				else
-					olderSegment.child.startPos = childStart
 					olderSegment.child.direction = childDirection
+					olderSegment.child.startPos = childStart
+					olderSegment.child.endPos = childStart + childDirection * BEAM_MAX_LENGTH
 					Beams:RecalcBeamSegment(olderSegment.child)
 				end
 			end
