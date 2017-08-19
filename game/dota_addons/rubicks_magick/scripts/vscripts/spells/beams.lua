@@ -3,7 +3,7 @@ if Beams == nil then
 end
 
 BEAM_MAX_LENGTH = 2500
-BEAM_COLLISION_WIDTH = 80
+BEAM_COLLISION_RADIUS = 40
 BEAM_TREE_DETECTION_STEPS = 5
 BEAM_TREE_DETECTION_RADIUS = (BEAM_MAX_LENGTH / BEAM_TREE_DETECTION_STEPS) / 2
 
@@ -404,7 +404,7 @@ function Beams:BeamsTrace(pBeamSegment)
 end
 
 function Beams:EntitiesTrace(beamSegment)
-	local units = Util:FindUnitsInLine(beamSegment.startPos, beamSegment.endPos, BEAM_COLLISION_WIDTH, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
+	local units = Util:FindUnitsInLine(beamSegment.startPos, beamSegment.endPos, BEAM_COLLISION_RADIUS, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
 	local resultUnit = nil
 	local minDistance = BEAM_MAX_LENGTH
 	for _, unit in pairs(units) do
@@ -430,7 +430,7 @@ function Beams:TreesTrace(beamSegment)
 		for _, tree in pairs(trees) do
 			local treeOrigin = tree:GetAbsOrigin()
 			local h = CalcDistanceToLineSegment2D(treeOrigin, beamSegment.startPos, beamSegment.endPos)
-			if h <= BEAM_COLLISION_WIDTH then
+			if h <= BEAM_COLLISION_RADIUS then
 				local distance = (treeOrigin - beamSegment.startPos):Length2D()
 				if distance < treeDistance then
 					treeDistance = distance
