@@ -9,56 +9,80 @@
 		"01"
 		{
 			"Key"       "Q"
-            "Command"   "+rm_wtr"
-            "Name"      "Water Element"
+            "Command"   "+rm_key_q"
+            "Name"      "Pressed Q"
 		}
 		"02"
 		{
 			"Key"       "W"
-            "Command"   "+rm_lif"
-            "Name"      "Life Element"	
+            "Command"   "+rm_key_w"
+            "Name"      "Pressed W"	
 		}
 		"03"
 		{
 			"Key"       "E"
-            "Command"   "+rm_shld"
-            "Name"      "Shield Element"
+            "Command"   "+rm_key_e"
+            "Name"      "Pressed E"
 		}
 		"04"
 		{
 			"Key"       "R"
-            "Command"   "+rm_cld"
-            "Name"      "Cold Element"	
+            "Command"   "+rm_key_r"
+            "Name"      "Pressed R"
 		}
 		"05"
 		{
 			"Key"       "A"
-            "Command"   "+rm_ltg"
-            "Name"      "Lightning Element"	
+            "Command"   "+rm_key_a"
+            "Name"      "Pressed A"
 		}
 		"06"
 		{
 			"Key"       "S"
-            "Command"   "+rm_dth"
-            "Name"      "Death Element"	
+            "Command"   "+rm_key_s"
+            "Name"      "Pressed S"	
 		}
 		"07"
 		{
 			"Key"       "D"
-            "Command"   "+rm_ert"
-            "Name"      "Earth Element"	
+            "Command"   "+rm_key_d"
+            "Name"      "Pressed D"	
 		}
 		"08"
 		{
 			"Key"       "F"
-            "Command"   "+rm_fir"
-            "Name"      "Fire Element"	
+            "Command"   "+rm_key_f"
+            "Name"      "Pressed F"	
 		}
 		"09"
 		{
 			"Key"		"Space"
-			"Command"	"+rm_stp"
-			"Name"		"Stop Moving"
+			"Command"	"+rm_key_space"
+			"Name"		"Pressed Space"
+		}
+		"10"
+		{
+			"Key"		"Control"
+			"Command"	"+rm_key_control"
+			"Name"		"Pressed Control"
+		}
+		"11"
+		{
+			"Key"		"Tab"
+			"Command"	"+rm_key_tab"
+			"Name"		"Pressed Tab"
+		}
+		"12"
+		{
+			"Key"		"Shift"
+			"Command"	"+rm_key_shift"
+			"Name"		"Pressed Shift"
+		}
+		"13"
+		{
+			"Key"		"Alt"
+			"Command"	"+rm_key_alt"
+			"Name"		"Pressed Alt"
 		}
 	}
 }

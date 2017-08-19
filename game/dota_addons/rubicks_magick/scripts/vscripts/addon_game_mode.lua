@@ -4,6 +4,7 @@ require("camera_slider")
 require("move_controller")
 require("elements")
 require("spells")
+require("input_manager")
 
 if RubicksMagickGameMode == nil then
 	RubicksMagickGameMode = class({})

@@ -48,8 +48,6 @@ function Elements:Precache(context)
 end
 
 function Elements:Init()
-	CustomGameEventManager:RegisterListener("pick_el", Dynamic_Wrap(Elements, "PickElement"))
-
 	ListenToGameEvent("entity_killed", Dynamic_Wrap(Elements, "OnEntityKilled"), self)
 end
 
@@ -82,8 +80,8 @@ function Elements:GetPickedElements(player)
 	return result
 end
 
-function Elements:PickElement(keys)
-	local player = PlayerResource:GetPlayer(keys.playerID)
+function Elements:OnPickElement(playerID, element)
+	local player = PlayerResource:GetPlayer(playerID)
 
 	local heroEntity = player:GetAssignedHero()
 	local isAble = (heroEntity ~= nil) and (heroEntity:IsAlive()) and (not heroEntity:IsStunned()) and (not heroEntity:IsFrozen())
@@ -92,14 +90,14 @@ function Elements:PickElement(keys)
 	end
 
 	-- trying to find an opposite
-	local oppositeIndex = Elements:IndexOfOpposite(player, keys.element)
+	local oppositeIndex = Elements:IndexOfOpposite(player, element)
 	if oppositeIndex ~= nil then
 		Elements:RemoveElement(player, oppositeIndex)
 	else
 		-- trying to find an empty place for the new element
 		for i = 1, 3 do
 			if player.pickedElements[i] == nil then
-				Elements:AddElement(player, keys.element, i)
+				Elements:AddElement(player, element, i)
 				break
 			end
 		end
