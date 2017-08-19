@@ -271,6 +271,7 @@ function Beams:RecalcBeamSegment(beamSegment)
 				local childDirection = (beamSegment.direction + closestHit.segment.direction):Normalized()
 				beamSegment.endPos = closestHit.point - beamSegment.direction * 0.05
 				closestHit.segment.endPos = closestHit.point - closestHit.segment.direction * 0.05
+				Beams:RecalcBeamSegment(youngerSegment)
 				local childStart = olderSegment.endPos + childDirection * 0.05
 				if olderSegment.child == nil then
 					olderSegment.child = Beams:CreateBeamSegment(olderSegment.player, childStart, childDirection, olderSegment, olderSegment.mainElement)
