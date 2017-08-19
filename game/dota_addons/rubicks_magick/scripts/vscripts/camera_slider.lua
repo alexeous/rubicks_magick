@@ -20,7 +20,7 @@ function CameraSlider:OnCameraSlideThink()
             local unit = player.cameraSliderDummy:GetOwner()
             local unitPosition = unit:GetAbsOrigin()
             local dummyPosition = player.cameraSliderDummy:GetAbsOrigin()
-            local targetPosition = player.cameraSliderDummy.targetPosition + Vector(0, -140, 0)
+            local targetPosition = player.cameraSliderDummy.targetPosition + Vector(0, -240, 0)
             local unitToTarget = targetPosition - unitPosition
             local unitToTargetLen = unitToTarget:Length2D()
             if unitToTargetLen > CAMERA_SLIDE_MAX_DISTANCE then
