@@ -61,7 +61,7 @@
 		{
 			_class = "C_OP_RenderSprites"
 			m_flSourceAlphaValueToMapToZero = 0.65
-			m_flSourceAlphaValueToMapToOne = 0.883
+			m_flSourceAlphaValueToMapToOne = 0.9
 			m_hTexture = resource:"materials/particle/particle_ring_wave_10.vtex"
 		},
 	]
@@ -91,7 +91,6 @@
 			_class = "C_INIT_RemapCPtoScalar"
 			m_nCPInput = 2
 			m_flInputMax = 5.0
-			m_flOutputMin = 1.2
 			m_flOutputMax = 5.0
 			m_bScaleInitialRange = true
 		},

@@ -36,18 +36,19 @@
 		},
 		{
 			_class = "C_OP_Noise"
-			m_flOutputMin = 60.0
+			m_flOutputMin = 30.0
 			m_flOutputMax = 70.0
 			m_flNoiseAnimationTimeScale = 10.0
-			m_fl4NoiseScale = 0.02
+			m_fl4NoiseScale = 0.0
 		},
 		{
 			_class = "C_OP_RemapCPtoScalar"
 			m_nCPInput = 2
 			m_flInputMax = 5.0
 			m_flOutputMin = 1.0
-			m_flOutputMax = 4.0
+			m_flOutputMax = 5.0
 			m_bScaleCurrent = true
+			m_flInputMin = -0.5
 		},
 	]
 	m_Renderers = 
@@ -56,10 +57,12 @@
 			_class = "C_OP_RenderRopes"
 			m_flAnimationRate = 1.0
 			m_bSaturateColorPreAlphaBlend = false
-			m_flAddSelfAmount = 1.0
+			m_flAddSelfAmount = 3.0
 			m_hTexture = resource:"materials/particle/beam_plasma_07.vtex"
-			m_flTextureVWorldSize = 600.0
-			m_flTextureVScrollRate = -1000.0
+			m_flTextureVWorldSize = 500.0
+			m_flTextureVScrollRate = -2000.0
+			m_flFinalTextureScaleV = -1.0
+			m_flOverbrightFactor = 0.5
 		},
 	]
 	m_Initializers = 
@@ -110,5 +113,9 @@
 			m_ChildRef = resource:"particles/beams/death_beam/death_beam_interrupt.vpcf"
 			m_bEndCap = true
 		},
+		{
+			m_ChildRef = resource:"particles/beams/death_beam/death_beam_stream.vpcf"
+		},
 	]
+	m_nTopology = "PARTICLE_TOPOLOGY_POINTS"
 }

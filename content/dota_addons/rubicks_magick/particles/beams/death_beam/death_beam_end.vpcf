@@ -29,12 +29,14 @@
 		{
 			_class = "C_OP_InterpolateRadius"
 			m_flStartScale = 0.0
+			m_flEndScale = 2.0
 		},
 		{
 			_class = "C_OP_FadeInSimple"
 		},
 		{
 			_class = "C_OP_FadeOutSimple"
+			m_flFadeOutTime = 0.75
 		},
 	]
 	m_Renderers = 
@@ -57,8 +59,8 @@
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.25
-			m_fLifetimeMax = 0.4
+			m_fLifetimeMin = 0.2
+			m_fLifetimeMax = 0.3
 		},
 		{
 			_class = "C_INIT_RemapCPtoScalar"
@@ -76,13 +78,16 @@
 	[
 		{
 			_class = "C_OP_ContinuousEmitter"
-			m_flEmitRate = 30.0
+			m_flEmitRate = 50.0
 		},
 	]
 	m_Children = 
 	[
 		{
 			m_ChildRef = resource:"particles/beams/death_beam/death_beam_end_a.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/beams/death_beam/death_beam_end_circles.vpcf"
 		},
 	]
 }
