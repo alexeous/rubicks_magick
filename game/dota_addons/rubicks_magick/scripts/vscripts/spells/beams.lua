@@ -200,12 +200,12 @@ function Beams:CreateBeamSegment(player, startPos, direction, parentSegment, mai
 	local beamSegment = {
 		player = player,
 		parent = parentSegment,
-		mainElement = mainElement,
+		mainElement = mainElement or parentSegment.mainElement,
 		particleName = particleName or parentSegment.particleName,
 		color = color or parentSegment.color,
 		startPos = startPos,
 		direction = direction,
-		endPos = startPos,
+		endPos = startPos + direction * BEAM_MAX_LENGTH,
 		creationTime = GameRules:GetGameTime()
 	}
 	beamSegment.particle = ParticleManager:CreateParticle(beamSegment.particleName, PATTACH_CUSTOMORIGIN, nil)
@@ -220,7 +220,7 @@ function Beams:CreateBeamSegment(player, startPos, direction, parentSegment, mai
 		local index = table.indexOf(Beams.beamSegments, beamSegment)
 		table.remove(Beams.beamSegments, index)
 	end
-	Timers:CreateTimer(0.01, function() Beams:RecalcBeamSegment(beamSegment) end)
+	Beams:RecalcBeamSegment(beamSegment)
 	
 	table.insert(Beams.beamSegments, beamSegment)
 	return beamSegment
@@ -235,22 +235,28 @@ function Beams:UpdateParticle(beamSegment)
 end
 
 function Beams:OnBeamsThink()
-	local beamsToRecalc = {}
+	for _, beamSegment in pairs(Beams.beamSegments) do
+		beamSegment.noChild = true
+	end
 	for playerID = 0, DOTA_MAX_PLAYERS - 1 do
 		local player = PlayerResource:GetPlayer(playerID)
 		if player ~= nil and player.spellCast ~= nil and player.beam ~= nil then
 			local beam = player.beam
 			local heroEntity = player:GetAssignedHero()
-			local origin = heroEntity:GetAbsOrigin()
 			beam.direction = heroEntity:GetForwardVector():Normalized()
-			beam.startPos = origin + beam.direction * 120
+			beam.startPos = heroEntity:GetAbsOrigin() + beam.direction * 120
 			beam.endPos = beam.startPos + beam.direction * BEAM_MAX_LENGTH
 			player.spellCast.beams_Modifier:ResetTarget()
-			table.insert(beamsToRecalc, beam)
 		end
 	end
-	for _, beam in pairs(beamsToRecalc) do
-		Beams:RecalcBeamSegment(beam)
+	for _, beamSegment in pairs(Beams.beamSegments) do
+		Beams:RecalcBeamSegment(beamSegment)
+	end
+	for _, beamSegment in pairs(Beams.beamSegments) do
+		if beamSegment.child ~= nil and beamSegment.noChild then
+			beamSegment.child.destroy(false)
+			beamSegment.child = nil
+		end
 	end
 	return BEAMS_THINK_PERIOD
 end
@@ -292,8 +298,6 @@ function Beams:RecalcBeamSegment(beamSegment)
 	table.insert(hitList, Beams:BeamsTrace(beamSegment))
 	table.insert(hitList, MagicShield:TraceLine(beamSegment.startPos, beamSegment.endPos))
 
-	local noChild = true
-	--local noEntityTarget = true
 	local beamTarget = nil
 	local minDistance = BEAM_MAX_LENGTH
 	local closestHit = nil
@@ -306,19 +310,19 @@ function Beams:RecalcBeamSegment(beamSegment)
 	if closestHit ~= nil then
 		beamSegment.endPos = closestHit.point
 		if closestHit.reflectedDirection ~= nil then		-- hit magic shield
-			noChild = false
+			beamSegment.noChild = false
 			if beamSegment.direction:Dot(-closestHit.reflectedDirection) >= BEAM_COS_MIN_BEAMS_ANGLE then
 				Beams:Interrupt(beamSegment.player)
 				return
 			else
 				local childStart = beamSegment.endPos + closestHit.reflectedDirection * 0.05
 				if beamSegment.child == nil then
-					print("new child")
 					beamSegment.child = Beams:CreateBeamSegment(beamSegment.player, childStart, closestHit.reflectedDirection, beamSegment, beamSegment.mainElement)
 				else
 					beamSegment.child.direction = closestHit.reflectedDirection
 					beamSegment.child.startPos = childStart
 					beamSegment.child.endPos = childStart + closestHit.reflectedDirection * BEAM_MAX_LENGTH
+					beamSegment.secondParent = nil
 					Beams:RecalcBeamSegment(beamSegment.child)
 				end
 			end
@@ -332,7 +336,6 @@ function Beams:RecalcBeamSegment(beamSegment)
 				Beams:Interrupt(closestHit.segment.player)
 				return
 			else
-				noChild = false
 				local olderSegment, youngerSegment = beamSegment, closestHit.segment
 				if closestHit.segment.creationTime < beamSegment.creationTime then
 					olderSegment, youngerSegment = closestHit.segment, beamSegment
@@ -340,10 +343,11 @@ function Beams:RecalcBeamSegment(beamSegment)
 				local childDirection = (beamSegment.direction + closestHit.segment.direction):Normalized()
 				beamSegment.endPos = closestHit.point - beamSegment.direction * 0.05
 				closestHit.segment.endPos = closestHit.point - closestHit.segment.direction * 0.05
+				olderSegment.noChild = false
 				Beams:RecalcBeamSegment(youngerSegment)
 				local childStart = olderSegment.endPos + childDirection * 0.05
 				if olderSegment.child == nil then
-					olderSegment.child = Beams:CreateBeamSegment(olderSegment.player, childStart, childDirection, olderSegment, olderSegment.mainElement)
+					olderSegment.child = Beams:CreateBeamSegment(olderSegment.player, childStart, childDirection, olderSegment)
 					olderSegment.child.secondParent = youngerSegment
 				else
 					olderSegment.child.direction = childDirection
@@ -358,11 +362,7 @@ function Beams:RecalcBeamSegment(beamSegment)
 	end
 
 	Beams:UpdateParticle(beamSegment)
-	beamSegment.player.spellCast.beams_Modifier:SetTarget(beamTarget)
-	if beamSegment.child ~= nil and noChild then
-		beamSegment.child.destroy(false)
-		beamSegment.child = nil
-	end
+	beamSegment.player.spellCast.beams_Modifier:SetTarget(beamTarget)	
 end
 
 function Beams:BeamsTrace(pBeamSegment)
