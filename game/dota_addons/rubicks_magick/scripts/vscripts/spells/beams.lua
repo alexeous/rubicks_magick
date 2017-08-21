@@ -7,7 +7,7 @@ BEAM_COLLISION_RADIUS = 40
 BEAM_TREE_DETECTION_STEPS = 5
 BEAM_TREE_DETECTION_RADIUS = (BEAM_MAX_LENGTH / BEAM_TREE_DETECTION_STEPS) / 2
 
-BEAM_MIN_BEAMS_ANGLE_DEG = 8
+BEAM_MIN_BEAMS_ANGLE_DEG = 5
 BEAM_COS_MIN_BEAMS_ANGLE = math.cos(math.rad(BEAM_MIN_BEAMS_ANGLE_DEG))
 
 BEAMS_THINK_PERIOD = 0.01
@@ -205,7 +205,7 @@ function Beams:CreateBeamSegment(player, startPos, direction, parentSegment, mai
 		color = color or parentSegment.color,
 		startPos = startPos,
 		direction = direction,
-		endPos = startPos + direction * BEAM_MAX_LENGTH,
+		endPos = startPos,
 		creationTime = GameRules:GetGameTime()
 	}
 	beamSegment.particle = ParticleManager:CreateParticle(beamSegment.particleName, PATTACH_CUSTOMORIGIN, nil)
@@ -220,7 +220,6 @@ function Beams:CreateBeamSegment(player, startPos, direction, parentSegment, mai
 		local index = table.indexOf(Beams.beamSegments, beamSegment)
 		table.remove(Beams.beamSegments, index)
 	end
-	Beams:RecalcBeamSegment(beamSegment)
 	
 	table.insert(Beams.beamSegments, beamSegment)
 	return beamSegment
@@ -253,10 +252,14 @@ function Beams:OnBeamsThink()
 		Beams:RecalcBeamSegment(beamSegment)
 	end
 	for _, beamSegment in pairs(Beams.beamSegments) do
+		Beams:ResolveBeamIntersections(beamSegment)
+	end
+	for _, beamSegment in pairs(Beams.beamSegments) do
 		if beamSegment.child ~= nil and beamSegment.noChild then
 			beamSegment.child.destroy(false)
 			beamSegment.child = nil
 		end
+		Beams:UpdateParticle(beamSegment)
 	end
 	return BEAMS_THINK_PERIOD
 end
@@ -295,7 +298,6 @@ function Beams:RecalcBeamSegment(beamSegment)
 	local hitList = {}
 	table.insert(hitList, Beams:EntitiesTrace(beamSegment))
 	table.insert(hitList, Beams:TreesTrace(beamSegment))
-	table.insert(hitList, Beams:BeamsTrace(beamSegment))
 	table.insert(hitList, MagicShield:TraceLine(beamSegment.startPos, beamSegment.endPos))
 
 	local beamTarget = nil
@@ -311,58 +313,62 @@ function Beams:RecalcBeamSegment(beamSegment)
 		beamSegment.endPos = closestHit.point
 		if closestHit.reflectedDirection ~= nil then		-- hit magic shield
 			beamSegment.noChild = false
-			if beamSegment.direction:Dot(-closestHit.reflectedDirection) >= BEAM_COS_MIN_BEAMS_ANGLE then
+			local childStart = beamSegment.endPos + closestHit.reflectedDirection * 0.05
+			if beamSegment.child == nil then
+				beamSegment.child = Beams:CreateBeamSegment(beamSegment.player, childStart, closestHit.reflectedDirection, beamSegment, beamSegment.mainElement)
+			else
+				beamSegment.child.direction = closestHit.reflectedDirection
+				beamSegment.child.startPos = childStart
+				beamSegment.child.endPos = childStart + closestHit.reflectedDirection * BEAM_MAX_LENGTH
+				beamSegment.secondParent = nil
+				Beams:RecalcBeamSegment(beamSegment.child)
+			end
+		elseif closestHit.entity ~= nil then
+			if closestHit.entity == beamSegment.player:GetAssignedHero() then
 				Beams:Interrupt(beamSegment.player)
 				return
 			else
-				local childStart = beamSegment.endPos + closestHit.reflectedDirection * 0.05
-				if beamSegment.child == nil then
-					beamSegment.child = Beams:CreateBeamSegment(beamSegment.player, childStart, closestHit.reflectedDirection, beamSegment, beamSegment.mainElement)
-				else
-					beamSegment.child.direction = closestHit.reflectedDirection
-					beamSegment.child.startPos = childStart
-					beamSegment.child.endPos = childStart + closestHit.reflectedDirection * BEAM_MAX_LENGTH
-					beamSegment.secondParent = nil
-					Beams:RecalcBeamSegment(beamSegment.child)
-				end
+				beamTarget = closestHit.entity
 			end
-		elseif closestHit.segment ~= nil then	-- hit another beam
-			local cosDirsAngle = beamSegment.direction:Dot(-closestHit.segment.direction)
-			if closestHit.segment.player == beamSegment.player then
-				Beams:Interrupt(beamSegment.player)
-				return
-			elseif closestHit.segment.mainElement ~= beamSegment.mainElement or cosDirsAngle >= BEAM_COS_MIN_BEAMS_ANGLE then
-				Beams:Interrupt(beamSegment.player)
-				Beams:Interrupt(closestHit.segment.player)
-				return
-			else
-				local olderSegment, youngerSegment = beamSegment, closestHit.segment
-				if closestHit.segment.creationTime < beamSegment.creationTime then
-					olderSegment, youngerSegment = closestHit.segment, beamSegment
-				end
-				local childDirection = (beamSegment.direction + closestHit.segment.direction):Normalized()
-				beamSegment.endPos = closestHit.point - beamSegment.direction * 0.05
-				closestHit.segment.endPos = closestHit.point - closestHit.segment.direction * 0.05
-				olderSegment.noChild = false
-				Beams:RecalcBeamSegment(youngerSegment)
-				local childStart = olderSegment.endPos + childDirection * 0.05
-				if olderSegment.child == nil then
-					olderSegment.child = Beams:CreateBeamSegment(olderSegment.player, childStart, childDirection, olderSegment)
-					olderSegment.child.secondParent = youngerSegment
-				else
-					olderSegment.child.direction = childDirection
-					olderSegment.child.startPos = childStart
-					olderSegment.child.endPos = childStart + childDirection * BEAM_MAX_LENGTH
-					Beams:RecalcBeamSegment(olderSegment.child)
-				end
-			end
-		elseif closestHit.entity ~= nil and closestHit.entity.IsStunned ~= nil then 	-- hit an entity. IsStunned ~= nil is check for NPC
-			beamTarget = closestHit.entity
 		end
 	end
 
-	Beams:UpdateParticle(beamSegment)
 	beamSegment.player.spellCast.beams_Modifier:SetTarget(beamTarget)	
+end
+
+function Beams:ResolveBeamIntersections(beamSegment)
+	local beamHit = Beams:BeamsTrace(beamSegment)
+	if beamHit ~= nil then
+		local cosDirsAngle = beamSegment.direction:Dot(-beamHit.segment.direction)
+		if beamHit.segment.player == beamSegment.player then
+			Beams:Interrupt(beamSegment.player)
+			return
+		elseif beamHit.segment.mainElement ~= beamSegment.mainElement or cosDirsAngle >= BEAM_COS_MIN_BEAMS_ANGLE then
+			Beams:Interrupt(beamSegment.player)
+			Beams:Interrupt(beamHit.segment.player)
+			return
+		else
+			local olderSegment, youngerSegment = beamSegment, beamHit.segment
+			if beamHit.segment.creationTime < beamSegment.creationTime then
+				olderSegment, youngerSegment = beamHit.segment, beamSegment
+			end
+			local childDirection = (beamSegment.direction + beamHit.segment.direction):Normalized()
+			beamSegment.endPos = beamHit.point - beamSegment.direction * 0.05
+			beamHit.segment.endPos = beamHit.point - beamHit.segment.direction * 0.05
+			olderSegment.noChild = false
+			Beams:RecalcBeamSegment(youngerSegment)
+			local childStart = olderSegment.endPos + childDirection * 0.05
+			if olderSegment.child == nil then
+				olderSegment.child = Beams:CreateBeamSegment(olderSegment.player, childStart, childDirection, olderSegment)
+				olderSegment.child.secondParent = youngerSegment
+			else
+				olderSegment.child.direction = childDirection
+				olderSegment.child.startPos = childStart
+				olderSegment.child.endPos = childStart + childDirection * BEAM_MAX_LENGTH
+				Beams:RecalcBeamSegment(olderSegment.child)
+			end
+		end
+	end
 end
 
 function Beams:BeamsTrace(pBeamSegment)
