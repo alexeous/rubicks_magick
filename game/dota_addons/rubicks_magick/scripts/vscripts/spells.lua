@@ -525,10 +525,13 @@ function Spells:HealAoE(center, radius, source, heal, dontHealSource)
 end
 
 function Spells:Heal(target, source, heal, ignoreLifeShield)
+	if target:IsInvulnerable() then
+		return 
+	end
+	
 	if not ignoreLifeShield then
 		heal = Spells:GetDamageAfterShields(target, heal, ELEMENT_LIFE)
 	end
-
 	if heal > 0.5 then
 		if Spells.healPool[target] == nil then
 			Spells.healPool[target] = {}
