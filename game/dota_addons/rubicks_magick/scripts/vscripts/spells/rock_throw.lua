@@ -5,8 +5,8 @@ if RockThrow == nil then
 end
 
 function RockThrow:Precache(context)
-	PrecacheResource("paritcle_folder", "particles/rock_throw", context)
-	PrecacheResource("paritcle_folder", "particles/rock_throw/charging_particle", context)
+	PrecacheResource("particle_folder", "particles/rock_throw", context)
+	PrecacheResource("particle_folder", "particles/rock_throw/charging_particle", context)
 	PrecacheResource("model", "models/particle/meteor.vmdl", context)
 end
 
