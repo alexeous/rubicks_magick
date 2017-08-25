@@ -11,8 +11,10 @@ end
 function MoveController:Init()	
 	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(MoveController, "OnMoveHeroesThink"), "MoveHeroesThink", 2)	
 	ListenToGameEvent("entity_killed", Dynamic_Wrap(MoveController, "OnEntityKilled"), self)
-	CustomGameEventManager:RegisterListener("me_mc", Dynamic_Wrap(MoveController, "OnMouseCycle"))
-	
+	CustomGameEventManager:RegisterListener("rm_mouse_cycle", Dynamic_Wrap(MoveController, "OnMouseCycle"))
+	CustomGameEventManager:RegisterListener("rm_stop_move", Dynamic_Wrap(MoveController, "OnStopMoveKeyDown"))
+	CustomGameEventManager:RegisterListener("rm_move_to_down", Dynamic_Wrap(MoveController, "OnMoveToKeyDown"))
+	CustomGameEventManager:RegisterListener("rm_move_to_up", Dynamic_Wrap(MoveController, "OnMoveToKeyUp"))
 end
 
 THINK_PERIOD = 0.03
@@ -134,7 +136,6 @@ end
 function MoveController:OnMoveToKeyDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	player.moveToKeyDown = true
-	player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
 	MoveController:MoveToCursorCommand(player)
 
 	local heroEntity = player:GetAssignedHero()

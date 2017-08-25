@@ -49,7 +49,24 @@ end
 
 function Elements:Init()
 	ListenToGameEvent("entity_killed", Dynamic_Wrap(Elements, "OnEntityKilled"), self)
+	CustomGameEventManager:RegisterListener("rm_pick_water",     Dynamic_Wrap(Elements, "PickWater"))
+	CustomGameEventManager:RegisterListener("rm_pick_life",      Dynamic_Wrap(Elements, "PickLife"))
+	CustomGameEventManager:RegisterListener("rm_pick_shield",    Dynamic_Wrap(Elements, "PickShield"))
+	CustomGameEventManager:RegisterListener("rm_pick_cold",      Dynamic_Wrap(Elements, "PickCold"))
+	CustomGameEventManager:RegisterListener("rm_pick_lightning", Dynamic_Wrap(Elements, "PickLightning"))
+	CustomGameEventManager:RegisterListener("rm_pick_death",     Dynamic_Wrap(Elements, "PickDeath"))
+	CustomGameEventManager:RegisterListener("rm_pick_earth",     Dynamic_Wrap(Elements, "PickEarth"))
+	CustomGameEventManager:RegisterListener("rm_pick_fire",      Dynamic_Wrap(Elements, "PickFire"))
 end
+
+function Elements:PickWater(keys)      Elements:PickElement(keys.playerID, ELEMENT_WATER)  end
+function Elements:PickLife(keys)       Elements:PickElement(keys.playerID, ELEMENT_LIFE)  end
+function Elements:PickShield(keys)     Elements:PickElement(keys.playerID, ELEMENT_SHIELD)  end
+function Elements:PickCold(keys)       Elements:PickElement(keys.playerID, ELEMENT_COLD)  end
+function Elements:PickLightning(keys)  Elements:PickElement(keys.playerID, ELEMENT_LIGHTNING)  end
+function Elements:PickDeath(keys)      Elements:PickElement(keys.playerID, ELEMENT_DEATH)  end
+function Elements:PickEarth(keys)      Elements:PickElement(keys.playerID, ELEMENT_EARTH)  end
+function Elements:PickFire(keys)       Elements:PickElement(keys.playerID, ELEMENT_FIRE)  end
 
 function Elements:PlayerConnected(player)
 	player.pickedElements = {}
@@ -80,7 +97,7 @@ function Elements:GetPickedElements(player)
 	return result
 end
 
-function Elements:OnPickElement(playerID, element)
+function Elements:PickElement(playerID, element)
 	local player = PlayerResource:GetPlayer(playerID)
 
 	local heroEntity = player:GetAssignedHero()

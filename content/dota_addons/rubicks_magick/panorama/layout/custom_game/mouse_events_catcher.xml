@@ -3,8 +3,8 @@
 		<include src="file://{resources}/styles/custom_game/mouse_events_catcher.css" />
 	</styles>
 	<scripts>
-		<include src="file://{resources}/scripts/custom_game/mouse_events_catcher.js" />
 		<include src="file://{resources}/scripts/custom_game/style_configure.js" />
+		<include src="file://{resources}/scripts/custom_game/keybinds.js" />
 	</scripts>
 	<Panel>
 		<Panel class="MouseEventsCatcher"/>

@@ -62,9 +62,9 @@
 		}
 		"10"
 		{
-			"Key"		"Control"
-			"Command"	"+rm_key_control"
-			"Name"		"Pressed Control"
+			"Key"		"Ctrl"
+			"Command"	"+rm_key_ctrl"
+			"Name"		"Pressed Ctrl"
 		}
 		"11"
 		{
@@ -77,12 +77,6 @@
 			"Key"		"Shift"
 			"Command"	"+rm_key_shift"
 			"Name"		"Pressed Shift"
-		}
-		"13"
-		{
-			"Key"		"Alt"
-			"Command"	"+rm_key_alt"
-			"Name"		"Pressed Alt"
 		}
 	}
 }
