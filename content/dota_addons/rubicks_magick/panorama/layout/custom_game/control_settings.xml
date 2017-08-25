@@ -102,6 +102,22 @@
 						</Button>
 					</Panel>
 				</Panel>
+
+				<Panel id="ControlSettingsStopMovePanel">
+					<Label class="ControlSettingsLabel" text="Stop Move"/>
+					<Button id="ControlSettingsStopMoveCtrl" class="ControlMouseButton ActiveControlMouse" onactivate="setStopMoveControl(0)">
+						<Label text="ctrl" class="ControlSettingsMouseButtonText"/>
+					</Button>
+					<Button id="ControlSettingsStopMoveSpace" class="ControlMouseButton" onactivate="setStopMoveControl(1)">
+						<Label text="space" class="ControlSettingsMouseButtonText"/>
+					</Button>
+					<Button id="ControlSettingsStopMoveTab" class="ControlMouseButton" onactivate="setStopMoveControl(2)">
+						<Label text="tab" class="ControlSettingsMouseButtonText"/>
+					</Button>
+					<Button id="ControlSettingsStopMoveShift" class="ControlMouseButton" onactivate="setStopMoveControl(3)">
+						<Label text="shift" class="ControlSettingsMouseButtonText"/>
+					</Button>
+				</Panel>
 			</Panel>
 			<Button id="ControlSettingsHideButton" onactivate="onHideShowClick()"/>
 			<Button id="ControlSettingsShowButton" onactivate="onHideShowClick()" class="invisible"/>

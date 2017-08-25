@@ -10,7 +10,7 @@ function onHideShowClick() {
 }
 
 const MOUSE_EVENTS = [ "rm_mouse_left", "rm_mouse_middle", "rm_mouse_right" ];
-const ACTIONS = {
+const MOUSE_ACTIONS = {
 	"move" : "rm_move_to",
 	"dircast": "rm_directed_cast",
 	"selfcast": "rm_self_cast"
@@ -31,14 +31,14 @@ var controlSelfCast	 = [
 	$.GetContextPanel().FindChildTraverse("ControlSettingsSelfCastMiddle"),
 	$.GetContextPanel().FindChildTraverse("ControlSettingsSelfCastRight")
 ];
-var controls = {
+var mouseControls = {
 	"move" : controlMove,
 	"dircast" : controlDirCast,
 	"selfcast" : controlSelfCast
 }
 
 function setMouseControl(controlType, button) {
-	var control = controls[controlType];
+	var control = mouseControls[controlType];
 	var oldButton;
 	for(var i = 0; i < 3; i++) {
 		if(control[i].BHasClass("ActiveControlMouse")) {
@@ -46,11 +46,11 @@ function setMouseControl(controlType, button) {
 		}
 		control[i].SetHasClass("ActiveControlMouse", button == i);
 	}
-	for(var key in controls) {
+	for(var key in mouseControls) {
 		if(key == controlType) {
 			continue;
 		}
-		var otherControl = controls[key];
+		var otherControl = mouseControls[key];
 		if(otherControl[button].BHasClass("ActiveControlMouse")) {
 			otherControl[button].SetHasClass("ActiveControlMouse", false);
 			otherControl[oldButton].SetHasClass("ActiveControlMouse", true);
@@ -58,7 +58,7 @@ function setMouseControl(controlType, button) {
 		}
 	}
 	var eventName = MOUSE_EVENTS[button];
-	var actionName = ACTIONS[controlType];
+	var actionName = MOUSE_ACTIONS[controlType];
 	rebind(eventName + "_down", actionName + "_down");
 	rebind(eventName + "_up", actionName + "_up");
 }
@@ -121,4 +121,19 @@ function onKeyCaptured(eventName) {
 	rebind(eventName, rebindingActionName);
 	leaveRebindMode();
 	return true;
+}
+
+const KEY_EVENTS = [ "+rm_key_ctrl", "+rm_key_space", "+rm_key_tab", "+rm_key_shift" ];
+var controlStopMove = [
+	$.GetContextPanel().FindChildTraverse("ControlSettingsStopMoveCtrl"),
+	$.GetContextPanel().FindChildTraverse("ControlSettingsStopMoveSpace"),
+	$.GetContextPanel().FindChildTraverse("ControlSettingsStopMoveTab"),
+	$.GetContextPanel().FindChildTraverse("ControlSettingsStopMoveShift")
+];
+function setStopMoveControl(button) {
+	for(var i = 0; i < 4; i++) {
+		controlStopMove[i].SetHasClass("ActiveControlMouse", button == i);
+	}
+	var eventName = KEY_EVENTS[button];
+	rebind(eventName, "rm_stop_move");
 }
