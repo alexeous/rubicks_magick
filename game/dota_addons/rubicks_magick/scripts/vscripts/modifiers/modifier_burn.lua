@@ -12,7 +12,7 @@ function modifier_burn:IsDebuff()
 end
 
 function modifier_burn:GetStatusEffectName()
-	return "particles/status_fx/status_effect_burn.vpcf.vpcf"
+	return "particles/status_fx/status_effect_burn.vpcf"
 end
 
 
