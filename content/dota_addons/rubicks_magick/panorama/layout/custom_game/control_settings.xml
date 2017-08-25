@@ -1,0 +1,56 @@
+<root>
+	<styles>
+		<include src="file://{resources}/styles/custom_game/control_settings.css" />
+	</styles>
+	<scripts>
+		<include src="file://{resources}/scripts/custom_game/control_settings.js" />
+		<include src="file://{resources}/scripts/custom_game/keybinds.js" />
+	</scripts>
+	<Panel>
+		<Panel id="ControlSettingsRoot">
+			<Panel id="ControlSettings">
+				<Label id="ControlSettingsTitle" text="Control Settings"/>
+				<Panel id="ControlSettingsMovePanel">
+					<Label class="ControlSettingsLabel" text="Move"/>
+					<Button id="ControlSettingsMoveLeft" class="ControlMouseButton ControlMouseLeft ActiveControlMouse" onactivate="setMouseControl('move', 0)">
+						<Label text="left" class="ControlSettingsMouseButtonText"/>
+					</Button>
+					<Button id="ControlSettingsMoveMiddle" class="ControlMouseButton ControlMouseMiddle" onactivate="setMouseControl('move', 1)">
+						<Label text="middle" class="ControlSettingsMouseButtonText"/>
+					</Button>
+					<Button id="ControlSettingsMoveRight" class="ControlMouseButton ControlMouseRight" onactivate="setMouseControl('move', 2)">
+						<Label text="right" class="ControlSettingsMouseButtonText"/>
+					</Button>
+				</Panel>
+
+				<Panel id="ControlSettingsDirCastPanel">
+					<Label class="ControlSettingsLabel" text="Cast Forward"/>
+					<Button id="ControlSettingsDirCastLeft" class="ControlMouseButton ControlMouseLeft" onactivate="setMouseControl('dircast', 0)">
+						<Label text="left" class="ControlSettingsMouseButtonText"/>
+					</Button>
+					<Button id="ControlSettingsDirCastMiddle" class="ControlMouseButton ControlMouseMiddle" onactivate="setMouseControl('dircast', 1)">
+						<Label text="middle" class="ControlSettingsMouseButtonText"/>
+					</Button>
+					<Button id="ControlSettingsDirCastRight" class="ControlMouseButton ControlMouseRight ActiveControlMouse" onactivate="setMouseControl('dircast', 2)">
+						<Label text="right" class="ControlSettingsMouseButtonText"/>
+					</Button>
+				</Panel>
+
+				<Panel id="ControlSettingsSelfCastPanel">
+					<Label class="ControlSettingsLabel" text="Self Cast"/>
+					<Button id="ControlSettingsSelfCastLeft" class="ControlMouseButton ControlMouseLeft" onactivate="setMouseControl('selfcast', 0)">
+						<Label text="left" class="ControlSettingsMouseButtonText"/>
+					</Button>
+					<Button id="ControlSettingsSelfCastMiddle" class="ControlMouseButton ControlMouseMiddle ActiveControlMouse" onactivate="setMouseControl('selfcast', 1)">
+						<Label text="middle" class="ControlSettingsMouseButtonText"/>
+					</Button>
+					<Button id="ControlSettingsSelfCastRight" class="ControlMouseButton ControlMouseRight" onactivate="setMouseControl('selfcast', 2)">
+						<Label text="right" class="ControlSettingsMouseButtonText"/>
+					</Button>
+				</Panel>
+			</Panel>
+			<Button id="ControlSettingsHideButton" onactivate="onHideShowClick()"/>
+			<Button id="ControlSettingsShowButton" onactivate="onHideShowClick()" class="invisible"/>
+		</Panel>
+	</Panel>
+</root>

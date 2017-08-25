@@ -1,42 +1,3 @@
-/*const ELEMENT_SHIELD = 1;
-const ELEMENT_EARTH = 2;
-const ELEMENT_LIGHTNING = 3;
-const ELEMENT_LIFE = 4;
-const ELEMENT_DEATH = 5;
-const ELEMENT_WATER = 6;
-const ELEMENT_FIRE = 7;
-const ELEMENT_COLD = 8;*/
-/*
-var keybindTable = {
-	"+rm_key_q" : function() { Pick(ELEMENT_WATER); },
-	"+rm_key_w" : function() { Pick(ELEMENT_LIFE); },
-	"+rm_key_e" : function() { Pick(ELEMENT_SHIELD); },
-	"+rm_key_r" : function() { Pick(ELEMENT_COLD); },
-	"+rm_key_a" : function() { Pick(ELEMENT_LIGHTNING); },
-	"+rm_key_s" : function() { Pick(ELEMENT_DEATH); },
-	"+rm_key_d" : function() { Pick(ELEMENT_EARTH); },
-	"+rm_key_f" : function() { Pick(ELEMENT_FIRE); },
-	"+rm_key_ctrl" : function() { Stop(); }
-};*/
-/*
-const ACTION_TABLE = {
-	"pick_water" 	: function() { sendPickElementAction(ELEMENT_WATER); },
-	"pick_life" 	: function() { sendPickElementAction(ELEMENT_LIFE); },
-	"pick_shield" 	: function() { sendPickElementAction(ELEMENT_SHIELD); },
-	"pick_cold" 	: function() { sendPickElementAction(ELEMENT_COLD); },
-	"pick_lightning": function() { sendPickElementAction(ELEMENT_LIGHTNING); },
-	"pick_death" 	: function() { sendPickElementAction(ELEMENT_DEATH); },
-	"pick_earth" 	: function() { sendPickElementAction(ELEMENT_EARTH); },
-	"pick_fire" 	: function() { sendPickElementAction(ELEMENT_FIRE); },
-	"stop_move" 	: function() { sendSimpleAction("") },
-	"move_to_down"		 : function() { moveToDown(); },
-	"move_to_up"		 : function() { moveToUp(); },
-	"directed_cast_down" : function() { directedCastDown(); },
-	"directed_cast_up" 	 : function() { directedCastUp(); },
-	"self_cast_down"	 : function() { selfCastDown(); },
-	"self_cast_up"		 : function() { selfCastUp(); }
-};*/
-
 var keybindTable = {
 	"+rm_key_q" : "rm_pick_water",
 	"+rm_key_w" : "rm_pick_life",
@@ -58,7 +19,7 @@ var keybindTable = {
 	"rm_mouse_middle_down" : "rm_self_cast_down",
 	"rm_mouse_middle_up"   : "rm_self_cast_up"
 };
-var oldDown = [ false, false, false ];
+var mouseDown = [ false, false, false ];
 
 for (var key in keybindTable) {
 	if(key[0] == '+') {
@@ -67,6 +28,14 @@ for (var key in keybindTable) {
 }
 GameUI.SetMouseCallback( function(eventName, arg) {
 	const CONSUME_EVENT = true;
+	const CONTINUE_PROCESSING_EVENT = false;
+	if(eventName == "pressed") {
+		mouseDown[arg] = true;
+		const mouseKey = ([ "left", "right", "middle" ])[arg];
+		//var eventType = down ? "down" : "up";
+		var eventName = "rm_mouse_" + mouseKey + "_down";// + eventType;
+		onKeyEvent(eventName);
+	}
 	return CONSUME_EVENT;	// make our catcher consume mouse clicks
 } );
 mouseCycle();
@@ -89,6 +58,25 @@ function onKeyEvent(eventName) {
 	GameEvents.SendCustomGameEventToServer(actionName, { "playerID" : playerID });
 }
 
+function rebind(eventName, actionName) {
+	if(!keybindTable.hasOwnProperty(eventName)) {
+		return;
+	}
+	var oldActionName = keybindTable[eventName]; //directed cast down
+	var oldEventName = null;
+	for(var key in keybindTable) {
+		var value = keybindTable[key];
+		if(value == actionName) {
+			oldEventName = key;
+			break;
+		}
+	}
+	keybindTable[eventName] = actionName;
+	if(oldEventName != null) {
+		keybindTable[oldEventName] = oldActionName;
+	}
+}
+
 function mouseCycle() {
 	var cursorPos = GameUI.GetCursorPosition();
 	var worldXYZ = Game.ScreenXYToWorld(cursorPos[0], cursorPos[1]);
@@ -101,12 +89,13 @@ function mouseCycle() {
 	GameEvents.SendCustomGameEventToServer("rm_mouse_cycle", keys);
 
 	for(var i = 0; i < 3; i++) {
-		var down = GameUI.IsMouseDown(i);
-		if(down != oldDown[i]) {
-			oldDown[i] = down;
+		//var down = GameUI.IsMouseDown(i);
+		if(mouseDown[i] && !GameUI.IsMouseDown(i)) {//down != oldDown[i]) {
+			//oldDown[i] = down;
+			mouseDown[i] = false;
 			const mouseKey = ([ "left", "right", "middle" ])[i];
-			var eventType = down ? "down" : "up";
-			var eventName = "rm_mouse_" + mouseKey + "_" + eventType;
+			//var eventType = down ? "down" : "up";
+			var eventName = "rm_mouse_" + mouseKey + "_up";// + eventType;
 			onKeyEvent(eventName);
 		}
 	}

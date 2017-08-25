@@ -1,0 +1,131 @@
+.invisible
+{
+	opacity: 0;
+	visibility: collapse;
+	transition-property: opacity;
+	transition-delay: 0.0s;
+	transition-duration: 0.4s;
+	transition-timing-function: ease-in-out;
+}
+
+#ControlSettingsRoot
+{
+	width: 250px;
+	height: 500px;
+	margin-top: 150px;
+}
+
+#ControlSettings
+{
+	width: 232px;
+	height: 100%;
+	background-image: url("s2r://panorama/images/hud/reborn/bg_scoreboard_psd.vtex");
+	background-size: cover;
+}
+
+#ControlSettingsHideButton
+{
+	width: 18px;
+	height: 80px;
+	background-image: url("file://{images}/custom_game/hide_button.png");
+	background-size: 100% 100%;
+	vertical-align: center;
+	horizontal-align: right;
+}
+
+#ControlSettingsShowButton
+{
+	width: 18px;
+	height: 80px;
+	background-image: url("file://{images}/custom_game/show_button.png");
+	background-size: 100% 100%;
+	vertical-align: center;
+}
+
+#ControlSettingsTitle
+{
+	color: white;
+	font-size: 18;
+	margin-top: 10px;
+	horizontal-align: center;
+}
+
+.ControlSettingsLabel
+{
+	color: white;
+	font-size: 16;
+	margin-top: 4px;
+	margin-left: 22px;
+}
+
+.ControlMouseButton
+{
+	margin-top: 25px;
+	width: 60px;
+	height: 22px;
+	horizontal-align: center;
+	background-size: 100% 100%;
+	background-color: gradient(linear, 0% 0%, 0% 100%, from(#2B2B2BFF), to(#3C3C3CFF));
+	border-width: 1px;
+	border-style: solid;
+	border-color: #4444D0FF;
+	transition-property: background-color;
+	transition-duration: 0.1s;
+}
+
+.ControlMouseButton:hover
+{
+	border-width: 3px;
+}
+
+.ControlMouseButton:active
+{
+	transform: translate3d(0.5px, 0.5px, 0px);
+}
+
+.ActiveControlMouse
+{	
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #303090FF ), to( #4444D0FF ) );
+}
+
+.ControlMouseLeft
+{
+	x: -60px;
+}
+.ControlMouseMiddle
+{
+	x: 0px;
+}
+.ControlMouseRight
+{
+	x: 60px;
+}
+
+.ControlSettingsMouseButtonText
+{
+	color: white;
+	font-size: 15;
+	horizontal-align: center;
+	vertical-align: center;
+}
+
+#ControlSettingsMovePanel
+{
+	width: 100%;
+	height: 60px;
+	margin-top: 30px;
+}
+
+#ControlSettingsDirCastPanel
+{
+	width: 100%;
+	height: 60px;
+	margin-top: 90px;
+}
+
+#ControlSettingsSelfCastPanel
+{
+	width: 100%;
+	height: 60px;
+	margin-top: 150px;
+}

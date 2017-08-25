@@ -12,5 +12,6 @@
 	<Panel>
 		<CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/mouse_events_catcher.xml" />
 		<CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/spell_charging_bar.xml" />
+		<CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/control_settings.xml" />
 	</Panel>
 </root>
