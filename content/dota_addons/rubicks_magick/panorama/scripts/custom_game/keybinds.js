@@ -20,6 +20,7 @@ var keybindTable = {
 	"rm_mouse_middle_up"   : "rm_self_cast_up"
 };
 var mouseDown = [ false, false, false ];
+var keyCaptureCallback = null;
 
 for (var key in keybindTable) {
 	if(key[0] == '+') {
@@ -32,11 +33,10 @@ GameUI.SetMouseCallback( function(eventName, arg) {
 	if(eventName == "pressed") {
 		mouseDown[arg] = true;
 		const mouseKey = ([ "left", "right", "middle" ])[arg];
-		//var eventType = down ? "down" : "up";
-		var eventName = "rm_mouse_" + mouseKey + "_down";// + eventType;
+		var eventName = "rm_mouse_" + mouseKey + "_down";
 		onKeyEvent(eventName);
 	}
-	return CONSUME_EVENT;	// make our catcher consume mouse clicks
+	return CONSUME_EVENT;
 } );
 mouseCycle();
 
@@ -48,6 +48,9 @@ function addEvent(eventName) {
 
 function onKeyEvent(eventName) {
 	if(!keybindTable.hasOwnProperty(eventName)) {
+		return;
+	}
+	if(keyCaptureCallback != null && keyCaptureCallback(eventName)) {
 		return;
 	}
 	var actionName = keybindTable[eventName];
@@ -62,7 +65,7 @@ function rebind(eventName, actionName) {
 	if(!keybindTable.hasOwnProperty(eventName)) {
 		return;
 	}
-	var oldActionName = keybindTable[eventName]; //directed cast down
+	var oldActionName = keybindTable[eventName];
 	var oldEventName = null;
 	for(var key in keybindTable) {
 		var value = keybindTable[key];
@@ -77,6 +80,14 @@ function rebind(eventName, actionName) {
 	}
 }
 
+function startKeyCapture(callback) {
+	keyCaptureCallback = callback;
+}
+
+function endKeyCapture() {
+	keyCaptureCallback = null;
+}
+
 function mouseCycle() {
 	var cursorPos = GameUI.GetCursorPosition();
 	var worldXYZ = Game.ScreenXYToWorld(cursorPos[0], cursorPos[1]);
@@ -89,13 +100,10 @@ function mouseCycle() {
 	GameEvents.SendCustomGameEventToServer("rm_mouse_cycle", keys);
 
 	for(var i = 0; i < 3; i++) {
-		//var down = GameUI.IsMouseDown(i);
-		if(mouseDown[i] && !GameUI.IsMouseDown(i)) {//down != oldDown[i]) {
-			//oldDown[i] = down;
+		if(mouseDown[i] && !GameUI.IsMouseDown(i)) {
 			mouseDown[i] = false;
 			const mouseKey = ([ "left", "right", "middle" ])[i];
-			//var eventType = down ? "down" : "up";
-			var eventName = "rm_mouse_" + mouseKey + "_up";// + eventType;
+			var eventName = "rm_mouse_" + mouseKey + "_up";
 			onKeyEvent(eventName);
 		}
 	}

@@ -33,6 +33,16 @@
 	horizontal-align: right;
 }
 
+#ControlSettingsHideButton:hover
+{
+	brightness: 2.0;
+}
+
+#ControlSettingsHideButton:active
+{
+	brightness: 0.5;
+}
+
 #ControlSettingsShowButton
 {
 	width: 18px;
@@ -41,6 +51,17 @@
 	background-size: 100% 100%;
 	vertical-align: center;
 }
+
+#ControlSettingsShowButton:hover
+{
+	brightness: 2.0;
+}
+
+#ControlSettingsShowButton:active
+{
+	brightness: 0.5;
+}
+
 
 #ControlSettingsTitle
 {
@@ -107,6 +128,7 @@
 	font-size: 15;
 	horizontal-align: center;
 	vertical-align: center;
+	margin-left: 4px;
 }
 
 #ControlSettingsMovePanel
@@ -128,4 +150,178 @@
 	width: 100%;
 	height: 60px;
 	margin-top: 150px;
+}
+
+#ControlSettingsElementsPanel
+{
+	width: 100%;
+	height: 220px;
+	margin-top: 210px;
+}
+
+.ControlSettingsElementLabelTop
+{
+	color: white;
+	font-size: 14;
+	margin-top: 4px;
+	margin-left: 5px;
+	horizontal-align: center;
+}
+
+.ControlSettingsElementLabelBottom
+{
+	color: white;
+	font-size: 14;
+	margin-bottom: 4px;
+	margin-left: 5px;
+	horizontal-align: center;
+	vertical-align: bottom;
+}
+
+.ControlSettingsElementKey
+{
+	width: 38px;
+	height: 38px;
+	horizontal-align: center;
+	vertical-align: center;
+	background-size: 100% 100%;
+	border-width: 1px;
+	border-radius: 5px;
+	border-style: solid;
+	border-color: #4444D0FF;
+	transition-property: background-color;
+	transition-duration: 0.1s;
+	saturation: 0.9;
+}
+
+.ControlSettingsElementKey:hover
+{
+	border-width: 3px;
+}
+
+.ControlSettingsElementKey:active
+{
+	transform: translate3d(0.5px, 0.5px, 0px);
+}
+
+.ActiveElementKeyRebind
+{
+	animation-name: ControlSettingsRebindGlow;
+	animation-duration: 0.5s;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+	animation-timing-function: linear;
+}
+
+@keyframes 'ControlSettingsRebindGlow'
+{
+    0%
+    {
+        background-color: gradient(linear, 0% 0%, 0% 100%, from(#2B2B2BFF), to(#3C3C3CFF));
+    }
+    100%
+    {
+        background-color: gradient( linear, 0% 0%, 0% 100%, from( #909090FF ), to( #D0D0D0FF ) );
+    }
+}
+
+.ControlSettingsElementKeyLabel
+{
+	color: white;
+	font-size: 20;
+	horizontal-align: center;
+	vertical-align: center;
+	margin-left: 4px;
+}
+
+.ControlSettingsElementPanel
+{
+	width: 60px;
+	height: 80px;
+}
+
+#ControlSettingsWater
+{
+	margin-left: 10px;
+	margin-top: 25px;
+}
+#ControlSettingsWaterKey
+{
+	border-color: #4444D0FF;
+}
+
+#ControlSettingsLife
+{
+	margin-left: 55px;
+	margin-top: 25px;
+}
+#ControlSettingsLifeKey
+{
+	border-color: #44D044FF;
+}
+
+
+#ControlSettingsShield
+{
+	margin-left: 100px;
+	margin-top: 25px;
+}
+#ControlSettingsShieldKey
+{
+	border-color: #D0D044FF;
+}
+
+
+#ControlSettingsCold
+{
+	margin-left: 145px;
+	margin-top: 25px;
+}
+#ControlSettingsColdKey
+{
+	border-color: #94FEFEFF;
+}
+
+
+#ControlSettingsLightning
+{
+	margin-left: 30px;
+	margin-top: 70px;
+}
+#ControlSettingsLightningKey
+{
+	border-color: #D044D0FF;
+}
+
+
+#ControlSettingsDeath
+{
+	margin-left: 75px;
+	margin-top: 70px;
+}
+#ControlSettingsDeathKey
+{
+	border-color: #D03030FF;
+}
+
+
+#ControlSettingsEarth
+{
+	margin-left: 120px;
+	margin-top: 70px;
+}
+#ControlSettingsEarthKey
+{
+	border-color: #C0A060FF;
+}
+
+
+#ControlSettingsFire
+{
+	margin-left: 165px;
+	margin-top: 70px;
+}
+#ControlSettingsFireKey
+{
+	border-color: #E09030FF;
 }

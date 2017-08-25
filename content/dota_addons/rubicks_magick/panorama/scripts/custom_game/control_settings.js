@@ -6,6 +6,7 @@ function onHideShowClick() {
 	hideButton.ToggleClass("invisible");
 	showButton.ToggleClass("invisible");
 	controlSettingsPanel.ToggleClass("invisible");
+	leaveRebindMode();
 }
 
 const MOUSE_EVENTS = [ "rm_mouse_left", "rm_mouse_middle", "rm_mouse_right" ];
@@ -60,4 +61,64 @@ function setMouseControl(controlType, button) {
 	var actionName = ACTIONS[controlType];
 	rebind(eventName + "_down", actionName + "_down");
 	rebind(eventName + "_up", actionName + "_up");
+}
+
+var rebindingButton = null;
+var rebindingActionName = null;
+var elementKeyButtons = {
+	"rm_pick_water"     : $.GetContextPanel().FindChildTraverse("ControlSettingsWaterKey"),
+	"rm_pick_life"      : $.GetContextPanel().FindChildTraverse("ControlSettingsLifeKey"),
+	"rm_pick_shield"    : $.GetContextPanel().FindChildTraverse("ControlSettingsShieldKey"),
+	"rm_pick_cold"      : $.GetContextPanel().FindChildTraverse("ControlSettingsColdKey"),
+	"rm_pick_lightning" : $.GetContextPanel().FindChildTraverse("ControlSettingsLightningKey"),
+	"rm_pick_death"     : $.GetContextPanel().FindChildTraverse("ControlSettingsDeathKey"),
+	"rm_pick_earth"     : $.GetContextPanel().FindChildTraverse("ControlSettingsEarthKey"),
+	"rm_pick_fire"      : $.GetContextPanel().FindChildTraverse("ControlSettingsFireKey")
+}
+const ELEMENT_KEY_NAMES = {
+	"+rm_key_q" : "Q",
+	"+rm_key_w" : "W",
+	"+rm_key_e" : "E",
+	"+rm_key_r" : "R",
+	"+rm_key_a" : "A",
+	"+rm_key_s" : "S",
+	"+rm_key_d" : "D",
+	"+rm_key_f" : "F"
+}
+
+function enterRebindMode(actionName) {
+	var button = elementKeyButtons[actionName];
+	if(rebindingButton != button) {
+		if(rebindingButton != null) {
+			rebindingButton.SetHasClass("ActiveElementKeyRebind", false);
+		}
+		button.SetHasClass("ActiveElementKeyRebind", true);
+		rebindingButton = button;
+		rebindingActionName = actionName;
+		startKeyCapture(onKeyCaptured);
+	} else {
+		leaveRebindMode();		
+	}
+}
+
+function leaveRebindMode() {
+	if(rebindingButton != null) {
+		endKeyCapture();
+		rebindingButton.SetHasClass("ActiveElementKeyRebind", false);
+		rebindingButton = null;
+		rebindingActionName = null;
+	}
+}
+
+function onKeyCaptured(eventName) {
+	if(!ELEMENT_KEY_NAMES.hasOwnProperty(eventName)) {
+		return false;
+	}
+	var oldButton = elementKeyButtons[keybindTable[eventName]];
+	var newKeyName = ELEMENT_KEY_NAMES[eventName];
+	oldButton.GetChild(0).text = rebindingButton.GetChild(0).text;
+	rebindingButton.GetChild(0).text = newKeyName;
+	rebind(eventName, rebindingActionName);
+	leaveRebindMode();
+	return true;
 }
