@@ -75,14 +75,12 @@ function Spells:Init()
 	Spells.healPool = {}
 
 	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(Spells, "OnSpellsThink"), "OnSpellsThink", 2)
-
 	ListenToGameEvent("entity_killed", Dynamic_Wrap(Spells, "OnEntityKilled"), self)
 
-	CustomGameEventManager:RegisterListener("me_ld", Dynamic_Wrap(Spells, "OnLeftDown"))
-	CustomGameEventManager:RegisterListener("me_md", Dynamic_Wrap(Spells, "OnMiddleDown"))
-	CustomGameEventManager:RegisterListener("me_lu", Dynamic_Wrap(Spells, "OnLeftUp"))
-	CustomGameEventManager:RegisterListener("me_mu", Dynamic_Wrap(Spells, "OnMiddleUp"))
-	CustomGameEventManager:RegisterListener("me_rd", Dynamic_Wrap(Spells, "OnRightDown"))
+	CustomGameEventManager:RegisterListener("rm_directed_cast_down", Dynamic_Wrap(Spells, "OnDirectedCastKeyDown"))
+	CustomGameEventManager:RegisterListener("rm_directed_cast_up", Dynamic_Wrap(Spells, "OnDirectedCastKeyUp"))
+	CustomGameEventManager:RegisterListener("rm_self_cast_down", Dynamic_Wrap(Spells, "OnSelfCastKeyDown"))
+	CustomGameEventManager:RegisterListener("rm_self_cast_up", Dynamic_Wrap(Spells, "OnSelfCastKeyUp"))
 
 	RockThrow:Init()
 	ElementSprays:Init()
@@ -119,31 +117,15 @@ function Spells:OnEntityKilled(keys)
 	end
 end
 
----------------------- RIGHT MOUSE DOWN ------------------------------
 
-function Spells:OnRightDown(keys)
-	local heroEntity = PlayerResource:GetPlayer(keys.playerID):GetAssignedHero()
-
-	if heroEntity ~= nil and heroEntity:IsAlive() and heroEntity:IsFrozen() then 
-		heroEntity:FindModifierByName("modifier_frozen"):ReleaseProgress()
-	end
-end
-
----------------------------------------------------------------------
---------------------- LEFT MOUSE CLICK ------------------------------
-
-
-function Spells:OnLeftDown(keys)
+function Spells:OnDirectedCastKeyDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	local heroEntity = player:GetAssignedHero()
-	if heroEntity == nil then
-		return
-	end
-	if heroEntity:IsStunned() or not heroEntity:IsAlive() then
+	if heroEntity == nil or heroEntity:IsStunned() or not heroEntity:IsAlive() then
 		return
 	end
 	if player.spellCast ~= nil then 
-		player.wantsToStartNewSpell_left = true
+		player.wantsToStartNewDirectedSpell = true
 		return
 	end
 
@@ -205,20 +187,14 @@ function Spells:OnLeftDown(keys)
 	end
 end
 
----------------------------------------------------------------------
---------------------- MIDDLE MOUSE CLICK ----------------------------
-
-function Spells:OnMiddleDown(keys)
+function Spells:OnSelfCastKeyDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	local heroEntity = player:GetAssignedHero()
-	if heroEntity == nil then
-		return 
-	end	
-	if heroEntity:IsStunned() or not heroEntity:IsAlive() then
+	if heroEntity == nil or heroEntity:IsStunned() or not heroEntity:IsAlive() then
 		return
 	end
 	if player.spellCast ~= nil then
-		player.wantsToStartNewSpell_middle = true
+		player.wantsToStartNewSelfSpell = true
 		return
 	end
 
@@ -275,26 +251,20 @@ function Spells:OnMiddleDown(keys)
 	end
 end
 
----------------------------------------------------------------------
---------------------- LEFT MOUSE UP ---------------------------------
-
-function Spells:OnLeftUp(keys)
+function Spells:OnDirectedCastKeyUp(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	if player ~= nil then
-		player.wantsToStartNewSpell_left = false
+		player.wantsToStartNewDirectedSpell = false
 		if player.spellCast ~= nil and player.spellCast.castType ~= CAST_TYPE_INSTANT and not player.spellCast.isSelfCast then
 			Spells:StopCasting(player)
 		end
 	end
 end
 
----------------------------------------------------------------------
---------------------- MIDDLE MOUSE UP -------------------------------
-
-function Spells:OnMiddleUp(keys)
+function Spells:OnSelfCastKeyUp(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	if player ~= nil then
-		player.wantsToStartNewSpell_middle = false
+		player.wantsToStartNewSelfSpell = false
 		if player.spellCast ~= nil and player.spellCast.castType ~= CAST_TYPE_INSTANT and player.spellCast.isSelfCast then
 			Spells:StopCasting(player)
 		end
@@ -444,13 +414,13 @@ function Spells:StopCasting(player)
 
 	player.spellCast = nil
 
-	if player.wantsToStartNewSpell_middle then
-		Spells:OnMiddleDown({ playerID = player:GetPlayerID() })
-		player.wantsToStartNewSpell_middle = false
+	if player.wantsToStartNewSelfSpell then
+		Spells:OnSelfCastKeyDown({ playerID = player:GetPlayerID() })
+		player.wantsToStartNewSelfSpell = false
 	end
-	if player.wantsToStartNewSpell_left then
-		Spells:OnLeftDown({ playerID = player:GetPlayerID() })
-		player.wantsToStartNewSpell_left = false
+	if player.wantsToStartNewDirectedSpell then
+		Spells:OnDirectedCastKeyDown({ playerID = player:GetPlayerID() })
+		player.wantsToStartNewDirectedSpell = false
 	end
 end
 

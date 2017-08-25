@@ -10,7 +10,7 @@ CAMERA_SLIDE_MAX_DISTANCE = 1000
 
 function CameraSlider:Init()
     GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(CameraSlider, "OnCameraSlideThink"), "CameraSlideThink", 2)
-    CustomGameEventManager:RegisterListener("me_mc", Dynamic_Wrap(CameraSlider, "OnMouseCycle"))
+    CustomGameEventManager:RegisterListener("rm_mouse_cycle", Dynamic_Wrap(CameraSlider, "OnMouseCycle"))
 end
 
 function CameraSlider:OnCameraSlideThink()

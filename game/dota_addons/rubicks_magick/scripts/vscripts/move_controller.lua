@@ -9,15 +9,12 @@ function MoveController:Precache(context)
 end
 
 function MoveController:Init()	
-	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(MoveController, "OnMoveHeroesThink"), "MoveHeroesThink", 2)
-	
+	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(MoveController, "OnMoveHeroesThink"), "MoveHeroesThink", 2)	
 	ListenToGameEvent("entity_killed", Dynamic_Wrap(MoveController, "OnEntityKilled"), self)
-
-	CustomGameEventManager:RegisterListener("me_mc", Dynamic_Wrap(MoveController, "OnMouseCycle"))
-	CustomGameEventManager:RegisterListener("me_rd", Dynamic_Wrap(MoveController, "OnRightDown"))
-	CustomGameEventManager:RegisterListener("me_ru", Dynamic_Wrap(MoveController, "OnRightUp"))
-
-	CustomGameEventManager:RegisterListener("stop_mv", Dynamic_Wrap(MoveController, "OnSpacePressed"))
+	CustomGameEventManager:RegisterListener("rm_mouse_cycle", Dynamic_Wrap(MoveController, "OnMouseCycle"))
+	CustomGameEventManager:RegisterListener("rm_stop_move", Dynamic_Wrap(MoveController, "OnStopMoveKeyDown"))
+	CustomGameEventManager:RegisterListener("rm_move_to_down", Dynamic_Wrap(MoveController, "OnMoveToKeyDown"))
+	CustomGameEventManager:RegisterListener("rm_move_to_up", Dynamic_Wrap(MoveController, "OnMoveToKeyUp"))
 end
 
 THINK_PERIOD = 0.03
@@ -71,7 +68,7 @@ end
 
 
 function MoveController:PlayerConnected(player)
-	player.rightDown = false
+	player.moveToKeyDown = false
 end
 
 function MoveController:OnEntityKilled(keys)
@@ -81,7 +78,7 @@ function MoveController:OnEntityKilled(keys)
 	end
 end
 
-function MoveController:OnSpacePressed(keys)
+function MoveController:OnStopMoveKeyDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	MoveController:StopMove(player)
 end
@@ -131,19 +128,22 @@ end
 function MoveController:OnMouseCycle(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
-	if player.rightDown then
+	if player.moveToKeyDown then
 		MoveController:MoveToCursorCommand(player)
 	end
 end	
 
-
-function MoveController:OnRightDown(keys)
+function MoveController:OnMoveToKeyDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
-	player.rightDown = true
-	player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
+	player.moveToKeyDown = true
 	MoveController:MoveToCursorCommand(player)
+
+	local heroEntity = player:GetAssignedHero()
+	if heroEntity ~= nil and heroEntity:IsAlive() and heroEntity:IsFrozen() then 
+		heroEntity:FindModifierByName("modifier_frozen"):ReleaseProgress()
+	end
 end
 
-function MoveController:OnRightUp(keys)
-	PlayerResource:GetPlayer(keys.playerID).rightDown = false
+function MoveController:OnMoveToKeyUp(keys)
+	PlayerResource:GetPlayer(keys.playerID).moveToKeyDown = false
 end
