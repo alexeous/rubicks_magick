@@ -43,6 +43,7 @@ function Spells:Precache(context)
 	LinkLuaModifier("modifier_burn", "modifiers/modifier_burn.lua", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_water_push", "modifiers/modifier_water_push.lua", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_knockdown", "modifiers/modifier_knockdown.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_wet_cast_lightning", "modifiers/modifier_wet_cast_lightning.lua", LUA_MODIFIER_MOTION_NONE)
 
 	PrecacheResource("particle", "particles/status_fx/status_effect_snow_heavy.vpcf", context)
 	PrecacheResource("particle", "particles/status_fx/status_effect_slardar_amp_damage.vpcf", context)
@@ -51,6 +52,7 @@ function Spells:Precache(context)
 	PrecacheResource("particle", "particles/units/heroes/hero_huskar/huskar_burning_spear_debuff.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_tusk/tusk_frozen_sigil_death.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_ancient_apparition/ancient_apparition_cold_feet_frozen.vpcf", context)
+	PrecacheResource("particle", "particles/items_fx/chain_lightning_impact.vpcf", context)
 
 	SelfShield:Precache(context)
 	MagicShield:Precache(context)
@@ -645,4 +647,12 @@ function Spells:AddWaterPush(target, caster, velocity, acceleration)
 		target:AddNewModifier(caster, nil, "modifier_water_push", kv)
 	end
 	return true
+end
+
+----------------------------------------------------------
+
+function Spells:WetCastLightning(caster)
+	Timers:CreateTimer(0.1, function()
+		caster:AddNewModifier(caster, nil, "modifier_wet_cast_lightning", { duration = 1.0 })
+	end)
 end
