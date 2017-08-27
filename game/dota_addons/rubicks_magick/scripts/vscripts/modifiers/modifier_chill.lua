@@ -27,7 +27,6 @@ end
 function modifier_chill:OnCreated(kv)
 	if IsServer() then
 		self.value = kv.power
-		self:SetStackCount(self.value / 30)
 		self:StartIntervalThink(THINK_PERIOD)
 
 		self.enhanceTime = 0
@@ -42,7 +41,6 @@ function modifier_chill:Enhance(value)
 			self:GetParent():AddNewModifier(self:GetCaster(), nil, "modifier_frozen", { duration = 10.0 })
 			self:Destroy()
 		else
-			self:SetStackCount(self.value / 30)
 			self.enhanceTime = self:GetElapsedTime()
 		end
 	end
@@ -58,8 +56,6 @@ function modifier_chill:OnIntervalThink()
 		if self.value <= 0 then
 			self:StartIntervalThink(-1)
 			self:Destroy()
-		else
-			self:SetStackCount(self.value / 30)
 		end
 	end
 end
@@ -72,5 +68,5 @@ function modifier_chill:DeclareFunctions()
 end
 
 function modifier_chill:GetModifierMoveSpeedBonus_Percentage(params)
-	return -20 - self:GetStackCount()
+	return -90 * (self.value / FREEZE_POINT)
 end
