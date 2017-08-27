@@ -30,7 +30,7 @@ function Lightning:DirectedLightning(player, pickedElements)
 				end,
 				[ELEMENT_DEATH] = function()
 					additionalEffectFunc = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 52) end
-					color = Vector(200, 10, 10)
+					color = Vector(255, 30, 30)
 				end,
 				[ELEMENT_FIRE] = function()
 					additionalEffectFunc = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true) end
@@ -68,7 +68,7 @@ function Lightning:DirectedLightning(player, pickedElements)
 			[ELEMENT_DEATH] = {
 				[ELEMENT_DEATH] = function()
 					additionalEffectFunc = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 74) end
-					color = Vector(200, 10, 10)
+					color = Vector(255, 30, 30)
 				end,
 				[ELEMENT_FIRE] = function()
 					additionalEffectFunc = function(target) 
@@ -86,7 +86,7 @@ function Lightning:DirectedLightning(player, pickedElements)
 				end,
 				[EMPTY] = function()
 					additionalEffectFunc = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 52) end
-					color = Vector(200, 10, 10)
+					color = Vector(255, 30, 30)
 				end
 			},
 			[ELEMENT_FIRE] = {

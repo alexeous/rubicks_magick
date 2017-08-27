@@ -40,7 +40,7 @@
 		{
 			_class = "C_OP_RenderRopes"
 			m_flTessScale = 2.0
-			m_flTextureVWorldSize = 500.0
+			m_flTextureVWorldSize = 600.0
 			m_flTextureVScrollRate = 100.0
 			m_flSourceAlphaValueToMapToZero = 0.623
 			m_hTexture = resource:"materials/particle/bendibeam3.vtex"
@@ -74,7 +74,7 @@
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
-			m_nParticlesToEmit = 10
+			m_nParticlesToEmit = 20
 		},
 	]
 	m_ConstantColor = [ 0, 0, 0, 255 ]

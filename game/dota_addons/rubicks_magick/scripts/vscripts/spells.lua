@@ -52,7 +52,7 @@ function Spells:Precache(context)
 	PrecacheResource("particle", "particles/units/heroes/hero_huskar/huskar_burning_spear_debuff.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_tusk/tusk_frozen_sigil_death.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_ancient_apparition/ancient_apparition_cold_feet_frozen.vpcf", context)
-	PrecacheResource("particle", "particles/items_fx/chain_lightning_impact.vpcf", context)
+	PrecacheResource("particle", "particles/lightning/wet_cast_lightning.vpcf", context)
 
 	SelfShield:Precache(context)
 	MagicShield:Precache(context)

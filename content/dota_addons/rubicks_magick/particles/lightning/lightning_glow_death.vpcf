@@ -36,18 +36,14 @@
 			_class = "C_OP_InheritFromParentParticles"
 			m_nFieldOutput = 2
 		},
-		{
-			_class = "C_OP_RampScalarLinear"
-			m_RateMin = -1.0
-			m_RateMax = 1.0
-			m_nField = 4
-		},
 	]
 	m_Renderers = 
 	[
 		{
 			_class = "C_OP_RenderSprites"
-			m_hTexture = resource:"materials/particle/lava_pool_glow.vtex"
+			m_bAdditive = true
+			m_flAddSelfAmount = 5.0
+			m_flOverbrightFactor = 5.0
 		},
 	]
 	m_Initializers = 
@@ -62,22 +58,25 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 100.0
-			m_flRadiusMax = 160.0
+			m_flRadiusMin = 64.4405
+			m_flRadiusMax = 167.042
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.25
-			m_fLifetimeMax = 0.25
+			m_fLifetimeMin = 0.15
+			m_fLifetimeMax = 0.15
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 141
-			m_nAlphaMax = 200
-			m_bDisableOperator = true
+			m_nAlphaMin = 135
+			m_nAlphaMax = 227
 		},
 		{
-			_class = "C_INIT_RandomRotation"
+			_class = "C_INIT_RemapCPtoVector"
+			m_nCPInput = 3
+			m_nFieldOutput = 6
+			m_vInputMax = [ 255.0, 255.0, 255.0 ]
+			m_vOutputMax = [ 1.0, 1.0, 1.0 ]
 		},
 	]
 	m_Emitters = 
@@ -87,5 +86,4 @@
 			m_nParticlesToEmit = 10
 		},
 	]
-	m_ConstantColor = [ 0, 0, 0, 255 ]
 }

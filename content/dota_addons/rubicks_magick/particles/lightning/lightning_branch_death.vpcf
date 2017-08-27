@@ -43,11 +43,10 @@
 	[
 		{
 			_class = "C_OP_RenderSprites"
-			m_flOverbrightFactor = 20.0
+			m_flOverbrightFactor = 10.0
 			m_bTintByFOW = true
-			m_hTexture = resource:"materials/particle/ground/ground_crack_animated_mod.vtex"
+			m_hTexture = resource:"materials/particle/ground/ground_cracks_mod.vtex"
 			m_bSaturateColorPreAlphaBlend = false
-			m_flAddSelfAmount = 6.0
 		},
 	]
 	m_Initializers = 
@@ -60,7 +59,7 @@
 		{
 			_class = "C_INIT_RandomRadius"
 			m_flRadiusMin = 100.0
-			m_flRadiusMax = 200.0
+			m_flRadiusMax = 150.0
 		},
 		{
 			_class = "C_INIT_RandomSequence"
@@ -72,12 +71,13 @@
 		{
 			_class = "C_INIT_InheritFromParentParticles"
 			m_nFieldOutput = 0
+			m_bRandomDistribution = true
 		},
 		{
 			_class = "C_INIT_DistanceToCPInit"
-			m_flInputMax = 800.0
+			m_flInputMax = 500.0
 			m_flOutputMin = 1.0
-			m_flOutputMax = 0.4
+			m_flOutputMax = 0.3
 			m_nStartCP = 1
 			m_bScaleInitialRange = true
 		},

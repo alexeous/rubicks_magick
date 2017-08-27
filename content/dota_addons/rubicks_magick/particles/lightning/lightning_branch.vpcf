@@ -47,6 +47,7 @@
 			m_flOverbrightFactor = 3.0
 			m_bTintByFOW = true
 			m_hTexture = resource:"materials/particle/electrical_arc/electrical_arc02.vtex"
+			m_flAddSelfAmount = 3.0
 		},
 	]
 	m_Initializers = 

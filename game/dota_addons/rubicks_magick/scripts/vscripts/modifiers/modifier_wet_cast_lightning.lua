@@ -4,21 +4,20 @@ if modifier_wet_cast_lightning == nil then
 end
 
 function modifier_wet_cast_lightning:IsHidden()
-	return true
+	return false
 end
 
-function modifier_wet_cast_lightning:OnDestroy()
-	if IsServer() and self.particleIndex ~= nil then
-		ParticleManager:DestroyParticle(self.particleIndex, false)
-	end
+function modifier_wet_cast_lightning:GetEffectName()
+	return "particles/lightning/wet_cast_lightning.vpcf"
+end
+
+function modifier_wet_cast_lightning:GetEffectAttachType()
+	return PATTACH_ABSORIGIN_FOLLOW
 end
 
 function modifier_wet_cast_lightning:OnCreated(kv)
 	if IsServer() then
 		Spells:ApplyElementDamage(self:GetParent(), self:GetParent(), ELEMENT_LIGHTNING, 150)
-
-		self.particleIndex = ParticleManager:CreateParticle("particles/items_fx/chain_lightning_impact.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetParent())
-		self:AddParticle(self.particleIndex, false, false, -1, false, false)
 	end
 end
 
