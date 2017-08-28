@@ -19,102 +19,49 @@ function Lightning:DirectedLightning(player, pickedElements)
 		Spells:WetCastLightning(caster)
 		return
 	end
-	local color = Vector(160, 80, 255)
-	local additionalEffectFunc = nil
 	local additionalEffectTable = {
 		[ELEMENT_LIGHTNING] = {
 			[ELEMENT_LIGHTNING] = {
-				[ELEMENT_LIFE] = function()
-					additionalEffectFunc = function(target) Spells:Heal(target, caster, 75) end
-					color = Vector(97, 255, 65)
-				end,
-				[ELEMENT_DEATH] = function()
-					additionalEffectFunc = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 52) end
-					color = Vector(255, 30, 30)
-				end,
-				[ELEMENT_FIRE] = function()
-					additionalEffectFunc = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true) end
-					color = Vector(255, 135, 70)
-				end,
-				[ELEMENT_COLD] = function()
-					additionalEffectFunc = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 18, true) end
-					color = Vector(113, 190, 240)
-				end
+				[ELEMENT_LIFE] = function(target) Spells:Heal(target, caster, 75) end,
+				[ELEMENT_DEATH] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 52) end,
+				[ELEMENT_FIRE] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true) end,
+				[ELEMENT_COLD] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 18, true) end
 			},
 			[ELEMENT_LIFE] = {
-				[ELEMENT_LIFE] = function()
-					additionalEffectFunc = function(target) Spells:Heal(target, caster, 106) end
-					color = Vector(97, 255, 65)
+				[ELEMENT_LIFE] = function(target) Spells:Heal(target, caster, 106) end,
+				[ELEMENT_FIRE] = function(target) 
+					Spells:Heal(target, caster, 75)
+					Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true)
 				end,
-				[ELEMENT_FIRE] = function()
-					additionalEffectFunc = function(target) 
-						Spells:Heal(target, caster, 75)
-						Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true)
-					end
-					color = Vector(255, 135, 70)
+				[ELEMENT_COLD] = function(target) 
+					Spells:Heal(target, caster, 75)
+					Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 18, true)
 				end,
-				[ELEMENT_COLD] = function()
-					additionalEffectFunc = function(target) 
-						Spells:Heal(target, caster, 75)
-						Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 18, true) 
-					end
-					color = Vector(113, 190, 240)
-				end,
-				[EMPTY] = function()
-					additionalEffectFunc = function(target) Spells:Heal(target, caster, 75) end
-					color = Vector(97, 255, 65)
-				end
+				[EMPTY] = function(target) Spells:Heal(target, caster, 75) end
 			},
 			[ELEMENT_DEATH] = {
-				[ELEMENT_DEATH] = function()
-					additionalEffectFunc = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 74) end
-					color = Vector(255, 30, 30)
+				[ELEMENT_DEATH] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 74) end,
+				[ELEMENT_FIRE] = function(target) 
+					Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 52)
+					Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true)
 				end,
-				[ELEMENT_FIRE] = function()
-					additionalEffectFunc = function(target) 
-						Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 52)
-						Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true)
-					end
-					color = Vector(255, 135, 70)
+				[ELEMENT_COLD] = function(target) 
+					Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 52)
+					Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 18, true)
 				end,
-				[ELEMENT_COLD] = function()
-					additionalEffectFunc = function(target) 
-						Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 52)
-						Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 18, true) 
-					end
-					color = Vector(113, 190, 240)
-				end,
-				[EMPTY] = function()
-					additionalEffectFunc = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 52) end
-					color = Vector(255, 30, 30)
-				end
+				[EMPTY] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 52) end
 			},
 			[ELEMENT_FIRE] = {
-				[ELEMENT_FIRE] = function()
-					additionalEffectFunc = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 21, true) end
-					color = Vector(255, 135, 70)
-				end,
-				[EMPTY] = function()
-					additionalEffectFunc = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true) end
-					color = Vector(255, 135, 70)
-				end
+				[ELEMENT_FIRE] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 21, true) end,
+				[EMPTY] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true) end
 			},
 			[ELEMENT_COLD] = {
-				[ELEMENT_COLD] = function()
-					additionalEffectFunc = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 26, true) end
-					color = Vector(113, 190, 240)
-				end,
-				[EMPTY] = function()
-					additionalEffectFunc = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 18, true) end
-					color = Vector(113, 190, 240)
-				end
+				[ELEMENT_COLD] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 26, true) end,
+				[EMPTY] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 18, true) end
 			}
 		}
 	}
-	local applyAddEffectFunc = table.serialRetrieve(additionalEffectTable, pickedElements)
-	if applyAddEffectFunc ~= nil then
-		applyAddEffectFunc()
-	end
+	local additionalEffectFunc = table.serialRetrieve(additionalEffectTable, pickedElements)
 	local lightningCount = table.count(pickedElements, ELEMENT_LIGHTNING)
 	local lightningDamage = ({ 42, 60, 73 })[lightningCount]
 	local spellCastTable = {
@@ -125,7 +72,7 @@ function Lightning:DirectedLightning(player, pickedElements)
 		castingGestureRate = 0.5,
 		thinkFunction = function(player) Lightning:OnDirectedLightningThink(player) end,
 		thinkPeriod = 0.4,
-		lightning_Color = color,
+		lightning_Color = Lightning:GetColor(pickedElements),
 		lightning_IsLife = table.indexOf(pickedElements, ELEMENT_LIFE) ~= nil,
 		lightning_IsDeath = table.indexOf(pickedElements, ELEMENT_DEATH) ~= nil,
 		lightning_Distance = LIGHTNING_DISTANCES[lightningCount],
@@ -137,6 +84,15 @@ end
 
 function Lightning:OmniLightning(player, pickedElements)
 	-------- TODO ---------
+end
+
+function Lightning:GetColor(pickedElements)
+	local color = Vector(160, 80, 255)
+	if table.indexOf(pickedElements, ELEMENT_LIFE)  then color = Vector(97, 255, 65) end
+	if table.indexOf(pickedElements, ELEMENT_DEATH) then color = Vector(255, 30, 30) end
+	if table.indexOf(pickedElements, ELEMENT_FIRE)  then color = Vector(255, 135, 70) end
+	if table.indexOf(pickedElements, ELEMENT_COLD)  then color = Vector(113, 190, 240) end
+	return color
 end
 
 function Lightning:MakeEffectFunction(caster, lightningDamage, additionalEffectFunc)
