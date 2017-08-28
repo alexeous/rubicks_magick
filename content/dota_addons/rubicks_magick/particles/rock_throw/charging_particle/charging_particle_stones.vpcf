@@ -19,10 +19,6 @@
 	m_Operators = 
 	[
 		{
-			_class = "C_OP_EndCapTimedDecay"
-			m_flDecayTime = 0.2
-		},
-		{
 			_class = "C_OP_BasicMovement"
 			m_fDrag = 0.5
 		},
@@ -37,6 +33,15 @@
 		{
 			_class = "C_OP_FadeOut"
 			m_bProportional = false
+		},
+		{
+			_class = "C_OP_EndCapTimedDecay"
+		},
+		{
+			_class = "C_OP_RampScalarLinear"
+			m_RateMin = 20.0
+			m_RateMax = 40.0
+			m_nField = 4
 		},
 	]
 	m_Renderers = 
@@ -56,25 +61,24 @@
 		},
 		{
 			_class = "C_INIT_PositionOffset"
-			m_OffsetMin = [ 0.0, 0.0, -40.0 ]
-			m_OffsetMax = [ 0.0, 0.0, 40.0 ]
+			m_OffsetMin = [ 0.0, 0.0, -100.0 ]
+			m_OffsetMax = [ 0.0, 0.0, 100.0 ]
 		},
 		{
 			_class = "C_INIT_RandomSequence"
-			m_nSequenceMax = 4
+			m_nSequenceMax = 39
 		},
 		{
 			_class = "C_INIT_RandomRotation"
 		},
 		{
 			_class = "C_INIT_RandomColor"
-			m_ColorMin = [ 89, 89, 89, 255 ]
 			m_ColorMax = [ 152, 152, 152, 255 ]
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 8.0
-			m_flRadiusMax = 13.0
+			m_flRadiusMin = 10.0
+			m_flRadiusMax = 15.0
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
@@ -87,19 +91,19 @@
 		{
 			_class = "C_OP_ContinuousEmitter"
 			m_flEmissionDuration = 0.5
-			m_flEmitRate = 50.0
+			m_flEmitRate = 40.0
 		},
 	]
 	m_ForceGenerators = 
 	[
 		{
 			_class = "C_OP_TwistAroundAxis"
-			m_fForceAmount = 12000.0
+			m_fForceAmount = 15000.0
 		},
 		{
 			_class = "C_OP_AttractToControlPoint"
 			m_vecComponentScale = [ 1.0, 1.0, 0.0 ]
-			m_fForceAmount = 4000.0
+			m_fForceAmount = 8000.0
 			m_fFalloffPower = 0.0
 		},
 	]
@@ -107,6 +111,7 @@
 	[
 		{
 			_class = "C_OP_ConstrainDistance"
+			m_fMaxDistance = 120.0
 		},
 	]
 }

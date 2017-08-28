@@ -69,8 +69,8 @@
 		},
 		{
 			_class = "C_INIT_RandomColor"
-			m_ColorMin = [ 255, 204, 0, 255 ]
-			m_ColorMax = [ 255, 212, 0, 255 ]
+			m_ColorMin = [ 255, 195, 0, 255 ]
+			m_ColorMax = [ 255, 191, 0, 255 ]
 		},
 		{
 			_class = "C_INIT_RemapCPtoScalar"

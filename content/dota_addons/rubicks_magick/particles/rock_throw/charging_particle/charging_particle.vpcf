@@ -19,14 +19,13 @@
 	m_Operators = 
 	[
 		{
-			_class = "C_OP_EndCapTimedDecay"
-			m_flDecayTime = 100.0
-		},
-		{
 			_class = "C_OP_PositionLock"
 		},
 		{
 			_class = "C_OP_SetChildControlPoints"
+		},
+		{
+			_class = "C_OP_EndCapTimedDecay"
 		},
 	]
 	m_Initializers = 
@@ -46,6 +45,11 @@
 			m_flInputMax = 100.0
 			m_flOutputMax = 100.0
 		},
+		{
+			_class = "C_INIT_RandomLifeTime"
+			m_fLifetimeMin = 2.5
+			m_fLifetimeMax = 2.5
+		},
 	]
 	m_Emitters = 
 	[
@@ -61,7 +65,7 @@
 		},
 		{
 			m_ChildRef = resource:"particles/rock_throw/charging_particle/charging_particle_swings_fast.vpcf"
-			m_flDelay = 1.0
+			m_flDelay = 1.8
 		},
 		{
 			m_ChildRef = resource:"particles/rock_throw/charging_particle/charging_particle_swings.vpcf"
@@ -69,6 +73,10 @@
 		{
 			m_ChildRef = resource:"particles/rock_throw/charging_particle/charging_particle_stones_fast.vpcf"
 			m_flDelay = 1.8
+		},
+		{
+			m_ChildRef = resource:"particles/rock_throw/charging_particle/charging_particle_wave.vpcf"
+			m_flDelay = 2.0
 		},
 	]
 }

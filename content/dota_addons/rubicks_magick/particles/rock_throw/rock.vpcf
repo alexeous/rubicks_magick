@@ -49,7 +49,7 @@
 			m_flInputMin = 1.0
 			m_flInputMax = 3.0
 			m_flOutputMin = 0.18
-			m_flOutputMax = 0.35
+			m_flOutputMax = 0.4
 		},
 	]
 	m_Emitters = 

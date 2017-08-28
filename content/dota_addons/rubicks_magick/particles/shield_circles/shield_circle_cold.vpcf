@@ -27,6 +27,7 @@
 		},
 		{
 			_class = "C_OP_FadeInSimple"
+			m_flFadeInTime = 0.15
 		},
 		{
 			_class = "C_OP_RampScalarLinearSimple"
@@ -37,8 +38,8 @@
 		},
 		{
 			_class = "C_OP_RampScalarLinear"
-			m_RateMin = -10.0
-			m_RateMax = 10.0
+			m_RateMin = -20.0
+			m_RateMax = 20.0
 			m_flEndTime_min = 100000000.0
 			m_nField = 4
 		},

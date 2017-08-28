@@ -37,6 +37,7 @@
 			_class = "C_OP_ColorInterpolate"
 			m_ColorFade = [ 68, 68, 68, 255 ]
 			m_flFadeEndTime = 0.5
+			m_flFadeStartTime = 0.2
 		},
 		{
 			_class = "C_OP_VectorNoise"
@@ -51,6 +52,7 @@
 		{
 			_class = "C_OP_RenderSprites"
 			m_hTexture = resource:"materials/particle/smoke1/smoke1.vtex"
+			m_bParticleFeathering = true
 		},
 	]
 	m_Initializers = 
@@ -80,7 +82,7 @@
 			m_nCPInput = 1
 			m_flInputMin = 1.0
 			m_flInputMax = 3.0
-			m_flOutputMax = 3.0
+			m_flOutputMax = 4.0
 			m_flOutputMin = 1.5
 			m_bScaleInitialRange = true
 		},

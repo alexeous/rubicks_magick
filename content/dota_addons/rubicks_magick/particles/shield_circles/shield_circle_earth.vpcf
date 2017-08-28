@@ -29,13 +29,14 @@
 			_class = "C_OP_RampScalarSpline"
 			m_RateMin = -4.0
 			m_RateMax = -4.0
-			m_flEndTime_min = 0.3
-			m_flEndTime_max = 0.3
+			m_flEndTime_min = 0.15
+			m_flEndTime_max = 0.15
 			m_nField = 4
 			m_bEaseOut = true
 		},
 		{
 			_class = "C_OP_FadeInSimple"
+			m_flFadeInTime = 0.15
 		},
 		{
 			_class = "C_OP_RampScalarLinearSimple"

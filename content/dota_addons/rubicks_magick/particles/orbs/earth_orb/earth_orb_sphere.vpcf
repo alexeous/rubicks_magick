@@ -68,8 +68,8 @@
 		},
 		{
 			_class = "C_INIT_RandomColor"
-			m_ColorMin = [ 78, 143, 78, 255 ]
-			m_ColorMax = [ 57, 86, 49, 255 ]
+			m_ColorMin = [ 136, 114, 74, 255 ]
+			m_ColorMax = [ 136, 114, 74, 255 ]
 		},
 		{
 			_class = "C_INIT_RandomRotation"
@@ -97,6 +97,7 @@
 		},
 		{
 			m_ChildRef = resource:"particles/orbs/earth_orb/earth_orb_small_stones.vpcf"
+			m_bDisableChild = true
 		},
 		{
 			m_ChildRef = resource:"particles/orbs/earth_orb/earth_orb_trail.vpcf"

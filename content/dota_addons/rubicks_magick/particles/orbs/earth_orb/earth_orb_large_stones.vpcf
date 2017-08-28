@@ -79,44 +79,29 @@
 				},
 			]
 			m_bDisableShadows = true
+			m_hOverrideMaterial = resource:"materials/models/particle/simrock.vmat"
 		},
 	]
 	m_Initializers = 
 	[
 		{
 			_class = "C_INIT_CreateWithinSphere"
-			m_fRadiusMin = 15.0
-			m_fRadiusMax = 15.0
+			m_fRadiusMin = 18.0
+			m_fRadiusMax = 18.0
 			m_nControlPointNumber = 3
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 0.00005
-			m_flRadiusMax = 0.005
+			m_flRadiusMin = 0.05
+			m_flRadiusMax = 0.1
 		},
 	]
 	m_Emitters = 
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
-			m_nParticlesToEmit = 60
+			m_nParticlesToEmit = 20
 		},
 	]
-	m_ForceGenerators = 
-	[
-		{
-			_class = "C_OP_AttractToControlPoint"
-			m_fForceAmount = 10.0
-			m_fFalloffPower = -0.2
-			m_nControlPointNumber = 3
-		},
-	]
-	m_Constraints = 
-	[
-		{
-			_class = "C_OP_ConstrainDistance"
-			m_fMaxDistance = 15.0
-			m_nControlPointNumber = 3
-		},
-	]
+	m_ConstantColor = [ 145, 145, 145, 255 ]
 }

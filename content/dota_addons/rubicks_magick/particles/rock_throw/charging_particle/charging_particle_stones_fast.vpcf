@@ -41,6 +41,12 @@
 			_class = "C_OP_FadeIn"
 			m_bProportional = false
 		},
+		{
+			_class = "C_OP_RampScalarLinear"
+			m_RateMin = 20.0
+			m_RateMax = 40.0
+			m_nField = 4
+		},
 	]
 	m_Renderers = 
 	[
@@ -59,25 +65,24 @@
 		},
 		{
 			_class = "C_INIT_PositionOffset"
-			m_OffsetMin = [ 0.0, 0.0, -100.0 ]
-			m_OffsetMax = [ 0.0, 0.0, 100.0 ]
+			m_OffsetMin = [ 0.0, 0.0, -80.0 ]
+			m_OffsetMax = [ 0.0, 0.0, 80.0 ]
 		},
 		{
 			_class = "C_INIT_RandomSequence"
-			m_nSequenceMax = 4
+			m_nSequenceMax = 39
 		},
 		{
 			_class = "C_INIT_RandomRotation"
 		},
 		{
 			_class = "C_INIT_RandomColor"
-			m_ColorMin = [ 89, 89, 89, 255 ]
 			m_ColorMax = [ 152, 152, 152, 255 ]
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 8.0
-			m_flRadiusMax = 13.0
+			m_flRadiusMin = 12.0
+			m_flRadiusMax = 20.0
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
@@ -90,7 +95,11 @@
 		{
 			_class = "C_OP_ContinuousEmitter"
 			m_flEmissionDuration = 0.5
-			m_flEmitRate = 60.0
+			m_flEmitRate = 10.0
+		},
+		{
+			_class = "C_OP_InstantaneousEmitter"
+			m_nParticlesToEmit = 10
 		},
 	]
 	m_ForceGenerators = 

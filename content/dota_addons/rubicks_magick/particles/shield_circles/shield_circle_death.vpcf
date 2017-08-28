@@ -44,8 +44,8 @@
 		},
 		{
 			_class = "C_OP_OscillateScalar"
-			m_RateMin = 2.0
-			m_RateMax = 2.0
+			m_RateMin = 1.5
+			m_RateMax = 1.5
 			m_flEndTime_min = 1000000.0
 			m_flEndTime_max = 1000000.0
 			m_flOscMult = 1.5
