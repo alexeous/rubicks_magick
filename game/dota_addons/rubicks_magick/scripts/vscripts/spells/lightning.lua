@@ -2,7 +2,8 @@ if Lightning == nil then
 	Lightning = class({})
 end
 
-LIGHTNING_DISTANCES = { 250, 400, 600 }
+DIRECTED_LIGHTNING_DISTANCE = { 410, 560, 760 }
+OMNI_LIGHTNING_DISTANCE = { 410, 485, 560 }
 
 function Lightning:Precache(context)	
 	LinkLuaModifier("modifier_lightning_stun", "modifiers/modifier_lightning_stun.lua", LUA_MODIFIER_MOTION_NONE)
@@ -75,7 +76,7 @@ function Lightning:DirectedLightning(player, pickedElements)
 		lightning_Color = Lightning:GetColor(pickedElements),
 		lightning_IsLife = table.indexOf(pickedElements, ELEMENT_LIFE) ~= nil,
 		lightning_IsDeath = table.indexOf(pickedElements, ELEMENT_DEATH) ~= nil,
-		lightning_Distance = LIGHTNING_DISTANCES[lightningCount],
+		lightning_Distance = DIRECTED_LIGHTNING_DISTANCE[lightningCount],
 		lightning_StrikesLeft = 3,
 		lightning_EffectFunction = Lightning:MakeEffectFunction(caster, lightningDamage, additionalEffectFunc)
 	}
@@ -83,7 +84,73 @@ function Lightning:DirectedLightning(player, pickedElements)
 end
 
 function Lightning:OmniLightning(player, pickedElements)
-	-------- TODO ---------
+	local caster = player:GetAssignedHero()
+	if caster:HasModifier("modifier_wet") then
+		Spells:WetCastLightning(caster)
+		return
+	end
+	local additionalEffectTable = {
+		[ELEMENT_LIGHTNING] = {
+			[ELEMENT_LIGHTNING] = {
+				[ELEMENT_LIFE] = function(target) Spells:Heal(target, caster, 65) end,
+				[ELEMENT_DEATH] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 55) end,
+				[ELEMENT_FIRE] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true) end,
+				[ELEMENT_COLD] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 20, true) end
+			},
+			[ELEMENT_LIFE] = {
+				[ELEMENT_LIFE] = function(target) Spells:Heal(target, caster, 92) end,
+				[ELEMENT_FIRE] = function(target) 
+					Spells:Heal(target, caster, 65)
+					Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true)
+				end,
+				[ELEMENT_COLD] = function(target) 
+					Spells:Heal(target, caster, 65)
+					Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 20, true)
+				end,
+				[EMPTY] = function(target) Spells:Heal(target, caster, 65) end
+			},
+			[ELEMENT_DEATH] = {
+				[ELEMENT_DEATH] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 78) end,
+				[ELEMENT_FIRE] = function(target) 
+					Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 55)
+					Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true)
+				end,
+				[ELEMENT_COLD] = function(target) 
+					Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 55)
+					Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 20, true)
+				end,
+				[EMPTY] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 55) end
+			},
+			[ELEMENT_FIRE] = {
+				[ELEMENT_FIRE] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 22, true) end,
+				[EMPTY] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true) end
+			},
+			[ELEMENT_COLD] = {
+				[ELEMENT_COLD] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 28, true) end,
+				[EMPTY] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 20, true) end
+			}
+		}
+	}
+	local additionalEffectFunc = table.serialRetrieve(additionalEffectTable, pickedElements)
+	local lightningCount = table.count(pickedElements, ELEMENT_LIGHTNING)
+	local lightningDamage = ({ 48, 68, 83 })[lightningCount]
+	local spellCastTable = {
+		castType = CAST_TYPE_INSTANT,
+		duration = 1.65,
+		dontMoveWhileCasting = true,
+		castingGesture = ACT_DOTA_CAST_ABILITY_5,
+		castingGestureRate = 0.5,
+		castingGestureTranslate = "guardian_angel",
+		thinkFunction = function(player) Lightning:OnOmniLightningThink(player) end,
+		thinkPeriod = 0.4,
+		lightning_Color = Lightning:GetColor(pickedElements),
+		lightning_IsLife = table.indexOf(pickedElements, ELEMENT_LIFE) ~= nil,
+		lightning_IsDeath = table.indexOf(pickedElements, ELEMENT_DEATH) ~= nil,
+		lightning_Distance = OMNI_LIGHTNING_DISTANCE[lightningCount],
+		lightning_StrikesLeft = 3,
+		lightning_EffectFunction = Lightning:MakeEffectFunction(caster, lightningDamage, additionalEffectFunc)
+	}
+	Spells:StartCasting(player, spellCastTable)
 end
 
 function Lightning:GetColor(pickedElements)
@@ -117,8 +184,8 @@ end
 function Lightning:ChainLightning(player, startUnit, maxDistance, startPos)
 	startPos = startPos or startUnit:GetAbsOrigin()
 	local effectFunc = player.spellCast.lightning_EffectFunction
-	local heroEntity = player:GetAssignedHero()	
-	local ignoreUnits = { startUnit, heroEntity }
+	local caster = player:GetAssignedHero()	
+	local ignoreUnits = { startUnit, caster }
 	local units = Util:FindUnitsInRadius(startUnit:GetAbsOrigin(), maxDistance, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
 	local secondaryStartUnits = {}
 	for _, unit in pairs(units) do
@@ -144,14 +211,14 @@ end
 function Lightning:OnDirectedLightningThink(player)
 	player.spellCast.thinkPeriod = 0.25
 	
-	local heroEntity = player:GetAssignedHero()
-	local forwardVec = heroEntity:GetForwardVector()
+	local caster = player:GetAssignedHero()
+	local forwardVec = caster:GetForwardVector()
 	local lightningDistance = player.spellCast.lightning_Distance
-	local startPos = heroEntity:GetAbsOrigin() + forwardVec * 160
-	local endPos = startPos + forwardVec * lightningDistance
+	local startPos = caster:GetAbsOrigin() + forwardVec * 160
+	local endPos = caster:GetAbsOrigin() + forwardVec * lightningDistance
 	
 	local units = Util:FindUnitsInLine(startPos, endPos, 150, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
-	table.remove(units, table.indexOf(units, heroEntity))
+	table.remove(units, table.indexOf(units, caster))
 	local minDistance = math.huge
 	local closestUnit = nil
 	for _, unit in pairs(units) do
@@ -168,6 +235,29 @@ function Lightning:OnDirectedLightningThink(player)
 		player.spellCast.lightning_EffectFunction(closestUnit)
 		Lightning:CreateParticle(player, startPos, closestUnit:GetAbsOrigin())
 		Lightning:ChainLightning(player, closestUnit, lightningDistance * 0.7)
+	end
+
+	player.spellCast.lightning_StrikesLeft = player.spellCast.lightning_StrikesLeft - 1
+	if player.spellCast.lightning_StrikesLeft <= 0 then
+		player.spellCast.thinkFunction = nil
+	end
+end
+
+function Lightning:OnOmniLightningThink(player)
+	player.spellCast.thinkPeriod = 0.3
+
+	local distance = player.spellCast.lightning_Distance
+	local caster = player:GetAssignedHero()
+	local origin = caster:GetAbsOrigin()
+	local units = Util:FindUnitsInRadius(origin, distance, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
+	local startPos = origin + Vector(0, 0, 145) - (50 * caster:GetForwardVector():Normalized())
+	if #units > 1 then
+		Lightning:ChainLightning(player, caster, distance, startPos)
+	else
+		for i = 1, math.random(2, 3) do
+			local randomEndPos = origin + RandomVector(1):Normalized() * distance
+			Lightning:CreateParticle(player, startPos, randomEndPos, true)
+		end
 	end
 
 	player.spellCast.lightning_StrikesLeft = player.spellCast.lightning_StrikesLeft - 1
