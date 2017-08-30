@@ -456,17 +456,19 @@ end
 ------------------------- HEALTH MANIPULATION  --------------------------
 
 function Spells:ApplyElementDamageAoE(center, radius, attacker, element, damage, dontDamageAttacker, applyModifiers, blockPerShield)
+	local damagedAnyone = false
 	local unitsToHurt = Util:FindUnitsInRadius(center, radius)
 	for _, unit in pairs(unitsToHurt) do
 		if not (unit == attacker and dontDamageAttacker) then
-			Spells:ApplyElementDamage(unit, attacker, element, damage, applyModifiers, blockPerShield)
+			damagedAnyone = damagedAnyone or Spells:ApplyElementDamage(unit, attacker, element, damage, applyModifiers, blockPerShield)
 		end
 	end
+	return damagedAnyone
 end
 
 function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModifiers, blockPerShield)
 	if victim:IsInvulnerable() then
-		return
+		return false
 	end
 
 	damage = Spells:GetDamageAfterShields(victim, damage, element, blockPerShield)
@@ -475,45 +477,51 @@ function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModif
 		damage = damage * 2
 		victim:RemoveModifierByName("modifier_wet")
 	end
-	if damage > 0.5 then
-		local info = { damage = damage, element = element, applyModifiers = applyModifiers }
-		if Spells.damagePool[victim] == nil then
-			Spells.damagePool[victim] = {}
-		end
-		if Spells.damagePool[victim][attacker] == nil then
-			Spells.damagePool[victim][attacker] = {}
-		end
-		table.insert(Spells.damagePool[victim][attacker], info)
+	if damage < 0.5 then
+		return false
 	end
+	local info = { damage = damage, element = element, applyModifiers = applyModifiers }
+	if Spells.damagePool[victim] == nil then
+		Spells.damagePool[victim] = {}
+	end
+	if Spells.damagePool[victim][attacker] == nil then
+		Spells.damagePool[victim][attacker] = {}
+	end
+	table.insert(Spells.damagePool[victim][attacker], info)
+	return true
 end
 
 function Spells:HealAoE(center, radius, source, heal, dontHealSource)
+	local healedAnyone = false
 	local unitsToHeal = Util:FindUnitsInRadius(center, radius)
 	for _, unit in pairs(unitsToHeal) do
 		if not (unit == source and dontHealSource) then
-			Spells:Heal(unit, source, heal, false)
+			healedAnyone = healedAnyone or Spells:Heal(unit, source, heal, false)
 		end
 	end
+	return healedAnyone
 end
 
 function Spells:Heal(target, source, heal, ignoreLifeShield)
 	if target:IsInvulnerable() then
-		return 
+		return false
 	end
 	
 	if not ignoreLifeShield then
 		heal = Spells:GetDamageAfterShields(target, heal, ELEMENT_LIFE)
 	end
-	if heal > 0.5 then
-		if Spells.healPool[target] == nil then
-			Spells.healPool[target] = {}
-			Spells.healPool[target][source] = heal
-		elseif Spells.healPool[target][source] == nil then
-			Spells.healPool[target][source] = heal
-		else
-			Spells.healPool[target][source] = heal + Spells.healPool[target][source]
-		end
+	if heal < 0.5 then
+		return false
 	end
+	if Spells.healPool[target] == nil then
+		Spells.healPool[target] = {}
+		Spells.healPool[target][source] = heal
+	elseif Spells.healPool[target][source] == nil then
+		Spells.healPool[target][source] = heal
+	else
+		Spells.healPool[target][source] = heal + Spells.healPool[target][source]
+	end
+	return true
 end
 
 function Spells:GetDamageAfterShields(victim, damage, element, blockPerShield)
@@ -544,18 +552,19 @@ end
 
 function Spells:ApplyWet(target, caster)
 	if Spells:IsResistantTo(target, ELEMENT_WATER) or target:IsInvulnerable() then
-		return
+		return false
 	end
 
 	local wasBurning = Spells:ExtinguishWithWater(target)
 	if not wasBurning and not target:HasModifier("modifier_chill") then
 		target:AddNewModifier(caster, nil, "modifier_wet", {})
 	end
+	return true
 end
 
 function Spells:ApplyChill(target, caster, power)
 	if Spells:IsResistantTo(target, ELEMENT_COLD) or target:IsInvulnerable() then
-		return
+		return false
 	end
 
 	local wasBurning = Spells:ExtinguishWithCold(target)
@@ -570,11 +579,12 @@ function Spells:ApplyChill(target, caster, power)
 			target:AddNewModifier(caster, nil, "modifier_chill", { power = power })
 		end
 	end
+	return true
 end
 
 function Spells:ApplyBurn(target, caster, damage)
 	if Spells:IsResistantTo(target, ELEMENT_FIRE) or target:IsInvulnerable() then
-		return
+		return false
 	end
 
 	local wasWetOrChilled = Spells:DryAndWarm(target)
@@ -586,6 +596,7 @@ function Spells:ApplyBurn(target, caster, damage)
 			target:AddNewModifier(caster, nil, "modifier_burn", { damage = damage })
 		end
 	end
+	return true
 end
 
 function Spells:DryAndWarm(target)
