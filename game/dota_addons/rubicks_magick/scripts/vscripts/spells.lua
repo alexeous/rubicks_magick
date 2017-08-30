@@ -54,6 +54,10 @@ function Spells:Precache(context)
 	PrecacheResource("particle", "particles/units/heroes/hero_ancient_apparition/ancient_apparition_cold_feet_frozen.vpcf", context)
 	PrecacheResource("particle", "particles/lightning/wet_cast_lightning.vpcf", context)
 
+	PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_kunkka.vsndevts", context)
+	PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_earth_spirit.vsndevts", context)
+	PrecacheResource("soundfile", "soundevents/game_sounds.vsndevts", context)
+
 	SelfShield:Precache(context)
 	MagicShield:Precache(context)
 	StoneWall:Precache(context)
@@ -437,18 +441,22 @@ function Spells:MeleeAttack(player)
 		castingGestureRate = 1.4
 	}
 	spellCastTable.thinkFunction = function(player)
-		local timeHasCome = Spells:TimeElapsedSinceCast(player) > 0.3 
+		local timeHasCome = Spells:TimeElapsedSinceCast(player) > 0.3
 		if timeHasCome and not player.spellCast.hasAttacked then 		-- do damage only after a small delay
 			player.spellCast.hasAttacked = true
 			local heroEntity = player:GetAssignedHero()
 			local center = heroEntity:GetAbsOrigin() + heroEntity:GetForwardVector() * 110
-			Spells:ApplyElementDamageAoE(center, 110, heroEntity, ELEMENT_EARTH, 210, true, true)
+			if Spells:ApplyElementDamageAoE(center, 110, heroEntity, ELEMENT_EARTH, 210, true, true) then
+				player:GetAssignedHero():EmitSound("Hero_EarthSpirit.Attack")
+			elseif #Util:FindUnitsInRadius(center, 110, DOTA_UNIT_TARGET_FLAG_INVULNERABLE) > 1 then
+				player:GetAssignedHero():EmitSound("Damage_Melee.Building")
+			end			
 		end
 	end
-
 	spellCastTable.hasAttacked = false
 
 	Spells:StartCasting(player, spellCastTable)
+	Timers:CreateTimer(0.1, function() player:GetAssignedHero():EmitSound("Hero_Kunkka.PreAttack") end)
 end
 
 
@@ -460,7 +468,8 @@ function Spells:ApplyElementDamageAoE(center, radius, attacker, element, damage,
 	local unitsToHurt = Util:FindUnitsInRadius(center, radius)
 	for _, unit in pairs(unitsToHurt) do
 		if not (unit == attacker and dontDamageAttacker) then
-			damagedAnyone = damagedAnyone or Spells:ApplyElementDamage(unit, attacker, element, damage, applyModifiers, blockPerShield)
+			local damaged = Spells:ApplyElementDamage(unit, attacker, element, damage, applyModifiers, blockPerShield)
+			damagedAnyone = damagedAnyone or damaged
 		end
 	end
 	return damagedAnyone
@@ -496,7 +505,8 @@ function Spells:HealAoE(center, radius, source, heal, dontHealSource)
 	local unitsToHeal = Util:FindUnitsInRadius(center, radius)
 	for _, unit in pairs(unitsToHeal) do
 		if not (unit == source and dontHealSource) then
-			healedAnyone = healedAnyone or Spells:Heal(unit, source, heal, false)
+			local healed = Spells:Heal(unit, source, heal, false)
+			healedAnyone = healedAnyone or healed
 		end
 	end
 	return healedAnyone
