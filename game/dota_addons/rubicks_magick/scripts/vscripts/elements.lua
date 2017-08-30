@@ -9,25 +9,27 @@ ELEMENT_COLD = 8
 
 NUM_ELEMENTS = 8
 
-OPPOSITE_ELEMENTS = {}
-OPPOSITE_ELEMENTS[ELEMENT_WATER] =     { ELEMENT_LIGHTNING }
-OPPOSITE_ELEMENTS[ELEMENT_LIFE] =      { ELEMENT_DEATH }
-OPPOSITE_ELEMENTS[ELEMENT_SHIELD] =    { ELEMENT_SHIELD }
-OPPOSITE_ELEMENTS[ELEMENT_COLD] =      { ELEMENT_FIRE }
-OPPOSITE_ELEMENTS[ELEMENT_LIGHTNING] = { ELEMENT_WATER, ELEMENT_EARTH }
-OPPOSITE_ELEMENTS[ELEMENT_DEATH] = 	   { ELEMENT_LIFE }
-OPPOSITE_ELEMENTS[ELEMENT_EARTH] =	   { ELEMENT_LIGHTNING }
-OPPOSITE_ELEMENTS[ELEMENT_FIRE] = 	   { ELEMENT_COLD }
+OPPOSITE_ELEMENTS = {
+	[ELEMENT_WATER] =     { ELEMENT_LIGHTNING },
+	[ELEMENT_LIFE] =      { ELEMENT_DEATH },
+	[ELEMENT_SHIELD] =    { ELEMENT_SHIELD },
+	[ELEMENT_COLD] =      { ELEMENT_FIRE },
+	[ELEMENT_LIGHTNING] = { ELEMENT_WATER, ELEMENT_EARTH },
+	[ELEMENT_DEATH] = 	  { ELEMENT_LIFE },
+	[ELEMENT_EARTH] =	  { ELEMENT_LIGHTNING },
+	[ELEMENT_FIRE] = 	  { ELEMENT_COLD }
+}
 
-ORB_PARTICLES = {}
-ORB_PARTICLES[ELEMENT_WATER]     = "particles/orbs/water_orb/water_orb.vpcf"
-ORB_PARTICLES[ELEMENT_LIFE]      = "particles/orbs/life_orb/life_orb.vpcf"
-ORB_PARTICLES[ELEMENT_SHIELD]    = "particles/orbs/shield_orb/shield_orb.vpcf"
-ORB_PARTICLES[ELEMENT_COLD]      = "particles/orbs/cold_orb/cold_orb.vpcf"
-ORB_PARTICLES[ELEMENT_LIGHTNING] = "particles/orbs/lightning_orb/lightning_orb.vpcf"
-ORB_PARTICLES[ELEMENT_DEATH]     = "particles/orbs/death_orb/death_orb.vpcf"
-ORB_PARTICLES[ELEMENT_EARTH]     = "particles/orbs/earth_orb/earth_orb.vpcf"
-ORB_PARTICLES[ELEMENT_FIRE]      = "particles/orbs/fire_orb/fire_orb.vpcf"
+ORB_PARTICLES = {
+	[ELEMENT_WATER]     = "particles/orbs/water_orb/water_orb.vpcf",
+	[ELEMENT_LIFE]      = "particles/orbs/life_orb/life_orb.vpcf",
+	[ELEMENT_SHIELD]    = "particles/orbs/shield_orb/shield_orb.vpcf",
+	[ELEMENT_COLD]      = "particles/orbs/cold_orb/cold_orb.vpcf",
+	[ELEMENT_LIGHTNING] = "particles/orbs/lightning_orb/lightning_orb.vpcf",
+	[ELEMENT_DEATH]     = "particles/orbs/death_orb/death_orb.vpcf",
+	[ELEMENT_EARTH]     = "particles/orbs/earth_orb/earth_orb.vpcf",
+	[ELEMENT_FIRE]      = "particles/orbs/fire_orb/fire_orb.vpcf"
+}
 
 ORB_ORIGIN_OFFSETS = { Vector(73, -43, -200), Vector(-73,  -43, -200), Vector(0, 85, -200) }
 CONTROL_OFFSET = 1
@@ -45,6 +47,7 @@ function Elements:Precache(context)
 	PrecacheResource("particle_folder", "particles/orbs/earth_orb", context)
 	PrecacheResource("particle_folder", "particles/orbs/life_orb", context)
 	PrecacheResource("particle_folder", "particles/orbs/water_orb", context)
+	PrecacheResource("soundfile", "soundevents/game_sounds_ui.vsndevts", context)
 end
 
 function Elements:Init()
@@ -138,6 +141,9 @@ function Elements:AddElement(player, element, index)
 	local heroEntity = player:GetAssignedHero()
 	player.orbParticles[index] = ParticleManager:CreateParticle(ORB_PARTICLES[element], PATTACH_ABSORIGIN_FOLLOW, heroEntity)
 	ParticleManager:SetParticleControl(player.orbParticles[index], CONTROL_OFFSET, ORB_ORIGIN_OFFSETS[index])
+	EmitSoundOnClient("General.SelectAction", player)
+	EmitSoundOnClient("General.SelectAction", player)
+	EmitSoundOnClient("General.SelectAction", player) -- three times to increase the volume
 end
 
 function Elements:RemoveElement(player, index)
