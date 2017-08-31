@@ -16,6 +16,11 @@ function Beams:Precache(context)
 	LinkLuaModifier("modifier_beam_cast", "modifiers/modifier_beam_cast.lua", LUA_MODIFIER_MOTION_NONE)
 	PrecacheResource("particle_folder", "particles/beams/life_beam", context)
 	PrecacheResource("particle_folder", "particles/beams/death_beam", context)
+	PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_oracle.vsndevts", context)
+	PrecacheResource("soundfile", "soundevents/game_sounds.vsndevts", context)
+	PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_phoenix.vsndevts", context)
+	PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_pugna.vsndevts", context)
+	PrecacheResource("soundfile", "soundevents/game_sounds_items.vsndevts", context)
 end
 
 function Beams:Init()
@@ -98,6 +103,8 @@ function Beams:StartLifeBeam(player, pickedElements)
 		end
 	end
 	Beams:CreateBeam(player, "particles/beams/life_beam/life_beam.vpcf", color, ELEMENT_LIFE, effectFunction)
+	caster:EmitSound("Hero_Oracle.FortunesEnd.Attack")
+	caster:EmitSound("Portal.Loop_Appear")
 end
 
 function Beams:StartDeathBeam(player, pickedElements)
@@ -171,6 +178,8 @@ function Beams:StartDeathBeam(player, pickedElements)
 		end
 	end
 	Beams:CreateBeam(player, "particles/beams/death_beam/death_beam.vpcf", color, ELEMENT_DEATH, effectFunction)
+	caster:EmitSound("Hero_Phoenix.SunRay.Beam")
+	caster:EmitSound("Hero_Pugna.LifeDrain.Loop")
 end
 
 function Beams:CreateBeam(player, particleName, color, mainElement, effectFunction)
@@ -270,6 +279,10 @@ function Beams:OnBeamStop(player)
 		player.beam = nil
 	end
 	player.spellCast.beams_Modifier:Destroy()
+	local heroEntity = player:GetAssignedHero()
+	heroEntity:StopSound("Portal.Loop_Appear")
+	heroEntity:StopSound("Hero_Phoenix.SunRay.Loop")
+	heroEntity:StopSound("Hero_Pugna.LifeDrain.Loop")
 end
 
 function Beams:Interrupt(player)
@@ -283,6 +296,8 @@ function Beams:Interrupt(player)
 	Timers:CreateTimer(0.1, function() 
 		heroEntity:AddNewModifier(heroEntity, nil, "modifier_knockdown", { duration = 1.5 })
 	end)
+	heroEntity:EmitSound("DOTA_Item.LinkensSphere.Activate")
+	heroEntity:EmitSound("Hero_Oracle.FalsePromise.Damaged")
 end
 
 function Beams:RecalcBeamSegment(beamSegment)
