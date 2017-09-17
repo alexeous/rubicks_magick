@@ -10,7 +10,7 @@ function ElementSprays:Precache(context)
 	PrecacheResource("particle_folder", "particles/element_sprays/cold_spray", context)
 	PrecacheResource("particle_folder", "particles/element_sprays/water_spray", context)
 	
-	PrecacheResource("soundfile", "soundevents/rubicks_magick.vsndevts", context)
+	PrecacheResource("soundfile", "soundevents/rubicks_magick/element_sprays.vsndevts", context)
 end
 
 function ElementSprays:PlayerConnected(player)
@@ -109,6 +109,9 @@ function ElementSprays:StartColdSpray(player, power)
 		ParticleManager:SetParticleControl(particle, 2, Vector(factor * (0.2 + power * 0.8), 0, 0))
 	end
 	ElementSprays:StartElementSprayCasting(player, distance, 7.0, onTouchFunction, particle, particleRecalcFunction, radius)
+	heroEntity:EmitSound("ColdSprayLoop1")
+	heroEntity:EmitSound("ColdSprayLoop2")
+	player.spellCast.spawnSound = "ColdSprayThink"
 end
 
 
@@ -135,6 +138,8 @@ function ElementSprays:StartElementSprayCasting(player, distance, duration, onTo
 			heroEntity:StopSound("FireSprayLoop")
 			heroEntity:StopSound("SteamSprayLoop1")
 			heroEntity:StopSound("SteamSprayLoop2")
+			heroEntity:StopSound("ColdSprayLoop1")
+			heroEntity:StopSound("ColdSprayLoop2")
 		end
 	}
 	Spells:StartCasting(player, spellCastTable)
