@@ -102,9 +102,10 @@ function Beams:StartLifeBeam(player, pickedElements)
 			additionalEffectFunc(target, power)
 		end
 	end
-	Beams:CreateBeam(player, "particles/beams/life_beam/life_beam.vpcf", color, ELEMENT_LIFE, effectFunction)
+	local particle = "particles/beams/life_beam/life_beam.vpcf"
+	local soundList = { "Portal.Loop_Appear" }
+	Beams:CreateBeam(player, particle, color, ELEMENT_LIFE, effectFunction, soundList)
 	caster:EmitSound("Hero_Oracle.FortunesEnd.Attack")
-	caster:EmitSound("Portal.Loop_Appear")
 end
 
 function Beams:StartDeathBeam(player, pickedElements)
@@ -177,12 +178,13 @@ function Beams:StartDeathBeam(player, pickedElements)
 			additionalEffectFunc(target, power)
 		end
 	end
-	Beams:CreateBeam(player, "particles/beams/death_beam/death_beam.vpcf", color, ELEMENT_DEATH, effectFunction)
+	local particle = "particles/beams/death_beam/death_beam.vpcf"
+	local soundList = { "Hero_Pugna.LifeDrain.Loop" }
+	Beams:CreateBeam(player, particle, color, ELEMENT_DEATH, effectFunction, soundList)
 	caster:EmitSound("Hero_Phoenix.SunRay.Beam")
-	caster:EmitSound("Hero_Pugna.LifeDrain.Loop")
 end
 
-function Beams:CreateBeam(player, particleName, color, mainElement, effectFunction)
+function Beams:CreateBeam(player, particleName, color, mainElement, effectFunction, soundList)
 	local heroEntity = player:GetAssignedHero()
 	local spellCastTable = {
 		castType = CAST_TYPE_CONTINUOUS,
@@ -192,6 +194,7 @@ function Beams:CreateBeam(player, particleName, color, mainElement, effectFuncti
 		castingGesture = ACT_DOTA_CHANNEL_ABILITY_5,
 		castingGestureTranslate = "black_hole",
 		castingGestureRate = 1.5,
+		loopSoundList = soundList,
 		endFunction = function(player) Beams:OnBeamStop(player) end,
 		beams_Power = 1,
 		beams_EffectFunction = effectFunction
@@ -279,10 +282,6 @@ function Beams:OnBeamStop(player)
 		player.beam = nil
 	end
 	player.spellCast.beams_Modifier:Destroy()
-	local heroEntity = player:GetAssignedHero()
-	heroEntity:StopSound("Portal.Loop_Appear")
-	heroEntity:StopSound("Hero_Phoenix.SunRay.Loop")
-	heroEntity:StopSound("Hero_Pugna.LifeDrain.Loop")
 end
 
 function Beams:Interrupt(player)

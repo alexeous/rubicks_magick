@@ -371,6 +371,11 @@ function Spells:StartCasting(player, infoTable)
 				translate = player.spellCast.castingGestureTranslate
 			}
 			StartAnimation(heroEntity, animationParams)
+			if player.spellCast.loopSoundList ~= nil then
+				for _, sound in pairs(player.spellCast.loopSoundList) do
+					heroEntity:EmitSound(sound)
+				end
+			end
 		end
 
 		if player.spellCast.slowMovePercentage ~= nil then
@@ -405,9 +410,13 @@ function Spells:StopCasting(player)
 			end
 			MoveController:HeroLookAt(heroEntity, player.cursorPos)
 		end
-
 		if heroEntity:HasModifier("modifier_slow_move") then
 			heroEntity:RemoveModifierByName("modifier_slow_move")
+		end	
+		if player.spellCast.loopSoundList ~= nil then
+			for _, sound in pairs(player.spellCast.loopSoundList) do
+				heroEntity:StopSound(sound)
+			end
 		end
 	end
 
