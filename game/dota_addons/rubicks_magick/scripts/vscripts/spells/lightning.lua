@@ -8,6 +8,8 @@ OMNI_LIGHTNING_DISTANCE = { 410, 485, 560 }
 function Lightning:Precache(context)	
 	LinkLuaModifier("modifier_lightning_stun", "modifiers/modifier_lightning_stun.lua", LUA_MODIFIER_MOTION_NONE)
 	PrecacheResource("particle_folder", "particles/lightning", context)
+
+	PrecacheResource("soundfile", "soundevents/rubicks_magick/lightning.vsndevts", context)
 end
 
 function Lightning:PlayerConnected(player)
@@ -169,6 +171,7 @@ function Lightning:MakeEffectFunction(caster, lightningDamage, additionalEffectF
 			additionalEffectFunc(target)
 		end
 		target:AddNewModifier(caster, nil, "modifier_lightning_stun", { duration = 0.2 })
+		target:EmitSound("LightningArc")
 	end
 end
 
@@ -208,6 +211,12 @@ function Lightning:ChainLightning(player, startUnit, maxDistance, startPos)
 	end
 end
 
+function Lightning:EmitStrikeSound(caster)
+	caster:EmitSound("LightningStrike1")
+	caster:EmitSound("LightningStrike2")
+	caster:EmitSound("LightningStrike3")
+end
+
 function Lightning:OnDirectedLightningThink(player)
 	player.spellCast.thinkPeriod = 0.25
 	
@@ -241,13 +250,15 @@ function Lightning:OnDirectedLightningThink(player)
 	if player.spellCast.lightning_StrikesLeft <= 0 then
 		player.spellCast.thinkFunction = nil
 	end
+
+	Lightning:EmitStrikeSound(caster)
 end
 
 function Lightning:OnOmniLightningThink(player)
 	player.spellCast.thinkPeriod = 0.3
 
-	local distance = player.spellCast.lightning_Distance
 	local caster = player:GetAssignedHero()
+	local distance = player.spellCast.lightning_Distance
 	local origin = caster:GetAbsOrigin()
 	local units = Util:FindUnitsInRadius(origin, distance, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
 	local startPos = origin + Vector(0, 0, 145) - (50 * caster:GetForwardVector():Normalized())
@@ -264,4 +275,6 @@ function Lightning:OnOmniLightningThink(player)
 	if player.spellCast.lightning_StrikesLeft <= 0 then
 		player.spellCast.thinkFunction = nil
 	end
+
+	Lightning:EmitStrikeSound(caster)
 end
