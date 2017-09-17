@@ -16,6 +16,8 @@ function Beams:Precache(context)
 	LinkLuaModifier("modifier_beam_cast", "modifiers/modifier_beam_cast.lua", LUA_MODIFIER_MOTION_NONE)
 	PrecacheResource("particle_folder", "particles/beams/life_beam", context)
 	PrecacheResource("particle_folder", "particles/beams/death_beam", context)
+	PrecacheResource("soundfile", "soundevents/rubicks_magick/beams.vsndevts", context)
+	
 	PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_oracle.vsndevts", context)
 	PrecacheResource("soundfile", "soundevents/game_sounds.vsndevts", context)
 	PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_phoenix.vsndevts", context)
@@ -103,9 +105,9 @@ function Beams:StartLifeBeam(player, pickedElements)
 		end
 	end
 	local particle = "particles/beams/life_beam/life_beam.vpcf"
-	local soundList = { "Portal.Loop_Appear" }
+	local soundList = { "LifeBeamLoop1", "LifeBeamLoop2" }
 	Beams:CreateBeam(player, particle, color, ELEMENT_LIFE, effectFunction, soundList)
-	caster:EmitSound("Hero_Oracle.FortunesEnd.Attack")
+	caster:EmitSound("LifeBeamStart")
 end
 
 function Beams:StartDeathBeam(player, pickedElements)
@@ -179,9 +181,9 @@ function Beams:StartDeathBeam(player, pickedElements)
 		end
 	end
 	local particle = "particles/beams/death_beam/death_beam.vpcf"
-	local soundList = { "Hero_Pugna.LifeDrain.Loop" }
+	local soundList = { "DeathBeamLoop1", "DeathBeamLoop2" }
 	Beams:CreateBeam(player, particle, color, ELEMENT_DEATH, effectFunction, soundList)
-	caster:EmitSound("Hero_Phoenix.SunRay.Beam")
+	caster:EmitSound("DeathBeamStart")
 end
 
 function Beams:CreateBeam(player, particleName, color, mainElement, effectFunction, soundList)
@@ -295,8 +297,8 @@ function Beams:Interrupt(player)
 	Timers:CreateTimer(0.1, function() 
 		heroEntity:AddNewModifier(heroEntity, nil, "modifier_knockdown", { duration = 1.5 })
 	end)
-	heroEntity:EmitSound("DOTA_Item.LinkensSphere.Activate")
-	heroEntity:EmitSound("Hero_Oracle.FalsePromise.Damaged")
+	heroEntity:EmitSound("BeamInterrupted1")
+	heroEntity:EmitSound("BeamInterrupted2")
 end
 
 function Beams:RecalcBeamSegment(beamSegment)

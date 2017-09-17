@@ -1,0 +1,246 @@
+"LifeBeamStart"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_limit_speakers_ui"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/oracle/fortune_attack.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "1.000000"  }
+                    "pitch"             {   "value"     "1.500000"  }
+                    "soundlevel"        {   "value"     "100.00000" }
+                    "distance_max"      {   "value"     "1600.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                }
+            }
+        }
+    }
+}
+
+"LifeBeamLoop1"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_limit_speakers_ui"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/ui/portal_loop.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "0.800000"  }
+                    "pitch"             {   "value"     "2.000000"  }
+                    "soundlevel"        {   "value"     "100.00000" }
+                    "distance_max"      {   "value"     "1600.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "volume_fade_im"    {   "value"     "0.200000"  }
+                    "volume_fade_out"   {   "value"     "0.500000"  }
+                }
+            }
+        }
+    }
+}
+
+"LifeBeamLoop2"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_limit_speakers_ui"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/ui/portal_loop.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "0.800000"  }
+                    "pitch"             {   "value"     "1.000000"  }
+                    "soundlevel"        {   "value"     "100.00000" }
+                    "distance_max"      {   "value"     "1600.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "volume_fade_im"    {   "value"     "0.200000"  }
+                    "volume_fade_out"   {   "value"     "0.500000"  }
+                }
+            }
+        }
+    }
+}
+
+"DeathBeamStart"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_limit_speakers_ui"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/arc_warden/flux_cast.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "1.000000"  }
+                    "pitch"             {   "value"     "2.000000"  }
+                    "soundlevel"        {   "value"     "100.00000" }
+                    "distance_max"      {   "value"     "1600.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "volume_fade_im"    {   "value"     "0.200000"  }
+                }
+            }
+        }
+    }
+}
+
+"DeathBeamLoop1"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_limit_speakers_ui"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/pugna/lifedrain_loop.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "1.000000"  }
+                    "pitch"             {   "value"     "1.100000"  }
+                    "soundlevel"        {   "value"     "100.00000" }
+                    "distance_max"      {   "value"     "1600.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "volume_fade_out"   {   "value"     "0.500000"  }
+                }
+            }
+        }
+    }
+}
+
+"DeathBeamLoop2"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_limit_speakers_ui"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/phoenix/sunray_beam_loop.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "0.800000"  }
+                    "pitch"             {   "value"     "1.000000"  }
+                    "soundlevel"        {   "value"     "100.00000" }
+                    "distance_max"      {   "value"     "1600.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "volume_fade_out"   {   "value"     "0.500000"  }
+                }
+            }
+        }
+    }
+}
+
+"BeamInterrupted1"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_limit_speakers_ui"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/items/linkens_sphere.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "1.000000"  }
+                    "pitch"             {   "value"     "1.000000"  }
+                    "soundlevel"        {   "value"     "100.00000" }
+                    "distance_max"      {   "value"     "1600.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                }
+            }
+        }
+    }
+}
+
+"BeamInterrupted2"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_limit_speakers_ui"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/oracle/false_promise_damage.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "1.000000"  }
+                    "pitch"             {   "value"     "1.000000"  }
+                    "soundlevel"        {   "value"     "100.00000" }
+                    "distance_max"      {   "value"     "1600.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                }
+            }
+        }
+    }
+}

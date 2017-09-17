@@ -54,6 +54,7 @@ function Spells:Precache(context)
 	PrecacheResource("particle", "particles/units/heroes/hero_ancient_apparition/ancient_apparition_cold_feet_frozen.vpcf", context)
 	PrecacheResource("particle", "particles/lightning/wet_cast_lightning.vpcf", context)
 
+	PrecacheResource("soundfile", "soundevents/rubicks_magick/melee_attack.vsndevts", context)
 	PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_kunkka.vsndevts", context)
 	PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_earth_spirit.vsndevts", context)
 	PrecacheResource("soundfile", "soundevents/game_sounds.vsndevts", context)
@@ -456,16 +457,16 @@ function Spells:MeleeAttack(player)
 			local heroEntity = player:GetAssignedHero()
 			local center = heroEntity:GetAbsOrigin() + heroEntity:GetForwardVector() * 110
 			if Spells:ApplyElementDamageAoE(center, 110, heroEntity, ELEMENT_EARTH, 210, true, true) then
-				player:GetAssignedHero():EmitSound("Hero_EarthSpirit.Attack")
+				player:GetAssignedHero():EmitSound("MeleeAttack")
 			elseif #Util:FindUnitsInRadius(center, 110, DOTA_UNIT_TARGET_FLAG_INVULNERABLE) > 1 then
-				player:GetAssignedHero():EmitSound("Damage_Melee.Building")
+				player:GetAssignedHero():EmitSound("MeleeAttackBlocked")
 			end			
 		end
 	end
 	spellCastTable.hasAttacked = false
 
 	Spells:StartCasting(player, spellCastTable)
-	Timers:CreateTimer(0.1, function() player:GetAssignedHero():EmitSound("Hero_Kunkka.PreAttack") end)
+	Timers:CreateTimer(0.1, function() player:GetAssignedHero():EmitSound("MeleeAttackWhoosh") end)
 end
 
 

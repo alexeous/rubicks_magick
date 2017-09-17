@@ -141,9 +141,7 @@ function Elements:AddElement(player, element, index)
 	local heroEntity = player:GetAssignedHero()
 	player.orbParticles[index] = ParticleManager:CreateParticle(ORB_PARTICLES[element], PATTACH_ABSORIGIN_FOLLOW, heroEntity)
 	ParticleManager:SetParticleControl(player.orbParticles[index], CONTROL_OFFSET, ORB_ORIGIN_OFFSETS[index])
-	EmitSoundOnClient("General.SelectAction", player)
-	EmitSoundOnClient("General.SelectAction", player)
-	EmitSoundOnClient("General.SelectAction", player) -- three times to increase the volume
+	EmitSoundOnClient("PickElement", player)
 end
 
 function Elements:RemoveElement(player, index)

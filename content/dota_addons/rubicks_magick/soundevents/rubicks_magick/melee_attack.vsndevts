@@ -1,0 +1,95 @@
+"MeleeAttack"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/earth_spirit/attack01.vsnd"
+                              "value1"        "sounds/weapons/hero/earth_spirit/attack02.vsnd"
+                              //"value2"        "sounds/weapons/hero/earth_spirit/attack03.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "1.200000"  }
+                    "pitch"             {   "value"     "1.000000"  }
+                    "soundlevel"        {   "value"     "100.00000" }
+                    "distance_max"      {   "value"     "1600.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                }
+            }
+        }
+    }
+}
+
+"MeleeAttackWhoosh"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/shared/large_blade/whoosh01.vsnd"
+                              "value1"        "sounds/weapons/hero/shared/large_blade/whoosh02.vsnd"
+                              "value2"        "sounds/weapons/hero/shared/large_blade/whoosh03.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "0.300000"  }
+                    "pitch"             {   "value"     "1.000000"  }
+                    "soundlevel"        {   "value"     "100.00000" }
+                    "distance_max"      {   "value"     "1600.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                }
+            }
+        }
+    }
+}
+
+"MeleeAttackBlocked"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/physics/damage/building/damage01.vsnd"
+                              "value1"        "sounds/physics/damage/building/damage02.vsnd"
+                              "value2"        "sounds/physics/damage/building/damage03.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "1.000000"  }
+                    "pitch"             {   "value"     "1.000000"  }
+                    "soundlevel"        {   "value"     "100.00000" }
+                    "distance_max"      {   "value"     "1600.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                }
+            }
+        }
+    }
+}
