@@ -15,6 +15,8 @@ function MagicShield:Precache(context)
 	PrecacheResource("model", "models/props_debris/smallprops/smallprops_bronze_plate.vmdl", context)
 	PrecacheResource("particle_folder", "particles/magic_shield/round_shield", context)
 	PrecacheResource("particle_folder", "particles/magic_shield/flat_shield", context)
+	
+	PrecacheResource("soundfile", "soundevents/rubicks_magick/magic_shield.vsndevts", context)
 end
 
 function MagicShield:Init()
@@ -36,7 +38,6 @@ function MagicShield:PlaceFlatMagicShieldSpell(player)
 		endFunction = function(player) MagicShield:PlaceFlatMagicShield(player) end
 	}
 	Spells:StartCasting(player, spellCastTable)
-
 end
 
 function MagicShield:PlaceRoundMagicShieldSpell(player)
@@ -51,7 +52,7 @@ function MagicShield:PlaceRoundMagicShieldSpell(player)
 	Spells:StartCasting(player, spellCastTable)
 end
 
-function MagicShield:PlaceFlatMagicShield(player)	
+function MagicShield:PlaceFlatMagicShield(player)
 	local heroEntity = player:GetAssignedHero()
 	local forwardN = heroEntity:GetForwardVector():Normalized()
 	local rightN = heroEntity:GetRightVector():Normalized()
@@ -80,18 +81,27 @@ function MagicShield:PlaceFlatMagicShield(player)
 	ParticleManager:SetParticleControlOrientation(particle, 0, forwardN, rightN, Vector(0, 0, 1))
 	ParticleManager:SetParticleControl(particle, 1, Vector(0, 0, heroEntity:GetAngles().y + 90))
 	MagicShield:AddShield(player, { type = FLAT_SHIELD, center = center, corners = corners, axes = axes, origin = origin, particle = particle })
+
+	heroEntity:EmitSound("MagicShieldPlace1")
+	heroEntity:EmitSound("MagicShieldPlace2")
 end
 
 function MagicShield:PlaceRoundMagicShield(player)
-	local center = player:GetAssignedHero():GetAbsOrigin()
+	local heroEntity = player:GetAssignedHero()
+	local center = heroEntity:GetAbsOrigin()
 	local particle = ParticleManager:CreateParticle("particles/magic_shield/round_shield/round_shield.vpcf", PATTACH_CUSTOMORIGIN, nil)
 	ParticleManager:SetParticleControl(particle, 0, center)
 	MagicShield:AddShield(player, { type = ROUND_SHIELD, center = center, particle = particle })
+
+	heroEntity:EmitSound("MagicShieldPlace1")
+	heroEntity:EmitSound("MagicShieldPlace2")
 end
 
 function MagicShield:AddShield(player, shield)
+	EmitSoundOnLocationWithCaster(shield.center, "MagicShieldLoop", player:GetAssignedHero())
 	shield.destroy = function()
 		ParticleManager:DestroyParticle(shield.particle, false)
+		StopSoundOn("MagicShieldLoop", player:GetAssignedHero())
 		local index = table.indexOf(MagicShield.shields, shield)
 		table.remove(MagicShield.shields, index)
 		if player.currentShield == shield then
