@@ -1610,7 +1610,7 @@ function Physics:Unit(unit)
             ent = Entities:FindInSphere(ent, position, 35)
           end
           if blocked or blockedPos or GridNav:IsNearbyTree(position, 30, true) then
-            FindClearSpaceForUnit(unit, position, true)
+            --FindClearSpaceForUnit(unit, position, true)
             unit.nSkipSlide = 1
             --print('FCS hib')
           end
