@@ -96,8 +96,8 @@ function OmniElementSprays:OmniSteamSpray(caster, position, radius, isSelfCast, 
 	position.z = position.z + 40
 	ParticleManager:SetParticleControl(particle, 0, position)
 	ParticleManager:SetParticleControl(particle, 1, Vector(1, radius - 100, (isWet and 1 or 0)))
-	EmitSoundOnLocationWithCaster(position, "OmniSteamSpray1", caster)
-	EmitSoundOnLocationWithCaster(position, "OmniSteamSpray2", caster)
+	Util:EmitSoundOnLocation(position, "OmniSteamSpray1", caster)
+	Util:EmitSoundOnLocation(position, "OmniSteamSpray2", caster)
 end
 
 function OmniElementSprays:OmniWaterSpray(caster, position, radius, isSelfCast, doPush)
@@ -124,10 +124,10 @@ function OmniElementSprays:OmniWaterSpray(caster, position, radius, isSelfCast, 
 	position.z = position.z + 40
 	ParticleManager:SetParticleControl(particle, 0, position)
 	ParticleManager:SetParticleControl(particle, 1, Vector(radius / 250 + 0.2, radius, 0))
-	EmitSoundOnLocationWithCaster(position, "OmniWaterSpray1", caster)
-	EmitSoundOnLocationWithCaster(position, "OmniWaterSpray2", caster)
-	EmitSoundOnLocationWithCaster(position, "OmniWaterSpray3", caster)
-	EmitSoundOnLocationWithCaster(position, "OmniWaterSpray4", caster)
+	Util:EmitSoundOnLocation(position, "OmniWaterSpray1", caster)
+	Util:EmitSoundOnLocation(position, "OmniWaterSpray2", caster)
+	Util:EmitSoundOnLocation(position, "OmniWaterSpray3", caster)
+	Util:EmitSoundOnLocation(position, "OmniWaterSpray4", caster)
 end
 
 function OmniElementSprays:Push(target, caster, center, distance)
@@ -157,8 +157,8 @@ function OmniElementSprays:OmniFireSpray(caster, position, radius, isSelfCast, d
 	radius = radius - 100
 	ParticleManager:SetParticleControl(particle, 0, position)
 	ParticleManager:SetParticleControl(particle, 1, Vector(radius / 250 + 0.2, radius, 0))
-	EmitSoundOnLocationWithCaster(position, "OmniFireSpray1", caster)
-	EmitSoundOnLocationWithCaster(position, "OmniFireSpray2", caster)
+	Util:EmitSoundOnLocation(position, "OmniFireSpray1", caster)
+	Util:EmitSoundOnLocation(position, "OmniFireSpray2", caster)
 end
 
 function OmniElementSprays:OmniColdSpray(caster, position, radius, isSelfCast, damage)
@@ -172,6 +172,6 @@ function OmniElementSprays:OmniColdSpray(caster, position, radius, isSelfCast, d
 	ParticleManager:SetParticleControl(particle, 0, position)
 	ParticleManager:SetParticleControl(particle, 1, Vector(radius / 250 + 0.2, radius, 0))
 	ParticleManager:SetParticleControl(particle, 2, Vector(radius - 50, 1, 0))
-	EmitSoundOnLocationWithCaster(position, "OmniColdSpray1", caster)
-	EmitSoundOnLocationWithCaster(position, "OmniColdSpray2", caster)
+	Util:EmitSoundOnLocation(position, "OmniColdSpray1", caster)
+	Util:EmitSoundOnLocation(position, "OmniColdSpray2", caster)
 end

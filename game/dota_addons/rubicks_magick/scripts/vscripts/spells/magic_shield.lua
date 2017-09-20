@@ -98,10 +98,12 @@ function MagicShield:PlaceRoundMagicShield(player)
 end
 
 function MagicShield:AddShield(player, shield)
-	EmitSoundOnLocationWithCaster(shield.center, "MagicShieldLoop", player:GetAssignedHero())
+	local soundDummy = Util:CreateDummy(shield.center, player:GetAssignedHero())
+	soundDummy:EmitSound("MagicShieldLoop")
 	shield.destroy = function()
 		ParticleManager:DestroyParticle(shield.particle, false)
-		StopSoundOn("MagicShieldLoop", player:GetAssignedHero())
+		soundDummy:StopSound("MagicShieldLoop")
+		soundDummy:Destroy()
 		local index = table.indexOf(MagicShield.shields, shield)
 		table.remove(MagicShield.shields, index)
 		if player.currentShield == shield then

@@ -23,3 +23,9 @@ function Util:CreateDummy(position, owner)
 	dummy:AddNewModifier(dummy, nil, "modifier_dummy", {})
 	return dummy
 end
+
+function Util:EmitSoundOnLocation(location, soundName, caster)
+	local dummy = Util:CreateDummy(location, caster)
+	dummy:EmitSound(soundName)
+	Timers:CreateTimer(10.0, function() dummy:Destroy() end)
+end
