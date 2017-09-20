@@ -22,8 +22,8 @@
                     }
                     "volume"            {   "value"     "0.500000"  }
                     "pitch"             {   "value"     "0.8000000"  }
-                    "soundlevel"        {   "value"     "100.00000" }
-                    "distance_max"      {   "value"     "1600.000"  }
+                    "soundlevel"        {   "value"     "90.00000"  }
+                    "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }
                 }
             }
@@ -52,8 +52,8 @@
                     }
                     "volume"            {   "value"     "0.700000"  }
                     "pitch"             {   "value"     "1.000000"  }
-                    "soundlevel"        {   "value"     "100.00000" }
-                    "distance_max"      {   "value"     "1600.000"  }
+                    "soundlevel"        {   "value"     "90.00000"  }
+                    "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }
                     "volume_fade_out"   {   "value"     "3.000000"  }
                 }
@@ -83,8 +83,8 @@
                     }
                     "volume"            {   "value"     "0.500000"  }
                     "pitch"             {   "value"     "1.000000"  }
-                    "soundlevel"        {   "value"     "100.00000" }
-                    "distance_max"      {   "value"     "1600.000"  }
+                    "soundlevel"        {   "value"     "90.00000"  }
+                    "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }
                 }
             }
@@ -113,8 +113,8 @@
                     }
                     "volume"            {   "value"     "0.300000"  }
                     "pitch"             {   "value"     "1.000000"  }
-                    "soundlevel"        {   "value"     "100.00000" }
-                    "distance_max"      {   "value"     "1600.000"  }
+                    "soundlevel"        {   "value"     "90.00000"  }
+                    "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }
                 }
             }
@@ -146,8 +146,8 @@
                     }
                     "volume"            {   "value"     "0.700000"  }
                     "pitch"             {   "value"     "0.700000"  }
-                    "soundlevel"        {   "value"     "100.00000" }
-                    "distance_max"      {   "value"     "1600.000"  }
+                    "soundlevel"        {   "value"     "90.00000"  }
+                    "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }
                 }
             }
@@ -176,8 +176,8 @@
                     }
                     "volume"            {   "value"     "0.700000"  }
                     "pitch"             {   "value"     "1.700000"  }
-                    "soundlevel"        {   "value"     "100.00000" }
-                    "distance_max"      {   "value"     "1600.000"  }
+                    "soundlevel"        {   "value"     "90.00000"  }
+                    "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }
                 }
             }

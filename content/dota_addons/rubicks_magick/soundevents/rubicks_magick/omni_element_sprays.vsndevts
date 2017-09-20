@@ -21,8 +21,8 @@
                     "pitch"             {   "value"     "0.800000"  }
                     "pitch_rand_min"    {   "value"     "-0.05000"  }
                     "pitch_rand_max"    {   "value"     "0.050000"  }
-                    "soundlevel"        {   "value"     "100.00000" }
-                    "distance_max"      {   "value"     "1600.000"  }
+                    "soundlevel"        {   "value"     "90.00000"  }
+                    "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }
                 }
             }
@@ -55,8 +55,8 @@
                     "pitch"             {   "value"     "1.500000"  }
                     "pitch_rand_min"    {   "value"     "-0.05000"  }
                     "pitch_rand_max"    {   "value"     "0.050000"  }
-                    "soundlevel"        {   "value"     "100.00000" }
-                    "distance_max"      {   "value"     "1600.000"  }
+                    "soundlevel"        {   "value"     "90.00000"  }
+                    "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }
                     "volume_fade_in"    {   "value"     "0.070000"  }
                     "volume_fade_out"   {   "value"     "0.050000"  }
@@ -89,8 +89,8 @@
                     "pitch"             {   "value"     "1.000000"  }
                     "pitch_rand_min"    {   "value"     "-0.05000"  }
                     "pitch_rand_max"    {   "value"     "0.050000"  }
-                    "soundlevel"        {   "value"     "100.00000" }
-                    "distance_max"      {   "value"     "1600.000"  }
+                    "soundlevel"        {   "value"     "90.00000"  }
+                    "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }
                     "delay"             {   "value"     "-0.500000"  }
                     "volume_fade_in"    {   "value"     "0.200000"  }
@@ -123,8 +123,8 @@
                     "pitch"             {   "value"     "1.000000"  }
                     "pitch_rand_min"    {   "value"     "-0.05000"  }
                     "pitch_rand_max"    {   "value"     "0.050000"  }
-                    "soundlevel"        {   "value"     "100.00000" }
-                    "distance_max"      {   "value"     "1600.000"  }
+                    "soundlevel"        {   "value"     "90.00000"  }
+                    "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }
                     "volume_fade_out"   {   "value"     "0.800000"  }
                 }
@@ -156,8 +156,8 @@
                     "pitch"             {   "value"     "1.000000"  }
                     "pitch_rand_min"    {   "value"     "-0.05000"  }
                     "pitch_rand_max"    {   "value"     "0.050000"  }
-                    "soundlevel"        {   "value"     "100.00000" }
-                    "distance_max"      {   "value"     "1600.000"  }
+                    "soundlevel"        {   "value"     "90.00000"  }
+                    "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }
                     "delay"             {   "value"     "-1.600000"  }
                     "volume_fade_in"    {   "value"     "0.200000"  }
@@ -193,8 +193,8 @@
                     "pitch"             {   "value"     "0.800000"  }
                     "pitch_rand_min"    {   "value"     "-0.05000"  }
                     "pitch_rand_max"    {   "value"     "0.050000"  }
-                    "soundlevel"        {   "value"     "100.00000" }
-                    "distance_max"      {   "value"     "1600.000"  }
+                    "soundlevel"        {   "value"     "90.00000"  }
+                    "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }
                     "delay"             {   "value"     "-0.020000"  }
                 }
@@ -226,8 +226,8 @@
                     "pitch"             {   "value"     "1.000000"  }
                     "pitch_rand_min"    {   "value"     "-0.05000"  }
                     "pitch_rand_max"    {   "value"     "0.050000"  }
-                    "soundlevel"        {   "value"     "100.00000" }
-                    "distance_max"      {   "value"     "1600.000"  }
+                    "soundlevel"        {   "value"     "90.00000"  }
+                    "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }
                 }
             }
@@ -258,8 +258,8 @@
                     "pitch"             {   "value"     "1.000000"  }
                     "pitch_rand_min"    {   "value"     "-0.05000"  }
                     "pitch_rand_max"    {   "value"     "0.050000"  }
-                    "soundlevel"        {   "value"     "100.00000" }
-                    "distance_max"      {   "value"     "1600.000"  }
+                    "soundlevel"        {   "value"     "90.00000"  }
+                    "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }
                 }
             }
@@ -290,8 +290,8 @@
                     "pitch"             {   "value"     "1.000000"  }
                     "pitch_rand_min"    {   "value"     "-0.05000"  }
                     "pitch_rand_max"    {   "value"     "0.050000"  }
-                    "soundlevel"        {   "value"     "100.00000" }
-                    "distance_max"      {   "value"     "1600.000"  }
+                    "soundlevel"        {   "value"     "90.00000"  }
+                    "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }
                 }
             }
@@ -324,8 +324,8 @@
                     "pitch"             {   "value"     "0.700000"  }
                     "pitch_rand_min"    {   "value"     "-0.05000"  }
                     "pitch_rand_max"    {   "value"     "0.050000"  }
-                    "soundlevel"        {   "value"     "100.00000" }
-                    "distance_max"      {   "value"     "1600.000"  }
+                    "soundlevel"        {   "value"     "90.00000"  }
+                    "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }
                 }
             }
