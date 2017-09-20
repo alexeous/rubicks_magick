@@ -5,6 +5,8 @@ end
 function OmniPulses:Precache(context)
 	PrecacheResource("particle_folder", "particles/omni_pulses/omni_death_pulse", context)
 	PrecacheResource("particle_folder", "particles/omni_pulses/omni_life_pulse", context)
+	
+	PrecacheResource("soundfile", "soundevents/rubicks_magick/omni_pulses.vsndevts", context)
 end
 
 function OmniPulses:PlayerConnected(player)
@@ -86,7 +88,10 @@ function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, pickedElements
 	radius = radius * 0.87
 	ParticleManager:SetParticleControl(particle, 0, position)
 	ParticleManager:SetParticleControl(particle, 1, Vector(radius, 1, 0))
-	ParticleManager:SetParticleControl(particle, 2, Vector(radius / 250 + 0.2, 0, 0))	
+	ParticleManager:SetParticleControl(particle, 2, Vector(radius / 250 + 0.2, 0, 0))
+	
+	Util:EmitSoundOnLocation(position, "OmniLifePulse1", caster)
+	Util:EmitSoundOnLocation(position, "OmniLifePulse2", caster)
 end
 
 function OmniPulses:OmniDeathPulse(caster, position, ignoreCaster, pickedElements, radiusFactor, damageFactor)
@@ -152,4 +157,6 @@ function OmniPulses:OmniDeathPulse(caster, position, ignoreCaster, pickedElement
 	ParticleManager:SetParticleControl(particle, 1, Vector(radius, 1, deathOnly))
 	ParticleManager:SetParticleControl(particle, 2, Vector(radius / 250 + 0.2, 0, 0))
 	ParticleManager:SetParticleControl(particle, 3, color)
+	
+	Util:EmitSoundOnLocation(position, "OmniDeathPulse", caster)
 end
