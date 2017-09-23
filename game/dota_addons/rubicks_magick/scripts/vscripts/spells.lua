@@ -688,4 +688,5 @@ function Spells:WetCastLightning(caster)
 	end)
 	caster:EmitSound("WetCastLightning1")
 	caster:EmitSound("WetCastLightning2")
+	caster:EmitSound("WetCastLightning3")
 end

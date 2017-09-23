@@ -145,9 +145,9 @@
                         }
                     }
                     "volume"            {   "value"     "0.700000"  }
-                    "pitch"             {   "value"     "0.700000"  }
+                    "pitch"             {   "value"     "0.850000"  }
                     "soundlevel"        {   "value"     "90.00000"  }
-                    "distance_max"      {   "value"     "2400.000"  }
+                    "distance_max"      {   "value"     "1600.000"  }
                     "event_type"        {   "value"     "1.000000"  }
                 }
             }
@@ -171,13 +171,43 @@
                     {
                         "value"
                         {
-                              "value0"        "sounds/weapons/hero/disruptor/thunder_strike_target.vsnd"
+                              "value0"        "sounds/weapons/hero/razor/razor_lightning_strike_01.vsnd"
                         }
                     }
-                    "volume"            {   "value"     "0.700000"  }
-                    "pitch"             {   "value"     "1.700000"  }
+                    "volume"            {   "value"     "0.600000"  }
+                    "pitch"             {   "value"     "1.000000"  }
                     "soundlevel"        {   "value"     "90.00000"  }
-                    "distance_max"      {   "value"     "2400.000"  }
+                    "distance_max"      {   "value"     "1600.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                }
+            }
+        }
+    }
+}
+
+"WetCastLightning3"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/zuus/lightning_bolt.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "0.800000"  }
+                    "pitch"             {   "value"     "1.500000"  }
+                    "soundlevel"        {   "value"     "90.00000"  }
+                    "distance_max"      {   "value"     "1600.000"  }
                     "event_type"        {   "value"     "1.000000"  }
                 }
             }
