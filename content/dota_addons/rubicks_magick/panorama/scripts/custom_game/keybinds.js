@@ -32,7 +32,7 @@ GameUI.SetMouseCallback( function(eventName, arg) {
 	const CONTINUE_PROCESSING_EVENT = false;
 	if(eventName == "pressed") {
 		mouseDown[arg] = true;
-		const mouseKey = ([ "left", "right", "middle" ])[arg];
+		var mouseKey = ([ "left", "right", "middle" ])[arg];
 		var eventName = "rm_mouse_" + mouseKey + "_down";
 		onKeyEvent(eventName);
 	}
@@ -102,7 +102,7 @@ function mouseCycle() {
 	for(var i = 0; i < 3; i++) {
 		if(mouseDown[i] && !GameUI.IsMouseDown(i)) {
 			mouseDown[i] = false;
-			const mouseKey = ([ "left", "right", "middle" ])[i];
+			var mouseKey = ([ "left", "right", "middle" ])[i];
 			var eventName = "rm_mouse_" + mouseKey + "_up";
 			onKeyEvent(eventName);
 		}
