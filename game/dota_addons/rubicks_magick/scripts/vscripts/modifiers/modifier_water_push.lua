@@ -13,7 +13,8 @@ function modifier_water_push:OnDestroy()
 		local parent = self:GetParent()
 		parent:SetPhysicsVelocity(Vector(0, 0, 0))
 		parent:SetPhysicsAcceleration(Vector(0, 0, 0))
-		parent:SetAbsOrigin(GetGroundPosition(parent:GetAbsOrigin(), parent))
+		--parent:SetAbsOrigin(GetGroundPosition(parent:GetAbsOrigin(), parent))
+		FindClearSpaceForUnit(parent, parent:GetAbsOrigin(), false)
 		if self.wasLockedToGround then
 			parent:SetGroundBehavior(PHYSICS_GROUND_LOCK)
 		end
