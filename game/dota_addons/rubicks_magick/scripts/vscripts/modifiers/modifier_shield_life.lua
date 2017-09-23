@@ -37,4 +37,5 @@ function modifier_shield_life:OnIntervalThink()
 	Spells:Heal(parent, parent, 25, true)
 
 	ParticleManager:CreateParticle("particles/shield_life_healing/shield_life_healing.vpcf", PATTACH_ABSORIGIN_FOLLOW, parent)
+	parent:EmitSound("SelfShieldLifeThink")
 end

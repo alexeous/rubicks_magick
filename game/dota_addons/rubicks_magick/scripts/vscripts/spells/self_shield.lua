@@ -26,6 +26,8 @@ function SelfShield:Precache(context)
 
 	PrecacheResource("particle_folder", "particles/shield_circles", context)
 	PrecacheResource("particle_folder", "particles/shield_life_healing", context)
+
+	PrecacheResource("soundfile", "soundevents/rubicks_magick/self_shield.vsndevts", context)
 end
 
 function SelfShield:PlayerConnected(player)
@@ -65,6 +67,8 @@ function SelfShield:ApplyElementSelfShield(unit, pickedElements)
 		local kv = { index = 2, circleRadius = circleRadius, duration = SHIELD_DURATION }
 		unit.shieldModifiers[2] = unit:AddNewModifier(unit, nil, MODIFIER_SHIELD_NAMES[pickedElements[2]], kv)
 	end
+
+	unit:EmitSound("SelfShieldApply")
 end
 
 function SelfShield:RemoveAllShields(unit)
