@@ -4,6 +4,8 @@ end
 
 function SelfHeal:Precache(context)
 	PrecacheResource("particle_folder", "particles/self_heal", context)	
+
+	PrecacheResource("soundfile", "soundevents/rubicks_magick/self_heal.vsndevts", context)
 end
 
 function SelfHeal:PlayerConnected(player)
@@ -38,10 +40,16 @@ function SelfHeal:StartSelfHeal(player, power)
 	spellCastTable.selfHeal_Particle = particle
 
 	Spells:StartCasting(player, spellCastTable)
+	heroEntity:EmitSound("SelfHealPrestart")
+	heroEntity:EmitSound("SelfHealLoop")
 end
 
 function SelfHeal:SelfHealThink(player)
 	SelfHeal:DoHeal(player)
+	if player.spellCast.selfHeal_FirstHeal == nil then
+		player.spellCast.selfHeal_FirstHeal = true
+		player:GetAssignedHero():EmitSound("SelfHealStart")
+	end
 end
 
 function SelfHeal:SelfHealEnd(player)
@@ -49,6 +57,7 @@ function SelfHeal:SelfHealEnd(player)
 		SelfHeal:DoHeal(player)
 	end
 	ParticleManager:DestroyParticle(player.spellCast.selfHeal_Particle, false)
+	player:GetAssignedHero():StopSound("SelfHealLoop")
 end
 
 
@@ -57,4 +66,5 @@ function SelfHeal:DoHeal(player)
 	local heal = player.spellCast.selfHeal_BaseHeal + math.exp(player.spellCast.selfHeal_ExpMultiplier * player.spellCast.selfHeal_HealCount)
 	player.spellCast.selfHeal_HealCount = player.spellCast.selfHeal_HealCount + 1
 	Spells:Heal(heroEntity, heroEntity, heal, false)
+	heroEntity:EmitSound("SelfHealThink")
 end
