@@ -8,6 +8,8 @@ function RockThrow:Precache(context)
 	PrecacheResource("particle_folder", "particles/rock_throw", context)
 	PrecacheResource("particle_folder", "particles/rock_throw/charging_particle", context)
 	PrecacheResource("model", "models/particle/meteor.vmdl", context)
+
+	PrecacheResource("soundfile", "soundevents/rubicks_magick/rock_throw.vsndevts", context)
 end
 
 function RockThrow:PlayerConnected(player)
@@ -20,16 +22,22 @@ function RockThrow:Init()
 end
 
 function RockThrow:StartRockThrow(player, pickedElements)
+	local caster = player:GetAssignedHero()
 	local spellCastTable = {
 		castType = CAST_TYPE_CHARGING,
 		duration = 2.5,
 		castingGesture = ACT_DOTA_CHANNEL_ABILITY_5,
 		endFunction = function(player) RockThrow:ReleaseRock(player) end,
+		thinkPeriod = 1.8,
+		thinkFunction = function(player)
+			caster:EmitSound("RockOvercharge")
+		end,
 		slowMovePercentage = 30,
 		chargingParticle = "particles/rock_throw/charging_particle/charging_particle.vpcf",
 		rockThrow_PickedElements = pickedElements
 	}
 	Spells:StartCasting(player, spellCastTable)
+	caster:EmitSound("RockCharging")
 end
 
 ROCK_FLY_DISTANCES = { 1600, 1375, 1200 }
@@ -40,6 +48,10 @@ ROCK_THINK_PERIOD = 0.018
 
 function RockThrow:ReleaseRock(player)
 	local caster = player:GetAssignedHero()
+	caster:StopSound("RockCharging")
+	caster:StopSound("RockOvercharge")
+	caster:EmitSound("RockRelease")
+
 	local pickedElements = player.spellCast.rockThrow_PickedElements
 
 	local waterTrail = 0
@@ -169,11 +181,13 @@ function RockThrow:OnRockThink()
 				local unitsTouched = Util:FindUnitsInLine(oldOrigin, origin, rockDummy.collisionRadius, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
 				for _, unit in pairs(unitsTouched) do
 					if unit ~= rockDummy and unit ~= caster then
+						Util:EmitSoundOnLocation(origin, "RockTouch", caster)
 						if unit:IsFrozen() then
 							if rockDummy.rockSize == 3 and damage >= 450 then
 								unit:RemoveModifierByName("modifier_frozen")
 								Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage * 10, false, 0.0, true)
 								RockThrow:ImpactParticle(origin, 1)
+								Util:EmitSoundOnLocation(origin, "RockBurst", caster)
 							else
 								RockThrow:ImpactRock(rockDummy, unitsTouched)
 								break
@@ -183,6 +197,7 @@ function RockThrow:OnRockThink()
 							if rockDummy.rockSize == 3 and unit:GetHealth() - damageAfterShields <= 0 then
 								Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage, false)
 								RockThrow:ImpactParticle(origin, 1)
+								Util:EmitSoundOnLocation(origin, "RockBurst", caster)
 							else
 								RockThrow:ImpactRock(rockDummy, unitsTouched)
 								break
@@ -214,6 +229,8 @@ function RockThrow:ImpactRock(rockDummy, unitsTouched)
 		end
 	end
 	
+	Util:EmitSoundOnLocation(origin, "RockImpact", rockDummy.caster)
+	Util:EmitSoundOnLocation(origin, "RockTouch", rockDummy.caster)
 	ParticleManager:SetParticleControl(rockDummy.particle, 0, origin)
 	RockThrow:ImpactParticle(origin, rockDummy.rockSize)
 	Timers:CreateTimer(0.2, function() ParticleManager:DestroyParticle(rockDummy.particle, false) end)
