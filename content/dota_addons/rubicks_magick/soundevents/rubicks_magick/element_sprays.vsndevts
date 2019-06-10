@@ -1,3 +1,65 @@
+"SteamSprayStart1"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/items/ghost_activate.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "0.800000"  }
+                    "pitch"             {   "value"     "1.600000"  }
+                    "soundlevel"        {   "value"     "90.00000"  }
+                    "distance_max"      {   "value"     "2400.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "volume_fade_out"   {   "value"     "0.500000"  }
+                }
+            }
+        }
+    }
+}
+
+"SteamSprayStart2"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/items/ghost_activate.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "0.500000"  }
+                    "pitch"             {   "value"     "0.600000"  }
+                    "soundlevel"        {   "value"     "90.00000"  }
+                    "distance_max"      {   "value"     "2400.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "volume_fade_out"   {   "value"     "0.500000"  }
+                }
+            }
+        }
+    }
+}
+
 "SteamSprayLoop1"
 {
     "operator_stacks"
@@ -17,8 +79,8 @@
                               "value0"        "sounds/weapons/hero/venomancer/venomancer_stinging_loop.vsnd"
                         }
                     }
-                    "volume"            {   "value"     "0.800000"  }
-                    "pitch"             {   "value"     "1.000000"  }
+                    "volume"            {   "value"     "0.900000"  }
+                    "pitch"             {   "value"     "1.100000"  }
                     "soundlevel"        {   "value"     "90.00000"  }
                     "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }
@@ -46,11 +108,11 @@
                     {
                         "value"
                         {
-                              "value0"        "sounds/weapons/hero/venomancer/venomancer_stinging_loop.vsnd"
+                              "value0"        "sounds/weapons/hero/batrider/batrider_firefly_loop.vsnd"
                         }
                     }
-                    "volume"            {   "value"     "0.800000"  }
-                    "pitch"             {   "value"     "0.800000"  }
+                    "volume"            {   "value"     "0.900000"  }
+                    "pitch"             {   "value"     "0.400000"  }
                     "soundlevel"        {   "value"     "90.00000"  }
                     "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }
@@ -83,8 +145,9 @@
                               "value2"        "sounds/weapons/hero/venomancer/venomancer_attack3.vsnd"
                         }
                     }
-                    "volume"            {   "value"     "0.800000"  }
-                    "pitch"             {   "value"     "1.500000"  }
+                    "volume"            {   "value"     "0.40000"  }
+                    "pitch_rand_min"    {   "value"     "0.500000"  }
+                    "pitch_rand_max"    {   "value"     "2.500000"  }
                     "soundlevel"        {   "value"     "90.00000"  }
                     "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }

@@ -46,6 +46,8 @@ function ElementSprays:StartSteamSpray(player, modifierElement)
 	local soundList = { "SteamSprayLoop1", "SteamSprayLoop2" }
 	local spawnSound = "SteamSprayThink"
 	ElementSprays:StartElementSprayCasting(player, distance, 4.0, onTouchFn, particle, particleRecalcFn, 110, soundList, spawnSound)
+	heroEntity:EmitSound("SteamSprayStart1")
+	heroEntity:EmitSound("SteamSprayStart2")
 end
 
 function ElementSprays:StartWaterSpray(player, power)

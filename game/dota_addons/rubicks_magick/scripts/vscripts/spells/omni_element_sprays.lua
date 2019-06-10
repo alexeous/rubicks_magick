@@ -98,6 +98,8 @@ function OmniElementSprays:OmniSteamSpray(caster, position, radius, isSelfCast, 
 	ParticleManager:SetParticleControl(particle, 1, Vector(1, radius - 100, (isWet and 1 or 0)))
 	Util:EmitSoundOnLocation(position, "OmniSteamSpray1", caster)
 	Util:EmitSoundOnLocation(position, "OmniSteamSpray2", caster)
+	Util:EmitSoundOnLocation(position, "OmniSteamSpray3", caster)
+	Util:EmitSoundOnLocation(position, "OmniSteamSpray4", caster)
 end
 
 function OmniElementSprays:OmniWaterSpray(caster, position, radius, isSelfCast, doPush)
