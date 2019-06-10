@@ -5,7 +5,7 @@ if CameraSlider == nil then
 end
 
 CAMERA_SLIDE_THINK_PERIOD = 0.01
-CAMERA_SLIDE_LERP_FACTOR = CAMERA_SLIDE_THINK_PERIOD * 6.0
+CAMERA_SLIDE_LERP_FACTOR = CAMERA_SLIDE_THINK_PERIOD * 16.0
 CAMERA_SLIDE_MAX_DISTANCE = 1000
 
 function CameraSlider:Init()
@@ -29,7 +29,7 @@ function CameraSlider:OnCameraSlideThink()
             end
             targetPosition = (targetPosition * 3 + unitPosition * 2) / 5
             targetPosition.z = unitPosition.z
-            local lerpFactor = CAMERA_SLIDE_LERP_FACTOR * math.pow(unitToTargetLen / CAMERA_SLIDE_MAX_DISTANCE, 2)
+            local lerpFactor = CAMERA_SLIDE_LERP_FACTOR-- * math.pow(unitToTargetLen / CAMERA_SLIDE_MAX_DISTANCE, 2)
             dummyPosition = dummyPosition + (targetPosition - dummyPosition) * CAMERA_SLIDE_LERP_FACTOR
             player.cameraSliderDummy:SetAbsOrigin(dummyPosition)
             PlayerResource:SetCameraTarget(playerID, player.cameraSliderDummy)
