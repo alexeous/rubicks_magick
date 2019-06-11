@@ -1,3 +1,4 @@
+require("modifiers/helper_modifier_shield")
 
 if modifier_shield_cold == nil then
 	modifier_shield_cold = class({})
@@ -12,21 +13,13 @@ function modifier_shield_cold:GetAttributes()
 end
 
 function modifier_shield_cold:OnDestroy()
-	if IsServer() then
-		self:GetParent().shieldElements[self.index] = nil
-		if self.particleIndex ~= nil then
-			ParticleManager:DestroyParticle(self.particleIndex, false)
-		end
-	end
+	HelperModifierShield:StdOnDestroy(self)
 end
 
 function modifier_shield_cold:OnCreated(kv)
-	self.index = kv.index
-	if IsServer() then
-		self:GetParent().shieldElements[self.index] = ELEMENT_COLD
+	HelperModifierShield:StdOnCreated(self, kv, ELEMENT_COLD, "particles/shield_circles/shield_circle_cold.vpcf")
+end
 
-		self.particleIndex = ParticleManager:CreateParticle("particles/shield_circles/shield_circle_cold.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetParent())
-		ParticleManager:SetParticleControl(self.particleIndex, 1, Vector(kv.circleRadius, 0, 0))
-		self:AddParticle(self.particleIndex, false, false, -1, false, false)
-	end
+function modifier_shield_cold:OnIntervalThink()
+
 end

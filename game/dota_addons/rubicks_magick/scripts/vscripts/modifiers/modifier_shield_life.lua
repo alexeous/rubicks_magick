@@ -1,3 +1,4 @@
+require("modifiers/helper_modifier_shield")
 
 if modifier_shield_life == nil then
 	modifier_shield_life = class({})
@@ -12,23 +13,13 @@ function modifier_shield_life:GetAttributes()
 end
 
 function modifier_shield_life:OnDestroy()
-	if IsServer() then
-		self:GetParent().shieldElements[self.index] = nil
-		if self.particleIndex ~= nil then
-			ParticleManager:DestroyParticle(self.particleIndex, false)
-		end
-	end
+	HelperModifierShield:StdOnDestroy(self)
 end
 
 function modifier_shield_life:OnCreated(kv)
-	self.index = kv.index
+	HelperModifierShield:StdOnCreated(self, kv, ELEMENT_LIFE, "particles/shield_circles/shield_circle_life.vpcf")
 	if IsServer() then
-		self:GetParent().shieldElements[self.index] = ELEMENT_LIFE
 		self:StartIntervalThink(1)
-
-		self.particleIndex = ParticleManager:CreateParticle("particles/shield_circles/shield_circle_life.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetParent())
-		ParticleManager:SetParticleControl(self.particleIndex, 1, Vector(kv.circleRadius, 0, 0))
-		self:AddParticle(self.particleIndex, false, false, -1, false, false)
 	end
 end
 
