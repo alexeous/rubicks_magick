@@ -448,7 +448,7 @@ function Spells:MeleeAttack(player)
 		duration = 0.6,
 		dontMoveWhileCasting = true,
 		castingGesture = ACT_DOTA_ATTACK,
-		castingGestureRate = 1.4
+		castingGestureRate = 1.5
 	}
 	spellCastTable.thinkFunction = function(player)
 		local timeHasCome = Spells:TimeElapsedSinceCast(player) > 0.3
