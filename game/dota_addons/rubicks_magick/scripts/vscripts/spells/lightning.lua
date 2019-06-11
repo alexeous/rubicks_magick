@@ -153,6 +153,10 @@ function Lightning:OmniLightning(player, pickedElements)
 		lightning_EffectFunction = Lightning:MakeEffectFunction(caster, lightningDamage, additionalEffectFunc)
 	}
 	Spells:StartCasting(player, spellCastTable)
+	
+	if table.indexOf(pickedElements, ELEMENT_COLD) then
+		Spells:ExtinguishWithCold(caster)
+	end
 end
 
 function Lightning:GetColor(pickedElements)
