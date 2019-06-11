@@ -19,7 +19,3 @@ end
 function modifier_shield_cold:OnCreated(kv)
 	HelperModifierShield:StdOnCreated(self, kv, ELEMENT_COLD, "particles/shield_circles/shield_circle_cold.vpcf")
 end
-
-function modifier_shield_cold:OnIntervalThink()
-
-end
