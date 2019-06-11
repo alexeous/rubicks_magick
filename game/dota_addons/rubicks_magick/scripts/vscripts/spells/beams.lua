@@ -239,11 +239,15 @@ function Beams:CreateBeamSegment(player, startPos, direction, parentSegment, mai
 	return beamSegment
 end
 
-function Beams:UpdateParticle(beamSegment)
+function Beams:UpdateParticle(beamSegment, recursively)
 	if beamSegment ~= nil and beamSegment.player.spellCast ~= nil then
 		ParticleManager:SetParticleControl(beamSegment.particle, 0, beamSegment.startPos + Vector(0, 0, 100))
 		ParticleManager:SetParticleControl(beamSegment.particle, 1, beamSegment.endPos + Vector(0, 0, 100))
 		ParticleManager:SetParticleControl(beamSegment.particle, 2, Vector(beamSegment.player.spellCast.beams_Power * 0.25, 0, 0))
+
+		if recursively == true then
+			Beams:UpdateParticle(beamSegment.child, recursively)
+		end
 	end
 end
 
@@ -288,7 +292,7 @@ end
 
 function Beams:Interrupt(player)
 	if player.beam ~= nil then
-		Beams:UpdateParticle(player.beam)
+		Beams:UpdateParticle(player.beam, true)
 		player.beam.destroy(true)
 		player.beam = nil
 	end
