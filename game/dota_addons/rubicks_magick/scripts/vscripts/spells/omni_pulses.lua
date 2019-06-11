@@ -19,8 +19,8 @@ function OmniPulses:OmniLifePulseSpell(player, pickedElements)
 		duration = 1.0,
 		dontMoveWhileCasting = true,
 		castingGesture = ACT_DOTA_CAST_ABILITY_5,
-		castingGestureRate = 1.6,
-		castingGestureTranslate = "purification"
+		castingGestureRate = 2.1,
+		castingGestureTranslate = "shadowraze"
 	}
 	Spells:StartCasting(player, spellCastTable)
 
