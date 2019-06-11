@@ -1,7 +1,7 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf19:version{aafc65d8-7a5a-4e01-bd8d-3ac118422503} -->
 {
 	_class = "CParticleSystemDefinition"
-	m_ConstantColor = [ 30, 255, 30, 255 ]
+	m_ConstantColor = [ 83, 255, 44, 255 ]
 	m_controlPointConfigurations = 
 	[
 		{
@@ -28,7 +28,7 @@
 		{
 			_class = "C_OP_RampScalarLinearSimple"
 			m_Rate = 30.0
-			m_nField = 10
+			m_nField = "10"
 		},
 		{
 			_class = "C_OP_FadeInSimple"
@@ -59,11 +59,6 @@
 			m_bEvenDistribution = true
 		},
 		{
-			_class = "C_INIT_OffsetVectorToVector"
-			m_vecOutputMin = [ 0.0, 0.0, -1.0 ]
-			m_vecOutputMax = [ 0.0, 0.0, -2.0 ]
-		},
-		{
 			_class = "C_INIT_RandomLifeTime"
 			m_fLifetimeMin = 0.3
 			m_fLifetimeMax = 0.4
@@ -73,12 +68,18 @@
 			m_nAlphaMin = 125
 			m_nAlphaMax = 165
 		},
+		{
+			_class = "C_INIT_OffsetVectorToVector"
+			m_vecOutputMin = [ 0.0, 0.0, -1.0 ]
+			m_vecOutputMax = [ 0.0, 0.0, -2.0 ]
+		},
 	]
 	m_Emitters = 
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
-			m_nParticlesToEmit = 200
 		},
 	]
+	m_nBehaviorVersion = 9
+	m_nFirstMultipleOverride_BackwardCompat = 3
 }
