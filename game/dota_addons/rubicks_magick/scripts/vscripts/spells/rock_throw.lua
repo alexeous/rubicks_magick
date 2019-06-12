@@ -187,6 +187,7 @@ function RockThrow:OnRockThink()
 								unit:RemoveModifierByName("modifier_frozen")
 								Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage * 10, false, 0.0, true)
 								RockThrow:ImpactParticle(origin, 1)
+								RockThrow:BurstFrozenParticle(origin)
 								Util:EmitSoundOnLocation(origin, "RockBurst", caster)
 							else
 								RockThrow:ImpactRock(rockDummy, unitsTouched)
@@ -197,6 +198,7 @@ function RockThrow:OnRockThink()
 							if rockDummy.rockSize == 3 and unit:GetHealth() - damageAfterShields <= 0 then
 								Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage, false)
 								RockThrow:ImpactParticle(origin, 1)
+								RockThrow:BurstBloodParticle(origin)
 								Util:EmitSoundOnLocation(origin, "RockBurst", caster)
 							else
 								RockThrow:ImpactRock(rockDummy, unitsTouched)
@@ -241,4 +243,14 @@ function RockThrow:ImpactParticle(position, shardsSize)
 	local impactParticle = ParticleManager:CreateParticle("particles/rock_throw/rock_impact.vpcf", PATTACH_CUSTOMORIGIN, nil)
 	ParticleManager:SetParticleControl(impactParticle, 0, position)
 	ParticleManager:SetParticleControl(impactParticle, 1, Vector(shardsSize, 0, 0))
+end
+
+function RockThrow:BurstBloodParticle(position)
+	local burstMeatParticle = ParticleManager:CreateParticle("particles/rock_throw/rock_burst_blood.vpcf", PATTACH_CUSTOMORIGIN, nil)
+	ParticleManager:SetParticleControl(burstMeatParticle, 0, position)
+end
+
+function RockThrow:BurstFrozenParticle(position)
+	local burstMeatParticle = ParticleManager:CreateParticle("particles/rock_throw/rock_burst_frozen.vpcf", PATTACH_CUSTOMORIGIN, nil)
+	ParticleManager:SetParticleControl(burstMeatParticle, 0, position)
 end
