@@ -115,9 +115,13 @@ function RockThrow:ReleaseRock(player)
 				[ELEMENT_FIRE]  = function(pos) OmniElementSprays:OmniSteamSpray(caster, pos, radiuses[1], false, 170 * damageFactor, false) end,
 				[ELEMENT_WATER] = function(pos) OmniElementSprays:OmniWaterSpray(caster, pos, radiuses[2], false, false) end,
 				[EMPTY]         = function(pos) OmniElementSprays:OmniWaterSpray(caster, pos, radiuses[1], false, false) end,
-				[ELEMENT_COLD]  = function(pos)
-					Spells:ApplyElementDamageAoE(pos, 30, caster, ELEMENT_COLD,  150 * damageFactor, true, false, 1.0)
-					Spells:ApplyElementDamageAoE(pos, 30, caster, ELEMENT_WATER, 150 * damageFactor, true, false, 1.0)
+				[ELEMENT_COLD]  = function(pos, unitsTouched)
+					for _, unit in pairs(unitsTouched) do
+						if unit ~= caster then
+							Spells:ApplyElementDamage(unit, caster, ELEMENT_COLD,  150 * damageFactor, true, false, 1.0)
+							Spells:ApplyElementDamage(unit, caster, ELEMENT_WATER, 150 * damageFactor, true, false, 1.0)
+						end
+					end
 				end
 			},
 			[ELEMENT_FIRE] = {
@@ -219,7 +223,7 @@ function RockThrow:ImpactRock(rockDummy, unitsTouched)
 
 	local origin = GetGroundPosition(rockDummy:GetAbsOrigin(), rockDummy) + Vector(0, 0, 40)
 	if rockDummy.onImpactFunction ~= nil then
-		rockDummy.onImpactFunction(origin)
+		rockDummy.onImpactFunction(origin, unitsTouched)
 	end
 	if next(unitsTouched) == nil then
 		Spells:ApplyElementDamageAoE(origin, rockDummy.collisionRadius, rockDummy.caster, ELEMENT_EARTH, rockDummy.rockDamage, true)
