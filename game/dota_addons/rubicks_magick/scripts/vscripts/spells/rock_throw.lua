@@ -192,7 +192,7 @@ function RockThrow:OnRockThink()
 								Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage * 10, false, 0.0, true)
 								--RockThrow:ImpactParticle(origin, 1)
 								RockThrow:BurstFrozenParticle(origin)
-								Util:EmitSoundOnLocation(origin, "RockBurst", caster)
+								RockThrow:PlayBurstSound(origin, caster, true)
 							else
 								RockThrow:ImpactRock(rockDummy, unitsTouched)
 								break
@@ -203,7 +203,7 @@ function RockThrow:OnRockThink()
 								Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage, false)
 								--RockThrow:ImpactParticle(origin, 1)
 								RockThrow:BurstBloodParticle(origin)
-								Util:EmitSoundOnLocation(origin, "RockBurst", caster)
+								RockThrow:PlayBurstSound(origin, caster, false)
 							else
 								RockThrow:ImpactRock(rockDummy, unitsTouched)
 								break
@@ -241,6 +241,16 @@ function RockThrow:ImpactRock(rockDummy, unitsTouched)
 	RockThrow:ImpactParticle(origin, rockDummy.rockSize)
 	Timers:CreateTimer(0.2, function() ParticleManager:DestroyParticle(rockDummy.particle, false) end)
 	Timers:CreateTimer(2.0, function() rockDummy:Destroy() end)
+end
+
+function RockThrow:PlayBurstSound(position, caster, frozen)
+	Util:EmitSoundOnLocation(position, "RockBurst1", caster)
+	Util:EmitSoundOnLocation(position, "RockBurst2", caster)
+	Util:EmitSoundOnLocation(position, "RockBurst3", caster)
+	Util:EmitSoundOnLocation(position, "RockBurst4", caster)
+	if frozen then
+		Util:EmitSoundOnLocation(position, "RockBurstFrozen", caster)
+	end
 end
 
 function RockThrow:ImpactParticle(position, shardsSize)
