@@ -28,6 +28,10 @@
 		{
 			_class = "C_OP_FadeOutSimple"
 		},
+		{
+			_class = "C_OP_InterpolateRadius"
+			m_flEndScale = 1.5
+		},
 	]
 	m_Renderers = 
 	[
@@ -62,8 +66,8 @@
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.25
-			m_fLifetimeMax = 0.45
+			m_fLifetimeMin = 0.35
+			m_fLifetimeMax = 0.55
 		},
 		{
 			_class = "C_INIT_VelocityRadialRandom"
@@ -72,8 +76,8 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 151.8
-			m_flRadiusMax = 187.272
+			m_flRadiusMin = 193.442
+			m_flRadiusMax = 226.465
 		},
 	]
 	m_Emitters = 

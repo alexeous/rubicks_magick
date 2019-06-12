@@ -190,7 +190,7 @@ function RockThrow:OnRockThink()
 							if rockDummy.rockSize == 3 and damage >= 450 then
 								unit:RemoveModifierByName("modifier_frozen")
 								Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage * 10, false, 0.0, true)
-								RockThrow:ImpactParticle(origin, 1)
+								--RockThrow:ImpactParticle(origin, 1)
 								RockThrow:BurstFrozenParticle(origin)
 								Util:EmitSoundOnLocation(origin, "RockBurst", caster)
 							else
@@ -201,7 +201,7 @@ function RockThrow:OnRockThink()
 							local damageAfterShields = Spells:GetDamageAfterShields(unit, damage, ELEMENT_EARTH)
 							if rockDummy.rockSize == 3 and unit:GetHealth() - damageAfterShields <= 0 then
 								Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage, false)
-								RockThrow:ImpactParticle(origin, 1)
+								--RockThrow:ImpactParticle(origin, 1)
 								RockThrow:BurstBloodParticle(origin)
 								Util:EmitSoundOnLocation(origin, "RockBurst", caster)
 							else
