@@ -1,4 +1,4 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf21:version{7a150ecc-d865-438f-ad53-5963fe1a2720} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_ConstantColor = [ 182, 182, 182, 255 ]
@@ -42,7 +42,7 @@
 			_class = "C_OP_RampScalarLinear"
 			m_RateMin = -5.0
 			m_RateMax = 5.0
-			m_nField = 4
+			m_nField = "4"
 		},
 	]
 	m_Renderers = 
@@ -50,6 +50,8 @@
 		{
 			_class = "C_OP_RenderSprites"
 			m_hTexture = resource:"materials/particle/smoke1/smoke1.vtex"
+			m_flDepthBias = 100.0
+			m_ColorScale = [ 255, 255, 255 ]
 		},
 	]
 	m_Initializers = 
@@ -80,9 +82,14 @@
 	[
 		{
 			_class = "C_OP_ContinuousEmitter"
-			m_nScaleControlPoint = 3
-			m_nScaleControlPointField = 2
-			m_flEmitRate = 300.0
+			m_flEmitRate = 
+			{
+				m_nType = "PF_TYPE_CONTROL_POINT_COMPONENT"
+				m_nControlPoint = 3
+				m_nVectorComponent = 2
+				m_nMapType = "PF_MAP_TYPE_MULT"
+				m_flMultFactor = 300.0
+			}
 		},
 	]
 	m_Children = 
@@ -91,4 +98,5 @@
 			m_ChildRef = resource:"particles/rock_throw/rock_steam_trail_glow.vpcf"
 		},
 	]
+	m_nBehaviorVersion = 9
 }

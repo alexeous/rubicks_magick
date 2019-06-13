@@ -149,12 +149,17 @@ function RockThrow:ReleaseRock(player)
 	rockDummy.collisionRadius = rockSize * 16 + 18
 	rockDummy.rockDamage = rockDamage
 	rockDummy.onImpactFunction = onImpactFunction
-	local particle = ParticleManager:CreateParticle("particles/rock_throw/rock.vpcf", PATTACH_ABSORIGIN_FOLLOW, rockDummy)
-	ParticleManager:SetParticleControl(particle, 1, Vector(rockSize, earthOnly, ice))
-	ParticleManager:SetParticleControl(particle, 2, Vector(waterTrail, fireTrail, coldTrail))
-	ParticleManager:SetParticleControl(particle, 3, Vector(deathTrail, lifeTrail, steamTrail))
-	rockDummy.particle = particle
+	local rockParticle = ParticleManager:CreateParticle("particles/rock_throw/rock.vpcf", PATTACH_ABSORIGIN_FOLLOW, rockDummy)
+	ParticleManager:SetParticleControl(rockParticle, 1, Vector(rockSize, earthOnly, ice))
+	ParticleManager:SetParticleControl(rockParticle, 2, Vector(waterTrail, fireTrail, coldTrail))
+	ParticleManager:SetParticleControl(rockParticle, 3, Vector(deathTrail, lifeTrail, steamTrail))
+	rockDummy.particle = rockParticle
 	table.insert(RockThrow.rockDummiesList, rockDummy)
+
+	local launchWaveParticle = ParticleManager:CreateParticle("particles/rock_throw/rock_launch_wave.vpcf", PATTACH_CUSTOMORIGIN, nil)
+	ParticleManager:SetParticleControl(launchWaveParticle, 0, caster:GetAbsOrigin())
+	ParticleManager:SetParticleControl(launchWaveParticle, 1, Vector(distance, 0, 0))
+	ParticleManager:SetParticleControl(launchWaveParticle, 2, Vector(0, caster:GetAnglesAsVector().y, 0))
 
 	if timeElapsed >= 2.4 then
 		Timers:CreateTimer(0.02, function()

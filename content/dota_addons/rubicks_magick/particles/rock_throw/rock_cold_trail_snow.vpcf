@@ -1,4 +1,4 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf21:version{7a150ecc-d865-438f-ad53-5963fe1a2720} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_controlPointConfigurations = 
@@ -66,23 +66,41 @@
 			m_flRadiusMax = 5.0
 		},
 		{
-			_class = "C_INIT_VelocityRadialRandom"
-			m_fSpeedMin = -85.0
-			m_fSpeedMax = -150.0
-		},
-		{
 			_class = "C_INIT_RandomLifeTime"
 			m_fLifetimeMin = 0.3
 			m_fLifetimeMax = 0.4
+		},
+		{
+			_class = "C_INIT_VelocityRadialRandom"
+			m_fSpeedMin = -85.0
+			m_fSpeedMax = -150.0
 		},
 	]
 	m_Emitters = 
 	[
 		{
 			_class = "C_OP_ContinuousEmitter"
-			m_flEmitRate = 400.0
-			m_nScaleControlPoint = 2
-			m_nScaleControlPointField = 2
+			m_flEmissionDuration = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_flLiteralValue = 0.0
+			}
+			m_flStartTime = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_flLiteralValue = 0.0
+			}
+			m_flEmitRate = 
+			{
+				m_nType = "PF_TYPE_CONTROL_POINT_COMPONENT"
+				m_nControlPoint = 2
+				m_nVectorComponent = 2
+				m_nMapType = "PF_MAP_TYPE_MULT"
+				m_flMultFactor = 400.0
+			}
 		},
 	]
+	m_PreEmissionOperators = [  ]
+	m_nBehaviorVersion = 9
+	m_nFirstMultipleOverride_BackwardCompat = 4
 }
