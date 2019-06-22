@@ -27,7 +27,8 @@ end
 function RubicksMagickGameMode:InitGameMode()
 	GameRules:SetSameHeroSelectionEnabled(true)
 	GameRules:SetHeroSelectionTime(0.0)
-	GameRules:SetPreGameTime(20.0)
+	GameRules:SetPreGameTime(1.0)
+
 	GameRules:GetGameModeEntity():SetCameraDistanceOverride(1250)
 	GameRules:GetGameModeEntity():SetCustomGameForceHero("npc_dota_hero_rubick")
 
@@ -39,6 +40,8 @@ function RubicksMagickGameMode:InitGameMode()
 	MoveController:Init()
 	Elements:Init()
 	Spells:Init()
+
+	Timers:CreateTimer(1, function() GameRules:SetCustomGameSetupRemainingTime(0) end)
 end
 
 
