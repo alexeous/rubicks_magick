@@ -22,7 +22,7 @@ function OmniElementSprays:OmniSteamSpraySpell(player, modifierElement)
 		duration = 1.0,
 		dontMoveWhileCasting = true,
 		castingGesture = ACT_DOTA_CAST_ABILITY_5,
-		castingGestureRate = 1.3,
+		castingGestureRate = 1.6,
 		castingGestureTranslate = "am_blink"
 	}
 	Spells:StartCasting(player, spellCastTable)
@@ -40,7 +40,7 @@ function OmniElementSprays:OmniWaterSpraySpell(player, power)
 		duration = 1.0,
 		dontMoveWhileCasting = true,
 		castingGesture = ACT_DOTA_CAST_ABILITY_5,
-		castingGestureRate = 1.3,
+		castingGestureRate = 1.6,
 		castingGestureTranslate = "am_blink"
 	}
 	Spells:StartCasting(player, spellCastTable)
@@ -56,7 +56,7 @@ function OmniElementSprays:OmniFireSpraySpell(player, power)
 		duration = 1.0,
 		dontMoveWhileCasting = true,
 		castingGesture = ACT_DOTA_CAST_ABILITY_5,
-		castingGestureRate = 1.3,
+		castingGestureRate = 1.6,
 		castingGestureTranslate = "am_blink"
 	}
 	Spells:StartCasting(player, spellCastTable)
@@ -73,7 +73,7 @@ function OmniElementSprays:OmniColdSpraySpell(player, power)
 		duration = 1.0,
 		dontMoveWhileCasting = true,
 		castingGesture = ACT_DOTA_CAST_ABILITY_5,
-		castingGestureRate = 1.3,
+		castingGestureRate = 1.6,
 		castingGestureTranslate = "am_blink"
 	}
 	Spells:StartCasting(player, spellCastTable)
@@ -100,6 +100,7 @@ function OmniElementSprays:OmniSteamSpray(caster, position, radius, isSelfCast, 
 	Util:EmitSoundOnLocation(position, "OmniSteamSpray2", caster)
 	Util:EmitSoundOnLocation(position, "OmniSteamSpray3", caster)
 	Util:EmitSoundOnLocation(position, "OmniSteamSpray4", caster)
+	Util:EmitSoundOnLocation(position, "OmniSteamSpray5", caster)
 end
 
 function OmniElementSprays:OmniWaterSpray(caster, position, radius, isSelfCast, doPush)

@@ -181,7 +181,7 @@
                               "value0"        "sounds/physics/deaths/common/body_impact_heavy_01.vsnd"
                         }
                     }
-                    "volume"            {   "value"     "1.800000"  }
+                    "volume"            {   "value"     "0.890000"  }
                     "pitch"             {   "value"     "1.000000"  }
                     "soundlevel"        {   "value"     "90.00000" }
                     "distance_max"      {   "value"     "2400.000"  }
@@ -213,7 +213,7 @@
                               "value2"        "sounds/weapons/hero/pudge/dismember_blood3.vsnd"
                         }
                     }
-                    "volume"            {   "value"     "1.300000"  }
+                    "volume"            {   "value"     "0.640000"  }
                     "pitch"             {   "value"     "1.000000"  }
                     "soundlevel"        {   "value"     "90.00000" }
                     "distance_max"      {   "value"     "2400.000"  }
@@ -243,7 +243,7 @@
                               "value0"        "sounds/weapons/hero/monkey_king/stike_impact02.vsnd"
                         }
                     }
-                    "volume"            {   "value"     "2.800000"  }
+                    "volume"            {   "value"     "1.370000"  }
                     "pitch"             {   "value"     "1.300000"  }
                     "soundlevel"        {   "value"     "90.00000" }
                     "distance_max"      {   "value"     "2400.000"  }
@@ -273,7 +273,7 @@
                               "value0"        "sounds/weapons/hero/tusk/punch_target.vsnd"
                         }
                     }
-                    "volume"            {   "value"     "1.200000"  }
+                    "volume"            {   "value"     "0.600000"  }
                     "pitch"             {   "value"     "1.300000"  }
                     "soundlevel"        {   "value"     "90.00000" }
                     "distance_max"      {   "value"     "2400.000"  }
@@ -303,13 +303,13 @@
                               "value0"        "sounds/physics/damage/building/radiant_tower_destruction_03.vsnd"
                         }
                     }
-                    "volume"            {   "value"     "2.200000"  }
+                    "volume"            {   "value"     "1.050000"  }
                     "pitch"             {   "value"     "1.200000"  }
                     "soundlevel"        {   "value"     "90.00000" }
                     "distance_max"      {   "value"     "2400.000"  }
                     "event_type"        {   "value"     "1.000000"  }
-                    "stop_at_time"        {   "value"     "0.400000"  }
-                    "volume_fade_out"        {   "value"     "0.300000"  }
+                    "stop_at_time"      {   "value"     "0.400000"  }
+                    "volume_fade_out"   {   "value"     "0.300000"  }
                 }
             }
         }
