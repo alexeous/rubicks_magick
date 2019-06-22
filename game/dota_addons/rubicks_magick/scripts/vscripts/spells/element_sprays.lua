@@ -89,7 +89,7 @@ function ElementSprays:StartFireSpray(player, power)
 	local particle = ParticleManager:CreateParticle("particles/element_sprays/fire_spray/fire_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, heroEntity)
 	local particleRecalcFn = function(factor)
 		ParticleManager:SetParticleControl(particle, 1, Vector(1 + power * 0.5, 0, 0))
-		ParticleManager:SetParticleControl(particle, 2, Vector(factor * (0.2 + power * 0.8), 0, 0))
+		ParticleManager:SetParticleControl(particle, 2, Vector(factor * (0.22 + power * 0.8), 0, 0))
 	end
 	local soundList = { "FireSprayLoop" }
 	local spawnSound = "FireSprayThink"

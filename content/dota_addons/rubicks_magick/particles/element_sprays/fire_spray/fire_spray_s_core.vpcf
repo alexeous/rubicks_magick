@@ -36,8 +36,8 @@
 		},
 		{
 			_class = "C_OP_InterpolateRadius"
-			m_flEndScale = 1.5
-			m_flStartScale = 0.3
+			m_flEndScale = 0.9
+			m_flStartScale = 0.5
 			m_flEndTime = 0.8
 		},
 		{
@@ -62,26 +62,20 @@
 			m_flStartTime_max = 0.2
 			m_flOscMult = 0.8
 		},
-		{
-			_class = "C_OP_VectorNoise"
-			m_nFieldOutput = "0"
-			m_vecOutputMin = [ -50.0, -50.0, -50.0 ]
-			m_vecOutputMax = [ 50.0, 50.0, 50.0 ]
-			m_fl4NoiseScale = 2.0
-			m_bAdditive = true
-			m_flNoiseAnimationTimeScale = 1.0
-		},
 	]
 	m_Renderers = 
 	[
 		{
 			_class = "C_OP_RenderSprites"
-			m_hTexture = resource:"materials/particle/fire_particle_4/fire_particle_4_flat.vtex"
-			m_flAnimationRate = 1.388
+			m_hTexture = resource:"materials/particle/fire_particle_10/fire_particle_10_low.vtex"
+			m_flAnimationRate = 1.736
 			m_bSaturateColorPreAlphaBlend = false
-			m_flAddSelfAmount = 6.0
+			m_flAddSelfAmount = 600.0
+			m_flDepthBias = 1.0
+			m_OutlineColor = [ 255, 0, 0, 255 ]
+			m_flOutlineStart0 = 10.0
 			m_ColorScale = [ 255, 255, 255 ]
-			m_bLightenMode = true
+			m_bAdditive = true
 		},
 	]
 	m_Initializers = 
@@ -99,7 +93,7 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 65.0
+			m_flRadiusMin = 28.8
 			m_flRadiusMax = 75.0
 		},
 		{
@@ -190,16 +184,4 @@
 	]
 	m_nBehaviorVersion = 9
 	m_nFirstMultipleOverride_BackwardCompat = 8
-	m_Children = 
-	[
-		{
-			m_ChildRef = resource:"particles/element_sprays/fire_spray/fire_spray_s_core.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/element_sprays/fire_spray/fire_spray_s_glow.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/element_sprays/fire_spray/fire_spray_s_smoke.vpcf"
-		},
-	]
 }

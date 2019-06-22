@@ -1,4 +1,4 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf21:version{7a150ecc-d865-438f-ad53-5963fe1a2720} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_controlPointConfigurations = 
@@ -30,32 +30,33 @@
 			m_Rate = 10.0
 			m_flStartTime = 0.2
 			m_flEndTime = 0.25
-			m_nField = 7
+			m_nField = "7"
 		},
 		{
 			_class = "C_OP_RampScalarLinearSimple"
 			m_Rate = -3.0
 			m_flStartTime = 0.75
-			m_nField = 7
+			m_nField = "7"
 		},
 		{
 			_class = "C_OP_InterpolateRadius"
-			m_flEndTime = 0.8
-			m_flEndScale = 1.5
-		},
-		{
-			_class = "C_OP_RampScalarLinear"
-			m_RateMin = -0.5
-			m_RateMax = 0.5
-			m_nField = 4
+			m_flEndScale = 0.0
+			m_flStartTime = 0.5
 		},
 		{
 			_class = "C_OP_VectorNoise"
-			m_nFieldOutput = 0
-			m_vecOutputMin = [ -50.0, -50.0, -50.0 ]
-			m_vecOutputMax = [ 50.0, 50.0, 50.0 ]
-			m_fl4NoiseScale = 0.2
+			m_nFieldOutput = "0"
+			m_vecOutputMin = [ -300.0, -300.0, -50.0 ]
+			m_vecOutputMax = [ 300.0, 300.0, 50.0 ]
+			m_fl4NoiseScale = 1.0
 			m_bAdditive = true
+			m_flNoiseAnimationTimeScale = 5.0
+		},
+		{
+			_class = "C_OP_LerpScalar"
+			m_nFieldOutput = "10"
+			m_flOutput = 0.0
+			m_flStartTime = 0.3
 		},
 	]
 	m_Renderers = 
@@ -64,10 +65,9 @@
 			_class = "C_OP_RenderTrails"
 			m_flLengthScale = 0.8
 			m_hTexture = resource:"materials/particle/spark_02.vtex"
-			m_flOverbrightFactor = 3.0
 			m_flFinalTextureScaleV = -1.0
 			m_bSaturateColorPreAlphaBlend = false
-			m_flAddSelfAmount = 2.0
+			m_flAddSelfAmount = 24.0
 			m_bAdditive = true
 		},
 	]
@@ -77,13 +77,23 @@
 			_class = "C_INIT_NormalAlignToCP"
 		},
 		{
+			_class = "C_INIT_CreateWithinSphere"
+			m_fRadiusMax = 50.0
+		},
+		{
+			_class = "C_INIT_RandomRadius"
+			m_flRadiusMin = 4.0
+			m_flRadiusMax = 12.0
+		},
+		{
+			_class = "C_INIT_RandomAlpha"
+			m_nAlphaMin = 0
+			m_nAlphaMax = 0
+		},
+		{
 			_class = "C_INIT_NormalOffset"
 			m_OffsetMin = [ 0.0, 0.0, -0.1 ]
 			m_OffsetMax = [ 0.0, 0.0, -0.2 ]
-		},
-		{
-			_class = "C_INIT_CreateWithinSphere"
-			m_fRadiusMax = 50.0
 		},
 		{
 			_class = "C_INIT_PositionOffset"
@@ -92,68 +102,71 @@
 		},
 		{
 			_class = "C_INIT_VelocityFromNormal"
-			m_fSpeedMin = 500.0
-			m_fSpeedMax = 600.0
-		},
-		{
-			_class = "C_INIT_VelocityRadialRandom"
-			m_fSpeedMin = -200.0
-			m_fSpeedMax = -500.0
-			m_vecLocalCoordinateSystemSpeedScale = [ 1.2, 1.2, 0.4 ]
+			m_fSpeedMin = 200.0
+			m_fSpeedMax = 1800.0
 		},
 		{
 			_class = "C_INIT_RemapCPtoScalar"
 			m_nCPInput = 2
-			m_nFieldOutput = 7
-			m_bScaleInitialRange = true
-		},
-		{
-			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 6.0
-			m_flRadiusMax = 8.0
-		},
-		{
-			_class = "C_INIT_RandomRotation"
-		},
-		{
-			_class = "C_INIT_RandomSequence"
-			m_nSequenceMax = 6
-			m_nSequenceMin = 6
-		},
-		{
-			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 1.0
-			m_fLifetimeMax = 2.0
+			m_nFieldOutput = "7"
+			m_nSetMethod = "PARTICLE_SET_SCALE_INITIAL_VALUE"
 		},
 		{
 			_class = "C_INIT_RemapCPtoScalar"
 			m_nCPInput = 2
-			m_nFieldOutput = 1
-			m_flInputMin = 1.0
+			m_nFieldOutput = "1"
+			m_flInputMin = 0.22
 			m_flInputMax = 3.0
-			m_flOutputMin = 0.5
+			m_flOutputMin = 0.15
+			m_flOutputMax = 0.8
 		},
 		{
 			_class = "C_INIT_InheritVelocity"
 		},
 		{
-			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 0
-			m_nAlphaMax = 0
+			_class = "C_INIT_RandomTrailLength"
+			m_flMinLength = 0.08
+			m_flMaxLength = 0.12
 		},
 	]
 	m_Emitters = 
 	[
 		{
 			_class = "C_OP_ContinuousEmitter"
-			m_flStartTime = 0.1
+			m_flStartTime = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_flLiteralValue = 0.1
+			}
+			m_flEmitRate = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_nMapType = "PF_MAP_TYPE_DIRECT"
+				m_flLiteralValue = 300.0
+				m_nControlPoint = 0
+				m_nScalarAttribute = 3
+				m_nVectorAttribute = 6
+				m_nVectorComponent = 0
+				m_flRandomMin = 0.0
+				m_flRandomMax = 1.0
+				m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
+				m_flMultFactor = 1.0
+				m_flInput0 = 0.0
+				m_flInput1 = 1.0
+				m_flOutput0 = 0.0
+				m_flOutput1 = 1.0
+				m_nBiasType = "PF_BIAS_TYPE_STANDARD"
+				m_flBiasParameter = 0.0
+				m_Curve = 
+				{
+					m_spline = [  ]
+					m_tangents = [  ]
+					m_vDomainMins = [ 0.0, 0.0 ]
+					m_vDomainMaxs = [ 0.0, 0.0 ]
+				}
+			}
 		},
 	]
-	m_ForceGenerators = 
-	[
-		{
-			_class = "C_OP_CurlNoiseForce"
-			m_vecNoiseScale = [ 1700.0, 1700.0, 1500.0 ]
-		},
-	]
+	m_nBehaviorVersion = 9
+	m_nFirstMultipleOverride_BackwardCompat = 7
 }

@@ -28,29 +28,17 @@
 		},
 		{
 			_class = "C_OP_FadeInSimple"
-			m_flFadeInTime = 0.15
+			m_flFadeInTime = 0.8
 		},
 		{
 			_class = "C_OP_FadeOutSimple"
-			m_flFadeOutTime = 0.5
+			m_flFadeOutTime = 0.9
 		},
 		{
 			_class = "C_OP_InterpolateRadius"
-			m_flEndScale = 1.5
+			m_flEndScale = 1.2
 			m_flStartScale = 0.3
 			m_flEndTime = 0.8
-		},
-		{
-			_class = "C_OP_RampScalarLinear"
-			m_RateMin = -2.0
-			m_RateMax = 2.0
-			m_nField = "4"
-		},
-		{
-			_class = "C_OP_LerpVector"
-			m_nFieldOutput = "6"
-			m_vecOutput = [ 1.0, 1.0, 0.9 ]
-			m_flEndTime = 0.3
 		},
 		{
 			_class = "C_OP_OscillateVector"
@@ -62,26 +50,14 @@
 			m_flStartTime_max = 0.2
 			m_flOscMult = 0.8
 		},
-		{
-			_class = "C_OP_VectorNoise"
-			m_nFieldOutput = "0"
-			m_vecOutputMin = [ -50.0, -50.0, -50.0 ]
-			m_vecOutputMax = [ 50.0, 50.0, 50.0 ]
-			m_fl4NoiseScale = 2.0
-			m_bAdditive = true
-			m_flNoiseAnimationTimeScale = 1.0
-		},
 	]
 	m_Renderers = 
 	[
 		{
-			_class = "C_OP_RenderSprites"
-			m_hTexture = resource:"materials/particle/fire_particle_4/fire_particle_4_flat.vtex"
-			m_flAnimationRate = 1.388
-			m_bSaturateColorPreAlphaBlend = false
-			m_flAddSelfAmount = 6.0
-			m_ColorScale = [ 255, 255, 255 ]
-			m_bLightenMode = true
+			_class = "C_OP_RenderTrails"
+			m_flAddSelfAmount = 1.0
+			m_bAdditive = true
+			m_hTexture = resource:"materials/particle/beam_fast_swipe.vtex"
 		},
 	]
 	m_Initializers = 
@@ -94,30 +70,28 @@
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 187
-			m_nAlphaMax = 205
+			m_nAlphaMin = 126
+			m_nAlphaMax = 175
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 65.0
-			m_flRadiusMax = 75.0
+			m_flRadiusMin = 10.0
+			m_flRadiusMax = 12.0
 		},
 		{
 			_class = "C_INIT_RandomRotation"
-		},
-		{
-			_class = "C_INIT_RandomSequence"
-			m_nSequenceMax = 4
+			m_flDegreesMin = 90.0
+			m_flDegreesMax = 90.0
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.5
-			m_fLifetimeMax = 0.55
+			m_fLifetimeMin = 0.1
+			m_fLifetimeMax = 0.15
 		},
 		{
 			_class = "C_INIT_RandomColor"
-			m_ColorMin = [ 34, 0, 255, 255 ]
-			m_ColorMax = [ 0, 50, 255, 255 ]
+			m_ColorMin = [ 62, 36, 228, 255 ]
+			m_ColorMax = [ 61, 153, 246, 255 ]
 		},
 		{
 			_class = "C_INIT_PositionOffset"
@@ -126,8 +100,8 @@
 		},
 		{
 			_class = "C_INIT_VelocityFromNormal"
-			m_fSpeedMin = 400.0
-			m_fSpeedMax = 700.0
+			m_fSpeedMin = 600.0
+			m_fSpeedMax = 600.0
 		},
 		{
 			_class = "C_INIT_VelocityRandom"
@@ -149,6 +123,17 @@
 		{
 			_class = "C_INIT_InheritVelocity"
 		},
+		{
+			_class = "C_INIT_AddVectorToVector"
+			m_vecScale = [ 50.0, 50.0, 0.0 ]
+			m_nFieldInput = "21"
+		},
+		{
+			_class = "C_INIT_AddVectorToVector"
+			m_vecScale = [ 50.0, 50.0, 0.0 ]
+			m_nFieldOutput = "2"
+			m_nFieldInput = "21"
+		},
 	]
 	m_Emitters = 
 	[
@@ -157,13 +142,35 @@
 			m_flStartTime = 
 			{
 				m_nType = "PF_TYPE_LITERAL"
+				m_nMapType = "PF_MAP_TYPE_DIRECT"
 				m_flLiteralValue = 0.1
+				m_nControlPoint = 0
+				m_nScalarAttribute = 3
+				m_nVectorAttribute = 6
+				m_nVectorComponent = 0
+				m_flRandomMin = 0.0
+				m_flRandomMax = 1.0
+				m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
+				m_flMultFactor = 1.0
+				m_flInput0 = 0.0
+				m_flInput1 = 1.0
+				m_flOutput0 = 0.0
+				m_flOutput1 = 1.0
+				m_nBiasType = "PF_BIAS_TYPE_STANDARD"
+				m_flBiasParameter = 0.0
+				m_Curve = 
+				{
+					m_spline = [  ]
+					m_tangents = [  ]
+					m_vDomainMins = [ 0.0, 0.0 ]
+					m_vDomainMaxs = [ 0.0, 0.0 ]
+				}
 			}
 			m_flEmitRate = 
 			{
 				m_nType = "PF_TYPE_LITERAL"
 				m_nMapType = "PF_MAP_TYPE_DIRECT"
-				m_flLiteralValue = 30.0
+				m_flLiteralValue = 60.0
 				m_nControlPoint = 0
 				m_nScalarAttribute = 3
 				m_nVectorAttribute = 6
@@ -190,16 +197,4 @@
 	]
 	m_nBehaviorVersion = 9
 	m_nFirstMultipleOverride_BackwardCompat = 8
-	m_Children = 
-	[
-		{
-			m_ChildRef = resource:"particles/element_sprays/fire_spray/fire_spray_s_core.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/element_sprays/fire_spray/fire_spray_s_glow.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/element_sprays/fire_spray/fire_spray_s_smoke.vpcf"
-		},
-	]
 }
