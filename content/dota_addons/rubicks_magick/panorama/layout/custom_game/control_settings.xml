@@ -16,7 +16,7 @@
 						<Label text="left" class="ControlSettingsMouseButtonText"/>
 					</Button>
 					<Button id="ControlSettingsMoveMiddle" class="ControlMouseButton ControlMouseMiddle" onactivate="setMouseControl('move', 1)">
-						<Label text="middle" class="ControlSettingsMouseButtonText"/>
+						<Label text="wheel" class="ControlSettingsMouseButtonText"/>
 					</Button>
 					<Button id="ControlSettingsMoveRight" class="ControlMouseButton ControlMouseRight" onactivate="setMouseControl('move', 2)">
 						<Label text="right" class="ControlSettingsMouseButtonText"/>
@@ -29,7 +29,7 @@
 						<Label text="left" class="ControlSettingsMouseButtonText"/>
 					</Button>
 					<Button id="ControlSettingsDirCastMiddle" class="ControlMouseButton ControlMouseMiddle" onactivate="setMouseControl('dircast', 1)">
-						<Label text="middle" class="ControlSettingsMouseButtonText"/>
+						<Label text="wheel" class="ControlSettingsMouseButtonText"/>
 					</Button>
 					<Button id="ControlSettingsDirCastRight" class="ControlMouseButton ControlMouseRight ActiveControlMouse" onactivate="setMouseControl('dircast', 2)">
 						<Label text="right" class="ControlSettingsMouseButtonText"/>
@@ -42,7 +42,7 @@
 						<Label text="left" class="ControlSettingsMouseButtonText"/>
 					</Button>
 					<Button id="ControlSettingsSelfCastMiddle" class="ControlMouseButton ControlMouseMiddle ActiveControlMouse" onactivate="setMouseControl('selfcast', 1)">
-						<Label text="middle" class="ControlSettingsMouseButtonText"/>
+						<Label text="wheel" class="ControlSettingsMouseButtonText"/>
 					</Button>
 					<Button id="ControlSettingsSelfCastRight" class="ControlMouseButton ControlMouseRight" onactivate="setMouseControl('selfcast', 2)">
 						<Label text="right" class="ControlSettingsMouseButtonText"/>
@@ -50,7 +50,7 @@
 				</Panel>
 
 				<Panel id="ControlSettingsElementsPanel">
-					<Label class="ControlSettingsLabel" text="Elements"/>
+					<Label class="ControlSettingsLabel" text="Elements Picking"/>
 
 					<Panel id="ControlSettingsWater" class="ControlSettingsElementPanel">
 						<Label class="ControlSettingsElementLabelTop" text="water"/>
@@ -104,7 +104,7 @@
 				</Panel>
 
 				<Panel id="ControlSettingsStopMovePanel">
-					<Label class="ControlSettingsLabel" text="Stop Move"/>
+					<Label class="ControlSettingsLabel" text="Stop Movement"/>
 					<Button id="ControlSettingsStopMoveCtrl" class="ControlMouseButton ActiveControlMouse" onactivate="setStopMoveControl(0)">
 						<Label text="ctrl" class="ControlSettingsMouseButtonText"/>
 					</Button>
