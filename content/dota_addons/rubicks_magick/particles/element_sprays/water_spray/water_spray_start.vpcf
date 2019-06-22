@@ -1,7 +1,7 @@
 <!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf21:version{7a150ecc-d865-438f-ad53-5963fe1a2720} -->
 {
 	_class = "CParticleSystemDefinition"
-	m_ConstantColor = [ 189, 218, 255, 255 ]
+	m_ConstantColor = [ 208, 217, 221, 255 ]
 	m_controlPointConfigurations = 
 	[
 		{
@@ -24,46 +24,40 @@
 		},
 		{
 			_class = "C_OP_BasicMovement"
-			m_Gravity = [ 0.0, 0.0, -1300.0 ]
+			m_Gravity = [ 0.0, 0.0, 100.0 ]
 		},
 		{
 			_class = "C_OP_FadeInSimple"
-			m_flFadeInTime = 0.05
+			m_flFadeInTime = 0.1
 		},
 		{
 			_class = "C_OP_FadeOutSimple"
-			m_flFadeOutTime = 0.3
+			m_flFadeOutTime = 2.0
 		},
 		{
 			_class = "C_OP_InterpolateRadius"
-			m_flEndScale = 1.3
-			m_flStartScale = 0.5
-			m_flEndTime = 0.5
+			m_flEndScale = 1.4
+			m_flStartScale = 0.4
+			m_flEndTime = 0.8
 		},
 		{
-			_class = "C_OP_RampScalarLinear"
-			m_RateMin = -5.0
-			m_RateMax = 5.0
-			m_nField = "4"
-		},
-		{
-			_class = "C_OP_VectorNoise"
-			m_nFieldOutput = "0"
-			m_vecOutputMin = [ -10.0, -10.0, -10.0 ]
-			m_vecOutputMax = [ 10.0, 10.0, 10.0 ]
-			m_fl4NoiseScale = 0.5
-			m_bAdditive = true
+			_class = "C_OP_OscillateVector"
+			m_RateMin = [ 2.0, 2.0, 2.0 ]
+			m_RateMax = [ 2.0, 2.0, 2.0 ]
+			m_nField = "6"
+			m_flOscAdd = 0.85
+			m_flStartTime_min = 0.2
+			m_flStartTime_max = 0.2
+			m_flOscMult = 0.8
 		},
 	]
 	m_Renderers = 
 	[
 		{
-			_class = "C_OP_RenderSprites"
-			m_hTexture = resource:"materials/particle/water/splash.vtex"
-			m_flAnimationRate = 1.875
-			m_bSaturateColorPreAlphaBlend = false
-			m_flAddSelfAmount = 3.0
-			m_ColorScale = [ 255, 255, 255 ]
+			_class = "C_OP_RenderTrails"
+			m_flAddSelfAmount = 10.0
+			m_bAdditive = true
+			m_hTexture = resource:"materials/particle/beam_fast_swipe.vtex"
 		},
 	]
 	m_Initializers = 
@@ -73,33 +67,31 @@
 		},
 		{
 			_class = "C_INIT_CreateWithinSphere"
+			m_fRadiusMax = 20.0
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 68
-			m_nAlphaMax = 109
+			m_nAlphaMin = 114
 		},
 		{
 			_class = "C_INIT_RandomRadius"
 			m_flRadiusMin = 15.0
-			m_flRadiusMax = 55.0
+			m_flRadiusMax = 20.0
 		},
 		{
 			_class = "C_INIT_RandomRotation"
-		},
-		{
-			_class = "C_INIT_RandomSequence"
-			m_nSequenceMax = 3
+			m_flDegreesMin = 90.0
+			m_flDegreesMax = 90.0
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.4
-			m_fLifetimeMax = 0.5
+			m_fLifetimeMin = 0.15
+			m_fLifetimeMax = 0.3
 		},
 		{
-			_class = "C_INIT_NormalOffset"
-			m_OffsetMin = [ 0.0, 0.0, 0.1 ]
-			m_OffsetMax = [ 0.0, 0.0, 0.3 ]
+			_class = "C_INIT_RandomColor"
+			m_ColorMin = [ 62, 36, 228, 255 ]
+			m_ColorMax = [ 61, 153, 246, 255 ]
 		},
 		{
 			_class = "C_INIT_PositionOffset"
@@ -108,8 +100,8 @@
 		},
 		{
 			_class = "C_INIT_VelocityFromNormal"
-			m_fSpeedMin = 500.0
-			m_fSpeedMax = 900.0
+			m_fSpeedMin = 400.0
+			m_fSpeedMax = 600.0
 		},
 		{
 			_class = "C_INIT_VelocityRandom"
@@ -132,9 +124,15 @@
 			_class = "C_INIT_InheritVelocity"
 		},
 		{
-			_class = "C_INIT_VelocityRandom"
-			m_LocalCoordinateSystemSpeedMin = [ -80.0, -80.0, -50.0 ]
-			m_LocalCoordinateSystemSpeedMax = [ 80.0, 80.0, 50.0 ]
+			_class = "C_INIT_AddVectorToVector"
+			m_vecScale = [ 50.0, 50.0, 0.0 ]
+			m_nFieldInput = "21"
+		},
+		{
+			_class = "C_INIT_AddVectorToVector"
+			m_vecScale = [ 50.0, 50.0, 0.0 ]
+			m_nFieldOutput = "2"
+			m_nFieldInput = "21"
 		},
 	]
 	m_Emitters = 
@@ -144,13 +142,35 @@
 			m_flStartTime = 
 			{
 				m_nType = "PF_TYPE_LITERAL"
+				m_nMapType = "PF_MAP_TYPE_DIRECT"
 				m_flLiteralValue = 0.1
+				m_nControlPoint = 0
+				m_nScalarAttribute = 3
+				m_nVectorAttribute = 6
+				m_nVectorComponent = 0
+				m_flRandomMin = 0.0
+				m_flRandomMax = 1.0
+				m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
+				m_flMultFactor = 1.0
+				m_flInput0 = 0.0
+				m_flInput1 = 1.0
+				m_flOutput0 = 0.0
+				m_flOutput1 = 1.0
+				m_nBiasType = "PF_BIAS_TYPE_STANDARD"
+				m_flBiasParameter = 0.0
+				m_Curve = 
+				{
+					m_spline = [  ]
+					m_tangents = [  ]
+					m_vDomainMins = [ 0.0, 0.0 ]
+					m_vDomainMaxs = [ 0.0, 0.0 ]
+				}
 			}
 			m_flEmitRate = 
 			{
 				m_nType = "PF_TYPE_LITERAL"
 				m_nMapType = "PF_MAP_TYPE_DIRECT"
-				m_flLiteralValue = 50.0
+				m_flLiteralValue = 60.0
 				m_nControlPoint = 0
 				m_nScalarAttribute = 3
 				m_nVectorAttribute = 6
@@ -176,5 +196,5 @@
 		},
 	]
 	m_nBehaviorVersion = 9
-	m_nFirstMultipleOverride_BackwardCompat = 7
+	m_nFirstMultipleOverride_BackwardCompat = 8
 }
