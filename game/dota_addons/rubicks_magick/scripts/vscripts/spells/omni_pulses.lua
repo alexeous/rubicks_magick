@@ -43,16 +43,17 @@ function OmniPulses:OmniDeathPulseSpell(player, pickedElements)
 	OmniPulses:OmniDeathPulse(heroEntity, heroEntity:GetAbsOrigin(), true, pickedElements)
 end
 
-function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, pickedElements, radiusFactor, healFactor)
+function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, pickedElements, radiusFactor, healFactor, radiusOverride)
 	while pickedElements[1] ~= ELEMENT_LIFE and pickedElements[1] ~= nil do
 		table.remove(pickedElements, 1)
 	end
+
 	radiusFactor = radiusFactor or 1.0
 	healFactor = healFactor or 1.0
-	local radius = OMNI_SPELLS_RADIUSES[1] * radiusFactor
+	local radius = radiusOverride or (OMNI_SPELLS_RADIUSES[1] * radiusFactor)
 	local heal = 100 * healFactor
 	if pickedElements[2] == ELEMENT_LIFE then
-		radius = OMNI_SPELLS_RADIUSES[2] * radiusFactor
+		radius = radiusOverride or (OMNI_SPELLS_RADIUSES[2] * radiusFactor)
 		heal = 140 * healFactor
 	end
 
@@ -94,14 +95,14 @@ function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, pickedElements
 	Util:EmitSoundOnLocation(position, "OmniLifePulse2", caster)
 end
 
-function OmniPulses:OmniDeathPulse(caster, position, ignoreCaster, pickedElements, radiusFactor, damageFactor)
+function OmniPulses:OmniDeathPulse(caster, position, ignoreCaster, pickedElements, radiusFactor, damageFactor, radiusOverride)
 	while pickedElements[1] ~= ELEMENT_DEATH and pickedElements[1] ~= nil do
 		table.remove(pickedElements, 1)
 	end
 	radiusFactor = radiusFactor or 1.0
 	damageFactor = damageFactor or 1.0
 	local power = table.count(pickedElements, ELEMENT_DEATH)
-	local radius = OMNI_SPELLS_RADIUSES[power] * radiusFactor
+	local radius = radiusOverride or (OMNI_SPELLS_RADIUSES[power] * radiusFactor)
 	local deathDamages = { 100, 140, 174 }
 	local deathDamage = deathDamages[power] * damageFactor
 	local color = Vector(255, 0, 0)
