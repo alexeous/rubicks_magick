@@ -221,8 +221,8 @@
 		},
 		{
 			_class = "C_INIT_VelocityRadialRandom"
-			m_fSpeedMin = -1500.0
-			m_fSpeedMax = -1200.0
+			m_fSpeedMin = -500.0
+			m_fSpeedMax = -3200.0
 			m_vecLocalCoordinateSystemSpeedScale = [ 1.0, 1.0, 0.2 ]
 		},
 		{
@@ -249,7 +249,7 @@
 			{
 				m_nType = "PF_TYPE_LITERAL"
 				m_nMapType = "PF_MAP_TYPE_DIRECT"
-				m_flLiteralValue = 15.0
+				m_flLiteralValue = 30.0
 				m_nControlPoint = 0
 				m_nScalarAttribute = 3
 				m_nVectorAttribute = 6
