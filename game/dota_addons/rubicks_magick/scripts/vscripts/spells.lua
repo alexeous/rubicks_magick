@@ -136,6 +136,8 @@ function Spells:OnDirectedCastKeyDown(keys)
 		return
 	end
 
+	MoveController:UpdateRotation(player, heroEntity)
+	
 	local pickedElements = Elements:GetPickedElements(player)
 	if next(pickedElements) == nil then
 		Spells:MeleeAttack(player)

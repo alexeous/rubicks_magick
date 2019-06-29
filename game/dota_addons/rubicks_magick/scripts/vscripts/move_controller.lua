@@ -24,36 +24,49 @@ function MoveController:OnMoveHeroesThink()
 		if player ~= nil then
 			local heroEntity = player:GetAssignedHero()
 			if heroEntity ~= nil then
-				local isAble = heroEntity:IsAlive() and not heroEntity:IsStunned() and not heroEntity:IsFrozen()
-				local dontMoveWhileCasting = player.spellCast ~= nil and player.spellCast.dontMoveWhileCasting
-				if isAble then 
-					if not dontMoveWhileCasting then
-						if not IsPhysicsUnit(heroEntity) then
-							Physics:Unit(heroEntity)
-							heroEntity:SetGroundBehavior(PHYSICS_GROUND_LOCK)
-						end
-						if player.cursorPos ~= nil then
-							MoveController:HeroLookAt(heroEntity, player.cursorPos)
-						end
-						if player.moveToPos ~= nil then
-							local origin = heroEntity:GetAbsOrigin()
-							local vec = player.moveToPos - origin
-							if vec:Length2D() > 20 then
-								heroEntity:SetPhysicsVelocity(vec:Normalized() * heroEntity:GetIdealSpeed())
-							else
-								MoveController:StopMove(player)
-							end
-						end
-					else
-						heroEntity:SetPhysicsVelocity(Vector(0, 0, 0))
-					end
-				elseif player.moveToPos ~= nil then
-					MoveController:StopMove(player)
-				end
+				MoveController:OnMoveHeroThink(player, heroEntity)
 			end
 		end
 	end
 	return THINK_PERIOD
+end
+
+function MoveController:OnMoveHeroThink(player, heroEntity)
+	local isAble = heroEntity:IsAlive() and not heroEntity:IsStunned() and not heroEntity:IsFrozen()
+	if not isAble then
+		if player.moveToPos ~= nil then
+			MoveController:StopMove(player)
+		end
+		return
+	end
+
+	local dontMoveWhileCasting = player.spellCast ~= nil and player.spellCast.dontMoveWhileCasting
+	if dontMoveWhileCasting then
+		heroEntity:SetPhysicsVelocity(Vector(0, 0, 0))
+		return
+	end
+	
+	MoveController:UpdateRotation(player, heroEntity)
+	
+	if not IsPhysicsUnit(heroEntity) then
+		Physics:Unit(heroEntity)
+		heroEntity:SetGroundBehavior(PHYSICS_GROUND_LOCK)
+	end
+	if player.moveToPos ~= nil then
+		local origin = heroEntity:GetAbsOrigin()
+		local vec = player.moveToPos - origin
+		if vec:Length2D() > 20 then
+			heroEntity:SetPhysicsVelocity(vec:Normalized() * heroEntity:GetIdealSpeed())
+		else
+			MoveController:StopMove(player)
+		end
+	end
+end
+
+function MoveController:UpdateRotation(player, heroEntity)
+	if player.cursorPos ~= nil then
+		MoveController:HeroLookAt(heroEntity, player.cursorPos)
+	end
 end
 
 function MoveController:ShowMoveToParticle(player, pos)
@@ -127,11 +140,11 @@ end
 
 function MoveController:OnMouseCycle(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
-	player.cursorPos = Vector(keys.worldX, keys.worldY, keys.worldZ)
+	player.cursorPos = Vector(keys.x, keys.y, keys.z)
 	if player.moveToKeyDown then
 		MoveController:MoveToCursorCommand(player)
 	end
-end	
+end
 
 function MoveController:OnMoveToKeyDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)

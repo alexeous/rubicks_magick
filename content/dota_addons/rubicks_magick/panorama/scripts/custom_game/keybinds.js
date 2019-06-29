@@ -19,7 +19,6 @@ var keybindTable = {
 	"rm_mouse_middle_down" : "rm_self_cast_down",
 	"rm_mouse_middle_up"   : "rm_self_cast_up"
 };
-var mouseDown = [ false, false, false ];
 var keyCaptureCallback = null;
 
 for (var key in keybindTable) {
@@ -27,23 +26,6 @@ for (var key in keybindTable) {
 		addEvent(key);
 	}
 }
-GameUI.SetMouseCallback( function(eventName, arg) {
-	const CONSUME_EVENT = true;
-	const CONTINUE_PROCESSING_EVENT = false;
-	if(eventName == "pressed") {
-		mouseDown[arg] = true;
-		var mouseKey = ([ "left", "right", "middle" ])[arg];
-		var eventName = "rm_mouse_" + mouseKey + "_down";
-		onKeyEvent(eventName);
-	}
-	else {
-
-	}
-	return CONSUME_EVENT;
-} );
-mouseCycle();
-
-
 
 function addEvent(eventName) {
 	Game.AddCommand(eventName, function() { onKeyEvent(eventName); }, "", 0);
@@ -89,32 +71,4 @@ function startKeyCapture(callback) {
 
 function endKeyCapture() {
 	keyCaptureCallback = null;
-}
-
-function mouseCycle() {
-	
-	var cursorPos = GameUI.GetCursorPosition();
-	var worldXYZ = Game.ScreenXYToWorld(cursorPos[0], cursorPos[1]);
-	//var deltaPosition = [worldXYZ[0] - cameraPosition[0], worldXYZ[1] - cameraPosition[1], worldXYZ[2] - cameraPosition[2]];
-	//GameUI.SetCameraTargetPosition([heroPosition[0] + deltaPosition[0], heroPosition[1] + deltaPosition[1], heroPosition[2] + deltaPosition[2]], 6 * deltaTime);
-
-	var keys = { 
-		"playerID" : Players.GetLocalPlayer(),
-		"worldX" : worldXYZ[0],
-		"worldY" : worldXYZ[1],
-		"worldZ" : worldXYZ[2]
-	};
-	GameEvents.SendCustomGameEventToServer("rm_mouse_cycle", keys);
-
-
-	for(var i = 0; i < 3; i++) {
-		if(mouseDown[i] && !GameUI.IsMouseDown(i)) {
-			mouseDown[i] = false;
-			var mouseKey = ([ "left", "right", "middle" ])[i];
-			var eventName = "rm_mouse_" + mouseKey + "_up";
-			onKeyEvent(eventName);
-		}
-	}
-	
-	$.Schedule(0, mouseCycle);
 }
