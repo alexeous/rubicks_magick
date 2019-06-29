@@ -20,6 +20,7 @@ var keybindTable = {
 	"rm_mouse_middle_up"   : "rm_self_cast_up"
 };
 var keyCaptureCallback = null;
+var onRebindCallback = null;
 
 for (var key in keybindTable) {
 	if(key[0] == '+') {
@@ -27,8 +28,21 @@ for (var key in keybindTable) {
 	}
 }
 
+function getKey(table, value) {
+	for (var key in table) {
+		if (table[key] == value) {
+			return key;
+		}
+	}
+	return null;
+}
+
 function addEvent(eventName) {
 	Game.AddCommand(eventName, function() { onKeyEvent(eventName); }, "", 0);
+}
+
+function setOnRebindCallback(callback) {
+	onRebindCallback = callback;
 }
 
 function onKeyEvent(eventName) {
@@ -47,21 +61,19 @@ function onKeyEvent(eventName) {
 }
 
 function rebind(eventName, actionName) {
-	if(!keybindTable.hasOwnProperty(eventName)) {
+	if(!(eventName in keybindTable)) {
 		return;
 	}
 	var oldActionName = keybindTable[eventName];
-	var oldEventName = null;
-	for(var key in keybindTable) {
-		var value = keybindTable[key];
-		if(value == actionName) {
-			oldEventName = key;
-			break;
-		}
-	}
+	var oldEventName = getKey(keybindTable, actionName);
+
 	keybindTable[eventName] = actionName;
 	if(oldEventName != null) {
 		keybindTable[oldEventName] = oldActionName;
+	}
+
+	if(onRebindCallback != null) {
+		onRebindCallback();
 	}
 }
 

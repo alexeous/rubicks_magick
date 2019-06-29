@@ -108,7 +108,7 @@
 	transform: translate3d(0.5px, 0.5px, 0px);
 }
 
-.ActiveControlMouse
+.ActiveControl
 {	
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #303090FF ), to( #4444D0FF ) );
 }
@@ -167,7 +167,7 @@
 #ControlSettingsElementsPanel
 {
 	width: 100%;
-	height: 160px;
+	height: 180px;
 	margin-top: 265px;
 }
 
@@ -337,6 +337,33 @@
 #ControlSettingsFireKey
 {
 	border-color: #E09030FF;
+}
+
+#ControlElementRebindHint
+{
+	color: #E0D050;
+	opacity: 0.2;
+	font-size: 16;
+	horizontal-align: center;
+	vertical-align: bottom;
+	margin-bottom: 10px;
+	animation-name: ControlElementRebindHintGlow;
+	animation-duration: 0.25s;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+	animation-timing-function: linear;
+}
+
+@keyframes 'ControlElementRebindHintGlow'
+{
+    0%
+    {
+    	opacity: 0.2;
+    }
+    100%
+    {
+		opacity: 1;
+    }
 }
 
 #ControlSettingsStopMoveCtrl

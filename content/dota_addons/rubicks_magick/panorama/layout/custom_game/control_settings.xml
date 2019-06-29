@@ -3,8 +3,8 @@
 		<include src="file://{resources}/styles/custom_game/control_settings.css" />
 	</styles>
 	<scripts>
-		<include src="file://{resources}/scripts/custom_game/control_settings.js" />
 		<include src="file://{resources}/scripts/custom_game/keybinds.js" />
+		<include src="file://{resources}/scripts/custom_game/control_settings.js" />
 		<include src="file://{resources}/scripts/custom_game/mouse_events.js" />
 	</scripts>
 	<Panel>
@@ -13,39 +13,39 @@
 				<Label id="ControlSettingsTitle" text="Control Settings"/>
 				<Panel id="ControlSettingsMovePanel">
 					<Label class="ControlSettingsLabel" text="Move"/>
-					<Button id="ControlSettingsMoveLeft" class="ControlMouseButton ControlMouseLeft ActiveControlMouse" onactivate="setMouseControl('move', 0)">
+					<Button id="ControlSettingsMoveLeft" class="ControlMouseButton ControlMouseLeft ActiveControl" onactivate="rebindMouse(0, 0)">
 						<Label text="left" class="ControlSettingsMouseButtonText"/>
 					</Button>
-					<Button id="ControlSettingsMoveMiddle" class="ControlMouseButton ControlMouseMiddle" onactivate="setMouseControl('move', 1)">
+					<Button id="ControlSettingsMoveMiddle" class="ControlMouseButton ControlMouseMiddle" onactivate="rebindMouse(0, 1)">
 						<Label text="wheel" class="ControlSettingsMouseButtonText"/>
 					</Button>
-					<Button id="ControlSettingsMoveRight" class="ControlMouseButton ControlMouseRight" onactivate="setMouseControl('move', 2)">
+					<Button id="ControlSettingsMoveRight" class="ControlMouseButton ControlMouseRight" onactivate="rebindMouse(0, 2)">
 						<Label text="right" class="ControlSettingsMouseButtonText"/>
 					</Button>
 				</Panel>
 
 				<Panel id="ControlSettingsDirCastPanel">
 					<Label class="ControlSettingsLabel" text="Cast Forward"/>
-					<Button id="ControlSettingsDirCastLeft" class="ControlMouseButton ControlMouseLeft" onactivate="setMouseControl('dircast', 0)">
+					<Button id="ControlSettingsDirCastLeft" class="ControlMouseButton ControlMouseLeft" onactivate="rebindMouse(1, 0)">
 						<Label text="left" class="ControlSettingsMouseButtonText"/>
 					</Button>
-					<Button id="ControlSettingsDirCastMiddle" class="ControlMouseButton ControlMouseMiddle" onactivate="setMouseControl('dircast', 1)">
+					<Button id="ControlSettingsDirCastMiddle" class="ControlMouseButton ControlMouseMiddle" onactivate="rebindMouse(1, 1)">
 						<Label text="wheel" class="ControlSettingsMouseButtonText"/>
 					</Button>
-					<Button id="ControlSettingsDirCastRight" class="ControlMouseButton ControlMouseRight ActiveControlMouse" onactivate="setMouseControl('dircast', 2)">
+					<Button id="ControlSettingsDirCastRight" class="ControlMouseButton ControlMouseRight ActiveControl" onactivate="rebindMouse(1, 2)">
 						<Label text="right" class="ControlSettingsMouseButtonText"/>
 					</Button>
 				</Panel>
 
 				<Panel id="ControlSettingsSelfCastPanel">
 					<Label class="ControlSettingsLabel" text="Self Cast"/>
-					<Button id="ControlSettingsSelfCastLeft" class="ControlMouseButton ControlMouseLeft" onactivate="setMouseControl('selfcast', 0)">
+					<Button id="ControlSettingsSelfCastLeft" class="ControlMouseButton ControlMouseLeft" onactivate="rebindMouse(2, 0)">
 						<Label text="left" class="ControlSettingsMouseButtonText"/>
 					</Button>
-					<Button id="ControlSettingsSelfCastMiddle" class="ControlMouseButton ControlMouseMiddle ActiveControlMouse" onactivate="setMouseControl('selfcast', 1)">
+					<Button id="ControlSettingsSelfCastMiddle" class="ControlMouseButton ControlMouseMiddle ActiveControl" onactivate="rebindMouse(2, 1)">
 						<Label text="wheel" class="ControlSettingsMouseButtonText"/>
 					</Button>
-					<Button id="ControlSettingsSelfCastRight" class="ControlMouseButton ControlMouseRight" onactivate="setMouseControl('selfcast', 2)">
+					<Button id="ControlSettingsSelfCastRight" class="ControlMouseButton ControlMouseRight" onactivate="rebindMouse(2, 2)">
 						<Label text="right" class="ControlSettingsMouseButtonText"/>
 					</Button>
 				</Panel>
@@ -55,58 +55,59 @@
 
 					<Panel id="ControlSettingsWater" class="ControlSettingsElementPanel">
 						<Label class="ControlSettingsElementLabelTop" text="water"/>
-						<Button id="ControlSettingsWaterKey" class="ControlSettingsElementKey" onactivate="enterRebindMode('rm_pick_water')">
+						<Button id="ControlSettingsWaterKey" class="ControlSettingsElementKey" onactivate="toggleKeyRebind(0)">
 							<Label text="Q" class="ControlSettingsElementKeyLabel"/> 
 						</Button>
 					</Panel>
 					<Panel id="ControlSettingsLife" class="ControlSettingsElementPanel">
 						<Label class="ControlSettingsElementLabelTop" text="life"/>
-						<Button id="ControlSettingsLifeKey" class="ControlSettingsElementKey" onactivate="enterRebindMode('rm_pick_life')">
+						<Button id="ControlSettingsLifeKey" class="ControlSettingsElementKey" onactivate="toggleKeyRebind(1)">
 							<Label text="W" class="ControlSettingsElementKeyLabel"/>
 						</Button>
 					</Panel>
 					<Panel id="ControlSettingsShield" class="ControlSettingsElementPanel">
 						<Label class="ControlSettingsElementLabelTop" text="shield"/>
-						<Button id="ControlSettingsShieldKey" class="ControlSettingsElementKey" onactivate="enterRebindMode('rm_pick_shield')">
+						<Button id="ControlSettingsShieldKey" class="ControlSettingsElementKey" onactivate="toggleKeyRebind(2)">
 							<Label text="E" class="ControlSettingsElementKeyLabel"/>
 						</Button>
 					</Panel>
 					<Panel id="ControlSettingsCold" class="ControlSettingsElementPanel">
 						<Label class="ControlSettingsElementLabelTop" text="cold"/>
-						<Button id="ControlSettingsColdKey" class="ControlSettingsElementKey" onactivate="enterRebindMode('rm_pick_cold')">
+						<Button id="ControlSettingsColdKey" class="ControlSettingsElementKey" onactivate="toggleKeyRebind(3)">
 							<Label text="R" class="ControlSettingsElementKeyLabel"/>
 						</Button>
 					</Panel>
 
 					<Panel id="ControlSettingsLightning" class="ControlSettingsElementPanel">
 						<Label class="ControlSettingsElementLabelBottom" text="lightning"/>
-						<Button id="ControlSettingsLightningKey" class="ControlSettingsElementKey" onactivate="enterRebindMode('rm_pick_lightning')">
+						<Button id="ControlSettingsLightningKey" class="ControlSettingsElementKey" onactivate="toggleKeyRebind(4)">
 							<Label text="A" class="ControlSettingsElementKeyLabel"/>
 						</Button>
 					</Panel>
 					<Panel id="ControlSettingsDeath" class="ControlSettingsElementPanel">
 						<Label class="ControlSettingsElementLabelBottom" text="death"/>
-						<Button id="ControlSettingsDeathKey" class="ControlSettingsElementKey" onactivate="enterRebindMode('rm_pick_death')">
+						<Button id="ControlSettingsDeathKey" class="ControlSettingsElementKey" onactivate="toggleKeyRebind(5)">
 							<Label text="S" class="ControlSettingsElementKeyLabel"/>
 						</Button>
 					</Panel>
 					<Panel id="ControlSettingsEarth" class="ControlSettingsElementPanel">
 						<Label class="ControlSettingsElementLabelBottom" text="earth"/>
-						<Button id="ControlSettingsEarthKey" class="ControlSettingsElementKey" onactivate="enterRebindMode('rm_pick_earth')">
+						<Button id="ControlSettingsEarthKey" class="ControlSettingsElementKey" onactivate="toggleKeyRebind(6)">
 							<Label text="D" class="ControlSettingsElementKeyLabel"/>
 						</Button>
 					</Panel>
 					<Panel id="ControlSettingsFire" class="ControlSettingsElementPanel">
 						<Label class="ControlSettingsElementLabelBottom" text="fire"/>
-						<Button id="ControlSettingsFireKey" class="ControlSettingsElementKey" onactivate="enterRebindMode('rm_pick_fire')">
+						<Button id="ControlSettingsFireKey" class="ControlSettingsElementKey" onactivate="toggleKeyRebind(7)">
 							<Label text="F" class="ControlSettingsElementKeyLabel"/>
 						</Button>
 					</Panel>
+					<Label id="ControlElementRebindHint" text="Press another key to rebind" class="invisible"/>
 				</Panel>
 
 				<Panel id="ControlSettingsStopMovePanel">
 					<Label class="ControlSettingsLabel" text="Stop Movement"/>
-					<Button id="ControlSettingsStopMoveCtrl" class="ControlMouseButton ActiveControlMouse" onactivate="setStopMoveControl(0)">
+					<Button id="ControlSettingsStopMoveCtrl" class="ControlMouseButton ActiveControl" onactivate="setStopMoveControl(0)">
 						<Label text="ctrl" class="ControlSettingsMouseButtonText"/>
 					</Button>
 					<Button id="ControlSettingsStopMoveSpace" class="ControlMouseButton" onactivate="setStopMoveControl(1)">
