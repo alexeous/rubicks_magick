@@ -1,8 +1,9 @@
-GameUI.SetCameraPitchMin(65)
-GameUI.SetCameraPitchMax(65)
+$.Schedule(1, function() {
+	GameUI.SetCameraPitchMin(65);
+	GameUI.SetCameraPitchMax(65);
+});
 
 var lastTime = Game.Time();
-
 $.Schedule(0, loop);
 
 function loop() {
@@ -10,12 +11,15 @@ function loop() {
 	var deltaTime = currentTime - lastTime;
 	lastTime = currentTime;
 
-	var heroPos = Entities.GetAbsOrigin(Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer()));
-	var currentCameraPos = GameUI.GetCameraLookAtPosition();
-	var cursorPos = GameUI.GetCursorPosition();
-	var targetPos = calcCameraPos(heroPos, currentCameraPos, cursorPos, 0.55);
-	GameUI.SetCameraTargetPosition(targetPos, 4 * deltaTime);
+	var heroID = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
+	if (heroID != -1) {
+		var heroPos = Entities.GetAbsOrigin(heroID);
+		var currentCameraPos = GameUI.GetCameraLookAtPosition();
+		var cursorPos = GameUI.GetCursorPosition();
 
+		var targetPos = calcCameraPos(heroPos, currentCameraPos, cursorPos, 0.65);
+		GameUI.SetCameraTargetPosition(targetPos, 4.2 * deltaTime);
+	}
 	$.Schedule(0, loop);
 }
 
