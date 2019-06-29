@@ -14,7 +14,8 @@ function CameraSlider:Init()
 end
 
 function CameraSlider:OnCameraSlideThink()
-    for playerID = 0, DOTA_MAX_PLAYERS - 1 do
+    return nil
+   --[[ for playerID = 0, DOTA_MAX_PLAYERS - 1 do
         local player = PlayerResource:GetPlayer(playerID)
 		if player ~= nil and player.cameraSliderDummy ~= nil then
             local unit = player.cameraSliderDummy:GetOwner()
@@ -35,7 +36,7 @@ function CameraSlider:OnCameraSlideThink()
             PlayerResource:SetCameraTarget(playerID, player.cameraSliderDummy)
         end
     end
-    return CAMERA_SLIDE_THINK_PERIOD
+    return CAMERA_SLIDE_THINK_PERIOD]]
 end
 
 function CameraSlider:OnMouseCycle(keys)

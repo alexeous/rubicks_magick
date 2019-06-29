@@ -36,6 +36,9 @@ GameUI.SetMouseCallback( function(eventName, arg) {
 		var eventName = "rm_mouse_" + mouseKey + "_down";
 		onKeyEvent(eventName);
 	}
+	else {
+
+	}
 	return CONSUME_EVENT;
 } );
 mouseCycle();
@@ -89,8 +92,12 @@ function endKeyCapture() {
 }
 
 function mouseCycle() {
+	
 	var cursorPos = GameUI.GetCursorPosition();
 	var worldXYZ = Game.ScreenXYToWorld(cursorPos[0], cursorPos[1]);
+	//var deltaPosition = [worldXYZ[0] - cameraPosition[0], worldXYZ[1] - cameraPosition[1], worldXYZ[2] - cameraPosition[2]];
+	//GameUI.SetCameraTargetPosition([heroPosition[0] + deltaPosition[0], heroPosition[1] + deltaPosition[1], heroPosition[2] + deltaPosition[2]], 6 * deltaTime);
+
 	var keys = { 
 		"playerID" : Players.GetLocalPlayer(),
 		"worldX" : worldXYZ[0],
@@ -98,6 +105,7 @@ function mouseCycle() {
 		"worldZ" : worldXYZ[2]
 	};
 	GameEvents.SendCustomGameEventToServer("rm_mouse_cycle", keys);
+
 
 	for(var i = 0; i < 3; i++) {
 		if(mouseDown[i] && !GameUI.IsMouseDown(i)) {
@@ -108,5 +116,5 @@ function mouseCycle() {
 		}
 	}
 	
-	$.Schedule(0.03, mouseCycle);
+	$.Schedule(0, mouseCycle);
 }

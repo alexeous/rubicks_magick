@@ -9,6 +9,9 @@
 		GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_INVENTORY_GOLD, false);
 		GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_ACTION_PANEL, false);
 	</script>
+	<scripts>
+		<include src="file://{resources}/scripts/custom_game/camera_controller.js" />
+	</scripts>
 	<Panel>
 		<CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/mouse_events_catcher.xml" />
 		<CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/spell_charging_bar.xml" />
