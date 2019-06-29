@@ -22,6 +22,7 @@ function enable(params) {
 	inside1.style.width = "100px";
 
 	inside2scheduled = $.Schedule(2.0, function() {
+		inside2scheduled = null;
 		inside2.style.transition = "width 500.0ms linear 0.0ms;";
 		inside2.style.width = "100px";
 	});
