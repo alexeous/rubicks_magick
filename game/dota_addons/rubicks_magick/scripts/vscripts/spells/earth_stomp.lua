@@ -95,7 +95,7 @@ end
 function EarthStomp:StunAoE(caster, radius)
 	local units = Util:FindUnitsInRadius(caster:GetAbsOrigin(), radius)
 	for _, unit in pairs(units) do
-		if unit ~= caster then 
+		if unit ~= caster and 0 == Spells:ResistanceLevelTo(unit, ELEMENT_EARTH) then 
 			unit:AddNewModifier(unit, nil, "modifier_stomp_stun", { duration = 1.2 })
 		end
 	end
