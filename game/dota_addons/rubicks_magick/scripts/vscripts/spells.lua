@@ -270,7 +270,8 @@ function Spells:OnDirectedCastKeyUp(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	if player ~= nil then
 		player.wantsToStartNewDirectedSpell = false
-		if player.spellCast ~= nil and player.spellCast.castType ~= CAST_TYPE_INSTANT and not player.spellCast.isSelfCast then
+		local spellCast = player.spellCast
+		if spellCast ~= nil and spellCast.castType ~= CAST_TYPE_INSTANT and not spellCast.isSelfCast then
 			Spells:StopCasting(player)
 		end
 	end
@@ -280,7 +281,8 @@ function Spells:OnSelfCastKeyUp(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	if player ~= nil then
 		player.wantsToStartNewSelfSpell = false
-		if player.spellCast ~= nil and player.spellCast.castType ~= CAST_TYPE_INSTANT and player.spellCast.isSelfCast then
+		local spellCast = player.spellCast
+		if spellCast ~= nil and spellCast.castType ~= CAST_TYPE_INSTANT and spellCast.isSelfCast then
 			Spells:StopCasting(player)
 		end
 	end
@@ -356,60 +358,63 @@ function Spells:TimeElapsedSinceCast(player)
 end
 
 function Spells:StartCasting(player, infoTable)
-	infoTable.startTime = GameRules:GetGameTime()
-	infoTable.endTime = infoTable.startTime + infoTable.duration
-	infoTable.lastThinkTime = GameRules:GetGameTime()
 	player.spellCast = infoTable
+	local spellCast = player.spellCast
+
+	spellCast.startTime = GameRules:GetGameTime()
+	spellCast.endTime = spellCast.startTime + spellCast.duration
+	spellCast.lastThinkTime = GameRules:GetGameTime()
 
 	local hero = player:GetAssignedHero()
 	if hero ~= nil then
-		if player.spellCast.castingGesture ~= nil then
+		if spellCast.castingGesture ~= nil then
 			if player.moveToPos ~= nil then
-				if player.spellCast.dontMoveWhileCasting then
+				if spellCast.dontMoveWhileCasting then
 					MoveController:StopMove(player)
 				end
 				hero:FadeGesture(ACT_DOTA_RUN)
 			end
 			local animationParams = {
-				duration = player.spellCast.duration,
-				activity = player.spellCast.castingGesture,
-				rate = player.spellCast.castingGestureRate,
-				translate = player.spellCast.castingGestureTranslate
+				duration = spellCast.duration,
+				activity = spellCast.castingGesture,
+				rate = spellCast.castingGestureRate,
+				translate = spellCast.castingGestureTranslate
 			}
 			StartAnimation(hero, animationParams)
-			if player.spellCast.loopSoundList ~= nil then
-				for _, sound in pairs(player.spellCast.loopSoundList) do
+			if spellCast.loopSoundList ~= nil then
+				for _, sound in pairs(spellCast.loopSoundList) do
 					hero:EmitSound(sound)
 				end
 			end
 		end
 
-		if player.spellCast.slowMovePercentage ~= nil then
-			local kv = { duration = player.spellCast.duration, slowMovePercentage = player.spellCast.slowMovePercentage }
+		if spellCast.slowMovePercentage ~= nil then
+			local kv = { duration = spellCast.duration, slowMovePercentage = spellCast.slowMovePercentage }
 			hero:AddNewModifier(hero, nil, "modifier_slow_move", kv)
 		end
 
-		if player.spellCast.castType == CAST_TYPE_CHARGING then
+		if spellCast.castType == CAST_TYPE_CHARGING then
 			CustomGameEventManager:Send_ServerToPlayer(player, "rm_cb_e", {})
-			if player.spellCast.chargingParticle ~= nil then
-				player.spellCast.chargingParticleID = ParticleManager:CreateParticle(player.spellCast.chargingParticle, PATTACH_ABSORIGIN_FOLLOW, hero)
+			if spellCast.chargingParticle ~= nil then
+				spellCast.chargingParticleID = ParticleManager:CreateParticle(spellCast.chargingParticle, PATTACH_ABSORIGIN_FOLLOW, hero)
 			end
 		end
 	end
 end
 
 function Spells:StopCasting(player)
-	if player.spellCast == nil then
+	local spellCast = player.spellCast
+	if spellCast == nil then
 		return
 	end
 
-	if player.spellCast.endFunction ~= nil then
-		player.spellCast.endFunction(player)
+	if spellCast.endFunction ~= nil then
+		spellCast.endFunction(player)
 	end
 
 	local hero = player:GetAssignedHero()
 	if hero ~= nil then
-		if player.spellCast.castingGesture ~= nil then
+		if spellCast.castingGesture ~= nil then
 			EndAnimation(hero)
 			if player.moveToPos ~= nil then
 				hero:StartGesture(ACT_DOTA_RUN)
@@ -419,17 +424,17 @@ function Spells:StopCasting(player)
 		if hero:HasModifier("modifier_slow_move") then
 			hero:RemoveModifierByName("modifier_slow_move")
 		end	
-		if player.spellCast.loopSoundList ~= nil then
-			for _, sound in pairs(player.spellCast.loopSoundList) do
+		if spellCast.loopSoundList ~= nil then
+			for _, sound in pairs(spellCast.loopSoundList) do
 				hero:StopSound(sound)
 			end
 		end
 	end
 
-	if player.spellCast.castType == CAST_TYPE_CHARGING then
+	if spellCast.castType == CAST_TYPE_CHARGING then
 		CustomGameEventManager:Send_ServerToPlayer(player, "rm_cb_d", {})
-		if player.spellCast.chargingParticleID ~= nil then
-			ParticleManager:DestroyParticle(player.spellCast.chargingParticleID, false)
+		if spellCast.chargingParticleID ~= nil then
+			ParticleManager:DestroyParticle(spellCast.chargingParticleID, false)
 		end
 	end
 
