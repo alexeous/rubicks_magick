@@ -26,6 +26,12 @@ require("spells/omni_ice_spikes")
 
 OMNI_SPELLS_RADIUSES = { 200, 300, 400 }
 
+CAST_TYPE_INSTANT = 1
+CAST_TYPE_CONTINUOUS = 2
+CAST_TYPE_CHARGING = 3
+
+SPELLS_THINK_PERIOD = 0.03
+
 function GetScaledRadiuses(factor)
 	return { OMNI_SPELLS_RADIUSES[1] * factor, OMNI_SPELLS_RADIUSES[2] * factor, OMNI_SPELLS_RADIUSES[3] * factor }
 end
@@ -282,22 +288,11 @@ end
 
 ----------     ----------     ----------     ----------     ----------     ----------     ----------     ----------     ----------     ----------
 
-SPELLS_THINK_PERIOD = 0.03
 function Spells:OnSpellsThink()
-	local time = GameRules:GetGameTime()
 	for playerID = 0, DOTA_MAX_PLAYERS - 1 do
 		local player = PlayerResource:GetPlayer(playerID)
 		if player ~= nil and player.spellCast ~= nil then
-			local heroEntity = player:GetAssignedHero()
-			if time > player.spellCast.endTime or not heroEntity:IsAlive() or heroEntity:IsStunned() then
-				Spells:StopCasting(player)
-			elseif player.spellCast.thinkFunction ~= nil then
-				local time = GameRules:GetGameTime()
-				if player.spellCast.thinkPeriod == nil or time - player.spellCast.lastThinkTime >= player.spellCast.thinkPeriod then
-					player.spellCast.thinkFunction(player)
-					player.spellCast.lastThinkTime = time
-				end
-			end
+			Spells:SpellCastThink(player)
 		end		
 	end
 
@@ -344,9 +339,17 @@ function Spells:OnSpellsThink()
 	return SPELLS_THINK_PERIOD
 end
 
-CAST_TYPE_INSTANT = 1
-CAST_TYPE_CONTINUOUS = 2
-CAST_TYPE_CHARGING = 3
+function Spells:SpellCastThink(player)
+	local spellCast = player.spellCast
+	local time = GameRules:GetGameTime()
+	local heroEntity = player:GetAssignedHero()
+	if time > spellCast.endTime or not heroEntity:IsAlive() or heroEntity:IsStunned() then
+		Spells:StopCasting(player)
+	elseif spellCast.thinkFunction ~= nil and (spellCast.thinkPeriod == nil or time - spellCast.lastThinkTime >= spellCast.thinkPeriod) then
+		spellCast.thinkFunction(player)
+		spellCast.lastThinkTime = time
+	end
+end
 
 function Spells:TimeElapsedSinceCast(player)
 	return GameRules:GetGameTime() - player.spellCast.startTime
