@@ -434,7 +434,8 @@ function Spells:StartCasting(player, infoTable)
 		end
 
 		if spellCast.castType == CAST_TYPE_CHARGING then
-			CustomGameEventManager:Send_ServerToPlayer(player, "rm_cb_e", {})
+			local info = { phase1 = spellCast.chargingPhase1Duration, phase2 = spellCast.chargingPhase2Duration }
+			CustomGameEventManager:Send_ServerToPlayer(player, "rm_cb_e", info)
 			if spellCast.chargingParticle ~= nil then
 				spellCast.chargingParticleID = ParticleManager:CreateParticle(spellCast.chargingParticle, PATTACH_ABSORIGIN_FOLLOW, hero)
 			end

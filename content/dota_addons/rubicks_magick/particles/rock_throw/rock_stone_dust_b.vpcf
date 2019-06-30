@@ -31,28 +31,28 @@
 		},
 		{
 			_class = "C_OP_InterpolateRadius"
-			m_flEndScale = 0.8
+			m_flEndScale = 2.0
 		},
 		{
-			_class = "C_OP_VectorNoise"
-			m_nFieldOutput = "0"
-			m_vecOutputMin = [ -10.0, -10.0, -10.0 ]
-			m_vecOutputMax = [ 10.0, 10.0, 10.0 ]
-			m_bAdditive = true
+			_class = "C_OP_ColorInterpolate"
+			m_ColorFade = [ 68, 68, 68, 255 ]
+			m_flFadeEndTime = 0.5
+			m_flFadeStartTime = 0.2
 			m_bDisableOperator = true
 		},
 		{
 			_class = "C_OP_BasicMovement"
-			m_Gravity = [ 0.0, 0.0, -200.0 ]
+			m_Gravity = [ 0.0, 0.0, -3000.0 ]
 		},
 	]
 	m_Renderers = 
 	[
 		{
 			_class = "C_OP_RenderSprites"
-			m_hTexture = resource:"materials/particle/smoke1/smoke1.vtex"
+			m_hTexture = resource:"materials/particle/water_splash/water_splash.vtex"
 			m_flDepthBias = 100.0
 			m_ColorScale = [ 255, 255, 255 ]
+			m_flAnimationRate = 1.0
 		},
 	]
 	m_Initializers = 
@@ -62,39 +62,45 @@
 		},
 		{
 			_class = "C_INIT_RandomSequence"
-			m_nSequenceMax = 15
 		},
 		{
 			_class = "C_INIT_RandomRotation"
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 127
-			m_nAlphaMax = 189
+			m_nAlphaMin = 112
+			m_nAlphaMax = 158
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 15.0
-			m_flRadiusMax = 30.0
+			m_flRadiusMin = 1.0125
+			m_flRadiusMax = 25.7645
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.7
-			m_fLifetimeMax = 0.8
+			m_fLifetimeMin = 0.3
+			m_fLifetimeMax = 0.5
 		},
 		{
 			_class = "C_INIT_RandomColor"
-			m_ColorMin = [ 126, 126, 126, 255 ]
-			m_ColorMax = [ 147, 140, 133, 255 ]
+			m_ColorMin = [ 63, 63, 63, 255 ]
+			m_ColorMax = [ 26, 23, 14, 255 ]
 		},
 		{
 			_class = "C_INIT_RemapCPtoScalar"
 			m_nCPInput = 1
 			m_flInputMin = 1.0
 			m_flInputMax = 3.0
-			m_flOutputMax = 2.3
-			m_flOutputMin = 1.8
+			m_flOutputMax = 5.0
+			m_flOutputMin = 3.0
 			m_nSetMethod = "PARTICLE_SET_SCALE_INITIAL_VALUE"
+		},
+		{
+			_class = "C_INIT_RandomRotation"
+		},
+		{
+			_class = "C_INIT_VelocityRandom"
+			m_LocalCoordinateSystemSpeedMax = [ 0.0, 0.0, 300.0 ]
 		},
 	]
 	m_Emitters = 
@@ -113,7 +119,7 @@
 				m_flRandomMin = 0.0
 				m_flRandomMax = 1.0
 				m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
-				m_flMultFactor = 180.0
+				m_flMultFactor = 100.0
 				m_flInput0 = 0.0
 				m_flInput1 = 1.0
 				m_flOutput0 = 0.0

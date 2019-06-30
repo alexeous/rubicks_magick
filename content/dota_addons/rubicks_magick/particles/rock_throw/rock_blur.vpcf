@@ -40,8 +40,8 @@
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 106
-			m_nAlphaMax = 126
+			m_nAlphaMin = 46
+			m_nAlphaMax = 54
 		},
 		{
 			_class = "C_INIT_RemapCPtoScalar"

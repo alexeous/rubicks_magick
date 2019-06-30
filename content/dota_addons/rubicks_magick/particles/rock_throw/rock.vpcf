@@ -37,7 +37,7 @@
 			]
 			m_hOverrideMaterial = resource:"materials/models/particle/simrock.vmat"
 			m_bForceLoopingAnimation = true
-			m_ColorScale = [ 255, 255, 255 ]
+			m_ColorScale = [ 147, 147, 147 ]
 		},
 	]
 	m_Initializers = 
@@ -50,8 +50,8 @@
 			m_nCPInput = 1
 			m_flInputMin = 1.0
 			m_flInputMax = 3.0
-			m_flOutputMin = 0.18
-			m_flOutputMax = 0.4
+			m_flOutputMin = 0.21
+			m_flOutputMax = 0.33
 		},
 	]
 	m_Emitters = 
@@ -96,6 +96,9 @@
 		},
 		{
 			m_ChildRef = resource:"particles/rock_throw/rock_blur.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/rock_throw/rock_stone_dust_b.vpcf"
 		},
 	]
 	m_nBehaviorVersion = 9

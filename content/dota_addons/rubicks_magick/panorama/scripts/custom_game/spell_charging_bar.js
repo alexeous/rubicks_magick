@@ -16,14 +16,16 @@ disable(null);
 
 function enable(params) {
 	enabled = true;
-	cycle();
+	barHeroFollowCycle();
 	
-	inside1.style.transition = "width 2000.0ms linear 0.0ms;";
+	var phase1 = params.phase1;
+	var phase2 = params.phase2;
+	inside1.style.transition = "width " + phase1 +  "s linear 0.0ms;";
 	inside1.style.width = "100px";
 
-	inside2scheduled = $.Schedule(2.0, function() {
+	inside2scheduled = $.Schedule(phase1, function() {
 		inside2scheduled = null;
-		inside2.style.transition = "width 500.0ms linear 0.0ms;";
+		inside2.style.transition = "width " + phase2 + "s linear 0.0ms;";
 		inside2.style.width = "100px";
 	});
 }
@@ -44,7 +46,7 @@ function disable(params) {
 	}
 }
 
-function cycle(params) {
+function barHeroFollowCycle() {
 	if(!enabled) 
 		return;
 
@@ -60,5 +62,5 @@ function cycle(params) {
 	panelStyle.x = (screenX - 50) + "px";
 	panelStyle.y = (screenY - 5) + "px";
 
-	$.Schedule(0.01, cycle);
+	$.Schedule(0.01, barHeroFollowCycle);
 }

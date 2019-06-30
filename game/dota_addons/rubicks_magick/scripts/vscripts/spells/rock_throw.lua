@@ -25,10 +25,12 @@ function RockThrow:StartRockThrow(player, pickedElements)
 	local caster = player:GetAssignedHero()
 	local spellCastTable = {
 		castType = CAST_TYPE_CHARGING,
-		duration = 2.5,
+		duration = 2.6,
+		chargingPhase1Duration = 2.1,
+		chargingPhase2Duration = 0.5,
 		castingGesture = ACT_DOTA_CHANNEL_ABILITY_5,
 		endFunction = function(player) RockThrow:ReleaseRock(player) end,
-		thinkPeriod = 1.8,
+		thinkPeriod = 2.1,
 		thinkFunction = function(player)
 			caster:EmitSound("RockOvercharge")
 		end,
@@ -40,7 +42,6 @@ function RockThrow:StartRockThrow(player, pickedElements)
 	caster:EmitSound("RockCharging")
 end
 
-ROCK_FLY_DISTANCES = { 1600, 1375, 1200 }
 ROCK_FLY_TIME = 0.12
 ROCK_START_HEIGHT = 100
 ROCK_FALL_G_CONST = 2 * ROCK_START_HEIGHT / (ROCK_FLY_TIME * ROCK_FLY_TIME)
@@ -54,51 +55,32 @@ function RockThrow:ReleaseRock(player)
 
 	local pickedElements = player.spellCast.rockThrow_PickedElements
 
-	local waterTrail = 0
-	local fireTrail = 0
-	local coldTrail = 0
-	local deathTrail = 0
-	local lifeTrail = 0
-	local steamTrail = 0
-	local ice = 0
-
-	local rockSize = 0
-	local earthOnly = 1
-
-	for i, element in pairs(pickedElements) do
-		if element == ELEMENT_EARTH then 
-			rockSize = rockSize + 1
-		else
-			earthOnly = 0
-			if     element == ELEMENT_WATER then waterTrail = 1
-			elseif element == ELEMENT_FIRE  then fireTrail = 1
-			elseif element == ELEMENT_COLD  then coldTrail = 1
-			elseif element == ELEMENT_DEATH then deathTrail = 1
-			elseif element == ELEMENT_LIFE  then lifeTrail = 1
-			end
-		end
-	end
-	if fireTrail == 1 and waterTrail == 1 then
-		fireTrail = 0
-		waterTrail = 0
-		steamTrail = 1
-	end
-	if waterTrail == 1 and coldTrail == 1 then
-		waterTrail = 0
-		coldTrail = 0
-		ice = 1
-	end
+	local earthCount = table.count(pickedElements, ELEMENT_EARTH)
+	local rockSize = earthCount
+	
 	local timeElapsed = Spells:TimeElapsedSinceCast(player)
-	local timeFactor = math.min(2.0, timeElapsed) / 2.0
+
+	local phase1 = player.spellCast.chargingPhase1Duration
+	local timeFactor = math.min(phase1, timeElapsed) / phase1
 	local damageFactor = timeFactor
 	local radiusFactor = 0.4 + 0.6 * timeFactor
-	local distanceFactor = 0.02 + 0.98 * timeFactor
-	local rockDamages = { 125, 300, 600 }
-	local rockDamage = rockDamages[rockSize] * damageFactor
-	if rockSize == 1 and earthOnly == 1 then
-		rockDamage = 135 * damageFactor
-	end
+
+	local minRockDamage = ({ 30, 40, 50 })[rockSize]
+	local maxRockDamage = ({ 125, 300, 600 })[rockSize]
+	local rockDamage = Util:Lerp(minRockDamage, maxRockDamage, timeFactor)
+
+	local minDistance = 150
+	local maxDistance = ({ 1600, 1375, 1200 })[rockSize]
+	local distance = Util:Lerp(minDistance, maxDistance, timeFactor)
+
 	local radiuses = GetScaledRadiuses(radiusFactor)
+
+	if timeElapsed >= 2.4 then
+		rockDamage = ({ 135, 330, 650 })[rockSize]
+		Timers:CreateTimer(0.02, function()
+			caster:AddNewModifier(caster, nil, "modifier_knockdown", { duration = 2.0 })
+		end)
+	end
 
 	local rockImpactTable = {
 		[ELEMENT_EARTH] = {			
@@ -136,90 +118,131 @@ function RockThrow:ReleaseRock(player)
 	}
 	local onImpactFunction = table.serialRetrieve(rockImpactTable, pickedElements)
 
-	local rockRadius = rockSize * 8 + 4
-	local distance = ROCK_FLY_DISTANCES[rockSize] * distanceFactor
-	local startOrigin = caster:GetAbsOrigin() + Vector(0, 0, ROCK_START_HEIGHT + rockRadius)
+	local forward = caster:GetForwardVector():Normalized()
+	local startOrigin = caster:GetAbsOrigin() + Vector(0, 0, ROCK_START_HEIGHT) + forward * 70
 	local rockDummy = Util:CreateDummy(startOrigin, caster)
 	rockDummy.caster = caster
 	rockDummy.time = 0.0
 	rockDummy.startZ = startOrigin.z
-	rockDummy.moveStep = caster:GetForwardVector():Normalized() * (distance * (ROCK_THINK_PERIOD / ROCK_FLY_TIME))
+	rockDummy.moveStep = forward * (distance * (ROCK_THINK_PERIOD / ROCK_FLY_TIME))
 	rockDummy.moveStep.z = 0
 	rockDummy.rockSize = rockSize
 	rockDummy.collisionRadius = rockSize * 16 + 18
 	rockDummy.rockDamage = rockDamage
 	rockDummy.onImpactFunction = onImpactFunction
-	local rockParticle = ParticleManager:CreateParticle("particles/rock_throw/rock.vpcf", PATTACH_ABSORIGIN_FOLLOW, rockDummy)
-	ParticleManager:SetParticleControl(rockParticle, 1, Vector(rockSize, earthOnly, ice))
-	ParticleManager:SetParticleControl(rockParticle, 2, Vector(waterTrail, fireTrail, coldTrail))
-	ParticleManager:SetParticleControl(rockParticle, 3, Vector(deathTrail, lifeTrail, steamTrail))
-	rockDummy.particle = rockParticle
+	rockDummy.particle = RockThrow:CreateRockParticle(rockDummy, pickedElements)
 	table.insert(RockThrow.rockDummiesList, rockDummy)
 
 	local launchWaveParticle = ParticleManager:CreateParticle("particles/rock_throw/rock_launch_wave.vpcf", PATTACH_CUSTOMORIGIN, nil)
 	ParticleManager:SetParticleControl(launchWaveParticle, 0, caster:GetAbsOrigin())
 	ParticleManager:SetParticleControl(launchWaveParticle, 1, Vector(distance, 0, 0))
 	ParticleManager:SetParticleControl(launchWaveParticle, 2, Vector(0, caster:GetAnglesAsVector().y, 0))
+end
 
-	if timeElapsed >= 2.4 then
-		Timers:CreateTimer(0.02, function()
-			caster:AddNewModifier(caster, nil, "modifier_knockdown", { duration = 2.0 })
-		end)
+function RockThrow:CreateRockParticle(rockDummy, pickedElements)
+	local waterTrail = 0
+	local fireTrail = 0
+	local coldTrail = 0
+	local deathTrail = 0
+	local lifeTrail = 0
+	local steamTrail = 0
+	local ice = 0
+
+	local rockSize = 0
+	local earthOnly = 1
+	for i, element in pairs(pickedElements) do
+		if element == ELEMENT_EARTH then 
+			rockSize = rockSize + 1
+		else
+			earthOnly = 0
+			if     element == ELEMENT_WATER then waterTrail = 1
+			elseif element == ELEMENT_FIRE  then fireTrail = 1
+			elseif element == ELEMENT_COLD  then coldTrail = 1
+			elseif element == ELEMENT_DEATH then deathTrail = 1
+			elseif element == ELEMENT_LIFE  then lifeTrail = 1
+			end
+		end
 	end
+	if fireTrail == 1 and waterTrail == 1 then
+		fireTrail = 0
+		waterTrail = 0
+		steamTrail = 1
+	end
+	if waterTrail == 1 and coldTrail == 1 then
+		waterTrail = 0
+		coldTrail = 0
+		ice = 1
+	end
+
+	local particle = ParticleManager:CreateParticle("particles/rock_throw/rock.vpcf", PATTACH_ABSORIGIN_FOLLOW, rockDummy)
+	ParticleManager:SetParticleControl(particle, 1, Vector(rockSize, earthOnly, ice))
+	ParticleManager:SetParticleControl(particle, 2, Vector(waterTrail, fireTrail, coldTrail))
+	ParticleManager:SetParticleControl(particle, 3, Vector(deathTrail, lifeTrail, steamTrail))
+	return particle
 end
 
 function RockThrow:OnRockThink()
 	for _, rockDummy in pairs(RockThrow.rockDummiesList) do
-		local origin = rockDummy:GetAbsOrigin()
-		if origin.z <= GetGroundHeight(origin, rockDummy) then
-			RockThrow:ImpactRock(rockDummy, {})
-		else
-			rockDummy.time = rockDummy.time + ROCK_THINK_PERIOD
+		RockThrow:RockDummyThink(rockDummy)
+	end
+	return ROCK_THINK_PERIOD
+end
 
-			local oldOrigin = origin
-			origin = origin + rockDummy.moveStep
-			origin.z = rockDummy.startZ - ROCK_FALL_G_CONST * rockDummy.time * rockDummy.time / 2
-			rockDummy:SetAbsOrigin(origin)
-			
-			local caster = rockDummy.caster
-			local trees = GridNav:GetAllTreesAroundPoint(origin, rockDummy.collisionRadius, true)
-			if next(trees) ~= nil then
-				RockThrow:ImpactRock(rockDummy, {})
+function RockThrow:RockDummyThink(rockDummy)
+	local origin = rockDummy:GetAbsOrigin()
+	if origin.z <= GetGroundHeight(origin, rockDummy) then
+		RockThrow:ImpactRock(rockDummy, {})
+		return
+	end
+	
+	local time = rockDummy.time
+	rockDummy.time = time + ROCK_THINK_PERIOD
+	if time == 0 then
+		return
+	end
+
+	local oldOrigin = origin
+	origin = origin + rockDummy.moveStep
+	origin.z = rockDummy.startZ - ROCK_FALL_G_CONST * time * time / 2
+	rockDummy:SetAbsOrigin(origin)
+	
+	local caster = rockDummy.caster
+	local trees = GridNav:GetAllTreesAroundPoint(origin, rockDummy.collisionRadius, true)
+	if next(trees) ~= nil then
+		RockThrow:ImpactRock(rockDummy, {})
+		return
+	end
+
+	local damage = rockDummy.rockDamage
+	local unitsTouched = Util:FindUnitsInLine(oldOrigin, origin, rockDummy.collisionRadius, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
+	for _, unit in pairs(unitsTouched) do
+		if unit ~= rockDummy and unit ~= caster then
+			Util:EmitSoundOnLocation(origin, "RockTouch", caster)
+			if unit:IsFrozen() then
+				if rockDummy.rockSize == 3 and damage >= 450 then
+					unit:RemoveModifierByName("modifier_frozen")
+					Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage * 10, false, 0.0, true)
+					--RockThrow:ImpactParticle(origin, 1)
+					RockThrow:BurstFrozenParticle(origin)
+					RockThrow:PlayBurstSound(origin, caster, true)
+				else
+					RockThrow:ImpactRock(rockDummy, unitsTouched)
+					break
+				end
 			else
-				local damage = rockDummy.rockDamage
-				local unitsTouched = Util:FindUnitsInLine(oldOrigin, origin, rockDummy.collisionRadius, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
-				for _, unit in pairs(unitsTouched) do
-					if unit ~= rockDummy and unit ~= caster then
-						Util:EmitSoundOnLocation(origin, "RockTouch", caster)
-						if unit:IsFrozen() then
-							if rockDummy.rockSize == 3 and damage >= 450 then
-								unit:RemoveModifierByName("modifier_frozen")
-								Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage * 10, false, 0.0, true)
-								--RockThrow:ImpactParticle(origin, 1)
-								RockThrow:BurstFrozenParticle(origin)
-								RockThrow:PlayBurstSound(origin, caster, true)
-							else
-								RockThrow:ImpactRock(rockDummy, unitsTouched)
-								break
-							end
-						else
-							local damageAfterShields = Spells:GetDamageAfterShields(unit, damage, ELEMENT_EARTH)
-							if rockDummy.rockSize == 3 and unit:GetHealth() - damageAfterShields <= 0 then
-								Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage, false)
-								--RockThrow:ImpactParticle(origin, 1)
-								RockThrow:BurstBloodParticle(origin)
-								RockThrow:PlayBurstSound(origin, caster, false)
-							else
-								RockThrow:ImpactRock(rockDummy, unitsTouched)
-								break
-							end
-						end
-					end
+				local damageAfterShields = Spells:GetDamageAfterShields(unit, damage, ELEMENT_EARTH)
+				if rockDummy.rockSize == 3 and unit:GetHealth() - damageAfterShields <= 0 then
+					Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage, false)
+					--RockThrow:ImpactParticle(origin, 1)
+					RockThrow:BurstBloodParticle(origin)
+					RockThrow:PlayBurstSound(origin, caster, false)
+				else
+					RockThrow:ImpactRock(rockDummy, unitsTouched)
+					break
 				end
 			end
 		end
 	end
-	return ROCK_THINK_PERIOD
 end
 
 function RockThrow:ImpactRock(rockDummy, unitsTouched)
@@ -242,7 +265,14 @@ function RockThrow:ImpactRock(rockDummy, unitsTouched)
 	
 	Util:EmitSoundOnLocation(origin, "RockImpact", rockDummy.caster)
 	Util:EmitSoundOnLocation(origin, "RockTouch", rockDummy.caster)
+	
 	ParticleManager:SetParticleControl(rockDummy.particle, 0, origin)
+	Timers:CreateTimer(0.05, function()
+		ParticleManager:SetParticleControl(rockDummy.particle, 1, Vector(rockDummy.rockSize, 0, 0))
+		ParticleManager:SetParticleControl(rockDummy.particle, 2, Vector(0, 0, 0))
+		ParticleManager:SetParticleControl(rockDummy.particle, 3, Vector(0, 0, 0))
+	end)
+
 	RockThrow:ImpactParticle(origin, rockDummy.rockSize)
 	Timers:CreateTimer(0.2, function() ParticleManager:DestroyParticle(rockDummy.particle, false) end)
 	Timers:CreateTimer(2.0, function() rockDummy:Destroy() end)

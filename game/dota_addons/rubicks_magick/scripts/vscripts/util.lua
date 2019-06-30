@@ -29,3 +29,7 @@ function Util:EmitSoundOnLocation(location, soundName, caster)
 	dummy:EmitSound(soundName)
 	Timers:CreateTimer(10.0, function() dummy:Destroy() end)
 end
+
+function Util:Lerp(a, b, t)
+	return a + (b - a) * t
+end
