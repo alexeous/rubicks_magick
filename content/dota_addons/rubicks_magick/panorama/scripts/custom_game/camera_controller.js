@@ -7,8 +7,8 @@ function loop() {
 		var currentCameraPos = GameUI.GetCameraLookAtPosition();
 		var cursorPos = GameUI.GetCursorPosition();
 
-		var targetPos = calcCameraPos(heroPos, currentCameraPos, cursorPos, 0.6);
-		GameUI.SetCameraTargetPosition(targetPos, 0.1);
+		var targetPos = calcCameraPos(heroPos, currentCameraPos, cursorPos, 0.63);
+		GameUI.SetCameraTargetPosition(targetPos, 0.13);
 	}
 	$.Schedule(0, loop);
 }
