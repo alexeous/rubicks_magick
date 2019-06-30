@@ -50,31 +50,31 @@ function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, pickedElements
 
 	radiusFactor = radiusFactor or 1.0
 	healFactor = healFactor or 1.0
-	local radius = radiusOverride or (OMNI_SPELLS_RADIUSES[1] * radiusFactor)
-	local heal = 100 * healFactor
-	if pickedElements[2] == ELEMENT_LIFE then
-		radius = radiusOverride or (OMNI_SPELLS_RADIUSES[2] * radiusFactor)
-		heal = 140 * healFactor
-	end
+	local lifeCount = table.count(pickedElements, ELEMENT_LIFE)
+	local radius = radiusOverride or (OMNI_SPELLS_RADIUSES[lifeCount] * radiusFactor)
+
+	local lifeOnly = #pickedElements == lifeCount
+	local baseHeal = (lifeOnly and { 100, 140 } or { 60, 133 })[lifeCount]
+	local heal = baseHeal * healFactor
 
 	local lifePulseTable = {
 		[ELEMENT_LIFE] = {
 			[ELEMENT_LIFE] = {
 				[ELEMENT_WATER] = function() OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, false, false) end,
-				[ELEMENT_FIRE]  = function() OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, 73 * healFactor) end,
-				[ELEMENT_COLD]  = function() OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, 43 * healFactor) end
+				[ELEMENT_FIRE]  = function() OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, 66 * healFactor) end,
+				[ELEMENT_COLD]  = function() OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, 36 * healFactor) end
 			},
 			[ELEMENT_WATER] = {
-				[ELEMENT_FIRE]  = function() OmniElementSprays:OmniSteamSpray(caster, position, radius, ignoreCaster, 125 * healFactor, false) end,
+				[ELEMENT_FIRE]  = function() OmniElementSprays:OmniSteamSpray(caster, position, radius, ignoreCaster, 85 * healFactor, false) end,
 				[DEFAULT]       = function() OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, (pickedElements[3] == ELEMENT_WATER)) end
 			},
 			[ELEMENT_FIRE] = {
-				[ELEMENT_FIRE]  = function() OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, 106 * healFactor) end,
-				[EMPTY]         = function() OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, 75 * healFactor) end
+				[ELEMENT_FIRE]  = function() OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, 66 * healFactor) end,
+				[EMPTY]         = function() OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, 35 * healFactor) end
 			},
 			[ELEMENT_COLD] = {
-				[ELEMENT_COLD]  = function() OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, 104 * healFactor) end,
-				[EMPTY]         = function() OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, 56 * healFactor) end
+				[ELEMENT_COLD]  = function() OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, 64 * healFactor) end,
+				[EMPTY]         = function() OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, 16 * healFactor) end
 			}
 		}
 	}
