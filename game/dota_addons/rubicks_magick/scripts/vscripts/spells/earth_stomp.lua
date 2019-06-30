@@ -19,7 +19,7 @@ function EarthStomp:EarthStomp(player, pickedElements)
 	local caster = player:GetAssignedHero()
 	local spellCastTable = {
 		castType = CAST_TYPE_INSTANT,
-		duration = 1.4,
+		duration = 1.2,
 		dontMoveWhileCasting = true,
 		castingGesture = ACT_DOTA_CAST_ABILITY_5,
 		castingGestureRate = 0.82,
@@ -95,8 +95,12 @@ end
 function EarthStomp:StunAoE(caster, radius)
 	local units = Util:FindUnitsInRadius(caster:GetAbsOrigin(), radius)
 	for _, unit in pairs(units) do
-		if unit ~= caster and 0 == Spells:ResistanceLevelTo(unit, ELEMENT_EARTH) then 
-			unit:AddNewModifier(unit, nil, "modifier_stomp_stun", { duration = 1.2 })
+		if unit ~= caster and EarthStomp:CanStun(unit) then 
+			unit:AddNewModifier(unit, nil, "modifier_stomp_stun", { duration = 1.5 })
 		end
 	end
+end
+
+function EarthStomp:CanStun(unit)
+	return 0 == Spells:ResistanceLevelTo(unit, ELEMENT_EARTH) and not unit:HasModifier("modifier_stomp_stun")
 end
