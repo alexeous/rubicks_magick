@@ -68,5 +68,5 @@ function modifier_chill:DeclareFunctions()
 end
 
 function modifier_chill:GetModifierMoveSpeedBonus_Percentage(params)
-	return -90 * (self.value / FREEZE_POINT)
+	return -90 * ((self.value or 0) / FREEZE_POINT)
 end
