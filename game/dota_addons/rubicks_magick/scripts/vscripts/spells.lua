@@ -359,6 +359,7 @@ function Spells:ProcessHealthChanges()
 			for k, info in pairs(heals) do
 				local clampedValue, metMax = ConsumeValue(heals, k, unit:GetMaxHealth() - unit:GetHealth())
 				unit:Heal(clampedValue, info.source)
+				SendOverheadEventMessage(unit, OVERHEAD_ALERT_HEAL, unit, clampedValue, unit)
 				if metMax then break end
 			end
 			for k, info in pairs(damages) do
@@ -370,6 +371,7 @@ function Spells:ProcessHealthChanges()
 
 		for _, info in pairs(heals) do
 			unit:Heal(info.value, info.source)
+			SendOverheadEventMessage(unit, OVERHEAD_ALERT_HEAL, unit, info.value, unit)
 		end
 
 		for _, info in pairs(damages) do
