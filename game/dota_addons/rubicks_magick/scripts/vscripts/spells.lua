@@ -134,10 +134,10 @@ end
 function Spells:OnDirectedCastKeyDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	local hero = player:GetAssignedHero()
-	if hero == nil or hero:IsStunned() or not hero:IsAlive() then
+	if hero == nil or not hero:IsAlive() then
 		return
 	end
-	if player.spellCast ~= nil then 
+	if player.spellCast ~= nil or hero:IsStunned() then 
 		player.wantsToStartNewDirectedSpell = true
 		return
 	end
@@ -205,10 +205,10 @@ end
 function Spells:OnSelfCastKeyDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	local hero = player:GetAssignedHero()
-	if hero == nil or hero:IsStunned() or not hero:IsAlive() then
+	if hero == nil or not hero:IsAlive() then
 		return
 	end
-	if player.spellCast ~= nil then
+	if player.spellCast ~= nil or hero:IsStunned() then
 		player.wantsToStartNewSelfSpell = true
 		return
 	end
@@ -293,9 +293,8 @@ end
 function Spells:OnSpellsThink()
 	for playerID = 0, DOTA_MAX_PLAYERS - 1 do
 		local player = PlayerResource:GetPlayer(playerID)
-		if player ~= nil and player.spellCast ~= nil then
-			Spells:SpellCastThink(player)
-		end		
+		Spells:SpellCastThink(player)
+		Spells:CheckIfPlayerWantsToStartNewSpell(player)
 	end
 
 	for target, healInfos in pairs(Spells.healPool) do
@@ -342,6 +341,9 @@ function Spells:OnSpellsThink()
 end
 
 function Spells:SpellCastThink(player)
+	if player == nil or player.spellCast == nil then
+		return
+	end
 	local spellCast = player.spellCast
 	local time = GameRules:GetGameTime()
 	local hero = player:GetAssignedHero()
@@ -350,6 +352,20 @@ function Spells:SpellCastThink(player)
 	elseif spellCast.thinkFunction ~= nil and (spellCast.thinkPeriod == nil or time - spellCast.lastThinkTime >= spellCast.thinkPeriod) then
 		spellCast.thinkFunction(player)
 		spellCast.lastThinkTime = time
+	end
+end
+
+function Spells:CheckIfPlayerWantsToStartNewSpell(player)
+	if player == nil then
+		return
+	end
+	if player.wantsToStartNewSelfSpell then
+		player.wantsToStartNewSelfSpell = false
+		Spells:OnSelfCastKeyDown({ playerID = player:GetPlayerID() })
+	end
+	if player.wantsToStartNewDirectedSpell then
+		player.wantsToStartNewDirectedSpell = false
+		Spells:OnDirectedCastKeyDown({ playerID = player:GetPlayerID() })
 	end
 end
 
@@ -440,14 +456,7 @@ function Spells:StopCasting(player)
 
 	player.spellCast = nil
 
-	if player.wantsToStartNewSelfSpell then
-		Spells:OnSelfCastKeyDown({ playerID = player:GetPlayerID() })
-		player.wantsToStartNewSelfSpell = false
-	end
-	if player.wantsToStartNewDirectedSpell then
-		Spells:OnDirectedCastKeyDown({ playerID = player:GetPlayerID() })
-		player.wantsToStartNewDirectedSpell = false
-	end
+	Spells:CheckIfPlayerWantsToStartNewSpell(player)
 end
 
 ------------------------- MELEE ATTACK ------------------------------
