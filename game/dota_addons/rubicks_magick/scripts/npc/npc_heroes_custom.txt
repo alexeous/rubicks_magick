@@ -10,7 +10,7 @@
 		"VisionNighttimeRange"		"3000"
 
 		"MovementTurnRate"			"60"
-		"MovementSpeed"				"360"
+		"MovementSpeed"				"420"
 		"ArmorPhysical"				"0"
 		"MagicalResistance"			"0"
 
