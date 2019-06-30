@@ -3,9 +3,6 @@ $.Schedule(0, loop);
 function loop() {
 	var heroID = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
 	if (heroID != -1) {
-		GameUI.SetCameraPitchMin(65);
-		GameUI.SetCameraPitchMax(65);
-
 		var heroPos = Entities.GetAbsOrigin(heroID);
 		var currentCameraPos = GameUI.GetCameraLookAtPosition();
 		var cursorPos = GameUI.GetCursorPosition();
