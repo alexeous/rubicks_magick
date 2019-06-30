@@ -259,7 +259,7 @@ function Lightning:OnDirectedLightningThink(player)
 end
 
 function Lightning:OnOmniLightningThink(player)
-	player.spellCast.thinkPeriod = 0.3
+	player.spellCast.thinkPeriod = 0.25
 
 	local caster = player:GetAssignedHero()
 	local distance = player.spellCast.lightning_Distance
