@@ -84,8 +84,7 @@ function Spells:Precache(context)
 end
 
 function Spells:Init()
-	Spells.damagePool = {}
-	Spells.healPool = {}
+	Spells.healthChanges = {}
 
 	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(Spells, "OnSpellsThink"), "OnSpellsThink", 2)
 	ListenToGameEvent("entity_killed", Dynamic_Wrap(Spells, "OnEntityKilled"), self)
@@ -297,45 +296,7 @@ function Spells:OnSpellsThink()
 		Spells:CheckIfPlayerWantsToStartNewSpell(player)
 	end
 
-	for target, healInfos in pairs(Spells.healPool) do
-		for source, heal in pairs(healInfos) do
-			local healthShortage = target:GetMaxHealth() - target:GetHealth()
-			heal = math.min(heal, healthShortage)
-			if heal > 0 then
-				target:Heal(heal, source)
-				SendOverheadEventMessage(target, OVERHEAD_ALERT_HEAL, target, heal, target)
-			end
-		end
-	end
-	Spells.healPool = {}
-	for victim, damageSources in pairs(Spells.damagePool) do
-		for attacker, damageRecords in pairs(damageSources) do
-			local sum = 0
-			for _, damageRecord in pairs(damageRecords) do
-				sum = sum + damageRecord.damage
-			end
-			ApplyDamage({ victim = victim, attacker = attacker, damage = sum, damage_type = DAMAGE_TYPE_PURE })
-
-			if victim:IsAlive() then
-				for _, damageRecord in pairs(damageRecords) do
-					local damage = damageRecord.damage
-					local element = damageRecord.element
-					local applyModifiers = damageRecord.applyModifiers
-
-					if applyModifiers then
-						if element == ELEMENT_WATER then
-							Spells:ApplyWet(victim, attacker)
-						elseif element == ELEMENT_COLD then
-							Spells:ApplyChill(victim, attacker, damage)
-						elseif element == ELEMENT_FIRE then
-							Spells:ApplyBurn(victim, attacker, damage)
-						end
-					end
-				end
-			end
-		end
-	end
-	Spells.damagePool = {}
+	Spells:ProcessHealthChanges()
 
 	return SPELLS_THINK_PERIOD
 end
@@ -367,6 +328,69 @@ function Spells:CheckIfPlayerWantsToStartNewSpell(player)
 		player.wantsToStartNewDirectedSpell = false
 		Spells:OnDirectedCastKeyDown({ playerID = player:GetPlayerID() })
 	end
+end
+
+function Spells:ProcessHealthChanges()
+	local function CollectModifiersToApply(damages)
+		local modifiers = {}
+		for _, info in pairs(damages) do
+			if info.applyModifiers then
+				table.insert(modifiers, { damage = info.value, source = info.source, element = info.element })
+			end
+		end
+		return modifiers
+	end
+
+	for unit, healthChanges in pairs(Spells.healthChanges) do
+		local heals = healthChanges.heals
+		local damages = healthChanges.damages
+		local modifiersToApply = CollectModifiersToApply(damages)
+
+		while next(heals) ~= nil and next(damages) ~= nil do
+			local function ConsumeValue(table, key, max)
+				local info = table[key]
+				local clampedValue = math.min(info.value, max)
+				local metMax = clampedValue < info.value
+				info.value = info.value - clampedValue
+				if info.value < 0.5 then table[key] = nil end
+				return clampedValue, metMax
+			end
+
+			for k, info in pairs(heals) do
+				local clampedValue, metMax = ConsumeValue(heals, k, unit:GetMaxHealth() - unit:GetHealth())
+				unit:Heal(clampedValue, info.source)
+				if metMax then break end
+			end
+			for k, info in pairs(damages) do
+				local clampedValue, metMax = ConsumeValue(damages, k, unit:GetHealth() - 1)
+				ApplyDamage({ victim = unit, attacker = info.source, damage = clampedValue, damage_type = DAMAGE_TYPE_PURE })
+				if metMax then break end
+			end
+		end
+
+		for _, info in pairs(heals) do
+			unit:Heal(info.value, info.source)
+		end
+
+		for _, info in pairs(damages) do
+			ApplyDamage({ victim = unit, attacker = info.source, damage = info.value, damage_type = DAMAGE_TYPE_PURE })
+		end
+
+		if unit:IsAlive() then
+			for _, m in pairs(modifiersToApply) do
+				local damage, source, element = m.damage, m.source, m.element
+				if element == ELEMENT_WATER then
+					Spells:ApplyWet(unit, source)
+				elseif element == ELEMENT_COLD then
+					Spells:ApplyChill(unit, source, damage)
+				elseif element == ELEMENT_FIRE then
+					Spells:ApplyBurn(unit, source, damage)
+				end
+			end
+		end
+	end
+
+	Spells.healthChanges = {}
 end
 
 function Spells:TimeElapsedSinceCast(player)
@@ -492,16 +516,15 @@ end
 
 ------------------------- HEALTH MANIPULATION  --------------------------
 
-function Spells:ApplyElementDamageAoE(center, radius, attacker, element, damage, dontDamageAttacker, applyModifiers, blockPerShield)
-	local damagedAnyone = false
-	local unitsToHurt = Util:FindUnitsInRadius(center, radius)
-	for _, unit in pairs(unitsToHurt) do
-		if not (unit == attacker and dontDamageAttacker) then
-			local damaged = Spells:ApplyElementDamage(unit, attacker, element, damage, applyModifiers, blockPerShield)
-			damagedAnyone = damagedAnyone or damaged
-		end
-	end
-	return damagedAnyone
+function Spells:PrepareHealthChangesTable(unit)
+	local healthChanges = Spells.healthChanges[unit] or {}
+	Spells.healthChanges[unit] = healthChanges
+
+	local damages = healthChanges.damages or {}
+	healthChanges.damages = damages
+
+	local heals = healthChanges.heals or {}
+	healthChanges.heals = heals
 end
 
 function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModifiers, blockPerShield)
@@ -518,27 +541,12 @@ function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModif
 	if damage < 0.5 then
 		return false
 	end
-	local info = { damage = damage, element = element, applyModifiers = applyModifiers }
-	if Spells.damagePool[victim] == nil then
-		Spells.damagePool[victim] = {}
-	end
-	if Spells.damagePool[victim][attacker] == nil then
-		Spells.damagePool[victim][attacker] = {}
-	end
-	table.insert(Spells.damagePool[victim][attacker], info)
-	return true
-end
 
-function Spells:HealAoE(center, radius, source, heal, dontHealSource)
-	local healedAnyone = false
-	local unitsToHeal = Util:FindUnitsInRadius(center, radius)
-	for _, unit in pairs(unitsToHeal) do
-		if not (unit == source and dontHealSource) then
-			local healed = Spells:Heal(unit, source, heal, false)
-			healedAnyone = healedAnyone or healed
-		end
-	end
-	return healedAnyone
+	Spells:PrepareHealthChangesTable(victim)
+	local info = { value = damage, source = attacker, element = element, applyModifiers = applyModifiers }
+	table.insert(Spells.healthChanges[victim].damages, info)
+
+	return true
 end
 
 function Spells:Heal(target, source, heal, ignoreLifeShield)
@@ -552,15 +560,36 @@ function Spells:Heal(target, source, heal, ignoreLifeShield)
 	if heal < 0.5 then
 		return false
 	end
-	if Spells.healPool[target] == nil then
-		Spells.healPool[target] = {}
-		Spells.healPool[target][source] = heal
-	elseif Spells.healPool[target][source] == nil then
-		Spells.healPool[target][source] = heal
-	else
-		Spells.healPool[target][source] = heal + Spells.healPool[target][source]
-	end
+
+	Spells:PrepareHealthChangesTable(target)
+	local info = { value = heal, source = source }
+	table.insert(Spells.healthChanges[target].heals, info)
+
 	return true
+end
+
+function Spells:ApplyElementDamageAoE(center, radius, attacker, element, damage, dontDamageAttacker, applyModifiers, blockPerShield)
+	local damagedAnyone = false
+	local unitsToHurt = Util:FindUnitsInRadius(center, radius)
+	for _, unit in pairs(unitsToHurt) do
+		if not (unit == attacker and dontDamageAttacker) then
+			local damaged = Spells:ApplyElementDamage(unit, attacker, element, damage, applyModifiers, blockPerShield)
+			damagedAnyone = damagedAnyone or damaged
+		end
+	end
+	return damagedAnyone
+end
+
+function Spells:HealAoE(center, radius, source, heal, dontHealSource)
+	local healedAnyone = false
+	local unitsToHeal = Util:FindUnitsInRadius(center, radius)
+	for _, unit in pairs(unitsToHeal) do
+		if not (unit == source and dontHealSource) then
+			local healed = Spells:Heal(unit, source, heal, false)
+			healedAnyone = healedAnyone or healed
+		end
+	end
+	return healedAnyone
 end
 
 function Spells:GetDamageAfterShields(victim, damage, element, blockPerShield)
