@@ -657,7 +657,7 @@ function Spells:ExtinguishWithCold(target)
 	return false
 end
 
-------------------- WATER PUSH ------------------------
+------------------- PUSH ------------------------
 
 function Spells:AddWaterPush(target, caster, velocity, acceleration)
 	local waterResist = Spells:ResistanceLevelTo(target, ELEMENT_WATER)
@@ -680,6 +680,21 @@ function Spells:AddWaterPush(target, caster, velocity, acceleration)
 		target:AddNewModifier(caster, nil, "modifier_water_push", kv)
 	end
 	return true
+end
+
+function Spells:Knockback(target, caster, center, distance)
+	local distanceToTarget = (target:GetAbsOrigin() - center):Length2D()
+	local multiplier = math.pow(0.5, Spells:ResistanceLevelTo(target, ELEMENT_EARTH))
+	local knockbackProperties = {
+		center_x = center.x,
+		center_y = center.y,
+		center_z = center.z,
+		duration = 0.35,
+		knockback_duration = 0.35,
+		knockback_height = 40,
+		knockback_distance = math.max(0, distance - distanceToTarget) * multiplier
+	}
+	target:AddNewModifier(caster, nil, "modifier_knockback", knockbackProperties)
 end
 
 ----------------------------------------------------------

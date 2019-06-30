@@ -112,9 +112,9 @@ function OmniElementSprays:OmniWaterSpray(caster, position, radius, isSelfCast, 
 			Spells:ApplyElementDamage(unit, caster, ELEMENT_WATER, 1, true, 1.0)
 			if doPush then
 				if Spells:ResistanceLevelTo(unit, ELEMENT_WATER) < 2 then
-					OmniElementSprays:Push(unit, caster, position, radius)
+					Spells:Knockback(unit, caster, position, radius + 100)
 			    elseif canPushCaster then
-			    	OmniElementSprays:Push(caster, caster, unit:GetAbsOrigin(), radius)
+			    	Spells:Knockback(caster, caster, unit:GetAbsOrigin(), radius + 100)
 				end
 	    	end
 		end
@@ -132,22 +132,6 @@ function OmniElementSprays:OmniWaterSpray(caster, position, radius, isSelfCast, 
 	Util:EmitSoundOnLocation(position, "OmniWaterSpray3", caster)
 	Util:EmitSoundOnLocation(position, "OmniWaterSpray4", caster)
 end
-
-function OmniElementSprays:Push(target, caster, center, distance)
-	local distanceToTarget = (target:GetAbsOrigin() - center):Length2D()
-	local multiplier = math.pow(0.5, Spells:ResistanceLevelTo(target, ELEMENT_EARTH))
-	local knockbackProperties = {
-		center_x = center.x,
-		center_y = center.y,
-		center_z = center.z,
-		duration = 0.35,
-		knockback_duration = 0.35,
-		knockback_height = 40,
-		knockback_distance = (distance + 100 - distanceToTarget) * multiplier
-	}
-	target:AddNewModifier(caster, nil, "modifier_knockback", knockbackProperties)
-end
-
 
 function OmniElementSprays:OmniFireSpray(caster, position, radius, isSelfCast, damage)
 	Spells:ApplyElementDamageAoE(position, radius, caster, ELEMENT_FIRE, damage, isSelfCast, true)
