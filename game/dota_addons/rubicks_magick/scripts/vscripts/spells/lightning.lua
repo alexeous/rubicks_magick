@@ -180,15 +180,25 @@ function Lightning:MakeEffectFunction(caster, lightningDamage, additionalEffectF
 end
 
 function Lightning:CreateParticle(player, startPos, endPos, noTarget)
+	local particle = Lightning:CreateParticleBase(player, endPos, noTarget)
+	ParticleManager:SetParticleControl(particle, 0, startPos + Vector(0, 0, 100))
+end
+
+function Lightning:CreateParticleStartingAtStaff(player, caster, endPos, noTarget)
+	local particle = Lightning:CreateParticleBase(player, endPos, noTarget)
+	ParticleManager:SetParticleControlEnt(particle, 0, caster, PATTACH_POINT_FOLLOW, "attach_staff", caster:GetOrigin(), true)
+end
+
+function Lightning:CreateParticleBase(player, endPos, noTarget)
 	local particleName = player.spellCast.lightning_IsDeath and "particles/lightning/lightning_death.vpcf" or "particles/lightning/lightning.vpcf"
 	local particle = ParticleManager:CreateParticle(particleName, PATTACH_CUSTOMORIGIN, nil)
-	ParticleManager:SetParticleControl(particle, 0, startPos + Vector(0, 0, 100))
 	ParticleManager:SetParticleControl(particle, 1, endPos + Vector(0, 0, 100))
 	ParticleManager:SetParticleControl(particle, 3, player.spellCast.lightning_Color)
 	ParticleManager:SetParticleControl(particle, 4, Vector(noTarget and 0 or 1, player.spellCast.lightning_IsLife and 1 or 0, 0))
+	return particle
 end
 
-function Lightning:ChainLightning(player, startUnit, maxDistance, startPos)
+function Lightning:ChainLightning(player, startUnit, maxDistance, startPos, attachAtStaff)
 	startPos = startPos or startUnit:GetAbsOrigin()
 	local effectFunc = player.spellCast.lightning_EffectFunction
 	local caster = player:GetAssignedHero()	
@@ -200,7 +210,11 @@ function Lightning:ChainLightning(player, startUnit, maxDistance, startPos)
 			table.insert(ignoreUnits, unit)
 			table.insert(secondaryStartUnits, unit)
 			effectFunc(unit)
-			Lightning:CreateParticle(player, startPos, unit:GetAbsOrigin())
+			if attachAtStaff then
+				Lightning:CreateParticleStartingAtStaff(player, startUnit, unit:GetAbsOrigin(), false)				
+			else
+				Lightning:CreateParticle(player, startPos, unit:GetAbsOrigin(), false)
+			end
 		end
 	end
 	for _, secondaryStartUnit in pairs(secondaryStartUnits) do
@@ -243,10 +257,10 @@ function Lightning:OnDirectedLightningThink(player)
 	end
 	if closestUnit == nil then
 		local randomOffset = Vector(math.random(-50, 50), math.random(-50, 50), math.random(-100, 100))
-		Lightning:CreateParticle(player, startPos, endPos + randomOffset, true)
+		Lightning:CreateParticleStartingAtStaff(player, caster, endPos + randomOffset, true)
 	else
 		player.spellCast.lightning_EffectFunction(closestUnit)
-		Lightning:CreateParticle(player, startPos, closestUnit:GetAbsOrigin())
+		Lightning:CreateParticleStartingAtStaff(player, caster, closestUnit:GetAbsOrigin(), false)
 		Lightning:ChainLightning(player, closestUnit, lightningDistance * 0.7)
 	end
 
@@ -267,11 +281,11 @@ function Lightning:OnOmniLightningThink(player)
 	local units = Util:FindUnitsInRadius(origin, distance, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
 	local startPos = origin + Vector(0, 0, 145) - (50 * caster:GetForwardVector():Normalized())
 	if #units > 1 then
-		Lightning:ChainLightning(player, caster, distance, startPos)
+		Lightning:ChainLightning(player, caster, distance, startPos, true)
 	else
 		for i = 1, math.random(2, 3) do
 			local randomEndPos = origin + RandomVector(1):Normalized() * distance
-			Lightning:CreateParticle(player, startPos, randomEndPos, true)
+			Lightning:CreateParticleStartingAtStaff(player, caster, randomEndPos, true)
 		end
 	end
 
