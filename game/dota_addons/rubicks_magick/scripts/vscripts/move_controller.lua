@@ -32,6 +32,11 @@ function MoveController:OnMoveHeroesThink()
 end
 
 function MoveController:OnMoveHeroThink(player, hero)
+	if not IsPhysicsUnit(hero) then
+		Physics:Unit(hero)
+		hero:SetGroundBehavior(PHYSICS_GROUND_LOCK)
+	end
+
 	local isAble = hero:IsAlive() and not hero:IsStunned() and not hero:IsFrozen()
 	if not isAble then
 		if player.moveToPos ~= nil then
@@ -47,11 +52,6 @@ function MoveController:OnMoveHeroThink(player, hero)
 	end
 	
 	MoveController:UpdateRotation(player, hero)
-	
-	if not IsPhysicsUnit(hero) then
-		Physics:Unit(hero)
-		hero:SetGroundBehavior(PHYSICS_GROUND_LOCK)
-	end
 	if player.moveToPos ~= nil then
 		local origin = hero:GetAbsOrigin()
 		local vec = player.moveToPos - origin
