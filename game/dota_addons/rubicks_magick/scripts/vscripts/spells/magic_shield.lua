@@ -53,10 +53,10 @@ function MagicShield:PlaceRoundMagicShieldSpell(player)
 end
 
 function MagicShield:PlaceFlatMagicShield(player)
-	local heroEntity = player:GetAssignedHero()
-	local forwardN = heroEntity:GetForwardVector():Normalized()
-	local rightN = heroEntity:GetRightVector():Normalized()
-	local center = heroEntity:GetAbsOrigin() + forwardN * 120
+	local hero = player:GetAssignedHero()
+	local forwardN = hero:GetForwardVector():Normalized()
+	local rightN = hero:GetRightVector():Normalized()
+	local center = hero:GetAbsOrigin() + forwardN * 120
 	local forward = forwardN * (FLAT_SHIELD_WIDTH / 2)
 	local right = rightN * (FLAT_SHIELD_LENGTH / 2)
 	local corners = {
@@ -79,22 +79,22 @@ function MagicShield:PlaceFlatMagicShield(player)
 	local particle = ParticleManager:CreateParticle("particles/magic_shield/flat_shield/flat_shield.vpcf", PATTACH_CUSTOMORIGIN, nil)
 	ParticleManager:SetParticleControl(particle, 0, center + forwardN * 40 + Vector(0, 0, 50))
 	ParticleManager:SetParticleControlOrientation(particle, 0, forwardN, rightN, Vector(0, 0, 1))
-	ParticleManager:SetParticleControl(particle, 1, Vector(0, 0, heroEntity:GetAngles().y + 90))
+	ParticleManager:SetParticleControl(particle, 1, Vector(0, 0, hero:GetAngles().y + 90))
 	MagicShield:AddShield(player, { type = FLAT_SHIELD, center = center, corners = corners, axes = axes, origin = origin, particle = particle })
 
-	heroEntity:EmitSound("MagicShieldPlace1")
-	heroEntity:EmitSound("MagicShieldPlace2")
+	hero:EmitSound("MagicShieldPlace1")
+	hero:EmitSound("MagicShieldPlace2")
 end
 
 function MagicShield:PlaceRoundMagicShield(player)
-	local heroEntity = player:GetAssignedHero()
-	local center = heroEntity:GetAbsOrigin()
+	local hero = player:GetAssignedHero()
+	local center = hero:GetAbsOrigin()
 	local particle = ParticleManager:CreateParticle("particles/magic_shield/round_shield/round_shield.vpcf", PATTACH_CUSTOMORIGIN, nil)
 	ParticleManager:SetParticleControl(particle, 0, center)
 	MagicShield:AddShield(player, { type = ROUND_SHIELD, center = center, particle = particle })
 
-	heroEntity:EmitSound("MagicShieldPlace1")
-	heroEntity:EmitSound("MagicShieldPlace2")
+	hero:EmitSound("MagicShieldPlace1")
+	hero:EmitSound("MagicShieldPlace2")
 end
 
 function MagicShield:AddShield(player, shield)

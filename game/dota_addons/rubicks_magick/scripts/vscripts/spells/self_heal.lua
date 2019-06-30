@@ -27,21 +27,21 @@ function SelfHeal:StartSelfHeal(player, power)
 		selfHeal_LastTime = GameRules:GetGameTime(),
 		selfHeal_HealCount = 0
 	}
-	local heroEntity = player:GetAssignedHero() 
-	local particle = ParticleManager:CreateParticle("particles/self_heal/self_heal_start.vpcf", PATTACH_CUSTOMORIGIN, heroEntity)
-	local pos = heroEntity:GetAbsOrigin()
+	local hero = player:GetAssignedHero() 
+	local particle = ParticleManager:CreateParticle("particles/self_heal/self_heal_start.vpcf", PATTACH_CUSTOMORIGIN, hero)
+	local pos = hero:GetAbsOrigin()
 	pos.z = pos.z + 80
 	ParticleManager:SetParticleControl(particle, 0, pos)
-	ParticleManager:SetParticleControlEnt(particle, 1, heroEntity, PATTACH_POINT_FOLLOW, "attach_attack3", heroEntity:GetAbsOrigin(), true)	
-	ParticleManager:SetParticleControlEnt(particle, 2, heroEntity, PATTACH_POINT_FOLLOW, "attach_staff_ambient", heroEntity:GetAbsOrigin(), true)
+	ParticleManager:SetParticleControlEnt(particle, 1, hero, PATTACH_POINT_FOLLOW, "attach_attack3", hero:GetAbsOrigin(), true)	
+	ParticleManager:SetParticleControlEnt(particle, 2, hero, PATTACH_POINT_FOLLOW, "attach_staff_ambient", hero:GetAbsOrigin(), true)
 	local y = (power >= 2) and 1 or 0
 	local z = (power >= 3) and 1 or 0
 	ParticleManager:SetParticleControl(particle, 5, Vector(1, y, z))
 	spellCastTable.selfHeal_Particle = particle
 
 	Spells:StartCasting(player, spellCastTable)
-	heroEntity:EmitSound("SelfHealPrestart")
-	heroEntity:EmitSound("SelfHealLoop")
+	hero:EmitSound("SelfHealPrestart")
+	hero:EmitSound("SelfHealLoop")
 end
 
 function SelfHeal:SelfHealThink(player)
@@ -62,9 +62,9 @@ end
 
 
 function SelfHeal:DoHeal(player)
-	local heroEntity = player:GetAssignedHero()
+	local hero = player:GetAssignedHero()
 	local heal = player.spellCast.selfHeal_BaseHeal + math.exp(player.spellCast.selfHeal_ExpMultiplier * player.spellCast.selfHeal_HealCount)
 	player.spellCast.selfHeal_HealCount = player.spellCast.selfHeal_HealCount + 1
-	Spells:Heal(heroEntity, heroEntity, heal, false)
-	heroEntity:EmitSound("SelfHealThink")
+	Spells:Heal(hero, hero, heal, false)
+	hero:EmitSound("SelfHealThink")
 end

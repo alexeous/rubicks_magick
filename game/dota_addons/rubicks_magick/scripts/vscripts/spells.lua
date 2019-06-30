@@ -133,8 +133,8 @@ end
 
 function Spells:OnDirectedCastKeyDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
-	local heroEntity = player:GetAssignedHero()
-	if heroEntity == nil or heroEntity:IsStunned() or not heroEntity:IsAlive() then
+	local hero = player:GetAssignedHero()
+	if hero == nil or hero:IsStunned() or not hero:IsAlive() then
 		return
 	end
 	if player.spellCast ~= nil then 
@@ -142,7 +142,7 @@ function Spells:OnDirectedCastKeyDown(keys)
 		return
 	end
 
-	MoveController:UpdateRotation(player, heroEntity)
+	MoveController:UpdateRotation(player, hero)
 	
 	local pickedElements = Elements:GetPickedElements(player)
 	if next(pickedElements) == nil then
@@ -204,8 +204,8 @@ end
 
 function Spells:OnSelfCastKeyDown(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
-	local heroEntity = player:GetAssignedHero()
-	if heroEntity == nil or heroEntity:IsStunned() or not heroEntity:IsAlive() then
+	local hero = player:GetAssignedHero()
+	if hero == nil or hero:IsStunned() or not hero:IsAlive() then
 		return
 	end
 	if player.spellCast ~= nil then
@@ -223,7 +223,7 @@ function Spells:OnSelfCastKeyDown(keys)
 	local castTable = {
 		[ELEMENT_SHIELD] = {
 			[EMPTY]   = function() MagicShield:PlaceRoundMagicShieldSpell(player) end,
-			[DEFAULT] = function() SelfShield:ApplyElementSelfShield(heroEntity, pickedElements) end
+			[DEFAULT] = function() SelfShield:ApplyElementSelfShield(hero, pickedElements) end
 		},
 		[ELEMENT_EARTH]     = function() EarthStomp:EarthStomp(player, pickedElements) end,
 		[ELEMENT_LIGHTNING] = function() Lightning:OmniLightning(player, pickedElements) end,
@@ -342,8 +342,8 @@ end
 function Spells:SpellCastThink(player)
 	local spellCast = player.spellCast
 	local time = GameRules:GetGameTime()
-	local heroEntity = player:GetAssignedHero()
-	if time > spellCast.endTime or not heroEntity:IsAlive() or heroEntity:IsStunned() then
+	local hero = player:GetAssignedHero()
+	if time > spellCast.endTime or not hero:IsAlive() or hero:IsStunned() then
 		Spells:StopCasting(player)
 	elseif spellCast.thinkFunction ~= nil and (spellCast.thinkPeriod == nil or time - spellCast.lastThinkTime >= spellCast.thinkPeriod) then
 		spellCast.thinkFunction(player)
@@ -361,14 +361,14 @@ function Spells:StartCasting(player, infoTable)
 	infoTable.lastThinkTime = GameRules:GetGameTime()
 	player.spellCast = infoTable
 
-	local heroEntity = player:GetAssignedHero()
-	if heroEntity ~= nil then
+	local hero = player:GetAssignedHero()
+	if hero ~= nil then
 		if player.spellCast.castingGesture ~= nil then
 			if player.moveToPos ~= nil then
 				if player.spellCast.dontMoveWhileCasting then
 					MoveController:StopMove(player)
 				end
-				heroEntity:FadeGesture(ACT_DOTA_RUN)
+				hero:FadeGesture(ACT_DOTA_RUN)
 			end
 			local animationParams = {
 				duration = player.spellCast.duration,
@@ -376,23 +376,23 @@ function Spells:StartCasting(player, infoTable)
 				rate = player.spellCast.castingGestureRate,
 				translate = player.spellCast.castingGestureTranslate
 			}
-			StartAnimation(heroEntity, animationParams)
+			StartAnimation(hero, animationParams)
 			if player.spellCast.loopSoundList ~= nil then
 				for _, sound in pairs(player.spellCast.loopSoundList) do
-					heroEntity:EmitSound(sound)
+					hero:EmitSound(sound)
 				end
 			end
 		end
 
 		if player.spellCast.slowMovePercentage ~= nil then
 			local kv = { duration = player.spellCast.duration, slowMovePercentage = player.spellCast.slowMovePercentage }
-			heroEntity:AddNewModifier(heroEntity, nil, "modifier_slow_move", kv)
+			hero:AddNewModifier(hero, nil, "modifier_slow_move", kv)
 		end
 
 		if player.spellCast.castType == CAST_TYPE_CHARGING then
 			CustomGameEventManager:Send_ServerToPlayer(player, "rm_cb_e", {})
 			if player.spellCast.chargingParticle ~= nil then
-				player.spellCast.chargingParticleID = ParticleManager:CreateParticle(player.spellCast.chargingParticle, PATTACH_ABSORIGIN_FOLLOW, heroEntity)
+				player.spellCast.chargingParticleID = ParticleManager:CreateParticle(player.spellCast.chargingParticle, PATTACH_ABSORIGIN_FOLLOW, hero)
 			end
 		end
 	end
@@ -407,21 +407,21 @@ function Spells:StopCasting(player)
 		player.spellCast.endFunction(player)
 	end
 
-	local heroEntity = player:GetAssignedHero()
-	if heroEntity ~= nil then
+	local hero = player:GetAssignedHero()
+	if hero ~= nil then
 		if player.spellCast.castingGesture ~= nil then
-			EndAnimation(heroEntity)
+			EndAnimation(hero)
 			if player.moveToPos ~= nil then
-				heroEntity:StartGesture(ACT_DOTA_RUN)
+				hero:StartGesture(ACT_DOTA_RUN)
 			end
-			MoveController:HeroLookAt(heroEntity, player.cursorPos)
+			MoveController:HeroLookAt(hero, player.cursorPos)
 		end
-		if heroEntity:HasModifier("modifier_slow_move") then
-			heroEntity:RemoveModifierByName("modifier_slow_move")
+		if hero:HasModifier("modifier_slow_move") then
+			hero:RemoveModifierByName("modifier_slow_move")
 		end	
 		if player.spellCast.loopSoundList ~= nil then
 			for _, sound in pairs(player.spellCast.loopSoundList) do
-				heroEntity:StopSound(sound)
+				hero:StopSound(sound)
 			end
 		end
 	end
@@ -459,9 +459,9 @@ function Spells:MeleeAttack(player)
 		local timeHasCome = Spells:TimeElapsedSinceCast(player) > 0.3
 		if timeHasCome and not player.spellCast.hasAttacked then 		-- do damage only after a small delay
 			player.spellCast.hasAttacked = true
-			local heroEntity = player:GetAssignedHero()
-			local center = heroEntity:GetAbsOrigin() + heroEntity:GetForwardVector() * 110
-			if Spells:ApplyElementDamageAoE(center, 110, heroEntity, ELEMENT_EARTH, 210, true, true) then
+			local hero = player:GetAssignedHero()
+			local center = hero:GetAbsOrigin() + hero:GetForwardVector() * 110
+			if Spells:ApplyElementDamageAoE(center, 110, hero, ELEMENT_EARTH, 210, true, true) then
 				player:GetAssignedHero():EmitSound("MeleeAttack")
 			elseif #Util:FindUnitsInRadius(center, 110, DOTA_UNIT_TARGET_FLAG_INVULNERABLE) > 1 then
 				player:GetAssignedHero():EmitSound("MeleeAttackBlocked")

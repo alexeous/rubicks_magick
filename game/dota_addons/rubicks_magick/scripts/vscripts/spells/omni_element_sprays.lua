@@ -30,8 +30,8 @@ function OmniElementSprays:OmniSteamSpraySpell(player, modifierElement)
 	local isWet = (modifierElement == ELEMENT_WATER)
 	local radius = OMNI_SPELLS_RADIUSES[(modifierElement == ELEMENT_WATER) and 2 or 1]
 	local damage = (modifierElement == ELEMENT_FIRE) and 177 or 125
-	local heroEntity = player:GetAssignedHero()
-	OmniElementSprays:OmniSteamSpray(heroEntity, heroEntity:GetAbsOrigin(), radius, true, damage, isWet)
+	local hero = player:GetAssignedHero()
+	OmniElementSprays:OmniSteamSpray(hero, hero:GetAbsOrigin(), radius, true, damage, isWet)
 end
 
 function OmniElementSprays:OmniWaterSpraySpell(player, power)
@@ -46,8 +46,8 @@ function OmniElementSprays:OmniWaterSpraySpell(player, power)
 	Spells:StartCasting(player, spellCastTable)
 
 	local radius = OMNI_SPELLS_RADIUSES[power]
-	local heroEntity = player:GetAssignedHero()
-	OmniElementSprays:OmniWaterSpray(heroEntity, heroEntity:GetAbsOrigin(), radius, true, true)
+	local hero = player:GetAssignedHero()
+	OmniElementSprays:OmniWaterSpray(hero, hero:GetAbsOrigin(), radius, true, true)
 end
 
 function OmniElementSprays:OmniFireSpraySpell(player, power)
@@ -63,8 +63,8 @@ function OmniElementSprays:OmniFireSpraySpell(player, power)
 
 	local radius = OMNI_SPELLS_RADIUSES[power]
 	local damages = { 75, 106, 130 }
-	local heroEntity = player:GetAssignedHero()
-	OmniElementSprays:OmniFireSpray(heroEntity, heroEntity:GetAbsOrigin(), radius, true, damages[power])
+	local hero = player:GetAssignedHero()
+	OmniElementSprays:OmniFireSpray(hero, hero:GetAbsOrigin(), radius, true, damages[power])
 end
 
 function OmniElementSprays:OmniColdSpraySpell(player, power)
@@ -80,8 +80,8 @@ function OmniElementSprays:OmniColdSpraySpell(player, power)
 
 	local radius = OMNI_SPELLS_RADIUSES[power]
 	local damages = { 45, 64, 78 }
-	local heroEntity = player:GetAssignedHero()
-	OmniElementSprays:OmniColdSpray(heroEntity, heroEntity:GetAbsOrigin(), radius, true, damages[power])
+	local hero = player:GetAssignedHero()
+	OmniElementSprays:OmniColdSpray(hero, hero:GetAbsOrigin(), radius, true, damages[power])
 end
 
 

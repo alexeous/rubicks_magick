@@ -32,12 +32,12 @@ function ElementSprays:StartSteamSpray(player, modifierElement)
 	local isWet = modifierElement == ELEMENT_WATER
 	local damage = (modifierElement == ELEMENT_FIRE) and 75 or 63
 	local distanceInd = (modifierElement == ELEMENT_WATER) and 2 or 1
-	local heroEntity = player:GetAssignedHero()
+	local hero = player:GetAssignedHero()
 	local onTouchFn = function(unit)
-		Spells:ApplyElementDamage(unit, heroEntity, ELEMENT_WATER, damage / 2, isWet, 1.0)
-		Spells:ApplyElementDamage(unit, heroEntity, ELEMENT_FIRE, damage / 2, false, 1.0)
+		Spells:ApplyElementDamage(unit, hero, ELEMENT_WATER, damage / 2, isWet, 1.0)
+		Spells:ApplyElementDamage(unit, hero, ELEMENT_FIRE, damage / 2, false, 1.0)
 	end
-	local particle = ParticleManager:CreateParticle("particles/element_sprays/steam_spray/steam_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, heroEntity)
+	local particle = ParticleManager:CreateParticle("particles/element_sprays/steam_spray/steam_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, hero)
 	local particleRecalcFn = function(factor)
 		ParticleManager:SetParticleControl(particle, 1, Vector(factor * (0.2 + distanceInd * 0.8), 0, 0))
 		ParticleManager:SetParticleControl(particle, 2, Vector(isWet and 1 or 0, 0, 0))		
@@ -46,47 +46,47 @@ function ElementSprays:StartSteamSpray(player, modifierElement)
 	local soundList = { "SteamSprayLoop1", "SteamSprayLoop2" }
 	local spawnSound = "SteamSprayThink"
 	ElementSprays:StartElementSprayCasting(player, distance, 4.0, onTouchFn, particle, particleRecalcFn, 110, soundList, spawnSound)
-	heroEntity:EmitSound("SteamSprayStart1")
-	heroEntity:EmitSound("SteamSprayStart2")
+	hero:EmitSound("SteamSprayStart1")
+	hero:EmitSound("SteamSprayStart2")
 end
 
 function ElementSprays:StartWaterSpray(player, power)
 	local distance = ELEMENT_SPRAY_DISTANCES[power] * 0.8
-	local heroEntity = player:GetAssignedHero()
+	local hero = player:GetAssignedHero()
 	local onTouchFn = function(unit)
-		Spells:ApplyElementDamage(unit, heroEntity, ELEMENT_WATER, 1, true)
-		local unitToCasterVec = heroEntity:GetAbsOrigin() - unit:GetAbsOrigin()
+		Spells:ApplyElementDamage(unit, hero, ELEMENT_WATER, 1, true)
+		local unitToCasterVec = hero:GetAbsOrigin() - unit:GetAbsOrigin()
 		local distanceFactor = 1.2 - math.min(1, #unitToCasterVec / distance)
-		local vec = heroEntity:GetForwardVector():Normalized() * distanceFactor
+		local vec = hero:GetForwardVector():Normalized() * distanceFactor
 		local upVelocity = Vector(0, 0, 10) * distanceFactor
-		local success = Spells:AddWaterPush(unit, heroEntity, vec * 50 + upVelocity, vec * 200)
+		local success = Spells:AddWaterPush(unit, hero, vec * 50 + upVelocity, vec * 200)
 		if success then
 			unit:SetForwardVector(unitToCasterVec)
 		else
 			vec = unitToCasterVec:Normalized() * 100 + Vector(0, 0, 10)
-			Spells:AddWaterPush(heroEntity, heroEntity, vec, nil)
+			Spells:AddWaterPush(hero, hero, vec, nil)
 		end
 	end
 	local radius = 90 + power * 25
-	local particle = ParticleManager:CreateParticle("particles/element_sprays/water_spray/water_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, heroEntity)
+	local particle = ParticleManager:CreateParticle("particles/element_sprays/water_spray/water_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, hero)
 	local particleRecalcFn = function(factor)
 		ParticleManager:SetParticleControl(particle, 1, Vector(1 + power * 0.5, 0, 0))
 		ParticleManager:SetParticleControl(particle, 2, Vector(factor * (0.2 + power * 0.58), 0, 0))
 	end
 	local soundList = { "WaterSprayLoop" }
 	ElementSprays:StartElementSprayCasting(player, distance, 7.0, onTouchFn, particle, particleRecalcFn, radius, soundList, nil, 0.1)
-	heroEntity:EmitSound("WaterSprayStart")
+	hero:EmitSound("WaterSprayStart")
 end
 
 function ElementSprays:StartFireSpray(player, power)
 	local damages = { 40, 48, 53 }
 	local distance = ELEMENT_SPRAY_DISTANCES[power]
-	local heroEntity = player:GetAssignedHero()
+	local hero = player:GetAssignedHero()
 	local onTouchFn = function(unit)
-		Spells:ApplyElementDamage(unit, heroEntity, ELEMENT_FIRE, damages[power], true)
+		Spells:ApplyElementDamage(unit, hero, ELEMENT_FIRE, damages[power], true)
 	end
 	local radius = 90 + power * 25
-	local particle = ParticleManager:CreateParticle("particles/element_sprays/fire_spray/fire_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, heroEntity)
+	local particle = ParticleManager:CreateParticle("particles/element_sprays/fire_spray/fire_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, hero)
 	local particleRecalcFn = function(factor)
 		ParticleManager:SetParticleControl(particle, 1, Vector(1 + power * 0.5, 0, 0))
 		ParticleManager:SetParticleControl(particle, 2, Vector(factor * (0.22 + power * 0.8), 0, 0))
@@ -94,18 +94,18 @@ function ElementSprays:StartFireSpray(player, power)
 	local soundList = { "FireSprayLoop" }
 	local spawnSound = "FireSprayThink"
 	ElementSprays:StartElementSprayCasting(player, distance, 7.0, onTouchFn, particle, particleRecalcFn, radius, soundList, spawnSound)
-	heroEntity:EmitSound("FireSprayStart")
+	hero:EmitSound("FireSprayStart")
 end
 
 function ElementSprays:StartColdSpray(player, power)
 	local damages = { 20, 24, 27 }
 	local distance = ELEMENT_SPRAY_DISTANCES[power]
-	local heroEntity = player:GetAssignedHero()
+	local hero = player:GetAssignedHero()
 	local onTouchFn = function(unit)
-		Spells:ApplyElementDamage(unit, heroEntity, ELEMENT_COLD, damages[power], true)
+		Spells:ApplyElementDamage(unit, hero, ELEMENT_COLD, damages[power], true)
 	end
 	local radius = 90 + power * 25
-	local particle = ParticleManager:CreateParticle("particles/element_sprays/cold_spray/cold_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, heroEntity)
+	local particle = ParticleManager:CreateParticle("particles/element_sprays/cold_spray/cold_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, hero)
 	local particleRecalcFn = function(factor)
 		ParticleManager:SetParticleControl(particle, 1, Vector(1 + power * 0.5, 0, 0))
 		ParticleManager:SetParticleControl(particle, 2, Vector(factor * (0.2 + power * 0.8), 0, 0))
@@ -144,22 +144,22 @@ function ElementSprays:StartElementSprayCasting(player, distance, duration, onTo
 end
 
 function ElementSprays:SpawnSprayDummy(player, isTest)
-	local heroEntity = player:GetAssignedHero()
-	local position = heroEntity:GetAbsOrigin() + heroEntity:GetForwardVector():Normalized() * 60 + Vector(0, 0, 100)
-	local sprayDummy = Util:CreateDummy(position, heroEntity)
+	local hero = player:GetAssignedHero()
+	local position = hero:GetAbsOrigin() + hero:GetForwardVector():Normalized() * 60 + Vector(0, 0, 100)
+	local sprayDummy = Util:CreateDummy(position, hero)
 	sprayDummy.isTest = isTest
-	sprayDummy.caster = heroEntity
+	sprayDummy.caster = hero
 	sprayDummy.startTime = GameRules:GetGameTime()
 	sprayDummy.duration = player.spellCast.elementSprays_Distance / ELEMENT_SPRAY_MOVE_SPEED
 	sprayDummy.radius = player.spellCast.elementSprays_Radius
-	sprayDummy.moveStep = heroEntity:GetForwardVector():Normalized() * ELEMENT_SPRAY_MOVE_STEP
+	sprayDummy.moveStep = hero:GetForwardVector():Normalized() * ELEMENT_SPRAY_MOVE_STEP
 	sprayDummy.touchedUnits = {}
 	sprayDummy.onTouchFn = player.spellCast.elementSprays_onTouchFn
 	sprayDummy.particleRecalcFn = player.spellCast.elementSprays_particleRecalcFn
 	table.insert(ElementSprays.sprayDummiesList, sprayDummy)
 
 	if player.spellCast.elementSprays_spawnSound ~= nil then
-		StartSoundEventFromPosition(player.spellCast.elementSprays_spawnSound, heroEntity:GetAbsOrigin())
+		StartSoundEventFromPosition(player.spellCast.elementSprays_spawnSound, hero:GetAbsOrigin())
 	end
 end
 

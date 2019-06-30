@@ -187,7 +187,7 @@ function Beams:StartDeathBeam(player, pickedElements)
 end
 
 function Beams:CreateBeam(player, particleName, color, mainElement, effectFunction, soundList)
-	local heroEntity = player:GetAssignedHero()
+	local hero = player:GetAssignedHero()
 	local spellCastTable = {
 		castType = CAST_TYPE_CONTINUOUS,
 		duration = 7.0,
@@ -202,10 +202,10 @@ function Beams:CreateBeam(player, particleName, color, mainElement, effectFuncti
 		beams_EffectFunction = effectFunction
 	}
 	Spells:StartCasting(player, spellCastTable)
-	player.spellCast.beams_Modifier = heroEntity:AddNewModifier(heroEntity, nil, "modifier_beam_cast", {})
+	player.spellCast.beams_Modifier = hero:AddNewModifier(hero, nil, "modifier_beam_cast", {})
 	
-	local origin = heroEntity:GetAbsOrigin()
-	local direction = heroEntity:GetForwardVector():Normalized()
+	local origin = hero:GetAbsOrigin()
+	local direction = hero:GetForwardVector():Normalized()
 	local startPos = origin + direction * 120
 	player.beam = Beams:CreateBeamSegment(player, startPos, direction, nil, mainElement, particleName, color)
 end
@@ -259,9 +259,9 @@ function Beams:OnBeamsThink()
 		local player = PlayerResource:GetPlayer(playerID)
 		if player ~= nil and player.spellCast ~= nil and player.beam ~= nil then
 			local beam = player.beam
-			local heroEntity = player:GetAssignedHero()
-			beam.direction = heroEntity:GetForwardVector():Normalized()
-			beam.startPos = heroEntity:GetAbsOrigin() + beam.direction * 120
+			local hero = player:GetAssignedHero()
+			beam.direction = hero:GetForwardVector():Normalized()
+			beam.startPos = hero:GetAbsOrigin() + beam.direction * 120
 			beam.endPos = beam.startPos + beam.direction * BEAM_MAX_LENGTH
 			player.spellCast.beams_Modifier:ResetTarget()
 		end
@@ -296,13 +296,13 @@ function Beams:Interrupt(player)
 		player.beam.destroy(true)
 		player.beam = nil
 	end
-	local heroEntity = player:GetAssignedHero()
+	local hero = player:GetAssignedHero()
 	Timers:CreateTimer(0.02, function() Spells:StopCasting(player) end)
 	Timers:CreateTimer(0.1, function() 
-		heroEntity:AddNewModifier(heroEntity, nil, "modifier_knockdown", { duration = 1.5 })
+		hero:AddNewModifier(hero, nil, "modifier_knockdown", { duration = 1.5 })
 	end)
-	heroEntity:EmitSound("BeamInterrupted1")
-	heroEntity:EmitSound("BeamInterrupted2")
+	hero:EmitSound("BeamInterrupted1")
+	hero:EmitSound("BeamInterrupted2")
 end
 
 function Beams:RecalcBeamSegment(beamSegment)

@@ -58,9 +58,9 @@ function RubicksMagickGameMode:OnThink()
 	for playerID = 0, DOTA_MAX_PLAYERS - 1 do
 		local player = PlayerResource:GetPlayer(playerID)
 		if player ~= nil then
-			local heroEntity = player:GetAssignedHero()
-			if heroEntity ~= nil then
-				AddFOWViewer(heroEntity:GetTeamNumber(), heroEntity:GetAbsOrigin(), heroEntity:GetCurrentVisionRange(), 1, false)
+			local hero = player:GetAssignedHero()
+			if hero ~= nil then
+				AddFOWViewer(hero:GetTeamNumber(), hero:GetAbsOrigin(), hero:GetCurrentVisionRange(), 1, false)
 			end
 		end
 	end

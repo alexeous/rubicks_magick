@@ -24,8 +24,8 @@ function OmniPulses:OmniLifePulseSpell(player, pickedElements)
 	}
 	Spells:StartCasting(player, spellCastTable)
 
-	local heroEntity = player:GetAssignedHero()
-	OmniPulses:OmniLifePulse(heroEntity, heroEntity:GetAbsOrigin(), true, pickedElements)
+	local hero = player:GetAssignedHero()
+	OmniPulses:OmniLifePulse(hero, hero:GetAbsOrigin(), true, pickedElements)
 end
 
 function OmniPulses:OmniDeathPulseSpell(player, pickedElements)
@@ -39,8 +39,8 @@ function OmniPulses:OmniDeathPulseSpell(player, pickedElements)
 	}
 	Spells:StartCasting(player, spellCastTable)
 
-	local heroEntity = player:GetAssignedHero()
-	OmniPulses:OmniDeathPulse(heroEntity, heroEntity:GetAbsOrigin(), true, pickedElements)
+	local hero = player:GetAssignedHero()
+	OmniPulses:OmniDeathPulse(hero, hero:GetAbsOrigin(), true, pickedElements)
 end
 
 function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, pickedElements, radiusFactor, healFactor, radiusOverride)

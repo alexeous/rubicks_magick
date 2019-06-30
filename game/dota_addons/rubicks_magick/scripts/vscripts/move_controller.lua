@@ -22,17 +22,17 @@ function MoveController:OnMoveHeroesThink()
 	for playerID = 0, DOTA_MAX_PLAYERS - 1 do
 		local player = PlayerResource:GetPlayer(playerID)
 		if player ~= nil then
-			local heroEntity = player:GetAssignedHero()
-			if heroEntity ~= nil then
-				MoveController:OnMoveHeroThink(player, heroEntity)
+			local hero = player:GetAssignedHero()
+			if hero ~= nil then
+				MoveController:OnMoveHeroThink(player, hero)
 			end
 		end
 	end
 	return THINK_PERIOD
 end
 
-function MoveController:OnMoveHeroThink(player, heroEntity)
-	local isAble = heroEntity:IsAlive() and not heroEntity:IsStunned() and not heroEntity:IsFrozen()
+function MoveController:OnMoveHeroThink(player, hero)
+	local isAble = hero:IsAlive() and not hero:IsStunned() and not hero:IsFrozen()
 	if not isAble then
 		if player.moveToPos ~= nil then
 			MoveController:StopMove(player)
@@ -42,30 +42,30 @@ function MoveController:OnMoveHeroThink(player, heroEntity)
 
 	local dontMoveWhileCasting = player.spellCast ~= nil and player.spellCast.dontMoveWhileCasting
 	if dontMoveWhileCasting then
-		heroEntity:SetPhysicsVelocity(Vector(0, 0, 0))
+		hero:SetPhysicsVelocity(Vector(0, 0, 0))
 		return
 	end
 	
-	MoveController:UpdateRotation(player, heroEntity)
+	MoveController:UpdateRotation(player, hero)
 	
-	if not IsPhysicsUnit(heroEntity) then
-		Physics:Unit(heroEntity)
-		heroEntity:SetGroundBehavior(PHYSICS_GROUND_LOCK)
+	if not IsPhysicsUnit(hero) then
+		Physics:Unit(hero)
+		hero:SetGroundBehavior(PHYSICS_GROUND_LOCK)
 	end
 	if player.moveToPos ~= nil then
-		local origin = heroEntity:GetAbsOrigin()
+		local origin = hero:GetAbsOrigin()
 		local vec = player.moveToPos - origin
 		if vec:Length2D() > 20 then
-			heroEntity:SetPhysicsVelocity(vec:Normalized() * heroEntity:GetIdealSpeed())
+			hero:SetPhysicsVelocity(vec:Normalized() * hero:GetIdealSpeed())
 		else
 			MoveController:StopMove(player)
 		end
 	end
 end
 
-function MoveController:UpdateRotation(player, heroEntity)
+function MoveController:UpdateRotation(player, hero)
 	if player.cursorPos ~= nil then
-		MoveController:HeroLookAt(heroEntity, player.cursorPos)
+		MoveController:HeroLookAt(hero, player.cursorPos)
 	end
 end
 
@@ -100,38 +100,38 @@ function MoveController:StopMove(player)
 	if player ~= nil then
 		player.moveToPos = nil
 		player.moveToClearPos = nil
-		local heroEntity = player:GetAssignedHero()
-		if heroEntity ~= nil then
-			heroEntity:SetPhysicsVelocity(Vector(0, 0, 0))
-			heroEntity:FadeGesture(ACT_DOTA_RUN)
+		local hero = player:GetAssignedHero()
+		if hero ~= nil then
+			hero:SetPhysicsVelocity(Vector(0, 0, 0))
+			hero:FadeGesture(ACT_DOTA_RUN)
 		end
 	end
 end
 
-function MoveController:HeroLookAt(heroEntity, targetPos)
-	if heroEntity ~= nil then
-		local yaw = heroEntity:GetAngles().y
-		local targetYaw = VectorToAngles(targetPos - heroEntity:GetAbsOrigin()).y
+function MoveController:HeroLookAt(hero, targetPos)
+	if hero ~= nil then
+		local yaw = hero:GetAngles().y
+		local targetYaw = VectorToAngles(targetPos - hero:GetAbsOrigin()).y
 
-		local player = heroEntity:GetPlayerOwner()
+		local player = hero:GetPlayerOwner()
 		if player ~= nil and player.spellCast ~= nil and player.spellCast.turnDegsPerSec ~= nil then
 			local clampValue = player.spellCast.turnDegsPerSec * THINK_PERIOD
 			local diff = AngleDiff(targetYaw, yaw)
 			targetYaw = yaw + math.max(-clampValue, math.min(diff, clampValue))
 		end
 
-		heroEntity:SetAngles(0, targetYaw, 0)
+		hero:SetAngles(0, targetYaw, 0)
 	end
 end
 
 function MoveController:MoveToCursorCommand(player)
-	local heroEntity = player:GetAssignedHero()
-	local isAble = (heroEntity ~= nil) and (heroEntity:IsAlive()) and (not heroEntity:IsStunned()) and (not heroEntity:IsFrozen())
+	local hero = player:GetAssignedHero()
+	local isAble = (hero ~= nil) and (hero:IsAlive()) and (not hero:IsStunned()) and (not hero:IsFrozen())
 	if isAble then
 		local dontChangeGesture = player.spellCast ~= nil and player.spellCast.castingGesture ~= nil
 		local dontMoveWhileCasting = player.spellCast ~= nil and player.spellCast.dontMoveWhileCasting
 		if player.moveToPos == nil and not dontChangeGesture and not dontMoveWhileCasting then
-			heroEntity:StartGesture(ACT_DOTA_RUN)
+			hero:StartGesture(ACT_DOTA_RUN)
 		end
 		player.moveToPos = player.cursorPos
 		MoveController:ShowMoveToParticle(player, player.cursorPos)
@@ -151,9 +151,9 @@ function MoveController:OnMoveToKeyDown(keys)
 	player.moveToKeyDown = true
 	MoveController:MoveToCursorCommand(player)
 
-	local heroEntity = player:GetAssignedHero()
-	if heroEntity ~= nil and heroEntity:IsAlive() and heroEntity:IsFrozen() then 
-		heroEntity:FindModifierByName("modifier_frozen"):ReleaseProgress()
+	local hero = player:GetAssignedHero()
+	if hero ~= nil and hero:IsAlive() and hero:IsFrozen() then 
+		hero:FindModifierByName("modifier_frozen"):ReleaseProgress()
 	end
 end
 

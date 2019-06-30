@@ -103,8 +103,8 @@ end
 function Elements:PickElement(playerID, element)
 	local player = PlayerResource:GetPlayer(playerID)
 
-	local heroEntity = player:GetAssignedHero()
-	local isAble = (heroEntity ~= nil) and (heroEntity:IsAlive()) and (not heroEntity:IsStunned()) and (not heroEntity:IsFrozen())
+	local hero = player:GetAssignedHero()
+	local isAble = (hero ~= nil) and (hero:IsAlive()) and (not hero:IsStunned()) and (not hero:IsFrozen())
 	if not isAble then
 		return
 	end
@@ -138,8 +138,8 @@ end
 
 function Elements:AddElement(player, element, index)
 	player.pickedElements[index] = element
-	local heroEntity = player:GetAssignedHero()
-	player.orbParticles[index] = ParticleManager:CreateParticle(ORB_PARTICLES[element], PATTACH_ABSORIGIN_FOLLOW, heroEntity)
+	local hero = player:GetAssignedHero()
+	player.orbParticles[index] = ParticleManager:CreateParticle(ORB_PARTICLES[element], PATTACH_ABSORIGIN_FOLLOW, hero)
 	ParticleManager:SetParticleControl(player.orbParticles[index], CONTROL_OFFSET, ORB_ORIGIN_OFFSETS[index])
 	EmitSoundOnClient("PickElement", player)
 end
