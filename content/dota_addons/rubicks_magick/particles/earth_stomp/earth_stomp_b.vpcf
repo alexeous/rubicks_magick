@@ -1,7 +1,7 @@
 <!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf21:version{7a150ecc-d865-438f-ad53-5963fe1a2720} -->
 {
 	_class = "CParticleSystemDefinition"
-	m_ConstantColor = [ 33, 25, 18, 255 ]
+	m_ConstantColor = [ 0, 0, 0, 255 ]
 	m_controlPointConfigurations = 
 	[
 		{
@@ -32,7 +32,7 @@
 		{
 			_class = "C_OP_RenderProjected"
 			m_bProjectWater = false
-			m_hProjectedMaterial = resource:"materials/particle/ground/ground_crack_shatter_proj.vmat"
+			m_hProjectedMaterial = resource:"materials/particle/projected_groundcracks_02.vmat"
 			m_bEnableProjectedDepthControls = true
 			m_flMinProjectionDepth = 0.0
 			m_flMaxProjectionDepth = 1000.0
@@ -59,8 +59,8 @@
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 200
-			m_nAlphaMax = 222
+			m_nAlphaMin = 104
+			m_nAlphaMax = 119
 		},
 	]
 	m_Emitters = 
@@ -98,25 +98,4 @@
 	]
 	m_nBehaviorVersion = 9
 	m_nFirstMultipleOverride_BackwardCompat = 2
-	m_Children = 
-	[
-		{
-			m_ChildRef = resource:"particles/earth_stomp/earth_stomp_c.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/earth_stomp/earth_stomp_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/earth_stomp/earth_stomp_dust.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/earth_stomp/earth_stomp_dust_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/earth_stomp/earth_stomp_dust_c.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/earth_stomp/earth_stomp_wave.vpcf"
-		},
-	]
 }
