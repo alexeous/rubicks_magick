@@ -1,11 +1,11 @@
 GameUI.SetMouseCallback(function(eventName, arg) {
 	const CONSUME_EVENT = true;
 	const CONTINUE_PROCESSING_EVENT = false;
-	if(eventName != "pressed" && eventName != "released") {
-		return;
+	if(eventName != "pressed" && eventName != "released" && eventName != "doublepressed") {
+		return CONTINUE_PROCESSING_EVENT;
 	}
 	var mouseKey = ([ "left", "right", "middle" ])[arg];
-	var eventSuffix = eventName == "pressed" ? "_down" : "_up";
+	var eventSuffix = (eventName == "pressed" || eventName == "doublepressed") ? "_down" : "_up";
 	var eventName = "rm_mouse_" + mouseKey + eventSuffix;
 	onKeyEvent(eventName);
 	return CONSUME_EVENT;
