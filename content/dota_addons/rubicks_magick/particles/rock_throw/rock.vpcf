@@ -32,12 +32,12 @@
 			m_ModelList = 
 			[
 				{
-					m_model = resource:"models/particle/meteor.vmdl"
+					m_model = resource:"models/props_structures/tower_radiant_rock_golem_boulder.vmdl"
 				},
 			]
 			m_hOverrideMaterial = resource:"materials/models/particle/simrock.vmat"
 			m_bForceLoopingAnimation = true
-			m_ColorScale = [ 147, 147, 147 ]
+			m_ColorScale = [ 147, 143, 138 ]
 		},
 	]
 	m_Initializers = 
@@ -50,8 +50,15 @@
 			m_nCPInput = 1
 			m_flInputMin = 1.0
 			m_flInputMax = 3.0
-			m_flOutputMin = 0.21
-			m_flOutputMax = 0.33
+			m_flOutputMin = 0.8
+			m_flOutputMax = 1.2
+		},
+		{
+			_class = "C_INIT_RandomRotation"
+		},
+		{
+			_class = "C_INIT_RandomRotation"
+			m_nFieldOutput = "12"
 		},
 	]
 	m_Emitters = 
@@ -67,6 +74,12 @@
 	]
 	m_Children = 
 	[
+		{
+			m_ChildRef = resource:"particles/rock_throw/rock_stone_dust_b.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/rock_throw/rock_stone_dust_dark.vpcf"
+		},
 		{
 			m_ChildRef = resource:"particles/rock_throw/rock_stone_dust.vpcf"
 		},
@@ -96,9 +109,6 @@
 		},
 		{
 			m_ChildRef = resource:"particles/rock_throw/rock_blur.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/rock_throw/rock_stone_dust_b.vpcf"
 		},
 	]
 	m_nBehaviorVersion = 9

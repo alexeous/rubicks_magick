@@ -51,7 +51,7 @@
 		{
 			_class = "C_OP_RenderSprites"
 			m_hTexture = resource:"materials/particle/smoke1/smoke1.vtex"
-			m_flDepthBias = 100.0
+			m_flDepthBias = 80.0
 			m_ColorScale = [ 255, 255, 255 ]
 		},
 	]
@@ -69,13 +69,13 @@
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 68
-			m_nAlphaMax = 138
+			m_nAlphaMin = 104
+			m_nAlphaMax = 147
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 15.0
-			m_flRadiusMax = 25.0
+			m_flRadiusMin = 30.0
+			m_flRadiusMax = 40.0
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
@@ -84,8 +84,8 @@
 		},
 		{
 			_class = "C_INIT_RandomColor"
-			m_ColorMin = [ 126, 126, 126, 255 ]
-			m_ColorMax = [ 147, 140, 133, 255 ]
+			m_ColorMin = [ 68, 66, 64, 255 ]
+			m_ColorMax = [ 61, 58, 58, 255 ]
 		},
 		{
 			_class = "C_INIT_RemapCPtoScalar"

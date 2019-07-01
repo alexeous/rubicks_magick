@@ -1,4 +1,4 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf19:version{aafc65d8-7a5a-4e01-bd8d-3ac118422503} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf21:version{7a150ecc-d865-438f-ad53-5963fe1a2720} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_ConstantColor = [ 190, 190, 190, 255 ]
@@ -25,24 +25,31 @@
 		{
 			_class = "C_OP_BasicMovement"
 			m_Gravity = [ 0.0, 0.0, -1600.0 ]
-		},
-		{
-			_class = "C_OP_RampScalarLinear"
-			m_RateMin = -10.0
-			m_RateMax = 10.0
-			m_nField = 4
-		},
-		{
-			_class = "C_OP_FadeOutSimple"
-		},
-		{
-			_class = "C_OP_RampScalarLinear"
-			m_RateMin = -10.0
-			m_RateMax = 10.0
-			m_nField = 12
+			m_fDrag = 0.06
 		},
 		{
 			_class = "C_OP_PositionLock"
+		},
+		{
+			_class = "C_OP_SpinUpdate"
+		},
+		{
+			_class = "C_OP_LerpEndCapScalar"
+			m_nFieldOutput = "5"
+			m_flOutput = 0.0
+		},
+		{
+			_class = "C_OP_RemapSpeed"
+			m_nFieldOutput = "5"
+			m_flInputMin = 200.0
+			m_flInputMax = 10.0
+			m_flOutputMin = 10.0
+			m_flOutputMax = 0.0
+		},
+		{
+			_class = "C_OP_InterpolateRadius"
+			m_flStartTime = 0.6
+			m_flEndScale = 0.0
 		},
 	]
 	m_Renderers = 
@@ -55,9 +62,10 @@
 					m_model = resource:"models/particle/tiny_simrocks.vmdl"
 				},
 			]
-			m_nSubModelField = 9
+			m_nSubModelField = "9"
 			m_bDisableShadows = true
 			m_bForceLoopingAnimation = true
+			m_ColorScale = [ 255, 255, 255 ]
 		},
 	]
 	m_Initializers = 
@@ -77,12 +85,17 @@
 		},
 		{
 			_class = "C_INIT_RandomRotation"
-			m_nFieldOutput = 12
+			m_nFieldOutput = "12"
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 2.0
-			m_fLifetimeMax = 2.0
+			m_fLifetimeMin = 6.0
+			m_fLifetimeMax = 8.0
+		},
+		{
+			_class = "C_INIT_RandomRadius"
+			m_flRadiusMin = 0.4
+			m_flRadiusMax = 1.5
 		},
 		{
 			_class = "C_INIT_RemapCPtoScalar"
@@ -91,31 +104,86 @@
 			m_flInputMax = 3.0
 			m_flOutputMin = 0.4
 			m_flOutputMax = 0.8
+			m_nSetMethod = "PARTICLE_SET_SCALE_INITIAL_VALUE"
 		},
 		{
 			_class = "C_INIT_VelocityRadialRandom"
-			m_fSpeedMin = -300.0
-			m_fSpeedMax = -400.0
-			m_vecLocalCoordinateSystemSpeedScale = [ 1.0, 1.0, 2.0 ]
+			m_fSpeedMin = -500.0
+			m_fSpeedMax = -1200.0
+		},
+		{
+			_class = "C_INIT_RandomRotationSpeed"
 		},
 	]
 	m_Emitters = 
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
-			m_flStartTime = 
-			{
-				m_nType = "PF_TYPE_LITERAL"
-				m_flLiteralValue = 0.0
-			}
 			m_nParticlesToEmit = 
 			{
-				m_nType = "PF_TYPE_LITERAL"
+				m_nType = "PF_TYPE_RANDOM_UNIFORM"
+				m_nMapType = "PF_MAP_TYPE_DIRECT"
 				m_flLiteralValue = 10.0
+				m_nControlPoint = 0
+				m_nScalarAttribute = 3
+				m_nVectorAttribute = 6
+				m_nVectorComponent = 0
+				m_flRandomMin = 4.0
+				m_flRandomMax = 7.0
+				m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
+				m_flMultFactor = 1.0
+				m_flInput0 = 0.0
+				m_flInput1 = 1.0
+				m_flOutput0 = 0.0
+				m_flOutput1 = 1.0
+				m_nBiasType = "PF_BIAS_TYPE_STANDARD"
+				m_flBiasParameter = 0.0
+				m_Curve = 
+				{
+					m_spline = [  ]
+					m_tangents = [  ]
+					m_vDomainMins = [ 0.0, 0.0 ]
+					m_vDomainMaxs = [ 0.0, 0.0 ]
+				}
 			}
 		},
 	]
-	m_PreEmissionOperators = [  ]
 	m_nBehaviorVersion = 9
 	m_nFirstMultipleOverride_BackwardCompat = 5
+	m_Constraints = 
+	[
+		{
+			_class = "C_OP_WorldTraceConstraint"
+			m_nCollisionMode = 3
+			m_flSlideAmount = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_nMapType = "PF_MAP_TYPE_DIRECT"
+				m_flLiteralValue = 0.8
+				m_nControlPoint = 0
+				m_nScalarAttribute = 3
+				m_nVectorAttribute = 6
+				m_nVectorComponent = 0
+				m_flRandomMin = 0.0
+				m_flRandomMax = 1.0
+				m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
+				m_flMultFactor = 1.0
+				m_flInput0 = 0.0
+				m_flInput1 = 1.0
+				m_flOutput0 = 0.0
+				m_flOutput1 = 1.0
+				m_nBiasType = "PF_BIAS_TYPE_STANDARD"
+				m_flBiasParameter = 0.0
+				m_Curve = 
+				{
+					m_spline = [  ]
+					m_tangents = [  ]
+					m_vDomainMins = [ 0.0, 0.0 ]
+					m_vDomainMaxs = [ 0.0, 0.0 ]
+				}
+			}
+			m_flRadiusScale = 50.0
+			m_flTraceTolerance = 32.0
+		},
+	]
 }

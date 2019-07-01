@@ -1,4 +1,4 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf19:version{aafc65d8-7a5a-4e01-bd8d-3ac118422503} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf21:version{7a150ecc-d865-438f-ad53-5963fe1a2720} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_controlPointConfigurations = 
@@ -32,7 +32,7 @@
 		},
 		{
 			_class = "C_OP_RampScalarLinearSimple"
-			m_Rate = 4.0
+			m_Rate = -10.0
 			m_flStartTime = 0.3
 			m_nField = "10"
 		},
@@ -76,19 +76,22 @@
 			m_fRadiusMax = 1.0
 		},
 		{
+			_class = "C_INIT_OffsetVectorToVector"
+			m_vecOutputMin = [ 0.0, 0.0, -4.0 ]
+			m_vecOutputMax = [ 0.0, 0.0, -5.0 ]
+		},
+		{
 			_class = "C_INIT_RandomLifeTime"
 			m_fLifetimeMin = 0.3
-			m_fLifetimeMax = 0.4
+			m_fLifetimeMax = 0.5
 		},
 		{
 			_class = "C_INIT_RandomTrailLength"
-			m_flMaxLength = 0.4
-			m_flMinLength = 0.2
+			m_flMaxLength = 0.6
+			m_flMinLength = 1.0
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 45
-			m_nAlphaMax = 72
 		},
 		{
 			_class = "C_INIT_RandomRadius"
@@ -97,8 +100,8 @@
 		},
 		{
 			_class = "C_INIT_RandomColor"
-			m_ColorMin = [ 170, 170, 170, 255 ]
-			m_ColorMax = [ 145, 143, 143, 255 ]
+			m_ColorMin = [ 21, 17, 17, 255 ]
+			m_ColorMax = [ 44, 41, 37, 255 ]
 		},
 		{
 			_class = "C_INIT_VelocityRadialRandom"
@@ -134,7 +137,13 @@
 			m_ChildRef = resource:"particles/rock_throw/rock_impact_dust.vpcf"
 		},
 		{
+			m_ChildRef = resource:"particles/rock_throw/rock_impact_cracks_b.vpcf"
+		},
+		{
 			m_ChildRef = resource:"particles/rock_throw/rock_impact_cracks.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/rock_throw/rock_impact_dirt.vpcf"
 		},
 	]
 	m_nBehaviorVersion = 9

@@ -50,7 +50,7 @@
 		{
 			_class = "C_OP_RenderSprites"
 			m_hTexture = resource:"materials/particle/water_splash/water_splash.vtex"
-			m_flDepthBias = 100.0
+			m_flDepthBias = 120.0
 			m_ColorScale = [ 255, 255, 255 ]
 			m_flAnimationRate = 1.0
 		},

@@ -1,7 +1,7 @@
 <!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf21:version{7a150ecc-d865-438f-ad53-5963fe1a2720} -->
 {
 	_class = "CParticleSystemDefinition"
-	m_ConstantColor = [ 0, 0, 0, 255 ]
+	m_ConstantColor = [ 79, 72, 67, 255 ]
 	m_controlPointConfigurations = 
 	[
 		{
@@ -32,7 +32,7 @@
 		{
 			_class = "C_OP_RenderProjected"
 			m_bProjectWater = false
-			m_hProjectedMaterial = resource:"materials/particle/ground/ground_crack_shatter_proj.vmat"
+			m_hProjectedMaterial = resource:"materials/particle/projected_groundcracks_02.vmat"
 			m_bEnableProjectedDepthControls = true
 			m_flMinProjectionDepth = 0.0
 			m_flMaxProjectionDepth = 1000.0
@@ -45,19 +45,24 @@
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 6.0
-			m_fLifetimeMax = 8.0
+			m_fLifetimeMin = 5.0
+			m_fLifetimeMax = 6.0
 		},
 		{
 			_class = "C_INIT_RemapCPtoScalar"
 			m_nCPInput = 1
 			m_flInputMin = 1.0
 			m_flInputMax = 3.0
-			m_flOutputMin = 70.0
-			m_flOutputMax = 110.0
+			m_flOutputMin = 50.0
+			m_flOutputMax = 90.0
 		},
 		{
 			_class = "C_INIT_RandomRotation"
+		},
+		{
+			_class = "C_INIT_RandomAlpha"
+			m_nAlphaMin = 147
+			m_nAlphaMax = 155
 		},
 	]
 	m_Emitters = 
