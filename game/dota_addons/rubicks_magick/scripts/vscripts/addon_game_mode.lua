@@ -27,7 +27,7 @@ function RubicksMagickGameMode:InitGameMode()
 	GameRules:SetHeroSelectionTime(0.0)
 	GameRules:SetPreGameTime(1.0)
 
-	GameRules:GetGameModeEntity():SetCameraDistanceOverride(1175)
+	GameRules:GetGameModeEntity():SetCameraDistanceOverride(1090)
 	GameRules:GetGameModeEntity():SetCustomGameForceHero("npc_dota_hero_rubick")
 
 	GameRules:GetGameModeEntity():SetThink("OnThink", self, "GlobalThink", 2)
