@@ -1,4 +1,4 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf21:version{7a150ecc-d865-438f-ad53-5963fe1a2720} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_controlPointConfigurations = 
@@ -40,23 +40,27 @@
 			m_nControlPointNumber = 2
 		},
 		{
+			_class = "C_INIT_RandomLifeTime"
+			m_fLifetimeMin = 0.27
+			m_fLifetimeMax = 0.27
+		},
+		{
 			_class = "C_INIT_VelocityFromCP"
 			m_nControlPoint = 1
 			m_nControlPointCompare = 2
-			m_flVelocityScale = 1500.0
+			m_flVelocityScale = 2000.0
 			m_bDirectionOnly = true
-		},
-		{
-			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.5
-			m_fLifetimeMax = 0.5
 		},
 	]
 	m_Emitters = 
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
-			m_nParticlesToEmit = 1
+			m_nParticlesToEmit = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_flLiteralValue = 1.0
+			}
 		},
 	]
 	m_ForceGenerators = 
@@ -64,7 +68,33 @@
 		{
 			_class = "C_OP_AttractToControlPoint"
 			m_vecComponentScale = [ 1.2, 1.2, 1.0 ]
-			m_fForceAmount = 5500.0
+			m_fForceAmount = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_nMapType = "PF_MAP_TYPE_DIRECT"
+				m_flLiteralValue = 15500.0
+				m_nControlPoint = 0
+				m_nScalarAttribute = 3
+				m_nVectorAttribute = 6
+				m_nVectorComponent = 0
+				m_flRandomMin = 0.0
+				m_flRandomMax = 1.0
+				m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
+				m_flMultFactor = 1.0
+				m_flInput0 = 0.0
+				m_flInput1 = 1.0
+				m_flOutput0 = 0.0
+				m_flOutput1 = 1.0
+				m_nBiasType = "PF_BIAS_TYPE_STANDARD"
+				m_flBiasParameter = 0.0
+				m_Curve = 
+				{
+					m_spline = [  ]
+					m_tangents = [  ]
+					m_vDomainMins = [ 0.0, 0.0 ]
+					m_vDomainMaxs = [ 0.0, 0.0 ]
+				}
+			}
 			m_fFalloffPower = 0.0
 		},
 	]
@@ -72,32 +102,35 @@
 	[
 		{
 			m_ChildRef = resource:"particles/self_heal/self_heal_guide1.vpcf"
-			m_flDelay = 0.5
+			m_flDelay = 0.27
 		},
 		{
 			m_ChildRef = resource:"particles/self_heal/self_heal_guide2.vpcf"
-			m_flDelay = 0.5
+			m_flDelay = 0.27
 		},
 		{
 			m_ChildRef = resource:"particles/self_heal/self_heal_guide3.vpcf"
-			m_flDelay = 0.5
+			m_flDelay = 0.27
 		},
 		{
 			m_ChildRef = resource:"particles/self_heal/self_heal_orb_3.vpcf"
 		},
 		{
 			m_ChildRef = resource:"particles/self_heal/self_heal_burst.vpcf"
-			m_flDelay = 0.5
+			m_flDelay = 0.27
 		},
 		{
 			m_ChildRef = resource:"particles/self_heal/self_heal_pulses.vpcf"
+			m_flDelay = 0.27
 		},
 		{
 			m_ChildRef = resource:"particles/self_heal/self_heal_sparks.vpcf"
-			m_flDelay = 0.5
+			m_flDelay = 0.27
 		},
 		{
 			m_ChildRef = resource:"particles/self_heal/self_heal_burst.vpcf"
 		},
 	]
+	m_nBehaviorVersion = 9
+	m_nFirstMultipleOverride_BackwardCompat = 2
 }

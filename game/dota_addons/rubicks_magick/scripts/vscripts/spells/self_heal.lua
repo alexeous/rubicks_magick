@@ -20,7 +20,7 @@ function SelfHeal:StartSelfHeal(player, power)
 		dontMoveWhileCasting = true,
 		castingGesture = ACT_DOTA_CHANNEL_ABILITY_5,
 		thinkFunction = function(player) SelfHeal:SelfHealThink(player) end,
-		thinkPeriod = 0.5,
+		thinkPeriod = 0.27,
 		endFunction = function(player) SelfHeal:SelfHealEnd(player) end,
 		selfHeal_ExpMultiplier = 0.3 + power * 0.07,
 		selfHeal_BaseHeal = 33 * power,
@@ -45,6 +45,7 @@ function SelfHeal:StartSelfHeal(player, power)
 end
 
 function SelfHeal:SelfHealThink(player)
+	player.spellCast.thinkPeriod = 0.5
 	SelfHeal:DoHeal(player)
 	if player.spellCast.selfHeal_FirstHeal == nil then
 		player.spellCast.selfHeal_FirstHeal = true
