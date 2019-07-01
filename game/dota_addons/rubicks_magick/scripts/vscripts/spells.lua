@@ -269,10 +269,7 @@ function Spells:OnDirectedCastKeyUp(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	if player ~= nil then
 		player.wantsToStartNewDirectedSpell = false
-		local spellCast = player.spellCast
-		if spellCast ~= nil and spellCast.castType ~= CAST_TYPE_INSTANT and not spellCast.isSelfCast then
-			Spells:StopCasting(player)
-		end
+		Spells:BaseOnCastKeyUp(player, false)
 	end
 end
 
@@ -280,8 +277,22 @@ function Spells:OnSelfCastKeyUp(keys)
 	local player = PlayerResource:GetPlayer(keys.playerID)
 	if player ~= nil then
 		player.wantsToStartNewSelfSpell = false
-		local spellCast = player.spellCast
-		if spellCast ~= nil and spellCast.castType ~= CAST_TYPE_INSTANT and spellCast.isSelfCast then
+		Spells:BaseOnCastKeyUp(player, true)
+	end
+end
+
+function Spells:BaseOnCastKeyUp(player, isSelfCast)
+	local spellCast = player.spellCast
+	if spellCast == nil or (spellCast.isSelfCast or false) ~= (isSelfCast or false) then
+		return
+	end
+
+	local castType = spellCast.castType
+	if castType ~= CAST_TYPE_INSTANT then
+		local minDuration = spellCast.minDuration
+		if castType == CAST_TYPE_CONTINUOUS and minDuration ~= nil and Spells:TimeElapsedSinceCast(player) < minDuration then
+			spellCast.wantsToStopContinuousCast = true
+		else
 			Spells:StopCasting(player)
 		end
 	end
@@ -308,7 +319,10 @@ function Spells:SpellCastThink(player)
 	local spellCast = player.spellCast
 	local time = GameRules:GetGameTime()
 	local hero = player:GetAssignedHero()
-	if time > spellCast.endTime or not hero:IsAlive() or hero:IsStunned() then
+	local heroIsOff = not hero:IsAlive() or hero:IsStunned()
+	local timeIsOver = time > spellCast.endTime
+	local stopContinuousCastWithMinDuration = spellCast.wantsToStopContinuousCast and Spells:TimeElapsedSinceCast(player) > spellCast.minDuration
+	if heroIsOff or timeIsOver or stopContinuousCastWithMinDuration then
 		Spells:StopCasting(player)
 	elseif spellCast.thinkFunction ~= nil and (spellCast.thinkPeriod == nil or time - spellCast.lastThinkTime >= spellCast.thinkPeriod) then
 		spellCast.thinkFunction(player)

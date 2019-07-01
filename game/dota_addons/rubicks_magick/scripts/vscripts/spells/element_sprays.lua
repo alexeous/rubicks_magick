@@ -120,6 +120,7 @@ function ElementSprays:StartElementSprayCasting(player, distance, duration, onTo
 	local spellCastTable = {
 		castType = CAST_TYPE_CONTINUOUS,
 		duration = duration,
+		minDuration = 0.72,
 		slowMovePercentage = 30,
 		turnDegsPerSec = 120.0,
 		castingGesture = ACT_DOTA_CHANNEL_ABILITY_5,
