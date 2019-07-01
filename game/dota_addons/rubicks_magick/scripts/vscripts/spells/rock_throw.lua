@@ -34,7 +34,7 @@ function RockThrow:StartRockThrow(player, pickedElements)
 		thinkFunction = function(player)
 			caster:EmitSound("RockOvercharge")
 		end,
-		slowMovePercentage = 30,
+		slowMovePercentage = 50,
 		chargingParticle = "particles/rock_throw/charging_particle/charging_particle.vpcf",
 		rockThrow_PickedElements = pickedElements
 	}
@@ -69,7 +69,7 @@ function RockThrow:ReleaseRock(player)
 	local maxRockDamage = ({ 125, 300, 600 })[rockSize]
 	local rockDamage = Util:Lerp(minRockDamage, maxRockDamage, timeFactor)
 
-	local minDistance = 150
+	local minDistance = 75
 	local maxDistance = ({ 1600, 1375, 1200 })[rockSize]
 	local distance = Util:Lerp(minDistance, maxDistance, timeFactor)
 
@@ -77,9 +77,6 @@ function RockThrow:ReleaseRock(player)
 
 	if timeElapsed >= 2.4 then
 		rockDamage = ({ 135, 330, 650 })[rockSize]
-		Timers:CreateTimer(0.02, function()
-			caster:AddNewModifier(caster, nil, "modifier_knockdown", { duration = 2.0 })
-		end)
 	end
 
 	local rockImpactTable = {
@@ -137,6 +134,11 @@ function RockThrow:ReleaseRock(player)
 	ParticleManager:SetParticleControl(launchWaveParticle, 0, caster:GetAbsOrigin())
 	ParticleManager:SetParticleControl(launchWaveParticle, 1, Vector(distance, 0, 0))
 	ParticleManager:SetParticleControl(launchWaveParticle, 2, Vector(0, caster:GetAnglesAsVector().y, 0))
+
+	if timeElapsed >= 2.5 then
+		rockDamage = ({ 135, 330, 650 })[rockSize]
+		caster:AddNewModifier(caster, nil, "modifier_knockdown", { duration = 2.0 })
+	end
 end
 
 function RockThrow:CreateRockParticle(rockDummy, pickedElements)
@@ -218,11 +220,11 @@ function RockThrow:RockDummyThink(rockDummy)
 	for _, unit in pairs(unitsTouched) do
 		if unit ~= rockDummy and unit ~= caster then
 			Util:EmitSoundOnLocation(origin, "RockTouch", caster)
+			local powerfulEnoughForBurst = rockDummy.rockSize == 3 and damage >= 450
 			if unit:IsFrozen() then
-				if rockDummy.rockSize == 3 and damage >= 450 then
+				if powerfulEnoughForBurst then
 					unit:RemoveModifierByName("modifier_frozen")
 					Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage * 10, false, 0.0, true)
-					--RockThrow:ImpactParticle(origin, 1)
 					RockThrow:BurstFrozenParticle(origin)
 					RockThrow:PlayBurstSound(origin, caster, true)
 				else
@@ -231,9 +233,8 @@ function RockThrow:RockDummyThink(rockDummy)
 				end
 			else
 				local damageAfterShields = Spells:GetDamageAfterShields(unit, damage, ELEMENT_EARTH)
-				if rockDummy.rockSize == 3 and unit:GetHealth() - damageAfterShields <= 0 then
+				if powerfulEnoughForBurst and unit:GetHealth() - damageAfterShields <= 0 then
 					Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage, false)
-					--RockThrow:ImpactParticle(origin, 1)
 					RockThrow:BurstBloodParticle(origin)
 					RockThrow:PlayBurstSound(origin, caster, false)
 				else
