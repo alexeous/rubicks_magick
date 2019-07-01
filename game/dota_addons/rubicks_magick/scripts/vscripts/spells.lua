@@ -386,8 +386,11 @@ function Spells:ProcessHealthChanges()
 		end
 
 		for _, info in pairs(heals) do
-			unit:Heal(info.value, info.source)
-			SendOverheadEventMessage(unit, OVERHEAD_ALERT_HEAL, unit, info.value, unit)
+			local clampedValue = math.min(info.value, unit:GetMaxHealth() - unit:GetHealth())
+			unit:Heal(clampedValue, info.source)
+			if clampedValue > 0 then
+				SendOverheadEventMessage(unit, OVERHEAD_ALERT_HEAL, unit, clampedValue, unit)
+			end
 		end
 
 		for _, info in pairs(damages) do
