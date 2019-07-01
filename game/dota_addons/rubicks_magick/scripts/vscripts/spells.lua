@@ -32,6 +32,8 @@ CAST_TYPE_CHARGING = 3
 
 SPELLS_THINK_PERIOD = 0.02
 
+DRY_WARM_EXTINGUISH_GUARD_DURATION = 0.8
+
 function GetScaledRadiuses(factor)
 	return { OMNI_SPELLS_RADIUSES[1] * factor, OMNI_SPELLS_RADIUSES[2] * factor, OMNI_SPELLS_RADIUSES[3] * factor }
 end
@@ -640,8 +642,8 @@ function Spells:ApplyWet(target, caster)
 		return false
 	end
 
-	local wasBurning = Spells:ExtinguishWithWater(target)
-	if not wasBurning and not target:HasModifier("modifier_chill") then
+	local wasBurning = Spells:ExtinguishWithElement(target, ELEMENT_WATER)
+	if not wasBurning and Spells:CanApplyModifier(target, ELEMENT_WATER) and not target:HasModifier("modifier_chill") then
 		target:AddNewModifier(caster, nil, "modifier_wet", {})
 	end
 	return true
@@ -652,8 +654,8 @@ function Spells:ApplyChill(target, caster, power)
 		return false
 	end
 
-	local wasBurning = Spells:ExtinguishWithCold(target)
-	if not wasBurning then
+	local wasBurning = Spells:ExtinguishWithElement(target, ELEMENT_COLD)
+	if not wasBurning and Spells:CanApplyModifier(target, ELEMENT_COLD) then
 		local currentChillModifier = target:FindModifierByName("modifier_chill")
 		if currentChillModifier ~= nil then
 			currentChillModifier:Enhance(power)
@@ -673,7 +675,7 @@ function Spells:ApplyBurn(target, caster, damage)
 	end
 
 	local wasWetOrChilled = Spells:DryAndWarm(target)
-	if not wasWetOrChilled then
+	if not wasWetOrChilled and Spells:CanApplyModifier(target, ELEMENT_FIRE) then
 		local currentBurnModifier = target:FindModifierByName("modifier_burn")
 		if currentBurnModifier ~= nil then
 			currentBurnModifier:Reapply(damage)
@@ -684,40 +686,48 @@ function Spells:ApplyBurn(target, caster, damage)
 	return true
 end
 
+function Spells:CanApplyModifier(target, element)
+	if target == nil then
+		return false
+	end
+	if target.dryWarmExtinguishElement == nil or target.dryWarmExtinguishTime == nil then
+		return true
+	end
+	local time = GameRules:GetGameTime()
+	return not (target.dryWarmExtinguishElement == element and time - target.dryWarmExtinguishTime < DRY_WARM_EXTINGUISH_GUARD_DURATION)
+end
+
 function Spells:DryAndWarm(target)
 	if target == nil or Spells:IsResistantTo(target, ELEMENT_FIRE) then
 		return false
 	end
 	if target:HasModifier("modifier_wet") then
 		target:RemoveModifierByName("modifier_wet")
+		Spells:SetupDryWarmExtinguishGuard(target, ELEMENT_FIRE)
 		return true
 	elseif target:HasModifier("modifier_chill") then
 		target:RemoveModifierByName("modifier_chill")
+		Spells:SetupDryWarmExtinguishGuard(target, ELEMENT_FIRE)
 		return true
 	end
 	return false
 end
 
-function Spells:ExtinguishWithWater(target)
-	if target == nil or Spells:IsResistantTo(target, ELEMENT_WATER) then
+function Spells:ExtinguishWithElement(target, element)
+	if target == nil or Spells:IsResistantTo(target, element) then
 		return false
 	end
 	if target:HasModifier("modifier_burn") then
 		target:RemoveModifierByName("modifier_burn")
+		Spells:SetupDryWarmExtinguishGuard(target, element)
 		return true
 	end
 	return false
 end
 
-function Spells:ExtinguishWithCold(target)
-	if target == nil or Spells:IsResistantTo(target, ELEMENT_COLD) then
-		return false
-	end
-	if target:HasModifier("modifier_burn") then
-		target:RemoveModifierByName("modifier_burn")
-		return true
-	end
-	return false
+function Spells:SetupDryWarmExtinguishGuard(target, element)
+	target.dryWarmExtinguishElement = element
+	target.dryWarmExtinguishTime = GameRules:GetGameTime()
 end
 
 ------------------- PUSH ------------------------

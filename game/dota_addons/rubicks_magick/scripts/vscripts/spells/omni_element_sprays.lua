@@ -89,7 +89,7 @@ function OmniElementSprays:OmniSteamSpray(caster, position, radius, isSelfCast, 
 	Spells:ApplyElementDamageAoE(position, radius, caster, ELEMENT_WATER, damage / 2, isSelfCast, isWet, 1.0)
 	Spells:ApplyElementDamageAoE(position, radius, caster, ELEMENT_FIRE, damage / 2, isSelfCast, false, 1.0)
 	if isSelfCast and isWet then
-		Spells:ExtinguishWithWater(caster)
+		Spells:ExtinguishWithElement(caster, ELEMENT_WATER)
 	end
 
 	local particle = ParticleManager:CreateParticle("particles/omni_sprays/omni_steam_spray/omni_steam_spray.vpcf", PATTACH_CUSTOMORIGIN, nil)
@@ -120,7 +120,7 @@ function OmniElementSprays:OmniWaterSpray(caster, position, radius, isSelfCast, 
 		end
 	end
 	if isSelfCast then
-		Spells:ExtinguishWithWater(caster)
+		Spells:ExtinguishWithElement(caster, ELEMENT_WATER)
 	end
 
 	local particle = ParticleManager:CreateParticle("particles/omni_sprays/omni_water_spray/omni_water_spray.vpcf", PATTACH_CUSTOMORIGIN, nil)
@@ -151,7 +151,7 @@ end
 function OmniElementSprays:OmniColdSpray(caster, position, radius, isSelfCast, damage)
 	Spells:ApplyElementDamageAoE(position, radius, caster, ELEMENT_COLD, damage, isSelfCast, true)
 	if isSelfCast then
-		Spells:ExtinguishWithCold(caster)
+		Spells:ExtinguishWithElement(caster, ELEMENT_COLD)
 	end
 
 	local particle = ParticleManager:CreateParticle("particles/omni_sprays/omni_cold_spray/omni_cold_spray.vpcf", PATTACH_CUSTOMORIGIN, nil)

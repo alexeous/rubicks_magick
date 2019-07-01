@@ -155,7 +155,7 @@ function Lightning:OmniLightning(player, pickedElements)
 	Spells:StartCasting(player, spellCastTable)
 	
 	if table.indexOf(pickedElements, ELEMENT_COLD) then
-		Spells:ExtinguishWithCold(caster)
+		Spells:ExtinguishWithElement(caster, ELEMENT_COLD)
 	end
 end
 
