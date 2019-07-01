@@ -157,6 +157,9 @@ function Lightning:OmniLightning(player, pickedElements)
 	if table.indexOf(pickedElements, ELEMENT_COLD) then
 		Spells:ExtinguishWithElement(caster, ELEMENT_COLD)
 	end
+	if table.indexOf(pickedElements, ELEMENT_FIRE) then
+		Spells:DryAndWarm(caster)
+	end
 end
 
 function Lightning:GetColor(pickedElements)
