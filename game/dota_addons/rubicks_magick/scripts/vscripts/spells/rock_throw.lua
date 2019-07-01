@@ -70,7 +70,7 @@ function RockThrow:ReleaseRock(player)
 	local rockDamage = Util:Lerp(minRockDamage, maxRockDamage, timeFactor)
 
 	local minDistance = 45
-	local maxDistance = ({ 1600, 1375, 1200 })[rockSize]
+	local maxDistance = ({ 1800, 1500, 1200 })[rockSize]
 	local distance = Util:Lerp(minDistance, maxDistance, timeFactor)
 
 	local radiuses = GetScaledRadiuses(radiusFactor)
