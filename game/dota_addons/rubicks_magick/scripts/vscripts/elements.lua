@@ -104,8 +104,7 @@ function Elements:PickElement(playerID, element)
 	local player = PlayerResource:GetPlayer(playerID)
 
 	local hero = player:GetAssignedHero()
-	local isAble = (hero ~= nil) and (hero:IsAlive()) and (not hero:IsStunned()) and (not hero:IsFrozen())
-	if not isAble then
+	if hero == nil or not hero:IsAlive() or hero:IsFrozen() then
 		return
 	end
 
