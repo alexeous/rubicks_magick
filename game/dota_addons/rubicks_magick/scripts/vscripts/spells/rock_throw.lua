@@ -116,7 +116,7 @@ function RockThrow:ReleaseRock(player)
 	local onImpactFunction = table.serialRetrieve(rockImpactTable, pickedElements)
 
 	local forward = caster:GetForwardVector():Normalized()
-	local startOrigin = caster:GetAbsOrigin() + Vector(0, 0, ROCK_START_HEIGHT) + forward * 70
+	local startOrigin = caster:GetAbsOrigin() + Vector(0, 0, ROCK_START_HEIGHT)
 	local rockDummy = Util:CreateDummy(startOrigin, caster)
 	rockDummy.caster = caster
 	rockDummy.time = 0.0
