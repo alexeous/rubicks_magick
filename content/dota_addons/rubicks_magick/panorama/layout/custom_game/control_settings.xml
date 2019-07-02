@@ -6,6 +6,7 @@
 		<include src="file://{resources}/scripts/custom_game/keybinds.js" />
 		<include src="file://{resources}/scripts/custom_game/control_settings.js" />
 		<include src="file://{resources}/scripts/custom_game/mouse_events.js" />
+		<include src="file://{resources}/scripts/custom_game/settings_saving_access.js" />
 	</scripts>
 	<Panel>
 		<Panel id="ControlSettingsRoot">

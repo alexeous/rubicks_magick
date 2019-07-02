@@ -1,3 +1,5 @@
+require("libraries/timers")
+
 if Util == nil then
 	Util = class({})
 end
@@ -33,4 +35,25 @@ end
 
 function Util:Lerp(a, b, t)
 	return a + (b - a) * t
+end
+
+function Util:DoOnceTrue(predicate, callback, maxWaitingTime, predicateCheckInterval)
+	if predicate == nil or callback == nil then
+		return
+	end
+	local startTime = GameRules:GetGameTime()
+	return Timers:CreateTimer(function()
+		if predicate() then
+			callback()
+			return nil
+		end
+		if maxWaitingTime ~= nil and GameRules:GetGameTime() - startTime > maxWaitingTime then
+			return nil
+		end
+		return predicateCheckInterval or 0.02
+	end)
+end
+
+function Util:CancelDoOnceTrue(name)
+	Timers:RemoveTimer(name)
 end

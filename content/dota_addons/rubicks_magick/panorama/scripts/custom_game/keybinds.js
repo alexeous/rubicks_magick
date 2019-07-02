@@ -84,22 +84,3 @@ function startKeyCapture(callback) {
 function endKeyCapture() {
 	keyCaptureCallback = null;
 }
-
-
-GameEvents.Subscribe("rm_settings_holder", onSettingsHolderCreated);
-GameEvents.SendCustomGameEventToServer("rm_send_settings", { "playerID" : Players.GetLocalPlayer() });
-
-var settingsHolderIndex = null;
-
-function onSettingsHolderCreated(params) {
-	settingsHolderIndex = params.index;
-	$.Schedule(0.02, tryGetSettings);
-}
-
-function tryGetSettings() {
-	var stackCount = Buffs.GetStackCount(settingsHolderIndex, 2);
-	if (stackCount == 0) {
-		$.Schedule(0.02, tryGetSettings);
-		return;
-	}
-}
