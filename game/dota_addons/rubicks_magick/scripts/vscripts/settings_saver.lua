@@ -33,18 +33,20 @@ function SettingsSaver:AccessSettingsViaModifier(player, isWriting, stacksValue)
 	local function IsHeroAvailable()
 		return player:GetAssignedHero() ~= nil
 	end
-	local function ReadSettingsViaModifier()
+	local function AccessSettings()
 		local settingsHolder = SettingsSaver:GetOrCreateSettingsHolder(player)
 		local duration = self:GetDurationValue(player:GetPlayerID(), isWriting)
 		if settingsHolder:HasModifier("modifier_settings_accessor") then
 			settingsHolder:RemoveModifierByName("modifier_settings_accessor")
 		end
-		settingsHolder:AddNewModifier(settingsHolder, nil, "modifier_settings_accessor", { duration = duration})
+		settingsHolder:AddNewModifier(settingsHolder, nil, "modifier_settings_accessor", { duration = duration })
 		settingsHolder:SetModifierStackCount("modifier_settings_accessor", settingsHolder, stacksValue or 0)
-		CustomGameEventManager:Send_ServerToPlayer(player, "rm_settings_loading", { holder = settingsHolder:GetEntityIndex() })
+		if not isWriting then
+			CustomGameEventManager:Send_ServerToPlayer(player, "rm_settings_loading", { holder = settingsHolder:GetEntityIndex() })
+		end
 	end
 	local maxWaitingTime = 10
-	Util:DoOnceTrue(IsHeroAvailable, ReadSettingsViaModifier, maxWaitingTime)
+	Util:DoOnceTrue(IsHeroAvailable, AccessSettings, maxWaitingTime)
 end
 
 function SettingsSaver:GetOrCreateSettingsHolder(player)
