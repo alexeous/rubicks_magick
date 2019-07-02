@@ -22,11 +22,16 @@ end
 
 function modifier_shield_earth:DeclareFunctions()
 	local funcs = {
-		MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE
+		MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE,
+		MODIFIER_PROPERTY_INCOMING_PHYSICAL_DAMAGE_PERCENTAGE
 	}
 	return funcs
 end
 
 function modifier_shield_earth:GetModifierMoveSpeedBonus_Percentage(params)
-	return -10.0
+	return -16.0
+end
+
+function modifier_shield_earth:GetModifierIncomingPhysicalDamage_Percentage(params)
+	return -50
 end
