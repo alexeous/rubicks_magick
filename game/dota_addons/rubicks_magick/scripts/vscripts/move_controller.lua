@@ -96,10 +96,11 @@ function MoveController:OnStopMoveKeyDown(keys)
 	MoveController:StopMove(player)
 end
 
-function MoveController:StopMove(player)
+function MoveController:StopMove(player, preserveMoveTargetPos)
 	if player ~= nil then
-		player.moveToPos = nil
-		player.moveToClearPos = nil
+		if not preserveMoveTargetPos then
+			player.moveToPos = nil
+		end
 		local hero = player:GetAssignedHero()
 		if hero ~= nil then
 			hero:SetPhysicsVelocity(Vector(0, 0, 0))

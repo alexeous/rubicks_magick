@@ -431,7 +431,7 @@ function Spells:StartCasting(player, infoTable)
 		if spellCast.castingGesture ~= nil then
 			if player.moveToPos ~= nil then
 				if spellCast.dontMoveWhileCasting then
-					MoveController:StopMove(player)
+					MoveController:StopMove(player, true)
 				end
 				hero:FadeGesture(ACT_DOTA_RUN)
 			end
