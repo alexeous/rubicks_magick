@@ -1,3 +1,18 @@
+const mouseEvents = [ "rm_mouse_left", "rm_mouse_middle", "rm_mouse_right" ];
+
+const elementEvents = [ "+rm_key_q", "+rm_key_w", "+rm_key_e", "+rm_key_r",
+	"+rm_key_a", "+rm_key_s", "+rm_key_d", "+rm_key_f" ];
+
+const stopMoveEvents = [ "+rm_key_ctrl", "+rm_key_space", "+rm_key_tab", "+rm_key_shift" ];
+
+
+const mouseActions = [ "rm_move_to", "rm_directed_cast", "rm_self_cast" ];
+
+const elementActions = [ "rm_pick_water", "rm_pick_life", "rm_pick_shield", "rm_pick_cold", 
+	"rm_pick_lightning", "rm_pick_death", "rm_pick_earth", "rm_pick_fire" ];
+
+const stopMoveAction = "rm_stop_move";
+
 var keybindTable = {
 	"+rm_key_q" : "rm_pick_water",
 	"+rm_key_w" : "rm_pick_life",

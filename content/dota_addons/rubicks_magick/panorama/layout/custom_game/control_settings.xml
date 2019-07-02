@@ -122,8 +122,8 @@
 					</Button>
 				</Panel>
 			</Panel>
-			<Button id="ControlSettingsHideButton" onactivate="onHideShowClick()"/>
-			<Button id="ControlSettingsShowButton" onactivate="onHideShowClick()" class="invisible"/>
+			<Button id="ControlSettingsHideButton" onactivate="setSettingsVisibleAndSave(false)"/>
+			<Button id="ControlSettingsShowButton" onactivate="setSettingsVisibleAndSave(true)" class="invisible"/>
 		</Panel>
 	</Panel>
 </root>

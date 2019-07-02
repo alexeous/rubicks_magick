@@ -1,15 +1,3 @@
-const mouseEvents = [ "rm_mouse_left", "rm_mouse_middle", "rm_mouse_right" ];
-
-const stopMoveEvents = [ "+rm_key_ctrl", "+rm_key_space", "+rm_key_tab", "+rm_key_shift" ];
-
-
-const mouseActions = [ "rm_move_to", "rm_directed_cast", "rm_self_cast" ];
-
-const elementActions = [ "rm_pick_water", "rm_pick_life", "rm_pick_shield", "rm_pick_cold", 
-	"rm_pick_lightning", "rm_pick_death", "rm_pick_earth", "rm_pick_fire" ];
-
-const stopMoveAction = "rm_stop_move";
-
 const elementKeyNames = {
 	"+rm_key_q" : "Q",
 	"+rm_key_w" : "W",
@@ -20,7 +8,6 @@ const elementKeyNames = {
 	"+rm_key_d" : "D",
 	"+rm_key_f" : "F"
 };
-
 
 
 var hideButton = findUI("ControlSettingsHideButton");
@@ -68,6 +55,11 @@ var buttonsStopMove = makeTable(
 	stopMoveEvents[2], findUI("ControlSettingsStopMoveTab"),
 	stopMoveEvents[3], findUI("ControlSettingsStopMoveShift")
 );
+
+const saveScheduleTime = 6;
+
+var rebindingButton = null;
+var saveScheduled = null;
 
 
 setOnRebindCallback(invalidateControls);
@@ -121,16 +113,20 @@ function invalidateStopMoveControls() {
 	}
 }
 
-
-var rebindingButton = null;
-
-
-
-function onHideShowClick() {
-	hideButton.ToggleClass("invisible");
-	showButton.ToggleClass("invisible");
-	controlSettingsPanel.ToggleClass("invisible");
+function setSettingsVisible(visible) {
+	hideButton.SetHasClass("invisible", !visible);
+	showButton.SetHasClass("invisible", visible);
+	controlSettingsPanel.SetHasClass("invisible", !visible);
 	leaveKeyRebind();
+}
+
+function setSettingsVisibleAndSave(visible) {
+	setSettingsVisible(visible);
+	scheduleSave();
+}
+
+function isSettingsVisible() {
+	return !controlSettingsPanel.BHasClass("invisible");
 }
 
 function rebindMouse(actionIdx, eventIdx) {
@@ -138,6 +134,7 @@ function rebindMouse(actionIdx, eventIdx) {
 	var event = mouseEvents[eventIdx];
 	rebind(event + "_down", action + "_down");
 	rebind(event + "_up", action + "_up");
+	scheduleSave();
 }
 
 function toggleKeyRebind(actionIdx) {
@@ -160,6 +157,7 @@ function enterKeyRebind(action) {
 			return false;
 		}
 		rebind(event, action);
+		scheduleSave();
 		leaveKeyRebind();
 		return true;
 	});
@@ -179,4 +177,16 @@ function leaveKeyRebind() {
 function setStopMoveControl(buttonIdx) {
 	var event = stopMoveEvents[buttonIdx];
 	rebind(event, stopMoveAction);
+	scheduleSave();
+}
+
+function scheduleSave() {
+	if (saveScheduled != null) {
+		$.CancelScheduled(saveScheduled);
+		saveScheduled = null;
+	}
+	saveScheduled = $.Schedule(saveScheduleTime, function() {
+		saveScheduled = null;
+		saveSettings();
+	});
 }
