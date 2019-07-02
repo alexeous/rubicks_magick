@@ -92,6 +92,7 @@ function invalidateMouseControls() {
 			var button = buttons[event];
 			var isBound = keybindTable[event + "_down"] == action + "_down";
 			button.SetHasClass("ActiveControl", isBound); 
+			button.GetChild(0).SetHasClass("ControlSettingsSelectedButtonText", isBound);
 		}
 	}
 }
@@ -110,6 +111,7 @@ function invalidateStopMoveControls() {
 		var button = buttonsStopMove[event];
 		var isBound = stopMoveAction == keybindTable[event];
 		button.SetHasClass("ActiveControl", isBound);
+		button.GetChild(0).SetHasClass("ControlSettingsSelectedButtonText", isBound);
 	}
 }
 

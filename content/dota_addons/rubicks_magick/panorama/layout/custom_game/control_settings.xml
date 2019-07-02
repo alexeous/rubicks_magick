@@ -11,7 +11,7 @@
 	<Panel>
 		<Panel id="ControlSettingsRoot">
 			<Panel id="ControlSettings">
-				<Label id="ControlSettingsTitle" text="Control Settings"/>
+				<Label id="ControlSettingsTitle" text="CONTROL SETTINGS"/>
 				<Panel id="ControlSettingsMovePanel">
 					<Label class="ControlSettingsLabel" text="Move"/>
 					<Button id="ControlSettingsMoveLeft" class="ControlMouseButton ControlMouseLeft ActiveControl" onactivate="rebindMouse(0, 0)">
