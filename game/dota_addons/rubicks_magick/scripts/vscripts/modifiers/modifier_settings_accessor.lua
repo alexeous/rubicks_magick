@@ -6,8 +6,8 @@ local DURATION_EVER_PRESENT_BIT = bit.lshift(1, 8)		-- to ensure that the modifi
 local DURATION_WRITING_FLAG = bit.lshift(1, 7)
 local DURATION_PLAYER_ID_MASK = bit.bnot(bit.bor(DURATION_EVER_PRESENT_BIT, DURATION_WRITING_FLAG))
 
-local STACK_COUNT_READING_COMPLETED_FLAG = bit.lshift(1, 31)
-local STACK_COUNT_READING_FAILED_FLAG = bit.lshift(1, 30)
+local STACK_COUNT_READING_COMPLETED_FLAG = bit.lshift(1, 30)
+local STACK_COUNT_READING_FAILED_FLAG = bit.lshift(1, 29)
 local STORED_VALUE_MASK = bit.bnot(bit.bor(STACK_COUNT_READING_COMPLETED_FLAG, STACK_COUNT_READING_FAILED_FLAG))
 
 if modifier_settings_accessor == nil then
@@ -15,7 +15,19 @@ if modifier_settings_accessor == nil then
 end
 
 function modifier_settings_accessor:IsHidden()
+	return false
+end
+
+function modifier_settings_accessor:IsPermanent()
 	return true
+end
+
+function modifier_settings_accessor:IsPurgable()
+	return false
+end
+
+function modifier_settings_accessor:IsPurgeException()
+	return false
 end
 
 function modifier_settings_accessor:CheckState()

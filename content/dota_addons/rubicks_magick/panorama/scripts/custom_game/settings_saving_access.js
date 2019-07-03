@@ -1,8 +1,8 @@
-const READING_COMPLETED_FLAG = 1 << 31;
-const READING_FAILED_FLAG = 1 << 30;
+const READING_COMPLETED_FLAG = 1 << 30;
+const READING_FAILED_FLAG = 1 << 29;
 const VALUE_MASK = ~(READING_COMPLETED_FLAG | READING_FAILED_FLAG);
 
-var settingsHolderIndex = null;
+var settingsAccessorIndex = null;
 
 setSettingsVisible(false);
 var showSettingsTask = $.Schedule(3, function() { 
@@ -10,16 +10,19 @@ var showSettingsTask = $.Schedule(3, function() {
 	setSettingsVisible(true); 
 });
 
-GameEvents.Subscribe("rm_settings_loading", onSettingsHolderCreated);
+GameEvents.Subscribe("rm_settings_loading", onSettingsLoadingStarted);
 GameEvents.SendCustomGameEventToServer("rm_req_settings", { playerID: Players.GetLocalPlayer() });;
 
-function onSettingsHolderCreated(params) {
-	settingsHolderIndex = params.holder;
+function onSettingsLoadingStarted(params) {
+	settingsAccessorIndex = params.modifierIdx;
 	$.Schedule(0.02, tryGetSettings);
 }
 
 function tryGetSettings() {
-	var value = Buffs.GetStackCount(settingsHolderIndex, 2);
+	var playerID = Players.GetLocalPlayer();
+	var heroID = Players.GetPlayerHeroEntityIndex(playerID);
+	var modifierID = Entities.GetBuff(heroID, settingsAccessorIndex);
+	var value = Buffs.GetStackCount(heroID, modifierID);
 	if ((value & READING_COMPLETED_FLAG) != 0) {
 		if ((value & READING_FAILED_FLAG) == 0)
 			onReadingCompletedSuccessfully(value & VALUE_MASK);

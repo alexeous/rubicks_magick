@@ -34,26 +34,20 @@ function SettingsSaver:AccessSettingsViaModifier(player, isWriting, stacksValue)
 		return player:GetAssignedHero() ~= nil
 	end
 	local function AccessSettings()
-		local settingsHolder = SettingsSaver:GetOrCreateSettingsHolder(player)
+		local hero = player:GetAssignedHero()
 		local duration = self:GetDurationValue(player:GetPlayerID(), isWriting)
-		if settingsHolder:HasModifier("modifier_settings_accessor") then
-			settingsHolder:RemoveModifierByName("modifier_settings_accessor")
+		if hero:HasModifier("modifier_settings_accessor") then
+			hero:RemoveModifierByName("modifier_settings_accessor")
 		end
-		settingsHolder:AddNewModifier(settingsHolder, nil, "modifier_settings_accessor", { duration = duration })
-		settingsHolder:SetModifierStackCount("modifier_settings_accessor", settingsHolder, stacksValue or 0)
+		local modifier = hero:AddNewModifier(hero, nil, "modifier_settings_accessor", { duration = duration })
+		hero:SetModifierStackCount("modifier_settings_accessor", hero, stacksValue or 0)
 		if not isWriting then
-			CustomGameEventManager:Send_ServerToPlayer(player, "rm_settings_loading", { holder = settingsHolder:GetEntityIndex() })
+			local index = table.indexOf(hero:FindAllModifiers(), modifier) - 1 -- minus one because in JS indexing starts with 0 while in lua with 1
+			CustomGameEventManager:Send_ServerToPlayer(player, "rm_settings_loading", { modifierIdx = index })
 		end
 	end
-	local maxWaitingTime = 10
+	local maxWaitingTime = 100
 	Util:DoOnceTrue(IsHeroAvailable, AccessSettings, maxWaitingTime)
-end
-
-function SettingsSaver:GetOrCreateSettingsHolder(player)
-	local playerID = player:GetPlayerID()
-	local settingsHolder = SettingsSaver.settingsHolders[playerID] or Util:CreateDummy(Vector(0, 0, 0), player:GetAssignedHero())
-	SettingsSaver.settingsHolders[playerID] = settingsHolder
-	return settingsHolder
 end
 
 function SettingsSaver:GetDurationValue(playerID, isWriting)
