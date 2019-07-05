@@ -97,7 +97,7 @@ function RockThrow:ReleaseRock(player)
 				[ELEMENT_COLD]  = function(pos, unitsTouched)
 					for _, unit in pairs(unitsTouched) do
 						if unit ~= caster then
-							Spells:ApplyElementDamage(unit, caster, ELEMENT_COLD,  150 * damageFactor, false, 1.0)
+							Spells:ApplyElementDamage(unit, caster, ELEMENT_COLD,  150 * damageFactor, false, 1.0, true)
 							Spells:ApplyElementDamage(unit, caster, ELEMENT_WATER, 150 * damageFactor, false, 1.0)
 						end
 					end

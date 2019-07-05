@@ -549,16 +549,18 @@ function Spells:PrepareHealthChangesTable(unit)
 	healthChanges.heals = heals
 end
 
-function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModifiers, blockPerShield)
+function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModifiers, blockPerShield, dontDoubleIfWet)
 	if victim:IsInvulnerable() then
 		return false
 	end
 
 	damage = Spells:GetDamageAfterShields(victim, damage, element, blockPerShield)
 
-	if victim:HasModifier("modifier_wet") and ((element == ELEMENT_LIGHTNING) or (element == ELEMENT_COLD)) then
-		damage = damage * 2
-		victim:RemoveModifierByName("modifier_wet")
+	if not dontDoubleIfWet then
+		if victim:HasModifier("modifier_wet") and ((element == ELEMENT_LIGHTNING) or (element == ELEMENT_COLD)) then
+			damage = damage * 2
+			victim:RemoveModifierByName("modifier_wet")
+		end
 	end
 	if damage < 0.5 then
 		return false
