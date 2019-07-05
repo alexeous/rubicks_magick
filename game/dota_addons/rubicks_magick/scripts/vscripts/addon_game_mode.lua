@@ -39,6 +39,18 @@ function RubicksMagickGameMode:InitGameMode()
 	Spells:Init()
 
 	Timers:CreateTimer(1, function() GameRules:SetCustomGameSetupRemainingTime(0) end)
+	Timers:CreateTimer(function() 
+		for playerID = 0, DOTA_MAX_PLAYERS - 1 do
+		local player = PlayerResource:GetPlayer(playerID)
+		if player ~= nil then
+			local hero = player:GetAssignedHero()
+				if hero ~= nil and not hero:IsAlive() then
+					hero:RespawnHero(false, false)
+				end
+			end
+		end
+		return 2
+	end)
 end
 
 
