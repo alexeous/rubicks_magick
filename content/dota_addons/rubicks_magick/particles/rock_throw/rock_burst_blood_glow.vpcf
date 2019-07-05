@@ -60,7 +60,7 @@
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.1
+			m_fLifetimeMin = 0.2
 			m_fLifetimeMax = 0.25
 		},
 		{

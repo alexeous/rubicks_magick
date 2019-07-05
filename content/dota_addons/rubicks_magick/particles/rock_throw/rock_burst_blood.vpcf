@@ -38,7 +38,7 @@
 		{
 			_class = "C_OP_RenderSprites"
 			m_ColorScale = [ 164, 17, 17 ]
-			m_flAnimationRate = 3.431
+			m_flAnimationRate = 2.461
 			m_hTexture = resource:"materials/particle/spray1/spray1.vtex"
 		},
 	]
@@ -66,13 +66,14 @@
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.35
-			m_fLifetimeMax = 0.55
+			m_fLifetimeMin = 0.2
+			m_fLifetimeMax = 0.3
 		},
 		{
 			_class = "C_INIT_VelocityRadialRandom"
 			m_fSpeedMin = -100.0
 			m_fSpeedMax = -200.0
+			m_vecLocalCoordinateSystemSpeedScale = [ 1.0, 1.0, 4.0 ]
 		},
 		{
 			_class = "C_INIT_RandomRadius"
@@ -125,6 +126,9 @@
 		},
 		{
 			m_ChildRef = resource:"particles/rock_throw/rock_burst_meat.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/rock_throw/rock_burst_blood_b.vpcf"
 		},
 	]
 }
