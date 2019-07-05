@@ -6,10 +6,10 @@ if modifier_chill == nil then
 end
 
 
-THINK_PERIOD = 0.1
-FREEZE_POINT = 300
-FULL_WARM_TIME = 10.0
-REDUCE_PER_THINK = FREEZE_POINT / (FULL_WARM_TIME / THINK_PERIOD)
+local THINK_PERIOD = 0.1
+local FREEZE_POINT = 220
+local REDUCE_PER_SECOND = 22
+local REDUCE_PER_THINK = REDUCE_PER_SECOND * THINK_PERIOD
 
 
 function modifier_chill:IsHidden()
@@ -48,10 +48,6 @@ end
 
 function modifier_chill:OnIntervalThink()
 	if IsServer() then
-		if self:GetElapsedTime() - self.enhanceTime < 1.0 then
-			return
-		end
-
 		self.value = self.value - REDUCE_PER_THINK
 		if self.value <= 0 then
 			self:StartIntervalThink(-1)
