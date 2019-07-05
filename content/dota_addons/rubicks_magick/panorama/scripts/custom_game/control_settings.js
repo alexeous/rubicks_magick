@@ -56,10 +56,7 @@ var buttonsStopMove = makeTable(
 	stopMoveEvents[3], findUI("ControlSettingsStopMoveShift")
 );
 
-const saveScheduleTime = 6;
-
 var rebindingButton = null;
-var saveScheduled = null;
 
 
 setOnRebindCallback(invalidateControls);
@@ -122,11 +119,6 @@ function setSettingsVisible(visible) {
 	leaveKeyRebind();
 }
 
-function setSettingsVisibleAndSave(visible) {
-	setSettingsVisible(visible);
-	scheduleSave();
-}
-
 function isSettingsVisible() {
 	return !controlSettingsPanel.BHasClass("invisible");
 }
@@ -136,7 +128,6 @@ function rebindMouse(actionIdx, eventIdx) {
 	var event = mouseEvents[eventIdx];
 	rebind(event + "_down", action + "_down");
 	rebind(event + "_up", action + "_up");
-	scheduleSave();
 }
 
 function toggleKeyRebind(actionIdx) {
@@ -159,7 +150,6 @@ function enterKeyRebind(action) {
 			return false;
 		}
 		rebind(event, action);
-		scheduleSave();
 		leaveKeyRebind();
 		return true;
 	});
@@ -179,16 +169,4 @@ function leaveKeyRebind() {
 function setStopMoveControl(buttonIdx) {
 	var event = stopMoveEvents[buttonIdx];
 	rebind(event, stopMoveAction);
-	scheduleSave();
-}
-
-function scheduleSave() {
-	if (saveScheduled != null) {
-		$.CancelScheduled(saveScheduled);
-		saveScheduled = null;
-	}
-	saveScheduled = $.Schedule(saveScheduleTime, function() {
-		saveScheduled = null;
-		saveSettings();
-	});
 }
