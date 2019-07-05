@@ -549,17 +549,22 @@ function Spells:PrepareHealthChangesTable(unit)
 	healthChanges.heals = heals
 end
 
-function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModifiers, blockPerShield, dontDoubleIfWet)
+function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModifiers, blockPerShield, ignoreWet)
 	if victim:IsInvulnerable() then
 		return false
 	end
 
 	damage = Spells:GetDamageAfterShields(victim, damage, element, blockPerShield)
 
-	if not dontDoubleIfWet then
+	if not ignoreWet then
 		if victim:HasModifier("modifier_wet") and ((element == ELEMENT_LIGHTNING) or (element == ELEMENT_COLD)) then
 			damage = damage * 2
-			victim:RemoveModifierByName("modifier_wet")
+			if victim.wetRemoveTimer == nil then
+				victim.wetRemoveTimer = Timers:CreateTimer(0.4, function() 
+					victim.wetRemoveTimer = nil
+					victim:RemoveModifierByName("modifier_wet")
+				end)
+			end
 		end
 	end
 	if damage < 0.5 then
@@ -665,9 +670,6 @@ function Spells:ApplyChill(target, caster, power)
 		if currentChillModifier ~= nil then
 			currentChillModifier:Enhance(power)
 		else
-			if target:HasModifier("modifier_wet") then
-				target:RemoveModifierByName("modifier_wet")
-			end
 			target:AddNewModifier(caster, nil, "modifier_chill", { power = power })
 		end
 	end
