@@ -7,9 +7,9 @@ if modifier_chill == nil then
 end
 
 local THINK_PERIOD = 0.1
-local REDUCE_PER_SECOND = 22
+local REDUCE_PER_SECOND = 15
+local CHILL_FREEZE_POINT = 255
 local REDUCE_PER_THINK = REDUCE_PER_SECOND * THINK_PERIOD
-local CHILL_FREEZE_POINT = 220
 local CHILL_STATUS_EFFECT_STEPS = 7
 
 function modifier_chill:IsHidden()
