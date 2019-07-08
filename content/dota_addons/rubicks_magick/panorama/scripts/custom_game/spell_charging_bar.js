@@ -55,12 +55,12 @@ function barHeroFollowCycle() {
 	var y = origin[1];
 	var z = origin[2];
 
-	z += 210.0;
+	z += 200.0;
 	var screenX = Game.WorldToScreenX(x, y, z) * scaleX;
 	var screenY = Game.WorldToScreenY(x, y, z) * scaleY;
 
 	panelStyle.x = (screenX - 50) + "px";
-	panelStyle.y = (screenY - 5) + "px";
+	panelStyle.y = (screenY - 13) + "px";
 
 	$.Schedule(0.01, barHeroFollowCycle);
 }
