@@ -405,7 +405,7 @@ function Spells:ProcessHealthChanges()
 				elseif element == ELEMENT_COLD then
 					Spells:ApplyChill(unit, source, damage)
 				elseif element == ELEMENT_FIRE then
-					Spells:ApplyBurn(unit, source, damage)
+					Spells:ApplyBurn(unit, source)
 				end
 			end
 		end
@@ -676,7 +676,7 @@ function Spells:ApplyChill(target, caster, power)
 	return true
 end
 
-function Spells:ApplyBurn(target, caster, damage)
+function Spells:ApplyBurn(target, caster)
 	if Spells:IsResistantTo(target, ELEMENT_FIRE) or target:IsInvulnerable() then
 		return false
 	end
@@ -685,9 +685,9 @@ function Spells:ApplyBurn(target, caster, damage)
 	if not wasWetOrChilled and Spells:CanApplyModifier(target, ELEMENT_FIRE) then
 		local currentBurnModifier = target:FindModifierByName("modifier_burn")
 		if currentBurnModifier ~= nil then
-			currentBurnModifier:Reapply(damage)
+			currentBurnModifier:Reapply()
 		else
-			target:AddNewModifier(caster, nil, "modifier_burn", { damage = damage })
+			target:AddNewModifier(caster, nil, "modifier_burn", {})
 		end
 	end
 	return true

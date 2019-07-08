@@ -24,7 +24,7 @@ end
 
 function modifier_burn:OnCreated(kv)
 	if IsServer() then
-		self:SetDamage(kv.damage)
+		self:SetDamage(30)
 		
 		self:StartIntervalThink(0.5)
 
@@ -33,9 +33,9 @@ function modifier_burn:OnCreated(kv)
 	end
 end
 
-function modifier_burn:Reapply(newDamage)
+function modifier_burn:Reapply()
 	if IsServer() then
-		self:SetDamage(newDamage)
+		self:SetDamage(30)
 	end
 end
 
