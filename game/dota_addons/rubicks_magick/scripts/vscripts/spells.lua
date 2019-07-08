@@ -56,11 +56,13 @@ function Spells:Precache(context)
 	PrecacheResource("particle", "particles/status_fx/status_effect_snow_heavy.vpcf", context)
 	PrecacheResource("particle", "particles/status_fx/status_effect_slardar_amp_damage.vpcf", context)
 	PrecacheResource("particle", "particles/wet_drips.vpcf", context)
-	PrecacheResource("particle", "particles/status_fx/status_effect_burn.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_huskar/huskar_burning_spear_debuff.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_tusk/tusk_frozen_sigil_death.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_ancient_apparition/ancient_apparition_cold_feet_frozen.vpcf", context)
 	PrecacheResource("particle", "particles/lightning/wet_cast_lightning.vpcf", context)
+
+	PrecacheResource("particle", "particles/status_fx/status_effect_burn.vpcf", context)
+	PrecacheResource("particle_particle", "particles/modifier_status_fx/chilled", context)
 
 	PrecacheResource("soundfile", "soundevents/rubicks_magick/melee_attack.vsndevts", context)
 	PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_kunkka.vsndevts", context)
@@ -670,7 +672,8 @@ function Spells:ApplyChill(target, caster, power)
 		if currentChillModifier ~= nil then
 			currentChillModifier:Enhance(power)
 		else
-			target:AddNewModifier(caster, nil, "modifier_chill", { power = power })
+			target:AddNewModifier(caster, nil, "modifier_chill", {})
+			target:SetModifierStackCount("modifier_chill", caster, power)
 		end
 	end
 	return true
