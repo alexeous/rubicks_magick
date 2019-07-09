@@ -599,12 +599,12 @@ function Spells:Heal(target, source, heal, ignoreLifeShield)
 	return true
 end
 
-function Spells:ApplyElementDamageAoE(center, radius, attacker, element, damage, dontDamageAttacker, applyModifiers, blockPerShield)
+function Spells:ApplyElementDamageAoE(center, radius, attacker, element, damage, dontDamageAttacker, applyModifiers, blockPerShield, ignoreWet)
 	local damagedAnyone = false
 	local unitsToHurt = Util:FindUnitsInRadius(center, radius)
 	for _, unit in pairs(unitsToHurt) do
 		if not (unit == attacker and dontDamageAttacker) then
-			local damaged = Spells:ApplyElementDamage(unit, attacker, element, damage, applyModifiers, blockPerShield)
+			local damaged = Spells:ApplyElementDamage(unit, attacker, element, damage, applyModifiers, blockPerShield, ignoreWet)
 			damagedAnyone = damagedAnyone or damaged
 		end
 	end
