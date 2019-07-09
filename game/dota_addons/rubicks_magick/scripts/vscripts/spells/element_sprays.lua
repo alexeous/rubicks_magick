@@ -147,17 +147,18 @@ end
 function ElementSprays:SpawnSprayDummy(player, isTest)
 	local hero = player:GetAssignedHero()
 	local position = hero:GetAbsOrigin() + hero:GetForwardVector():Normalized() * 60 + Vector(0, 0, 100)
-	local sprayDummy = Util:CreateDummy(position, hero)
-	sprayDummy.isTest = isTest
-	sprayDummy.caster = hero
-	sprayDummy.startTime = GameRules:GetGameTime()
-	sprayDummy.duration = player.spellCast.elementSprays_Distance / ELEMENT_SPRAY_MOVE_SPEED
-	sprayDummy.radius = player.spellCast.elementSprays_Radius
-	sprayDummy.moveStep = hero:GetForwardVector():Normalized() * ELEMENT_SPRAY_MOVE_STEP
-	sprayDummy.touchedUnits = {}
-	sprayDummy.onTouchFn = player.spellCast.elementSprays_onTouchFn
-	sprayDummy.particleRecalcFn = player.spellCast.elementSprays_particleRecalcFn
-	table.insert(ElementSprays.sprayDummiesList, sprayDummy)
+	local dummy = Util:CreateDummy(position, hero)
+	dummy.isTest = isTest
+	dummy.caster = hero
+	dummy.startTime = GameRules:GetGameTime()
+	dummy.startedInsideRoundShield = MagicShield:DoesPointOverlapRoundShields(position)
+	dummy.duration = player.spellCast.elementSprays_Distance / ELEMENT_SPRAY_MOVE_SPEED
+	dummy.radius = player.spellCast.elementSprays_Radius
+	dummy.moveStep = hero:GetForwardVector():Normalized() * ELEMENT_SPRAY_MOVE_STEP
+	dummy.touchedUnits = {}
+	dummy.onTouchFn = player.spellCast.elementSprays_onTouchFn
+	dummy.particleRecalcFn = player.spellCast.elementSprays_particleRecalcFn
+	table.insert(ElementSprays.sprayDummiesList, dummy)
 
 	if player.spellCast.elementSprays_spawnSound ~= nil then
 		StartSoundEventFromPosition(player.spellCast.elementSprays_spawnSound, hero:GetAbsOrigin())
@@ -165,37 +166,55 @@ function ElementSprays:SpawnSprayDummy(player, isTest)
 end
 
 function ElementSprays:OnElementSprayThink()
-	local time = GameRules:GetGameTime()
-	for _, sprayDummy in pairs(ElementSprays.sprayDummiesList) do
-		if time > sprayDummy.startTime + sprayDummy.duration then
-			ElementSprays:DestroySprayDummy(sprayDummy)
-		else
-			local origin = sprayDummy:GetAbsOrigin() + sprayDummy.moveStep
-			sprayDummy:SetAbsOrigin(origin)
-
-			local trees = GridNav:GetAllTreesAroundPoint(origin, 40, true)
-			if next(trees) ~= nil or MagicShield:DoesPointOverlapShields(origin) then
-				ElementSprays:DestroySprayDummy(sprayDummy)
-			elseif not sprayDummy.isTest then
-				local timeFactor = (time - sprayDummy.startTime) / sprayDummy.duration
-				local radius = sprayDummy.radius * (0.4 + 0.6 * timeFactor)
-				local unitsTouched = Util:FindUnitsInRadius(origin, radius)
-				for _, unit in pairs(unitsTouched) do
-					if unit ~= sprayDummy.caster and not sprayDummy.touchedUnits[unit] and not MagicShield:DoesPointOverlapShields(unit:GetAbsOrigin()) then
-						sprayDummy.touchedUnits[unit] = true
-						sprayDummy.onTouchFn(unit)
-					end
-				end
-			end
-		end
+	for _, dummy in pairs(ElementSprays.sprayDummiesList) do
+		ElementSprays:SprayDummyThink(dummy)
 	end
 	return ELEMENT_SPRAY_THINK_PERIOD
 end
 
-function ElementSprays:DestroySprayDummy(sprayDummy)
-	local index = table.indexOf(ElementSprays.sprayDummiesList, sprayDummy)
+function ElementSprays:SprayDummyThink(dummy)
+	local time = GameRules:GetGameTime()
+	if time > dummy.startTime + dummy.duration then
+		ElementSprays:DestroySprayDummy(dummy)
+		return
+	end
+	if not ElementSprays:MoveSprayDummy(dummy) then
+		ElementSprays:DestroySprayDummy(dummy)
+		return
+	end
+	if dummy.isTest then
+		return
+	end
+
+	local timeFactor = (time - dummy.startTime) / dummy.duration
+	local radius = dummy.radius * (0.4 + 0.6 * timeFactor)
+	local unitsTouched = Util:FindUnitsInRadius(dummy:GetAbsOrigin(), radius)
+	for _, unit in pairs(unitsTouched) do
+		if unit ~= dummy.caster and not dummy.touchedUnits[unit] then
+			dummy.touchedUnits[unit] = true
+			dummy.onTouchFn(unit)
+		end
+	end
+end
+
+function ElementSprays:MoveSprayDummy(dummy)
+	local position = dummy:GetAbsOrigin() + dummy.moveStep
+	dummy:SetAbsOrigin(position)
+
+	if next(GridNav:GetAllTreesAroundPoint(position, 40, true)) ~= nil then
+		return false
+	end
+	if dummy.startedInsideRoundShield then
+		return MagicShield:DoesPointOverlapRoundShields(position)
+	else
+		return not MagicShield:DoesPointOverlapShields(position)
+	end
+end
+
+function ElementSprays:DestroySprayDummy(dummy)
+	local index = table.indexOf(ElementSprays.sprayDummiesList, dummy)
 	table.remove(ElementSprays.sprayDummiesList, index)
-	local factor = (GameRules:GetGameTime() - sprayDummy.startTime) / sprayDummy.duration
-	sprayDummy.particleRecalcFn(0.2 + 0.8 * factor)
-	sprayDummy:Destroy()
+	local factor = (GameRules:GetGameTime() - dummy.startTime) / dummy.duration
+	dummy.particleRecalcFn(0.2 + 0.8 * factor)
+	dummy:Destroy()
 end

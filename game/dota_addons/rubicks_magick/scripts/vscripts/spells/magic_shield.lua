@@ -200,20 +200,45 @@ function MagicShield:Overlaps1Way(shield1, shield2)
 	return true
 end
 
+function MagicShield:DoesPointOverlapRoundShields(point)
+	for _, shield in pairs(MagicShield.shields) do
+		if shield.type == ROUND_SHIELD and MagicShield:DoesPointOverlapShield(point, shield) then
+			return true
+		end
+	end
+	return false
+end
+
+function MagicShield:DoesPointOverlapFlatShields(point)
+	for _, shield in pairs(MagicShield.shields) do
+		if shield.type == FLAT_SHIELD and MagicShield:DoesPointOverlapShield(point, shield) then
+			return true
+		end
+	end
+	return false
+end
+
 function MagicShield:DoesPointOverlapShields(point)
 	for _, shield in pairs(MagicShield.shields) do
-		if shield.type == ROUND_SHIELD then
-			local distance = (point - shield.center):Length2D()
-			if distance < ROUND_SHIELD_RADIUS then
-				return true
-			end
-		elseif shield.type == FLAT_SHIELD then
-			local t1 = point:Dot(shield.axes[1])
-			local t2 = point:Dot(shield.axes[2])
-			if (t1 > shield.origin[1] and t1 < 1 + shield.origin[1]) and 
-			   (t2 > shield.origin[2] and t2 < 1 + shield.origin[2]) then
-				return true
-			end
+		if MagicShield:DoesPointOverlapShield(point, shield) then
+			return true
+		end
+	end
+	return false
+end
+
+function MagicShield:DoesPointOverlapShield(point, shield)
+	if shield.type == ROUND_SHIELD then
+		local distance = (point - shield.center):Length2D()
+		if distance < ROUND_SHIELD_RADIUS then
+			return true
+		end
+	elseif shield.type == FLAT_SHIELD then
+		local t1 = point:Dot(shield.axes[1])
+		local t2 = point:Dot(shield.axes[2])
+		if (t1 > shield.origin[1] and t1 < 1 + shield.origin[1]) and 
+		   (t2 > shield.origin[2] and t2 < 1 + shield.origin[2]) then
+			return true
 		end
 	end
 	return false
