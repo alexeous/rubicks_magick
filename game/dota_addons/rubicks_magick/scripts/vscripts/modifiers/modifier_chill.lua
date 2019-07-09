@@ -91,7 +91,11 @@ function modifier_chill:ScheduleRecreation()
 	if self.recreateTimer == nil then
 		self.recreateTimer = Timers:CreateTimer(0.2, function()
 			self.recreateTimer = nil
-			local newModifier = self:GetParent():AddNewModifier(self:GetCaster(), nil, "modifier_chill", {})
+			local parent = self:GetParent()
+			if not parent:IsAlive() then
+				return
+			end
+			local newModifier = parent:AddNewModifier(self:GetCaster(), nil, "modifier_chill", {})
 			newModifier:SetStackCount(self:GetStackCount())
 			self:Destroy()
 		end)
