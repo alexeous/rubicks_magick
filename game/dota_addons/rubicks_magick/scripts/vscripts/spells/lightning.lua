@@ -178,7 +178,7 @@ function Lightning:MakeEffectFunction(caster, lightningDamage, additionalEffectF
 		if additionalEffectFunc ~= nil then
 			additionalEffectFunc(target)
 		end
-		target:AddNewModifier(caster, nil, "modifier_lightning_stun", { duration = 0.2 })
+		target:AddNewModifier(caster, nil, "modifier_lightning_stun", { duration = 0.15 })
 		target:EmitSound("LightningArc")
 	end
 end
