@@ -2,8 +2,9 @@ if Lightning == nil then
 	Lightning = class({})
 end
 
-DIRECTED_LIGHTNING_DISTANCE = { 410, 560, 760 }
-OMNI_LIGHTNING_DISTANCE = { 410, 485, 560 }
+DIRECTED_LIGHTNING_DISTANCE = { 440, 620, 840 }
+OMNI_LIGHTNING_DISTANCE = { 440, 530, 620 }
+COS_30 = math.cos(30 * math.pi / 180)
 
 function Lightning:Precache(context)	
 	LinkLuaModifier("modifier_lightning_stun", "modifiers/modifier_lightning_stun.lua", LUA_MODIFIER_MOTION_NONE)
@@ -182,120 +183,187 @@ function Lightning:MakeEffectFunction(caster, lightningDamage, additionalEffectF
 	end
 end
 
-function Lightning:CreateParticle(player, startPos, endPos, noTarget)
-	local particle = Lightning:CreateParticleBase(player, endPos, noTarget)
-	ParticleManager:SetParticleControl(particle, 0, startPos + Vector(0, 0, 100))
-end
-
-function Lightning:CreateParticleStartingAtStaff(player, caster, endPos, noTarget)
-	local particle = Lightning:CreateParticleBase(player, endPos, noTarget)
-	ParticleManager:SetParticleControlEnt(particle, 0, caster, PATTACH_POINT_FOLLOW, "attach_staff", caster:GetOrigin(), true)
-end
-
-function Lightning:CreateParticleBase(player, endPos, noTarget)
-	local particleName = player.spellCast.lightning_IsDeath and "particles/lightning/lightning_death.vpcf" or "particles/lightning/lightning.vpcf"
-	local particle = ParticleManager:CreateParticle(particleName, PATTACH_CUSTOMORIGIN, nil)
-	ParticleManager:SetParticleControl(particle, 1, endPos + Vector(0, 0, 100))
-	ParticleManager:SetParticleControl(particle, 3, player.spellCast.lightning_Color)
-	ParticleManager:SetParticleControl(particle, 4, Vector(noTarget and 0 or 1, player.spellCast.lightning_IsLife and 1 or 0, 0))
-	return particle
-end
-
-function Lightning:ChainLightning(player, startUnit, maxDistance, startPos, attachAtStaff)
-	startPos = startPos or startUnit:GetAbsOrigin()
-	local effectFunc = player.spellCast.lightning_EffectFunction
-	local caster = player:GetAssignedHero()	
-	local ignoreUnits = { startUnit, caster }
-	local units = Util:FindUnitsInRadius(startUnit:GetAbsOrigin(), maxDistance, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
-	local secondaryStartUnits = {}
-	for _, unit in pairs(units) do
-		if table.indexOf(ignoreUnits, unit) == nil then
-			table.insert(ignoreUnits, unit)
-			table.insert(secondaryStartUnits, unit)
-			effectFunc(unit)
-			if attachAtStaff then
-				Lightning:CreateParticleStartingAtStaff(player, startUnit, unit:GetAbsOrigin(), false)				
-			else
-				Lightning:CreateParticle(player, startPos, unit:GetAbsOrigin(), false)
-			end
-		end
-	end
-	for _, secondaryStartUnit in pairs(secondaryStartUnits) do
-		local secondaryUnits = Util:FindUnitsInRadius(secondaryStartUnit:GetAbsOrigin(), maxDistance * 0.7, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
-		for _, secondaryUnit in pairs(secondaryUnits) do
-			if table.indexOf(ignoreUnits, secondaryUnit) == nil then
-				table.insert(ignoreUnits, secondaryUnit)
-				effectFunc(secondaryUnit)
-				Lightning:CreateParticle(player, secondaryStartUnit:GetAbsOrigin(), secondaryUnit:GetAbsOrigin())
-			end
-		end
-	end
-end
-
-function Lightning:EmitStrikeSound(caster)
-	caster:EmitSound("LightningStrike1")
-	caster:EmitSound("LightningStrike2")
-	caster:EmitSound("LightningStrike3")
-end
-
 function Lightning:OnDirectedLightningThink(player)
-	player.spellCast.thinkPeriod = 0.25
-	
-	local caster = player:GetAssignedHero()
-	local forwardVec = caster:GetForwardVector()
-	local lightningDistance = player.spellCast.lightning_Distance
-	local startPos = caster:GetAbsOrigin() + forwardVec * 160
-	local endPos = caster:GetAbsOrigin() + forwardVec * lightningDistance
-	
-	local units = Util:FindUnitsInLine(startPos, endPos, 150, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
-	table.remove(units, table.indexOf(units, caster))
-	local minDistance = math.huge
-	local closestUnit = nil
-	for _, unit in pairs(units) do
-		local distance = (unit:GetAbsOrigin() - startPos):Length2D()
-		if distance < minDistance then
-			closestUnit = unit
-			minDistance = distance
-		end
-	end
-	if closestUnit == nil then
-		local randomOffset = Vector(math.random(-50, 50), math.random(-50, 50), math.random(-100, 100))
-		Lightning:CreateParticleStartingAtStaff(player, caster, endPos + randomOffset, true)
-	else
-		player.spellCast.lightning_EffectFunction(closestUnit)
-		Lightning:CreateParticleStartingAtStaff(player, caster, closestUnit:GetAbsOrigin(), false)
-		Lightning:ChainLightning(player, closestUnit, lightningDistance * 0.7)
-	end
+	local spellCast = player.spellCast
+	spellCast.thinkPeriod = 0.25
 
-	player.spellCast.lightning_StrikesLeft = player.spellCast.lightning_StrikesLeft - 1
-	if player.spellCast.lightning_StrikesLeft <= 0 then
-		player.spellCast.thinkFunction = nil
+	local caster = player:GetAssignedHero()
+	local distance = spellCast.lightning_Distance
+	local effectFunc = spellCast.lightning_EffectFunction
+	local isDeath = spellCast.lightning_IsDeath
+	local isLife = spellCast.lightning_IsLife
+	local color = spellCast.lightning_Color
+
+	Lightning:EmitDirectedLightning(caster, distance, effectFunc, isDeath, isLife, color)
+
+	spellCast.lightning_StrikesLeft = spellCast.lightning_StrikesLeft - 1
+	if spellCast.lightning_StrikesLeft <= 0 then
+		spellCast.thinkFunction = nil
 	end
 
 	Lightning:EmitStrikeSound(caster)
 end
 
 function Lightning:OnOmniLightningThink(player)
-	player.spellCast.thinkPeriod = 0.25
+	local spellCast = player.spellCast
+	spellCast.thinkPeriod = 0.25
 
 	local caster = player:GetAssignedHero()
 	local distance = player.spellCast.lightning_Distance
-	local origin = caster:GetAbsOrigin()
-	local units = Util:FindUnitsInRadius(origin, distance, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
-	local startPos = origin + Vector(0, 0, 145) - (50 * caster:GetForwardVector():Normalized())
-	if #units > 1 then
-		Lightning:ChainLightning(player, caster, distance, startPos, true)
-	else
-		for i = 1, math.random(2, 3) do
-			local randomEndPos = origin + RandomVector(1):Normalized() * distance
-			Lightning:CreateParticleStartingAtStaff(player, caster, randomEndPos, true)
-		end
-	end
+	local effectFunc = spellCast.lightning_EffectFunction
+	local isDeath = spellCast.lightning_IsDeath
+	local isLife = spellCast.lightning_IsLife
+	local color = spellCast.lightning_Color
 
-	player.spellCast.lightning_StrikesLeft = player.spellCast.lightning_StrikesLeft - 1
-	if player.spellCast.lightning_StrikesLeft <= 0 then
-		player.spellCast.thinkFunction = nil
+	Lightning:EmitOmniLightning(caster, distance, effectFunc, isDeath, isLife, color)
+	
+	spellCast.lightning_StrikesLeft = spellCast.lightning_StrikesLeft - 1
+	if spellCast.lightning_StrikesLeft <= 0 then
+		spellCast.thinkFunction = nil
 	end
 
 	Lightning:EmitStrikeSound(caster)
+end
+
+function Lightning:EmitDirectedLightning(caster, distance, effectFunc, isDeath, isLife, color)
+	local target = Lightning:GetDirectedLightningTarget(caster, distance)
+	if target == nil then
+		local endPos = caster:GetAbsOrigin() + caster:GetForwardVector() * distance
+		local randomOffset = Vector(math.random(-50, 50), math.random(-50, 50), math.random(-100, 100))
+		Lightning:CreateParticleStartingAtStaff(caster, endPos + randomOffset, true, isDeath, isLife, color)
+	else
+		effectFunc(target)
+		Lightning:CreateParticleStartingAtStaff(caster, target:GetAbsOrigin(), false, isDeath, isLife, color)
+		Lightning:ChainLightning(caster, target, distance * 0.65, { target }, effectFunc, isDeath, isLife, color)
+	end
+end
+
+function Lightning:EmitOmniLightning(caster, distance, effectFunc, isDeath, isLife, color)
+	local targets = Lightning:GetOmniLightningTargets(caster, distance)
+	
+	if not table.any(targets) then
+		for i = 1, math.random(2, 3) do
+			local randomEndPos = caster:GetAbsOrigin() + RandomVector(1):Normalized() * distance
+			Lightning:CreateParticleStartingAtStaff(caster, randomEndPos, true, isDeath, isLife, color)
+		end
+		return
+	end
+
+	for _, target in pairs(targets) do
+		effectFunc(target)
+		Lightning:CreateParticleStartingAtStaff(caster, target:GetAbsOrigin(), false, isDeath, isLife, color)
+	end
+end
+
+function Lightning:ChainLightning(caster, startUnit, distance, affectedUnits, effectFunc, isDeath, isLife, color)
+	local target = Lightning:GetChainLightningTarget(caster, startUnit, distance, affectedUnits)
+	if target == nil then
+		return
+	end
+	effectFunc(target)
+	Lightning:CreateParticle(startUnit:GetAbsOrigin(), target:GetAbsOrigin(), false, isDeath, isLife, color)
+	table.insert(affectedUnits, target)
+	Lightning:ChainLightning(caster, target, distance * 0.65, affectedUnits, effectFunc, isDeath, isLife, color)
+end
+
+function Lightning:GetDirectedLightningTarget(caster, distance)
+	local origin = caster:GetAbsOrigin()
+	local forward = caster:GetForwardVector()
+
+	local targets = Util:FindUnitsInRadius(origin, distance, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
+	targets = table.where(targets, function(_, t)
+		if t == caster then
+			return false
+		end
+		local toTarget = t:GetAbsOrigin() - origin
+		return Lightning:AngleBetweenVectorsLessThanAcosOf(forward, toTarget, COS_30)
+	end)
+	if not table.any(targets) then
+		return nil
+	end
+
+	local function IsACloserToCasterThanB(a, b)
+		local casterPos = caster:GetAbsOrigin()
+		return (casterPos - a):Length2D() < (casterPos - b):Length2D()
+	end
+
+	local target = table.min(targets, function(a, b)
+		return a.isWall or IsACloserToCasterThanB(a:GetAbsOrigin(), b:GetAbsOrigin())
+	end)
+	return target
+end
+
+function Lightning:GetOmniLightningTargets(caster, distance) 
+	local origin = caster:GetAbsOrigin()
+	local targets = Util:FindUnitsInRadius(origin, distance, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
+
+	targets = table.where(targets, function(_, t)
+		if t == caster then
+			return false
+		end
+		local unitsInLine = Util:FindUnitsInLine(origin, t:GetAbsOrigin(), 50, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
+		return not table.any(unitsInLine, function(_, u) 
+			return u ~= t and (u.isWall or u.isElementWall or u.isLightningWall) 
+		end)
+	end)
+	return targets
+end
+
+function Lightning:GetChainLightningTarget(caster, startUnit, distance, affectedUnits)
+	local startPos = startUnit:GetAbsOrigin()
+	local startToCaster = caster:GetAbsOrigin() - startPos
+
+	local targets = Util:FindUnitsInRadius(startPos, distance, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
+	targets = table.where(targets, function(_, t)
+		return t ~= caster and t ~= startUnit and not table.indexOf(affectedUnits, t) and
+			Lightning:TraceLineToTarget(startUnit, t) and 
+			not Lightning:AngleBetweenVectorsLessThanAcosOf(t:GetAbsOrigin() - startPos, startToCaster, COS_30)
+	end)
+	if not table.any(targets) then
+		return nil
+	end
+
+	local function IsACloserToCasterThanB(a, b)
+		local casterPos = caster:GetAbsOrigin()
+		return (casterPos - a):Length2D() < (casterPos - b):Length2D()
+	end
+
+	local target = table.min(targets, function(a, b)
+		return a.isWall or IsACloserToCasterThanB(a:GetAbsOrigin(), b:GetAbsOrigin())
+	end)
+	return target
+end
+
+function Lightning:AngleBetweenVectorsLessThanAcosOf(vector1, vector2, cos)
+	return vector1:Normalized():Dot(vector2:Normalized()) > cos
+end
+
+function Lightning:TraceLineToTarget(from, target)
+	local traceTable = { startpos = from:GetAbsOrigin(), endpos = target:GetAbsOrigin(), ignore = from }
+	return TraceLine(traceTable) and traceTable.hit and traceTable.enthit == target
+end
+
+function Lightning:CreateParticle(startPos, endPos, noTarget, isDeath, isLife, color)
+	local particle = Lightning:CreateParticleBase(endPos, noTarget, isDeath, isLife, color)
+	ParticleManager:SetParticleControl(particle, 0, startPos + Vector(0, 0, 100))
+end
+
+function Lightning:CreateParticleStartingAtStaff(caster, endPos, noTarget, isDeath, isLife, color)
+	local particle = Lightning:CreateParticleBase(endPos, noTarget, isDeath, isLife, color)
+	ParticleManager:SetParticleControlEnt(particle, 0, caster, PATTACH_POINT_FOLLOW, "attach_staff", caster:GetOrigin(), true)
+end
+
+function Lightning:CreateParticleBase(endPos, noTarget, isDeath, isLife, color)
+	local particleName = isDeath and "particles/lightning/lightning_death.vpcf" or "particles/lightning/lightning.vpcf"
+	local particle = ParticleManager:CreateParticle(particleName, PATTACH_CUSTOMORIGIN, nil)
+	ParticleManager:SetParticleControl(particle, 1, endPos + Vector(0, 0, 100))
+	ParticleManager:SetParticleControl(particle, 3, color)
+	ParticleManager:SetParticleControl(particle, 4, Vector(noTarget and 0 or 1, isLife and 1 or 0, 0))
+	return particle
+end
+
+function Lightning:EmitStrikeSound(caster)
+	caster:EmitSound("LightningStrike1")
+	caster:EmitSound("LightningStrike2")
+	caster:EmitSound("LightningStrike3")
 end

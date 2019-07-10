@@ -42,3 +42,36 @@ table.serialRetrieve = function(t, indexTable, currentLevel)
 		return currentNode
 	end
 end
+
+table.where = function(t, predicate)
+	local result = {}
+	for k, v in pairs(t) do
+		if predicate(k, v) then
+			result[k] = v
+		end
+	end
+	return result
+end
+
+table.min = function(t, lessPredicate)
+	local min = nil
+	for _, v in pairs(t) do
+		if min == nil or lessPredicate(v, min) then
+			min = v
+		end
+	end
+	return min
+end
+
+table.any = function(t, predicateOptional)
+	if predicateOptional == nil then
+		return next(t) ~= nil
+	end
+
+	for k, v in pairs(t) do
+		if predicateOptional(k, v) then
+			return true
+		end
+	end
+	return false
+end
