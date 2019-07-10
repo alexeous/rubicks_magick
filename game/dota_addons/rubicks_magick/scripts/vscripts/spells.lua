@@ -639,10 +639,7 @@ function Spells:ResistanceLevelTo(target, element)
 	if target == nil or target.shieldElements == nil then
 		return 0
 	end
-	local result = 0
-	if target.shieldElements[1] == element then  result = result + 1  end
-	if target.shieldElements[2] == element then  result = result + 1  end
-	return result
+	return table.count(target.shieldElements, element)
 end
 
 function Spells:IsResistantTo(target, element)
