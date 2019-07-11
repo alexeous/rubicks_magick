@@ -288,7 +288,7 @@ function Lightning:GetDirectedLightningTarget(caster, distance)
 	end
 
 	local target = table.min(targets, function(a, b)
-		return a.isWall or IsACloserToCasterThanB(a:GetAbsOrigin(), b:GetAbsOrigin())
+		return a.isStoneWall or IsACloserToCasterThanB(a:GetAbsOrigin(), b:GetAbsOrigin())
 	end)
 	return target
 end
@@ -303,7 +303,7 @@ function Lightning:GetOmniLightningTargets(caster, distance)
 		end
 		local unitsInLine = Util:FindUnitsInLine(origin, t:GetAbsOrigin(), 50, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
 		return not table.any(unitsInLine, function(_, u) 
-			return u ~= t and (u.isWall or u.isElementWall or u.isLightningWall) 
+			return u ~= t and u.isWall 
 		end)
 	end)
 	return targets
@@ -329,7 +329,7 @@ function Lightning:GetChainLightningTarget(caster, startUnit, distance, affected
 	end
 
 	local target = table.min(targets, function(a, b)
-		return a.isWall or IsACloserToCasterThanB(a:GetAbsOrigin(), b:GetAbsOrigin())
+		return a.isStoneWall or IsACloserToCasterThanB(a:GetAbsOrigin(), b:GetAbsOrigin())
 	end)
 	return target
 end
