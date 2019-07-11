@@ -20,10 +20,15 @@ function Util:FindUnitsInLine(pos1, pos2, radius, flagFilter)
 end
 
 function Util:CreateDummy(position, owner)
+	local dummy = Util:CreateDummyWithoutModifier(position, owner)
+	dummy:AddNewModifier(dummy, nil, "modifier_dummy", {})
+	return dummy
+end
+
+function Util:CreateDummyWithoutModifier(position, owner)
 	local team = owner ~= nil and owner:GetTeam() or DOTA_TEAM_NOTEAM
 	local dummy = CreateUnitByName("npc_dummy_blank", position, false, owner, owner, team)
 	dummy:SetAbsOrigin(position)
-	dummy:AddNewModifier(dummy, nil, "modifier_dummy", {})
 	return dummy
 end
 

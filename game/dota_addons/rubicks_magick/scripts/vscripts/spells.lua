@@ -157,7 +157,7 @@ function Spells:OnDirectedCastKeyDown(keys)
 
 	local castTable = {
 		[ELEMENT_SHIELD] = {
-			[ELEMENT_EARTH]     = function() StoneWall:PlaceStoneWall(player, pickedElements[3]) end,
+			[ELEMENT_EARTH]     = function() StoneWall:PlaceStoneWallSpell(player, pickedElements[3]) end,
 			[ELEMENT_LIGHTNING] = function() LightningWall:PlaceLightningWall(player, pickedElements[3]) end,
 			[ELEMENT_LIFE]      = function() Mines:PlaceLifeMines(player, pickedElements[3]) end,
 			[ELEMENT_DEATH]     = function() Mines:PlaceDeathMines(player, pickedElements[3]) end,
