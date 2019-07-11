@@ -288,7 +288,7 @@ function Lightning:GetDirectedLightningTarget(caster, distance)
 	end
 
 	local target = table.min(targets, function(a, b)
-		return a.isStoneWall or IsACloserToCasterThanB(a:GetAbsOrigin(), b:GetAbsOrigin())
+		return a.isSolidWall or IsACloserToCasterThanB(a:GetAbsOrigin(), b:GetAbsOrigin())
 	end)
 	return target
 end
@@ -329,7 +329,7 @@ function Lightning:GetChainLightningTarget(caster, startUnit, distance, affected
 	end
 
 	local target = table.min(targets, function(a, b)
-		return a.isStoneWall or IsACloserToCasterThanB(a:GetAbsOrigin(), b:GetAbsOrigin())
+		return a.isSolidWall or IsACloserToCasterThanB(a:GetAbsOrigin(), b:GetAbsOrigin())
 	end)
 	return target
 end
