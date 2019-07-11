@@ -1,4 +1,4 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf21:version{7a150ecc-d865-438f-ad53-5963fe1a2720} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_controlPointConfigurations = 
@@ -42,19 +42,20 @@
 			m_flTessScale = 2.0
 			m_flTextureVWorldSize = 600.0
 			m_flTextureVScrollRate = 100.0
-			m_flSourceAlphaValueToMapToZero = 0.597
-			m_flAddSelfAmount = 5.0
+			m_flAddSelfAmount = 10.0
 			m_hTexture = resource:"materials/particle/bendibeam4.vtex"
 			m_bGenerateNormals = true
 			m_bSaturateColorPreAlphaBlend = false
-			m_bLightenMode = true
-			m_flOverbrightFactor = 5.0
+			m_flOverbrightFactor = 10.0
+			m_ColorScale = [ 255, 255, 255 ]
+			m_flSourceAlphaValueToMapToOne = 0.56
+			m_bAdditive = true
 		},
 	]
 	m_Initializers = 
 	[
 		{
-			_class = "C_INIT_CreateSequentialPath"
+			_class = "C_INIT_CreateSequentialPathV2"
 			m_flNumToAssign = 20.0
 			m_bCPPairs = true
 			m_PathParams = 
@@ -63,6 +64,16 @@
 				m_flBulge = 200.0
 				m_vMidPointOffset = [ 0.0, 0.0, 100.0 ]
 			}
+		},
+		{
+			_class = "C_INIT_RandomRadius"
+			m_flRadiusMin = 30.0
+			m_flRadiusMax = 120.0
+		},
+		{
+			_class = "C_INIT_RandomLifeTime"
+			m_fLifetimeMin = 0.25
+			m_fLifetimeMax = 0.25
 		},
 		{
 			_class = "C_INIT_PositionOffset"
@@ -76,17 +87,7 @@
 			m_nInputMax = 19
 			m_flOutputMin = 1.0
 			m_flOutputMax = 0.1
-			m_bScaleInitialRange = true
-		},
-		{
-			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 30.0
-			m_flRadiusMax = 120.0
-		},
-		{
-			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.25
-			m_fLifetimeMax = 0.25
+			m_nSetMethod = "PARTICLE_SET_SCALE_INITIAL_VALUE"
 		},
 		{
 			_class = "C_INIT_VelocityFromNormal"
@@ -97,7 +98,7 @@
 		{
 			_class = "C_INIT_RemapCPtoVector"
 			m_nCPInput = 3
-			m_nFieldOutput = 6
+			m_nFieldOutput = "6"
 			m_vInputMax = [ 255.0, 255.0, 255.0 ]
 			m_vOutputMax = [ 1.0, 1.0, 1.0 ]
 		},
@@ -106,11 +107,21 @@
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
-			m_nParticlesToEmit = 20
+			m_nParticlesToEmit = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_flLiteralValue = 20.0
+			}
 		},
 	]
 	m_Children = 
 	[
+		{
+			m_ChildRef = resource:"particles/lightning/lightning_glow_death.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/lightning/lightning_death_core_b.vpcf"
+		},
 		{
 			m_ChildRef = resource:"particles/lightning/lightning_death_core.vpcf"
 		},
@@ -118,13 +129,21 @@
 			m_ChildRef = resource:"particles/lightning/lightning_start_death.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/lightning/lightning_glow_death.vpcf"
-		},
-		{
 			m_ChildRef = resource:"particles/lightning/lightning_branch_death.vpcf"
 		},
 		{
 			m_ChildRef = resource:"particles/lightning/lightning_end_death.vpcf"
 		},
+		{
+			m_ChildRef = resource:"particles/lightning/lightning_glow_death_c.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/lightning/lightning_glow_death_b.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/lightning/lightning_glow_death_d.vpcf"
+		},
 	]
+	m_nBehaviorVersion = 9
+	m_nFirstMultipleOverride_BackwardCompat = 3
 }

@@ -1,4 +1,4 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf21:version{7a150ecc-d865-438f-ad53-5963fe1a2720} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_controlPointConfigurations = 
@@ -63,13 +63,6 @@
 			m_flRadiusMax = 180.0
 		},
 		{
-			_class = "C_INIT_RemapCPtoVector"
-			m_nCPInput = 3
-			m_nFieldOutput = 6
-			m_vInputMax = [ 255.0, 255.0, 255.0 ]
-			m_vOutputMax = [ 1.0, 1.0, 1.0 ]
-		},
-		{
 			_class = "C_INIT_RandomRotation"
 		},
 		{
@@ -82,6 +75,13 @@
 			m_fLifetimeMax = 0.2
 		},
 		{
+			_class = "C_INIT_RemapCPtoVector"
+			m_nCPInput = 3
+			m_nFieldOutput = 6
+			m_vInputMax = [ 255.0, 255.0, 255.0 ]
+			m_vOutputMax = [ 1.0, 1.0, 1.0 ]
+		},
+		{
 			_class = "C_INIT_PositionOffset"
 			m_OffsetMin = [ 0.0, 0.0, -50.0 ]
 			m_OffsetMax = [ 0.0, 0.0, 50.0 ]
@@ -91,8 +91,22 @@
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
-			m_nParticlesToEmit = 15
-			m_nScaleControlPoint = 4
+			m_flStartTime = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_flLiteralValue = 0.0
+			}
+			m_nParticlesToEmit = 
+			{
+				m_nType = "PF_TYPE_CONTROL_POINT_COMPONENT"
+				m_nControlPoint = 4
+				m_nVectorComponent = 0
+				m_nMapType = "PF_MAP_TYPE_MULT"
+				m_flMultFactor = 15.0
+			}
 		},
 	]
+	m_PreEmissionOperators = [  ]
+	m_nBehaviorVersion = 9
+	m_nFirstMultipleOverride_BackwardCompat = 5
 }

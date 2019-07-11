@@ -1,4 +1,4 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf21:version{7a150ecc-d865-438f-ad53-5963fe1a2720} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_controlPointConfigurations = 
@@ -60,23 +60,32 @@
 			m_fLifetimeMax = 0.3
 		},
 		{
+			_class = "C_INIT_RandomAlpha"
+			m_nAlphaMin = 68
+			m_nAlphaMax = 168
+		},
+		{
 			_class = "C_INIT_RemapCPtoVector"
 			m_nCPInput = 3
 			m_nFieldOutput = 6
 			m_vInputMax = [ 255.0, 255.0, 255.0 ]
 			m_vOutputMax = [ 1.0, 1.0, 1.0 ]
 		},
-		{
-			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 68
-			m_nAlphaMax = 168
-		},
 	]
 	m_Emitters = 
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
-			m_nParticlesToEmit = 5
+			m_flStartTime = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_flLiteralValue = 0.0
+			}
+			m_nParticlesToEmit = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_flLiteralValue = 5.0
+			}
 		},
 	]
 	m_Children = 
@@ -85,4 +94,7 @@
 			m_ChildRef = resource:"particles/lightning/lightning_start_modglow.vpcf"
 		},
 	]
+	m_PreEmissionOperators = [  ]
+	m_nBehaviorVersion = 9
+	m_nFirstMultipleOverride_BackwardCompat = 5
 }
