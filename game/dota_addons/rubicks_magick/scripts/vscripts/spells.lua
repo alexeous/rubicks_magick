@@ -228,11 +228,11 @@ function Spells:OnSelfCastKeyDown(keys)
 			[EMPTY]   = function() MagicShield:PlaceRoundMagicShieldSpell(player) end,
 			[DEFAULT] = function() SelfShield:ApplyElementSelfShield(hero, pickedElements) end
 		},
-		[ELEMENT_EARTH]     = function() EarthStomp:EarthStomp(player, pickedElements) end,
+		[ELEMENT_EARTH]     = function() EarthStomp:EarthStompSpell(player, pickedElements) end,
 		[ELEMENT_LIGHTNING] = function() Lightning:OmniLightning(player, pickedElements) end,
 		[ELEMENT_LIFE] = {
 			[ELEMENT_WATER] = {
-				[ELEMENT_COLD] = function() OmniIceSpikes:OmniIceSpikes(player, ELEMENT_LIFE) end
+				[ELEMENT_COLD] = function() OmniIceSpikes:OmniIceSpikesSpell(player, ELEMENT_LIFE) end
 			},
 			[ELEMENT_LIFE] = {
 				[ELEMENT_LIFE] = function() SelfHeal:StartSelfHeal(player, 3) end,
@@ -244,18 +244,18 @@ function Spells:OnSelfCastKeyDown(keys)
 		},
 		[ELEMENT_DEATH] = {
 			[ELEMENT_WATER] = {
-				[ELEMENT_COLD] = function() OmniIceSpikes:OmniIceSpikes(player, ELEMENT_DEATH) end
+				[ELEMENT_COLD] = function() OmniIceSpikes:OmniIceSpikesSpell(player, ELEMENT_DEATH) end
 			},
 			[DEFAULT] = function() OmniPulses:OmniDeathPulseSpell(player, pickedElements) end
 		},
 		[ELEMENT_WATER] = {
 			[ELEMENT_WATER] = {
 				[ELEMENT_FIRE] = function() OmniElementSprays:OmniSteamSpraySpell(player, ELEMENT_WATER) end,
-				[ELEMENT_COLD] = function() OmniIceSpikes:OmniIceSpikes(player, ELEMENT_WATER) end,
+				[ELEMENT_COLD] = function() OmniIceSpikes:OmniIceSpikesSpell(player, ELEMENT_WATER) end,
 				[DEFAULT]      = function() OmniElementSprays:OmniWaterSpraySpell(player, #pickedElements) end
 			},
 			[ELEMENT_FIRE] = function() OmniElementSprays:OmniSteamSpraySpell(player, pickedElements[3]) end,
-			[ELEMENT_COLD] = function() OmniIceSpikes:OmniIceSpikes(player, pickedElements[3]) end,
+			[ELEMENT_COLD] = function() OmniIceSpikes:OmniIceSpikesSpell(player, pickedElements[3]) end,
 			[EMPTY]        = function() OmniElementSprays:OmniWaterSpraySpell(player, 1) end
 		},
 		[ELEMENT_FIRE] = function() OmniElementSprays:OmniFireSpraySpell(player, #pickedElements) end,

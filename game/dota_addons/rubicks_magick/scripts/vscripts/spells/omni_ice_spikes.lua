@@ -13,7 +13,7 @@ function OmniIceSpikes:PlayerConnected(player)
 end
 
 
-function OmniIceSpikes:OmniIceSpikes(player, modifierElement)
+function OmniIceSpikes:OmniIceSpikesSpell(player, modifierElement)
 	local spellCastTable = {
 		castType = CAST_TYPE_INSTANT,
 		duration = 1.2,
@@ -23,13 +23,13 @@ function OmniIceSpikes:OmniIceSpikes(player, modifierElement)
 		thinkPeriod = 0.45,
 		thinkFunction = function(player)
 			player.spellCast.thinkFunction = nil
-			OmniIceSpikes:DoOmniIceSpikes(player:GetAssignedHero(), modifierElement)
+			OmniIceSpikes:OmniIceSpikes(player:GetAssignedHero(), modifierElement)
 		end
 	}
 	Spells:StartCasting(player, spellCastTable)
 end
 
-function OmniIceSpikes:DoOmniIceSpikes(caster, modifierElement)
+function OmniIceSpikes:OmniIceSpikes(caster, modifierElement)
 	local baseDamage = 225
 	local radius = OMNI_SPELLS_RADIUSES[1]
 	local position = caster:GetAbsOrigin()

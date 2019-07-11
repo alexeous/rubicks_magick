@@ -15,7 +15,7 @@ function EarthStomp:PlayerConnected(player)
 end
 
 
-function EarthStomp:EarthStomp(player, pickedElements)
+function EarthStomp:EarthStompSpell(player, pickedElements)
 	local spellCastTable = {
 		castType = CAST_TYPE_INSTANT,
 		duration = 1.2,
@@ -26,13 +26,13 @@ function EarthStomp:EarthStomp(player, pickedElements)
 		thinkPeriod = 0.45,
 		thinkFunction = function(player)
 			player.spellCast.thinkFunction = nil
-			EarthStomp:DoStomp(player:GetAssignedHero(), pickedElements)
+			EarthStomp:EarthStomp(player:GetAssignedHero(), pickedElements)
 		end
 	}
 	Spells:StartCasting(player, spellCastTable)
 end
 
-function EarthStomp:DoStomp(caster, pickedElements)
+function EarthStomp:EarthStomp(caster, pickedElements)
 	local position = caster:GetAbsOrigin()
 	
 	local radiuses = OMNI_SPELLS_RADIUSES
@@ -53,7 +53,7 @@ function EarthStomp:DoStomp(caster, pickedElements)
 				[ELEMENT_FIRE]  = function() OmniElementSprays:OmniSteamSpray(caster, position, radiuses[1], true, 125, false) end,
 				[ELEMENT_WATER] = function() OmniElementSprays:OmniWaterSpray(caster, position, radiuses[1], true, true) end,
 				[EMPTY]         = function() OmniElementSprays:OmniWaterSpray(caster, position, radiuses[1], true, false) end,
-				[ELEMENT_COLD]  = function() OmniIceSpikes:DoOmniIceSpikes(caster, nil) end
+				[ELEMENT_COLD]  = function() OmniIceSpikes:OmniIceSpikes(caster, nil) end
 			},
 			[ELEMENT_FIRE] = {
 				[ELEMENT_FIRE]  = function() OmniElementSprays:OmniFireSpray(caster, position, radiuses[1], true, 106) end,
