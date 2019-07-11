@@ -2,8 +2,8 @@ if Lightning == nil then
 	Lightning = class({})
 end
 
-DIRECTED_LIGHTNING_DISTANCE = { 440, 620, 840 }
-OMNI_LIGHTNING_DISTANCE = { 440, 530, 620 }
+DIRECTED_LIGHTNING_DISTANCE = { 440, 670, 900 }
+OMNI_LIGHTNING_DISTANCE = { 440, 555, 670 }
 COS_30 = math.cos(30 * math.pi / 180)
 
 function Lightning:Precache(context)	
