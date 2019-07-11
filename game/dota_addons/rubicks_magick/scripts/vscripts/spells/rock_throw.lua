@@ -7,7 +7,6 @@ end
 function RockThrow:Precache(context)
 	PrecacheResource("particle_folder", "particles/rock_throw", context)
 	PrecacheResource("particle_folder", "particles/rock_throw/charging_particle", context)
-	PrecacheResource("model", "models/particle/meteor.vmdl", context)
 
 	PrecacheResource("soundfile", "soundevents/rubicks_magick/rock_throw.vsndevts", context)
 end
