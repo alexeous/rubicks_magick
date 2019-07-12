@@ -31,7 +31,6 @@ function RubicksMagickGameMode:InitGameMode()
 	GameRules:GetGameModeEntity():SetCustomGameForceHero("npc_dota_hero_rubick")
 
 	GameRules:GetGameModeEntity():SetThink("OnThink", self, "GlobalThink", 2)
-	GameRules:GetGameModeEntity():SetExecuteOrderFilter(Dynamic_Wrap(RubicksMagickGameMode, "OrderFilter"), self)
 	ListenToGameEvent("player_connect_full", Dynamic_Wrap(RubicksMagickGameMode, "OnConnectFull"), self)
 
 	MoveController:Init()
@@ -60,10 +59,6 @@ function RubicksMagickGameMode:OnConnectFull(keys)
     MoveController:PlayerConnected(player)
     Elements:PlayerConnected(player)
     Spells:PlayerConnected(player)
-end
-
-function RubicksMagickGameMode:OrderFilter(keys)
-	return false
 end
 
 function RubicksMagickGameMode:OnThink()
