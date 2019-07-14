@@ -112,9 +112,9 @@ function OmniElementSprays:OmniWaterSpray(caster, position, radius, isSelfCast, 
 			Spells:ApplyElementDamage(unit, caster, ELEMENT_WATER, 1, true, 1.0)
 			if doPush then
 				if Spells:ResistanceLevelTo(unit, ELEMENT_WATER) < 2 then
-					Spells:Knockback(unit, caster, position, radius + 100)
-			    elseif canPushCaster then
-			    	Spells:Knockback(caster, caster, unit:GetAbsOrigin(), radius + 100)
+					MoveController:Knockback(unit, caster, position, radius + 100)
+			    elseif canPushCaster and not unit.isWall then
+			    	MoveController:Knockback(caster, caster, unit:GetAbsOrigin(), radius + 100)
 				end
 	    	end
 		end

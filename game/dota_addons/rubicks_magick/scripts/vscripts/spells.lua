@@ -49,7 +49,6 @@ function Spells:Precache(context)
 	LinkLuaModifier("modifier_wet", "modifiers/modifier_wet.lua", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_chill", "modifiers/modifier_chill.lua", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_burn", "modifiers/modifier_burn.lua", LUA_MODIFIER_MOTION_NONE)
-	LinkLuaModifier("modifier_water_push", "modifiers/modifier_water_push.lua", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_knockdown", "modifiers/modifier_knockdown.lua", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_wet_cast_lightning", "modifiers/modifier_wet_cast_lightning.lua", LUA_MODIFIER_MOTION_NONE)
 
@@ -736,48 +735,6 @@ function Spells:SetupDryWarmExtinguishGuard(target, element)
 	target.dryWarmExtinguishElement = element
 	target.dryWarmExtinguishTime = GameRules:GetGameTime()
 end
-
-------------------- PUSH ------------------------
-
-function Spells:AddWaterPush(target, caster, velocity, acceleration)
-	local waterResist = Spells:ResistanceLevelTo(target, ELEMENT_WATER)
-	if waterResist >= 2 then
-		return false
-	end
-
-	local earthResist = Spells:ResistanceLevelTo(target, ELEMENT_EARTH)
-	local reduceFactor = math.pow(0.5, earthResist)
-	velocity = (velocity or Vector(0, 0, 0)) * reduceFactor
-	acceleration = (acceleration or Vector(0, 0, 0)) * reduceFactor
-	local currentModifier = target:FindModifierByName("modifier_water_push")
-	if currentModifier ~= nil then
-		currentModifier:Enhance(velocity, acceleration)
-	else
-		local kv = {
-			vel_x = velocity.x, vel_y = velocity.y, vel_z = velocity.z,
-			acc_x = acceleration.x, acc_y = acceleration.y, acc_z = acceleration.z				
-		}
-		target:AddNewModifier(caster, nil, "modifier_water_push", kv)
-	end
-	return true
-end
-
-function Spells:Knockback(target, caster, center, distance)
-	local distanceToTarget = (target:GetAbsOrigin() - center):Length2D()
-	local multiplier = math.pow(0.5, Spells:ResistanceLevelTo(target, ELEMENT_EARTH))
-	local knockbackProperties = {
-		center_x = center.x,
-		center_y = center.y,
-		center_z = center.z,
-		duration = 0.35,
-		knockback_duration = 0.35,
-		knockback_height = 40,
-		knockback_distance = math.max(0, distance - distanceToTarget) * multiplier
-	}
-	target:AddNewModifier(caster, nil, "modifier_knockback", knockbackProperties)
-end
-
-----------------------------------------------------------
 
 function Spells:WetCastLightning(caster)
 	Timers:CreateTimer(0.1, function()

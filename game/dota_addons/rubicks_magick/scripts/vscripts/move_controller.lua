@@ -1,5 +1,4 @@
 require("libraries/timers")
-require("libraries/physics")
 
 if MoveController == nil then
 	MoveController = class({})
@@ -10,6 +9,7 @@ local THINK_PERIOD = 0.01
 function MoveController:Precache(context)
 	LinkLuaModifier("modifier_movement_dummy", "modifiers/modifier_movement_dummy.lua", LUA_MODIFIER_MOTION_NONE)
 	LinkLuaModifier("modifier_movement_parented", "modifiers/modifier_movement_parented.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_push", "modifiers/modifier_push.lua", LUA_MODIFIER_MOTION_NONE)
 
 	PrecacheResource("particle", "particles/ui_mouseactions/clicked_basemove.vpcf", context)
 end
@@ -254,4 +254,38 @@ function MoveController:ContinueMoveToPosition(player)
 		MoveController:CreateMoveParent(player, hero)
 	end
 	hero:GetMoveParent():MoveToPosition(player.moveToPos)
+end
+
+function MoveController:AddPush(target, caster, velocity, acceleration, noGravityDelay)
+	local earthResist = Spells:ResistanceLevelTo(target, ELEMENT_EARTH)
+	local reduceFactor = math.pow(0.5, earthResist)
+	velocity = (velocity or Vector(0, 0, 0)) * reduceFactor
+	acceleration = (acceleration or Vector(0, 0, 0)) * reduceFactor
+	local kv = {
+		vel_x = velocity.x, vel_y = velocity.y, vel_z = velocity.z,
+		acc_x = acceleration.x, acc_y = acceleration.y, acc_z = acceleration.z,
+		delay_gravity = noGravityDelay and 0 or 1
+	}
+	target:AddNewModifier(caster, nil, "modifier_push", kv)
+end
+
+function MoveController:Knockback(target, caster, center, distance)
+	local centerToTarget = target:GetAbsOrigin() - center
+	centerToTarget.z = 0 	-- being on the safe side
+	local earthResist = Spells:ResistanceLevelTo(target, ELEMENT_EARTH)
+	local reduceFactor = math.pow(0.5, earthResist)
+	local pushDistance = math.max(0, distance - centerToTarget:Length2D()) * reduceFactor
+	local duration = 0.35
+	local velocity = centerToTarget:Normalized() * (pushDistance / duration)
+	MoveController:AddPush(target, caster, velocity, nil, true)
+	--[[local knockbackProperties = {
+		center_x = center.x,
+		center_y = center.y,
+		center_z = center.z,
+		duration = 0.35,
+		knockback_duration = 0.35,
+		knockback_height = 40,
+		knockback_distance = math.max(0, distance - distanceToTarget) * multiplier
+	}
+	target:AddNewModifier(caster, nil, "modifier_knockback", knockbackProperties)]]
 end

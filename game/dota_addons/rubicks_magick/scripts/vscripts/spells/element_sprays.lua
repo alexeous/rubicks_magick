@@ -53,20 +53,7 @@ end
 function ElementSprays:StartWaterSpray(player, power)
 	local distance = ELEMENT_SPRAY_DISTANCES[power] * 0.8
 	local hero = player:GetAssignedHero()
-	local onTouchFn = function(unit)
-		Spells:ApplyElementDamage(unit, hero, ELEMENT_WATER, 1, true)
-		local unitToCasterVec = hero:GetAbsOrigin() - unit:GetAbsOrigin()
-		local distanceFactor = 1.2 - math.min(1, #unitToCasterVec / distance)
-		local vec = hero:GetForwardVector():Normalized() * distanceFactor
-		local upVelocity = Vector(0, 0, 10) * distanceFactor
-		local success = Spells:AddWaterPush(unit, hero, vec * 50 + upVelocity, vec * 200)
-		if success then
-			unit:SetForwardVector(unitToCasterVec)
-		else
-			vec = unitToCasterVec:Normalized() * 100 + Vector(0, 0, 10)
-			Spells:AddWaterPush(hero, hero, vec, nil)
-		end
-	end
+	local onTouchFn = ElementSprays:MakeWaterOnTouchFunction(hero, distance)
 	local radius = 90 + power * 25
 	local particle = ParticleManager:CreateParticle("particles/element_sprays/water_spray/water_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, hero)
 	local particleRecalcFn = function(factor)
@@ -162,6 +149,26 @@ function ElementSprays:SpawnSprayDummy(player, isTest)
 
 	if player.spellCast.elementSprays_spawnSound ~= nil then
 		StartSoundEventFromPosition(player.spellCast.elementSprays_spawnSound, hero:GetAbsOrigin())
+	end
+end
+
+function ElementSprays:MakeWaterOnTouchFunction(caster, distance)
+	return function(unit)
+		local canPushCaster = Spells:ResistanceLevelTo(caster, ELEMENT_WATER) < 2
+
+		Spells:ApplyElementDamage(unit, caster, ELEMENT_WATER, 1, true)
+		local unitToCasterVec = caster:GetAbsOrigin() - unit:GetAbsOrigin()
+		local distanceFactor = 1.2 - math.min(1, #unitToCasterVec / distance)
+		local vec = caster:GetForwardVector():Normalized() * distanceFactor
+		--local upVelocity = Vector(0, 0, 10) * distanceFactor
+
+		if Spells:ResistanceLevelTo(target, ELEMENT_WATER) < 2 then
+			MoveController:AddPush(unit, caster, vec * 50--[[ + upVelocity]], vec * 200)
+			unit:SetForwardVector(unitToCasterVec)
+		elseif canPushCaster and not target.isWall then
+			vec = unitToCasterVec:Normalized() * 100 + Vector(0, 0, 10)
+			MoveController:AddPush(caster, caster, vec, nil)
+		end
 	end
 end
 
