@@ -4,4 +4,4 @@ game/dota_addons/rubicks_magick/tools_asset_info.bin
 game/dota_addons/rubicks_magick/tools_thumbnail_cache.bin
 *.*_c
 game/dota_addons/rubicks_magick/panorama_debugger.cfg
-
+*.vscode*
