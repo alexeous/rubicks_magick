@@ -99,5 +99,5 @@ function EarthStomp:StunAoE(caster, radius)
 end
 
 function EarthStomp:CanStun(unit)
-	return 0 == Spells:ResistanceLevelTo(unit, ELEMENT_EARTH) and not unit:HasModifier("modifier_stomp_stun")
+	return not Spells:IsResistantTo(unit, ELEMENT_EARTH) and not unit:HasModifier("modifier_stomp_stun")
 end

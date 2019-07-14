@@ -627,7 +627,7 @@ function Spells:GetDamageAfterShields(victim, damage, element, blockPerShield)
 	if victim.shieldElements ~= nil then
 		local blockFactor = blockPerShield or 0.5
 		local portion = damage * blockFactor
-		damage = damage - portion * Spells:ResistanceLevelTo(victim, element)
+		damage = math.max(0, damage - portion * Spells:ResistanceLevelTo(victim, element))
 	end
 	return damage
 end
@@ -741,7 +741,7 @@ end
 
 function Spells:AddWaterPush(target, caster, velocity, acceleration)
 	local waterResist = Spells:ResistanceLevelTo(target, ELEMENT_WATER)
-	if waterResist == 2 then
+	if waterResist >= 2 then
 		return false
 	end
 
