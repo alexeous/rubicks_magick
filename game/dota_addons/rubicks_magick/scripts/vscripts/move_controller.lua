@@ -99,7 +99,10 @@ function MoveController:ThinkHeroMove(player, hero)
 		return
 	end
 	
-	MoveController:UpdateRotation(player, hero)
+	local spellCast = player.spellCast
+	if not (spellCast ~= nil and spellCast.dontMoveWhileCasting) then
+		MoveController:UpdateRotation(player, hero)
+	end
 	if player.moveToPos ~= nil then
 		if player.callMoveToPositionASAP or player.stoppedMovement then
 			player.callMoveToPositionASAP = false
