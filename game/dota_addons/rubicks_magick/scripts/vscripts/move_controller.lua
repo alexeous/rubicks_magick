@@ -4,7 +4,7 @@ if MoveController == nil then
 	MoveController = class({})
 end
 
-local THINK_PERIOD = 0.01
+local THINK_PERIOD = 0.02
 
 function MoveController:Precache(context)
 	LinkLuaModifier("modifier_movement_dummy", "modifiers/modifier_movement_dummy.lua", LUA_MODIFIER_MOTION_NONE)
