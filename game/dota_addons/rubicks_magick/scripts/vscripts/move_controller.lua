@@ -87,6 +87,10 @@ function MoveController:OnMoveToKeyUp(keys)
 end
 
 function MoveController:ThinkHeroMove(player, hero)
+	if hero:GetMoveParent() ~= nil then
+		hero:GetMoveParent():SetBaseMoveSpeed(hero:GetIdealSpeed())
+	end
+
 	local isAble = hero:IsAlive() and not hero:IsStunned() and not hero:IsFrozen()
 	if not isAble then
 		if player.moveToPos ~= nil then
