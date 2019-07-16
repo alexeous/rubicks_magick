@@ -4,7 +4,7 @@ end
 
 DIRECTED_LIGHTNING_DISTANCE = { 440, 670, 900 }
 OMNI_LIGHTNING_DISTANCE = { 440, 555, 670 }
-COS_30 = math.cos(30 * math.pi / 180)
+COS_30 = math.cos(math.rad(30))
 
 function Lightning:Precache(context)	
 	LinkLuaModifier("modifier_lightning_stun", "modifiers/modifier_lightning_stun.lua", LUA_MODIFIER_MOTION_NONE)
