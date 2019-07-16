@@ -1,6 +1,7 @@
 local THINK_PERIOD = 0.01
 local GRAVITY_VECTOR = Vector(0, 0, -400)
 local GRAVITY_DELAY = 0.2
+local MAX_SPEED = 1800
 
 if modifier_push == nil then
 	modifier_push = class({})
@@ -42,8 +43,9 @@ end
 function modifier_push:OnRefresh(kv)
 	if IsServer() then
 		self.velocity = self.velocity + Vector(kv.vel_x or 0.0, kv.vel_y or 0.0, kv.vel_z or 0.0)
+		self.velocity = Util:ClampVectorLength(self.velocity, 0, MAX_SPEED)
 		self.acceleration = self.acceleration + Vector(kv.acc_x or 0.0, kv.acc_y or 0.0, kv.acc_z or 0.0)
-
+		
 		if kv.delay_gravity == 1 then
 			self:PostponeGravity()
 		end
@@ -84,6 +86,7 @@ function modifier_push:MovementUpdate(dt)
 	if self.gravityStartTime == nil or GameRules:GetGameTime() > self.gravityStartTime then
 		self.velocity = self.velocity + GRAVITY_VECTOR * dt
 	end
+	self.velocity = Util:ClampVectorLength(self.velocity, 0, MAX_SPEED)
 	
 	FindClearSpaceForUnit(parent, desiredPosition, false)
 	local newActualPosition = parent:GetAbsOrigin()
