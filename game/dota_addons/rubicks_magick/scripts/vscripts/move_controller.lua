@@ -192,7 +192,9 @@ function MoveController:StopMove(player, preserveMoveTargetPos)
 		end
 		local hero = player:GetAssignedHero()
 		if hero ~= nil then
-			hero:GetMoveParent():MoveToPosition(hero:GetAbsOrigin())
+			if hero:GetMoveParent() ~= nil then
+				hero:GetMoveParent():MoveToPosition(hero:GetAbsOrigin())
+			end
 			hero:FadeGesture(ACT_DOTA_RUN)
 		end
 	end
