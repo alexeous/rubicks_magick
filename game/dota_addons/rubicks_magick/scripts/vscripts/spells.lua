@@ -101,6 +101,7 @@ function Spells:Init()
 	ElementSprays:Init()
 	MagicShield:Init()
 	Beams:Init()
+	Placer:Init()
 end
 
 function Spells:PlayerConnected(player)

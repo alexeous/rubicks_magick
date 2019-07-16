@@ -14,7 +14,7 @@ function modifier_beam_cast:OnCreated(kv)
         self.power = 1
         self.spellCastTable = self:GetCaster():GetPlayerOwner().spellCast
         self.effectFunction = self.spellCastTable.beams_EffectFunction
-        self:StartIntervalThink(0.25)
+        self:StartIntervalThink(0.19)
         self:ApplyBeamEffect()
     end
 end
