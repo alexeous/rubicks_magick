@@ -110,9 +110,9 @@ function MagicShield:AddShield(player, shield)
 		end
 		shield = nil
 	end
-	if player.currentShield ~= nil then
-		player.currentShield.destroy()
-	end
+	
+	Spells:RemoveMagicShieldAndSolidWalls(player)
+
 	player.currentShield = shield
 	table.insert(MagicShield.shields, shield)
 	Timers:CreateTimer(0.1, function()
@@ -307,4 +307,10 @@ function MagicShield:TraceLine(pStart, pEnd)
 		result.reflectedDirection = (2*dot*result.normal - vecNormalized):Normalized()
 	end
 	return result
+end
+
+function MagicShield:DestroyCurrentShield(player)
+	if player.currentShield ~= nil then
+		player.currentShield.destroy()
+	end
 end

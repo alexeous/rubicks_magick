@@ -66,3 +66,13 @@ end
 function Util:AngleBetweenVectorsLessThanAcosOf(vector1, vector2, cos)
 	return vector1:Normalized():Dot(vector2:Normalized()) > cos
 end
+
+function Util:ClampVectorLength(vector, minLength, maxLength)
+	local length = #vector
+	if length < minLength then
+		return vector / length * minLength
+	elseif length > maxLength then
+		return vector / length * maxLength
+	end
+	return vector
+end

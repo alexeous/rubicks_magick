@@ -15,7 +15,7 @@ end
 function StoneWall:PlaceStoneWallSpell(player, modifierElement)
 	local spellCastTable = {
 		castType = CAST_TYPE_INSTANT,
-		duration = 1,
+		duration = 0.75,
 		dontMoveWhileCasting = true,
 		castingGesture = ACT_DOTA_CAST_ABILITY_5,
 		castingGestureRate = 2.0,
@@ -23,7 +23,8 @@ function StoneWall:PlaceStoneWallSpell(player, modifierElement)
 		thinkPeriod = 0.17,
 		thinkFunction = function(player) 
 			player.spellCast.thinkFunction = nil
-			StoneWall:PlaceStoneWall(player:GetAssignedHero(), modifierElement) 
+			Spells:RemoveMagicShieldAndSolidWalls(player)
+			StoneWall:PlaceStoneWall(player:GetAssignedHero(), modifierElement)
 		end
 	}
 	Spells:StartCasting(player, spellCastTable)
@@ -31,9 +32,15 @@ function StoneWall:PlaceStoneWallSpell(player, modifierElement)
 end
 
 function StoneWall:PlaceStoneWall(caster, modifierElement)
-	local wallUnits = GenericWall:CreateWallUnits(caster, 4, 40, { ELEMENT_EARTH, ELEMENT_LIGHTNING }, StoneWall.OnWallDestroyed)
+	local onKilledCallback = function(wall, isQuietKill)
+		StoneWall:OnWallKilled(wall, caster, isQuietKill)
+	end
+	local wallUnits = GenericWall:CreateWallUnits(caster, 4, 40, { ELEMENT_EARTH, ELEMENT_LIGHTNING }, onKilledCallback)
 	for _, wall in pairs(wallUnits) do
 		StoneWall:InitWallUnit(wall)
+		
+		caster.solidWalls = caster.solidWalls or {}
+		table.insert(caster.solidWalls, wall)
 	end
 end
 
@@ -52,9 +59,13 @@ function StoneWall:InitWallUnit(wall)
 	end)
 end
 
-function StoneWall.OnWallDestroyed(wall)
+function StoneWall:OnWallKilled(wall, caster, isQuietKill)
 	if wall.killTimer ~= nil then
 		Timers:RemoveTimer(wall.killTimer)
 	end
 	ParticleManager:DestroyParticle(wall.particle, false)
+	
+	if caster.solidWalls ~= nil then
+		table.removeItem(caster.solidWalls, wall)
+	end
 end

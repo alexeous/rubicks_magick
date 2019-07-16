@@ -163,7 +163,7 @@ function Spells:OnDirectedCastKeyDown(keys)
 			[ELEMENT_DEATH]     = function() Mines:PlaceDeathMines(player, pickedElements[3]) end,
 			[ELEMENT_WATER] = {
 				[ELEMENT_FIRE] = function() ElementWalls:PlaceSteamWall(player) end,
-				[ELEMENT_COLD] = function() ElementWalls:PlaceIceWall(player) end,
+				[ELEMENT_COLD] = function() ElementWalls:PlaceIceWallSpell(player) end,
 				[DEFAULT]	   = function() ElementWalls:PlaceWaterWall(player, pickedElements[3]) end
 			},
 			[ELEMENT_FIRE] = function() ElementWalls:PlaceFireWall(player, pickedElements[3]) end,
@@ -376,8 +376,12 @@ function Spells:ProcessHealthChanges()
 
 			for k, info in pairs(heals) do
 				local clampedValue, metMax = ConsumeValue(heals, k, unit:GetMaxHealth() - unit:GetHealth())
-				unit:Heal(clampedValue, info.source)
-				SendOverheadEventMessage(unit, OVERHEAD_ALERT_HEAL, unit, clampedValue, unit)
+				if unit.isPlaceable then
+					unit:Kill(nil, nil)
+				else
+					unit:Heal(clampedValue, info.source)
+					SendOverheadEventMessage(unit, OVERHEAD_ALERT_HEAL, unit, clampedValue, unit)
+				end
 				if metMax then break end
 			end
 			for k, info in pairs(damages) do
@@ -389,9 +393,13 @@ function Spells:ProcessHealthChanges()
 
 		for _, info in pairs(heals) do
 			local clampedValue = math.min(info.value, unit:GetMaxHealth() - unit:GetHealth())
-			unit:Heal(clampedValue, info.source)
-			if clampedValue > 0 then
-				SendOverheadEventMessage(unit, OVERHEAD_ALERT_HEAL, unit, clampedValue, unit)
+			if unit.isPlaceable then
+				unit:Kill(nil, nil)
+			else
+				unit:Heal(clampedValue, info.source)
+				if clampedValue > 0 then
+					SendOverheadEventMessage(unit, OVERHEAD_ALERT_HEAL, unit, clampedValue, unit)
+				end
 			end
 		end
 
@@ -744,4 +752,16 @@ function Spells:WetCastLightning(caster)
 	caster:EmitSound("WetCastLightning1")
 	caster:EmitSound("WetCastLightning2")
 	caster:EmitSound("WetCastLightning3")
+end
+
+function Spells:RemoveMagicShieldAndSolidWalls(player)
+	local hero = player:GetAssignedHero()
+	if hero.solidWalls ~= nil then
+		local solidWallCopy = table.clone(hero.solidWalls) -- in onKilledCallback there is a removal from solidWalls, so looping over it itself can went wrong
+		for _, wall in pairs(solidWallCopy) do
+			Placer:KillQuietly(wall)
+		end
+		hero.solidWalls = {}
+	end
+	MagicShield:DestroyCurrentShield(player)
 end
