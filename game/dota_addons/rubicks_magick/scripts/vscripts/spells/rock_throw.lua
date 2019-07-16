@@ -5,6 +5,8 @@ if RockThrow == nil then
 end
 
 function RockThrow:Precache(context)
+	LinkLuaModifier("modifier_bursted_body_invis", "modifiers/modifier_bursted_body_invis.lua", LUA_MODIFIER_MOTION_NONE)
+
 	PrecacheResource("particle_folder", "particles/rock_throw", context)
 	PrecacheResource("particle_folder", "particles/rock_throw/charging_particle", context)
 
@@ -18,6 +20,7 @@ end
 function RockThrow:Init()
 	RockThrow.rockDummiesList = {}
 	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(RockThrow, "OnRockThink"), "RockThink", ROCK_THINK_PERIOD)
+	ListenToGameEvent("npc_spawned", Dynamic_Wrap(RockThrow, "OnNPCSpawned"), self)
 end
 
 function RockThrow:StartRockThrow(player, pickedElements)
@@ -223,6 +226,7 @@ function RockThrow:RockDummyThink(rockDummy)
 			if unit:IsFrozen() then
 				if powerfulEnoughForBurst then
 					unit:RemoveModifierByName("modifier_frozen")
+					RockThrow:MakeBurstedBodyInvisible(unit)
 					Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage * 10, false, 0.0, true)
 					RockThrow:BurstFrozenParticle(origin)
 					RockThrow:PlayBurstSound(origin, caster, true)
@@ -233,6 +237,7 @@ function RockThrow:RockDummyThink(rockDummy)
 			else
 				local damageAfterShields = Spells:GetDamageAfterShields(unit, damage, ELEMENT_EARTH)
 				if powerfulEnoughForBurst and unit:GetHealth() - damageAfterShields <= 0 then
+					RockThrow:MakeBurstedBodyInvisible(unit)
 					Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage, false)
 					RockThrow:BurstBloodParticle(origin)
 					RockThrow:PlayBurstSound(origin, caster, false)
@@ -302,4 +307,13 @@ end
 function RockThrow:BurstFrozenParticle(position)
 	local burstMeatParticle = ParticleManager:CreateParticle("particles/rock_throw/rock_burst_frozen.vpcf", PATTACH_CUSTOMORIGIN, nil)
 	ParticleManager:SetParticleControl(burstMeatParticle, 0, position)
+end
+
+function RockThrow:MakeBurstedBodyInvisible(unit)
+	unit:AddNewModifier(nil, nil, "modifier_bursted_body_invis", {})
+end
+
+function RockThrow:OnNPCSpawned(keys)
+	local unit = EntIndexToHScript(keys.entindex)
+	unit:RemoveModifierByName("modifier_bursted_body_invis")
 end
