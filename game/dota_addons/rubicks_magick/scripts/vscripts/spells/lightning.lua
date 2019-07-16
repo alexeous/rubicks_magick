@@ -276,7 +276,7 @@ function Lightning:GetDirectedLightningTarget(caster, distance)
 			return false
 		end
 		local toTarget = t:GetAbsOrigin() - origin
-		return Lightning:AngleBetweenVectorsLessThanAcosOf(forward, toTarget, COS_30)
+		return Util:AngleBetweenVectorsLessThanAcosOf(forward, toTarget, COS_30)
 	end)
 	if not table.any(targets) then
 		return nil
@@ -317,7 +317,7 @@ function Lightning:GetChainLightningTarget(caster, startUnit, distance, affected
 	targets = table.where(targets, function(_, t)
 		return t ~= caster and t ~= startUnit and not table.indexOf(affectedUnits, t) and
 			Lightning:TraceLineToTarget(startUnit, t) and 
-			not Lightning:AngleBetweenVectorsLessThanAcosOf(t:GetAbsOrigin() - startPos, startToCaster, COS_30)
+			not Util:AngleBetweenVectorsLessThanAcosOf(t:GetAbsOrigin() - startPos, startToCaster, COS_30)
 	end)
 	if not table.any(targets) then
 		return nil
@@ -332,10 +332,6 @@ function Lightning:GetChainLightningTarget(caster, startUnit, distance, affected
 		return a.isSolidWall or IsACloserToCasterThanB(a:GetAbsOrigin(), b:GetAbsOrigin())
 	end)
 	return target
-end
-
-function Lightning:AngleBetweenVectorsLessThanAcosOf(vector1, vector2, cos)
-	return vector1:Normalized():Dot(vector2:Normalized()) > cos
 end
 
 function Lightning:TraceLineToTarget(from, target)

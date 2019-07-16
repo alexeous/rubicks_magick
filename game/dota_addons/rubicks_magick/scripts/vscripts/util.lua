@@ -62,3 +62,7 @@ end
 function Util:CancelDoOnceTrue(name)
 	Timers:RemoveTimer(name)
 end
+
+function Util:AngleBetweenVectorsLessThanAcosOf(vector1, vector2, cos)
+	return vector1:Normalized():Dot(vector2:Normalized()) > cos
+end
