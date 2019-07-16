@@ -284,14 +284,4 @@ function MoveController:Knockback(target, caster, center, distance)
 	local velocity = centerToTarget:Normalized() * (pushDistance / duration)
 	target:RemoveModifierByName("modifier_push")
 	MoveController:AddPush(target, caster, velocity, nil, true)
-	--[[local knockbackProperties = {
-		center_x = center.x,
-		center_y = center.y,
-		center_z = center.z,
-		duration = 0.35,
-		knockback_duration = 0.35,
-		knockback_height = 40,
-		knockback_distance = math.max(0, distance - distanceToTarget) * multiplier
-	}
-	target:AddNewModifier(caster, nil, "modifier_knockback", knockbackProperties)]]
 end
