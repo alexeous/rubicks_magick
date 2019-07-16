@@ -232,8 +232,7 @@ function Beams:CreateBeamSegment(player, startPos, direction, parentSegment, mai
 		end
 		ParticleManager:SetParticleControl(beamSegment.particle, 4, Vector(isInterrupt and 1 or 0, 0, 0))
 		ParticleManager:DestroyParticle(beamSegment.particle, false)
-		local index = table.indexOf(Beams.beamSegments, beamSegment)
-		table.remove(Beams.beamSegments, index)
+		table.removeItem(Beams.beamSegments, beamSegment)
 	end
 	
 	table.insert(Beams.beamSegments, beamSegment)

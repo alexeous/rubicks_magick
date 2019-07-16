@@ -75,3 +75,10 @@ table.any = function(t, predicateOptional)
 	end
 	return false
 end
+
+table.removeItem = function(t, item)
+	local index = table.indexOf(t, item)
+	if index ~= nil then
+		table.remove(t, index)
+	end
+end

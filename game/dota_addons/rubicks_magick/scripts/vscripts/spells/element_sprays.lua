@@ -219,8 +219,7 @@ function ElementSprays:MoveSprayDummy(dummy)
 end
 
 function ElementSprays:DestroySprayDummy(dummy)
-	local index = table.indexOf(ElementSprays.sprayDummiesList, dummy)
-	table.remove(ElementSprays.sprayDummiesList, index)
+	table.removeItem(ElementSprays.sprayDummiesList, dummy)
 	local factor = (GameRules:GetGameTime() - dummy.startTime) / dummy.duration
 	dummy.particleRecalcFn(0.2 + 0.8 * factor)
 	dummy:Destroy()

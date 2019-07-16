@@ -251,8 +251,7 @@ function RockThrow:RockDummyThink(rockDummy)
 end
 
 function RockThrow:ImpactRock(rockDummy, unitsTouched)
-	local index = table.indexOf(RockThrow.rockDummiesList, rockDummy)
-	table.remove(RockThrow.rockDummiesList, index)
+	table.removeItem(RockThrow.rockDummiesList, rockDummy)
 
 	local origin = GetGroundPosition(rockDummy:GetAbsOrigin(), rockDummy) + Vector(0, 0, 40)
 	if rockDummy.onImpactFunction ~= nil then

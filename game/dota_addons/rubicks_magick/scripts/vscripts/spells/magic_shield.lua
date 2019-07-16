@@ -104,8 +104,7 @@ function MagicShield:AddShield(player, shield)
 		ParticleManager:DestroyParticle(shield.particle, false)
 		soundDummy:StopSound("MagicShieldLoop")
 		soundDummy:Destroy()
-		local index = table.indexOf(MagicShield.shields, shield)
-		table.remove(MagicShield.shields, index)
+		table.removeItem(MagicShield.shields, shield)
 		if player.currentShield == shield then
 			player.currentShield = nil
 		end
