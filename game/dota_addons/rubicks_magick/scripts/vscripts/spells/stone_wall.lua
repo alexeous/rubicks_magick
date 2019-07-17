@@ -15,6 +15,7 @@ end
 
 
 function StoneWall:PlaceStoneWallSpell(player, modifierElement)
+	local caster = player:GetAssignedHero()
 	local spellCastTable = {
 		castType = CAST_TYPE_INSTANT,
 		duration = 0.75,
@@ -26,11 +27,13 @@ function StoneWall:PlaceStoneWallSpell(player, modifierElement)
 		thinkFunction = function(player) 
 			player.spellCast.thinkFunction = nil
 			Spells:RemoveMagicShieldAndSolidWalls(player)
-			StoneWall:PlaceStoneWall(player:GetAssignedHero(), modifierElement)
+			StoneWall:PlaceStoneWall(caster, modifierElement)
 		end
 	}
+
 	Spells:StartCasting(player, spellCastTable)
-	GenericWall:KnockbackAllAwayFromWall(player:GetAssignedHero())
+	GenericWall:KnockbackAllAwayFromWall(caster)
+	ParticleManager:CreateParticle("particles/stone_wall/stone_wall_hero_wave.vpcf", PATTACH_ABSORIGIN, caster)
 end
 
 function StoneWall:PlaceStoneWall(caster, modifierElement)
