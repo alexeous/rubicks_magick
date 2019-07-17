@@ -757,14 +757,25 @@ function Spells:WetCastLightning(caster)
 	caster:EmitSound("WetCastLightning3")
 end
 
+function Spells:RegisterCastedSolidWall(caster, wall)
+	caster.castedSolidWalls = caster.castedSolidWalls or {}
+	table.insert(caster.castedSolidWalls, wall)
+end
+
+function Spells:UnregisterCastedSolidWall(caster, wall)
+	if caster.castedSolidWalls ~= nil then
+		table.removeItem(caster.castedSolidWalls, wall)
+	end
+end
+
 function Spells:RemoveMagicShieldAndSolidWalls(player)
 	local hero = player:GetAssignedHero()
-	if hero.solidWalls ~= nil then
-		local solidWallCopy = table.clone(hero.solidWalls) -- in onKilledCallback there is a removal from solidWalls, so looping over it itself can went wrong
+	if hero.castedSolidWalls ~= nil then
+		local solidWallCopy = table.clone(hero.castedSolidWalls) -- in onKilledCallback there is a removal from castedSolidWalls, so looping over it itself can went wrong
 		for _, wall in pairs(solidWallCopy) do
 			Placer:KillQuietly(wall)
 		end
-		hero.solidWalls = {}
+		hero.castedSolidWalls = {}
 	end
 	MagicShield:DestroyCurrentShield(player)
 end

@@ -43,7 +43,7 @@ function OmniPulses:OmniDeathPulseSpell(player, pickedElements)
 	OmniPulses:OmniDeathPulse(hero, hero:GetAbsOrigin(), true, pickedElements)
 end
 
-function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, pickedElements, radiusFactor, healFactor, radiusOverride)
+function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, pickedElements, radiusFactor, healFactor, radiusOverride, healOverride)
 	while pickedElements[1] ~= ELEMENT_LIFE and pickedElements[1] ~= nil do
 		table.remove(pickedElements, 1)
 	end
@@ -53,8 +53,8 @@ function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, pickedElements
 	local lifeCount = table.count(pickedElements, ELEMENT_LIFE)
 	local radius = radiusOverride or (OMNI_SPELLS_RADIUSES[lifeCount] * radiusFactor)
 	
-	local baseHeal = ({ 100, 140 } )[lifeCount]
-	local heal = baseHeal * healFactor
+	local healValues = { 100, 140 }
+	local heal = healOverride or (healValues[lifeCount] * healFactor)
 
 	local lifePulseTable = {
 		[ELEMENT_LIFE] = {
@@ -94,7 +94,7 @@ function OmniPulses:OmniLifePulse(caster, position, ignoreCaster, pickedElements
 	Util:EmitSoundOnLocation(position, "OmniLifePulse2", caster)
 end
 
-function OmniPulses:OmniDeathPulse(caster, position, ignoreCaster, pickedElements, radiusFactor, damageFactor, radiusOverride)
+function OmniPulses:OmniDeathPulse(caster, position, ignoreCaster, pickedElements, radiusFactor, damageFactor, radiusOverride, damageOverride)
 	while pickedElements[1] ~= ELEMENT_DEATH and pickedElements[1] ~= nil do
 		table.remove(pickedElements, 1)
 	end
@@ -103,7 +103,7 @@ function OmniPulses:OmniDeathPulse(caster, position, ignoreCaster, pickedElement
 	local power = table.count(pickedElements, ELEMENT_DEATH)
 	local radius = radiusOverride or (OMNI_SPELLS_RADIUSES[power] * radiusFactor)
 	local deathDamages = { 100, 140, 174 }
-	local deathDamage = deathDamages[power] * damageFactor
+	local deathDamage = damageOverride or (deathDamages[power] * damageFactor)
 	local color = Vector(255, 0, 0)
 
 	local deathPulseTable = {

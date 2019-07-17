@@ -1,4 +1,4 @@
-local PLACEMENT_DISTANCE = 200
+local PLACEMENT_DISTANCE = 190
 local CLEAR_SPACE_RADIUS = 80
 
 if Placer == nil then

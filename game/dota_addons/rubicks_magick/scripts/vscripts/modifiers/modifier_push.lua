@@ -78,7 +78,7 @@ function modifier_push:PlaceParentInAir()
 end
 
 function modifier_push:MovementUpdate(dt)
-	local parent = self:GetParent()
+	local parent = self:GetParent():GetMoveParent() or self:GetParent()
 	local oldPosition = parent:GetAbsOrigin()
 
 	local desiredPosition = oldPosition + self.velocity * dt

@@ -15,7 +15,8 @@ function GenericWall:KnockbackAllAwayFromWall(caster)
     local forward = caster:GetForwardVector()
     local units = Util:FindUnitsInRadius(center, KNOCKBACK_AREA_RADIUS)
     for _, unit in pairs(units) do
-        if Util:AngleBetweenVectorsLessThanAcosOf(forward, unit:GetAbsOrigin() - center, KNOCKBACK_AREA_HALF_COS) then
+        if not Spells:IsResistantTo(unit, ELEMENT_EARTH) and 
+          Util:AngleBetweenVectorsLessThanAcosOf(forward, unit:GetAbsOrigin() - center, KNOCKBACK_AREA_HALF_COS) then
             MoveController:Knockback(unit, caster, center, KNOCKBACK_AREA_RADIUS)
         end
     end
