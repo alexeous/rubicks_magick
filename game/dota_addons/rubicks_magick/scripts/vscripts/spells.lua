@@ -359,7 +359,12 @@ function Spells:ProcessHealthChanges()
 		return modifiers
 	end
 
-	for unit, healthChanges in pairs(Spells.healthChanges) do
+	-- There might be events reacting on entity killed or smth like that that perform damage or heal applying
+	-- thus leading to changes to Spells.healthChanges. We ensure that any health change infos will be
+	-- stored in another table, not the one we are processing right now to prevent its corruption
+	local allHealthChanges = Spells.healthChanges
+	Spells.healthChanges = {}
+	for unit, healthChanges in pairs(allHealthChanges) do
 		local heals = healthChanges.heals
 		local damages = healthChanges.damages
 		local modifiersToApply = CollectModifiersToApply(damages)
@@ -420,8 +425,6 @@ function Spells:ProcessHealthChanges()
 			end
 		end
 	end
-
-	Spells.healthChanges = {}
 end
 
 function Spells:TimeElapsedSinceCast(player)
