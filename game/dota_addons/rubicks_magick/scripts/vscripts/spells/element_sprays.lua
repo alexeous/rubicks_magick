@@ -160,10 +160,9 @@ function ElementSprays:MakeWaterOnTouchFunction(caster, distance)
 		local unitToCasterVec = caster:GetAbsOrigin() - unit:GetAbsOrigin()
 		local distanceFactor = 1.2 - math.min(1, #unitToCasterVec / distance)
 		local vec = caster:GetForwardVector():Normalized() * distanceFactor
-		--local upVelocity = Vector(0, 0, 10) * distanceFactor
 
 		if Spells:ResistanceLevelTo(target, ELEMENT_WATER) < 2 then
-			MoveController:AddPush(unit, caster, vec * 50--[[ + upVelocity]], vec * 200)
+			MoveController:AddPush(unit, caster, vec * 50, vec * 200)
 			unit:SetForwardVector(unitToCasterVec)
 		elseif canPushCaster and not target.isWall then
 			vec = unitToCasterVec:Normalized() * 100 + Vector(0, 0, 10)
@@ -197,10 +196,14 @@ function ElementSprays:SprayDummyThink(dummy)
 	local radius = dummy.radius * (0.4 + 0.6 * timeFactor)
 	local unitsTouched = Util:FindUnitsInRadius(dummy:GetAbsOrigin(), radius)
 	for _, unit in pairs(unitsTouched) do
-		if unit ~= dummy.caster and not dummy.touchedUnits[unit] then
-			dummy.touchedUnits[unit] = true
-			dummy.onTouchFn(unit)
-		end
+		ElementSprays:DummyTouchUnit(dummy, unit)
+	end
+end
+
+function ElementSprays:DummyTouchUnit(dummy, unit)
+	if unit ~= dummy.caster and not dummy.touchedUnits[unit] then
+		dummy.touchedUnits[unit] = true
+		dummy.onTouchFn(unit)
 	end
 end
 
@@ -211,6 +214,19 @@ function ElementSprays:MoveSprayDummy(dummy)
 	if next(GridNav:GetAllTreesAroundPoint(position, 40, true)) ~= nil then
 		return false
 	end
+
+	local units = Util:FindUnitsInRadius(position, dummy.radius * 0.3)
+	local touched = false
+	for _, unit in pairs(units) do
+		if unit.isSolidWall then
+			touched = true
+			ElementSprays:DummyTouchUnit(dummy, unit)
+		end
+	end
+	if touched then
+		return
+	end
+
 	if dummy.startedInsideRoundShield then
 		return MagicShield:DoesPointOverlapRoundShields(position)
 	else
