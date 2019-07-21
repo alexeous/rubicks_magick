@@ -34,16 +34,18 @@ function Placer:PlaceDummiesInFrontOfCaster(caster, number, anglePerUnit, onKill
     for i = 1, number do
         local position = origin + forward * PLACEMENT_DISTANCE
 
-        Placer:ClearSpace(position, CLEAR_SPACE_RADIUS, result)
+        if not GridNav:IsBlocked(position) and GridNav:IsTraversable(position) and not GridNav:IsNearbyTree(position, CLEAR_SPACE_RADIUS, false) then
+            Placer:ClearSpace(position, CLEAR_SPACE_RADIUS, result)
 
-        local unit = Util:CreateDummyWithoutModifier(position)
-        unit:SetForwardVector(forward)
-        unit.isPlaceable = true
+            local unit = Util:CreateDummyWithoutModifier(position)
+            unit:SetForwardVector(forward)
+            unit.isPlaceable = true
 
-        if onKilledCallback ~= nil then
-            Placer.onKilledCallbacks[unit] = onKilledCallback
-        end        
-        table.insert(result, unit)
+            if onKilledCallback ~= nil then
+                Placer.onKilledCallbacks[unit] = onKilledCallback
+            end        
+            table.insert(result, unit)
+        end
         forward = RotatePosition(Vector(0, 0, 0), deltaShiftRot, forward)
     end
     return result
