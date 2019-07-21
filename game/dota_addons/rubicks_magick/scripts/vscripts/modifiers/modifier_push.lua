@@ -42,6 +42,11 @@ end
 
 function modifier_push:OnRefresh(kv)
 	if IsServer() then
+		local player = self:GetParent():GetPlayerOwner()
+		if player ~= nil then
+			MoveController:StopMove(player, true)
+		end
+
 		self.velocity = self.velocity + Vector(kv.vel_x or 0.0, kv.vel_y or 0.0, kv.vel_z or 0.0)
 		self.velocity = Util:ClampVectorLength(self.velocity, 0, MAX_SPEED)
 		self.acceleration = self.acceleration + Vector(kv.acc_x or 0.0, kv.acc_y or 0.0, kv.acc_z or 0.0)
