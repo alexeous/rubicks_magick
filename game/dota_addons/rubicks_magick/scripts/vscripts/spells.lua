@@ -494,7 +494,7 @@ function Spells:StopCasting(player)
 			if player.moveToPos ~= nil then
 				hero:StartGesture(ACT_DOTA_RUN)
 			end
-			MoveController:HeroLookAt(hero, player.cursorPos)
+			MoveController:UpdateRotation(player, hero)
 		end
 		if hero:HasModifier("modifier_slow_move") then
 			hero:RemoveModifierByName("modifier_slow_move")

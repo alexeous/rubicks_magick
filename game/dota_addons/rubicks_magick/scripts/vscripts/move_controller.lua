@@ -2,6 +2,7 @@ require("libraries/timers")
 
 if MoveController == nil then
 	MoveController = class({})
+	MoveController.lastLookAtTime = GameRules:GetGameTime()
 end
 
 local THINK_PERIOD = 0.02
@@ -201,13 +202,17 @@ function MoveController:StopMove(player, preserveMoveTargetPos)
 end
 
 function MoveController:HeroLookAt(hero, targetPos)
+	local currentTime = GameRules:GetGameTime()
+	local dt = currentTime - MoveController.lastLookAtTime
+	MoveController.lastLookAtTime = currentTime
+
 	if hero ~= nil then
 		local yaw = hero:GetAngles().y
 		local targetYaw = VectorToAngles(targetPos - hero:GetAbsOrigin()).y
 
 		local player = hero:GetPlayerOwner()
 		if player ~= nil and player.spellCast ~= nil and player.spellCast.turnDegsPerSec ~= nil then
-			local clampValue = player.spellCast.turnDegsPerSec * THINK_PERIOD
+			local clampValue = player.spellCast.turnDegsPerSec * dt
 			local diff = AngleDiff(targetYaw, yaw)
 			targetYaw = yaw + math.max(-clampValue, math.min(diff, clampValue))
 		end
