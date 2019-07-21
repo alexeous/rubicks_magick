@@ -382,7 +382,7 @@ function Spells:ProcessHealthChanges()
 			for k, info in pairs(heals) do
 				local clampedValue, metMax = ConsumeValue(heals, k, unit:GetMaxHealth() - unit:GetHealth())
 				if unit.isPlaceable then
-					unit:Kill(nil, nil)
+					ApplyDamage({ victim = unit, attacker = info.source, damage = 1, damage_type = DAMAGE_TYPE_PURE })
 				else
 					unit:Heal(clampedValue, info.source)
 					SendOverheadEventMessage(unit, OVERHEAD_ALERT_HEAL, unit, clampedValue, unit)
@@ -399,7 +399,7 @@ function Spells:ProcessHealthChanges()
 		for _, info in pairs(heals) do
 			local clampedValue = math.min(info.value, unit:GetMaxHealth() - unit:GetHealth())
 			if unit.isPlaceable then
-				unit:Kill(nil, nil)
+				ApplyDamage({ victim = unit, attacker = info.source, damage = 1, damage_type = DAMAGE_TYPE_PURE })
 			else
 				unit:Heal(clampedValue, info.source)
 				if clampedValue > 0 then
