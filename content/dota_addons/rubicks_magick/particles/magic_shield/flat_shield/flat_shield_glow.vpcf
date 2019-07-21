@@ -47,7 +47,7 @@
 			m_bSaturateColorPreAlphaBlend = false
 			m_flOverbrightFactor = 2.0
 			m_nFeatheringMode = "PARTICLE_DEPTH_FEATHERING_ON_OPTIONAL"
-			m_ColorScale = [ 255, 233, 67 ]
+			m_ColorScale = [ 255, 234, 97 ]
 			m_flAddSelfAmount = 2.0
 		},
 	]
