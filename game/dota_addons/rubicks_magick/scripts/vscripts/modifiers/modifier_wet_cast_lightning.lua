@@ -38,13 +38,13 @@ function modifier_wet_cast_lightning:DeclareFunctions()
 end
 
 function modifier_wet_cast_lightning:GetOverrideAnimation(params)
-	return ACT_DOTA_CAST_ABILITY_5
+	return ACT_DOTA_CHANNEL_ABILITY_5
 end
 
 function modifier_wet_cast_lightning:GetOverrideAnimationRate(params)
-	return 1.0
+	return 10.0
 end
 
 function modifier_wet_cast_lightning:GetActivityTranslationModifiers(params)
-	return "ravage"
+	return "witch_doctor_death_ward"
 end

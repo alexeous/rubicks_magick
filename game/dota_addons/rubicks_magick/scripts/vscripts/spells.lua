@@ -750,7 +750,7 @@ end
 
 function Spells:WetCastLightning(caster)
 	Timers:CreateTimer(0.1, function()
-		caster:AddNewModifier(caster, nil, "modifier_wet_cast_lightning", { duration = 1.0 })
+		caster:AddNewModifier(caster, nil, "modifier_wet_cast_lightning", { duration = 0.5 })
 	end)
 	caster:EmitSound("WetCastLightning1")
 	caster:EmitSound("WetCastLightning2")
