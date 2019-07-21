@@ -5,7 +5,7 @@ end
 FLAT_SHIELD = 1
 ROUND_SHIELD = 2
 
-ROUND_SHIELD_RADIUS = 400
+ROUND_SHIELD_RADIUS = 300
 FLAT_SHIELD_WIDTH = 100
 FLAT_SHIELD_LENGTH = 400
 ROUND_SHIELD_RADIUS_SQR = ROUND_SHIELD_RADIUS * ROUND_SHIELD_RADIUS
@@ -78,8 +78,8 @@ function MagicShield:PlaceFlatMagicShield(player)
 
 	local particle = ParticleManager:CreateParticle("particles/magic_shield/flat_shield/flat_shield.vpcf", PATTACH_CUSTOMORIGIN, nil)
 	ParticleManager:SetParticleControl(particle, 0, center + forwardN * 40 + Vector(0, 0, 50))
-	ParticleManager:SetParticleControlOrientation(particle, 0, forwardN, rightN, Vector(0, 0, 1))
-	ParticleManager:SetParticleControl(particle, 1, Vector(0, 0, hero:GetAngles().y + 90))
+	ParticleManager:SetParticleControlForward(particle, 0, forwardN)
+	--ParticleManager:SetParticleControlForward(particle, 1, Vector(0, 0, hero:GetAngles().y + 90))
 	MagicShield:AddShield(player, { type = FLAT_SHIELD, center = center, corners = corners, axes = axes, origin = origin, particle = particle })
 
 	hero:EmitSound("MagicShieldPlace1")

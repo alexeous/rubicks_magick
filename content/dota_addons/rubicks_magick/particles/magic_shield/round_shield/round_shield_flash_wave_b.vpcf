@@ -1,7 +1,6 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf21:version{7a150ecc-d865-438f-ad53-5963fe1a2720} -->
 {
 	_class = "CParticleSystemDefinition"
-	m_ConstantColor = [ 255, 241, 46, 255 ]
 	m_controlPointConfigurations = 
 	[
 		{
@@ -32,7 +31,7 @@
 		},
 		{
 			_class = "C_OP_InterpolateRadius"
-			m_flEndScale = 4.0
+			m_flEndScale = 3.0
 			m_bEaseInAndOut = true
 			m_flStartScale = 0.0
 		},
@@ -43,7 +42,7 @@
 			_class = "C_OP_RampScalarLinear"
 			m_RateMin = -10.0
 			m_RateMax = 10.0
-			m_nField = 4
+			m_nField = "4"
 		},
 	]
 	m_Renderers = 
@@ -53,9 +52,10 @@
 			m_bSaturateColorPreAlphaBlend = false
 			m_flAddSelfAmount = 1.0
 			m_bAdditive = true
-			m_bParticleFeathering = true
 			m_flOverbrightFactor = 2.0
 			m_hTexture = resource:"materials/particle/particle_ring_pulled_half.vtex"
+			m_nFeatheringMode = "PARTICLE_DEPTH_FEATHERING_ON_OPTIONAL"
+			m_ColorScale = [ 255, 250, 173 ]
 		},
 	]
 	m_Initializers = 
@@ -86,7 +86,12 @@
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
-			m_nParticlesToEmit = 10
+			m_nParticlesToEmit = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_flLiteralValue = 10.0
+			}
 		},
 	]
+	m_nBehaviorVersion = 9
 }

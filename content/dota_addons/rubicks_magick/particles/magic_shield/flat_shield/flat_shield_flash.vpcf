@@ -1,7 +1,6 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf21:version{7a150ecc-d865-438f-ad53-5963fe1a2720} -->
 {
 	_class = "CParticleSystemDefinition"
-	m_ConstantColor = [ 255, 237, 119, 255 ]
 	m_controlPointConfigurations = 
 	[
 		{
@@ -49,8 +48,9 @@
 		{
 			_class = "C_OP_RenderSprites"
 			m_bAdditive = true
-			m_bParticleFeathering = true
 			m_hTexture = resource:"materials/particle/particle_flares/aircraft_white_v2.vtex"
+			m_ColorScale = [ 255, 240, 177 ]
+			m_bDisableZBuffering = true
 		},
 	]
 	m_Initializers = 
@@ -60,13 +60,13 @@
 		},
 		{
 			_class = "C_INIT_RandomRotation"
-			m_flDegreesMin = 70.0
-			m_flDegreesMax = 80.0
+			m_flDegreesMin = 150.0
+			m_flDegreesMax = 180.0
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 80.0
-			m_flRadiusMax = 80.0
+			m_flRadiusMin = 70.0
+			m_flRadiusMax = 70.0
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
@@ -75,8 +75,8 @@
 		},
 		{
 			_class = "C_INIT_PositionOffset"
-			m_OffsetMin = [ -50.0, 0.0, 0.0 ]
-			m_OffsetMax = [ -50.0, 0.0, 0.0 ]
+			m_OffsetMin = [ -50.0, 0.0, 50.0 ]
+			m_OffsetMax = [ -50.0, 0.0, 50.0 ]
 			m_bLocalCoords = true
 		},
 	]
@@ -84,7 +84,33 @@
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
-			m_nParticlesToEmit = 20
+			m_nParticlesToEmit = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_nMapType = "PF_MAP_TYPE_DIRECT"
+				m_flLiteralValue = 10.0
+				m_nControlPoint = 0
+				m_nScalarAttribute = 3
+				m_nVectorAttribute = 6
+				m_nVectorComponent = 0
+				m_flRandomMin = 0.0
+				m_flRandomMax = 1.0
+				m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
+				m_flMultFactor = 1.0
+				m_flInput0 = 0.0
+				m_flInput1 = 1.0
+				m_flOutput0 = 0.0
+				m_flOutput1 = 1.0
+				m_nBiasType = "PF_BIAS_TYPE_STANDARD"
+				m_flBiasParameter = 0.0
+				m_Curve = 
+				{
+					m_spline = [  ]
+					m_tangents = [  ]
+					m_vDomainMins = [ 0.0, 0.0 ]
+					m_vDomainMaxs = [ 0.0, 0.0 ]
+				}
+			}
 		},
 	]
 	m_Children = 
@@ -96,4 +122,6 @@
 			m_ChildRef = resource:"particles/magic_shield/flat_shield/flat_shield_flash_wave.vpcf"
 		},
 	]
+	m_nBehaviorVersion = 9
+	m_nFirstMultipleOverride_BackwardCompat = 4
 }

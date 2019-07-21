@@ -1,4 +1,4 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf21:version{7a150ecc-d865-438f-ad53-5963fe1a2720} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_ConstantColor = [ 0, 0, 0, 255 ]
@@ -26,7 +26,7 @@
 			_class = "C_OP_RampScalarLinear"
 			m_RateMin = -0.4
 			m_RateMax = 0.4
-			m_nField = 4
+			m_nField = "4"
 			m_flEndTime_min = 10000000000.0
 			m_flEndTime_max = 10000000000.0
 		},
@@ -34,7 +34,7 @@
 			_class = "C_OP_RampScalarLinear"
 			m_RateMin = -0.3
 			m_RateMax = 0.3
-			m_nField = 12
+			m_nField = "12"
 			m_flEndTime_min = 1000000000000.0
 			m_flEndTime_max = 10000000000000.0
 		},
@@ -44,7 +44,7 @@
 		},
 		{
 			_class = "C_OP_ColorInterpolate"
-			m_ColorFade = [ 255, 195, 0, 255 ]
+			m_ColorFade = [ 255, 204, 76, 255 ]
 			m_flFadeStartTime = 0.1
 			m_flFadeEndTime = 0.3
 		},
@@ -60,6 +60,8 @@
 				},
 			]
 			m_nSkin = 5
+			m_bForceLoopingAnimation = true
+			m_ColorScale = [ 255, 255, 255 ]
 		},
 	]
 	m_Initializers = 
@@ -69,14 +71,14 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 50.5
-			m_flRadiusMax = 51.5
+			m_flRadiusMin = 37.9
+			m_flRadiusMax = 38.6
 		},
 		{
 			_class = "C_INIT_RandomRotation"
 			m_flDegreesMin = 90.0
 			m_flDegreesMax = 90.0
-			m_nFieldOutput = 20
+			m_nFieldOutput = "20"
 		},
 		{
 			_class = "C_INIT_RandomRotation"
@@ -86,7 +88,11 @@
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
-			m_nParticlesToEmit = 4
+			m_nParticlesToEmit = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_flLiteralValue = 4.0
+			}
 		},
 	]
 	m_Children = 
@@ -103,11 +109,6 @@
 		{
 			m_ChildRef = resource:"particles/magic_shield/round_shield/round_shield_rim_ground_pulse.vpcf"
 		},
-		{
-			m_ChildRef = resource:"particles/magic_shield/round_shield/round_shield_particles.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/magic_shield/round_shield/round_shield_particles_b.vpcf"
-		},
 	]
+	m_nBehaviorVersion = 9
 }
