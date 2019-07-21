@@ -35,7 +35,7 @@
 		{
 			_class = "C_OP_InterpolateRadius"
 			m_flStartScale = 0.0
-			m_flEndScale = 2.0
+			m_flEndScale = 2.3
 		},
 	]
 	m_Renderers = 
@@ -60,8 +60,8 @@
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.2
-			m_fLifetimeMax = 0.2
+			m_fLifetimeMin = 0.26
+			m_fLifetimeMax = 0.26
 		},
 		{
 			_class = "C_INIT_RandomRadius"
@@ -113,8 +113,6 @@
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 218
-			m_nAlphaMax = 213
 		},
 	]
 	m_Emitters = 

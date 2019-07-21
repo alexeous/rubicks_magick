@@ -65,15 +65,15 @@
 		{
 			_class = "C_INIT_RandomLifeTime"
 			m_fLifetimeMin = 0.3
-			m_fLifetimeMax = 0.66
+			m_fLifetimeMax = 0.5
 		},
 		{
 			_class = "C_INIT_RandomRotation"
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 60.0
-			m_flRadiusMax = 90.0
+			m_flRadiusMin = 50.0
+			m_flRadiusMax = 80.0
 		},
 		{
 			_class = "C_INIT_PositionOffset"
@@ -113,7 +113,7 @@
 			{
 				m_nType = "PF_TYPE_LITERAL"
 				m_nMapType = "PF_MAP_TYPE_DIRECT"
-				m_flLiteralValue = 20.0
+				m_flLiteralValue = 30.0
 				m_nControlPoint = 0
 				m_nScalarAttribute = 3
 				m_nVectorAttribute = 6

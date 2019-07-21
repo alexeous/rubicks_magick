@@ -64,8 +64,8 @@
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.8
-			m_fLifetimeMax = 1.1
+			m_fLifetimeMin = 0.5
+			m_fLifetimeMax = 0.8
 		},
 		{
 			_class = "C_INIT_RandomRotation"
@@ -73,7 +73,7 @@
 		{
 			_class = "C_INIT_RandomRadius"
 			m_flRadiusMin = 60.0
-			m_flRadiusMax = 90.0
+			m_flRadiusMax = 80.0
 		},
 		{
 			_class = "C_INIT_PositionOffset"

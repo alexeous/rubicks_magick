@@ -8,6 +8,7 @@ function StoneWall:Precache(context)
 	LinkLuaModifier("modifier_stone_wall", "modifiers/modifier_stone_wall.lua", LUA_MODIFIER_MOTION_NONE)
 
 	PrecacheResource("particle_folder", "particles/stone_wall", context)
+	PrecacheResource("particle_folder", "particles/stone_wall/stone_wall_elements", context)
 end
 
 function StoneWall:PlayerConnected(player)
@@ -22,7 +23,7 @@ function StoneWall:PlaceStoneWallSpell(player, modifierElement)
 		dontMoveWhileCasting = true,
 		castingGesture = ACT_DOTA_CAST_ABILITY_5,
 		castingGestureRate = 2.0,
-		castingGestureTranslate = "wall",
+		castingGestureTranslate = "shadowraze",
 		thinkPeriod = 0.17,
 		thinkFunction = function(player) 
 			player.spellCast.thinkFunction = nil
@@ -40,13 +41,8 @@ function StoneWall:PlaceStoneWall(caster, modifierElement)
 	caster.blastedWallsCount = 0
 
 	local wallUnitNumber = modifierElement ~= nil and 4 or 2
-
-	local immuneElements = { ELEMENT_EARTH }
-	if modifierElement == nil or modifierElement == ELEMENT_EARTH then
-		table.insert(immuneElements, ELEMENT_LIGHTNING)
-	else
-		table.insert(immuneElements, modifierElement)
-	end
+	local immuneElements = StoneWall:CalcImmuneElements(modifierElement)
+	
 	local onKilledCallback = function(wall, isQuietKill)
 		StoneWall:OnWallKilled(wall, caster, isQuietKill)
 	end
@@ -55,6 +51,17 @@ function StoneWall:PlaceStoneWall(caster, modifierElement)
 		StoneWall:InitWallUnit(wall, caster, modifierElement)
 		Spells:RegisterCastedSolidWall(caster, wall)
 	end
+end
+
+function StoneWall:CalcImmuneElements(modifierElement)
+	local immuneElements = { ELEMENT_EARTH }
+	if modifierElement ~= ELEMENT_WATER then
+		table.insert(immuneElements, ELEMENT_LIGHTNING)
+	end
+	if modifierElement ~= nil and modifierElement ~= ELEMENT_EARTH then
+		table.insert(immuneElements, modifierElement)
+	end
+	return immuneElements
 end
 
 function StoneWall:InitWallUnit(wall, caster, modifierElement)
