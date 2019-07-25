@@ -108,7 +108,7 @@ function ElementSprays:StartElementSprayCasting(player, distance, duration, onTo
 		castType = CAST_TYPE_CONTINUOUS,
 		duration = duration,
 		minDuration = 0.72,
-		slowMovePercentage = 30,
+		slowMovePercentage = 40,
 		turnDegsPerSec = 120.0,
 		castingGesture = ACT_DOTA_CHANNEL_ABILITY_5,
 		castingGestureTranslate = "black_hole",

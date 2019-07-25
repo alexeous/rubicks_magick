@@ -192,7 +192,7 @@ function Beams:CreateBeam(player, particleName, color, mainElement, effectFuncti
 		castType = CAST_TYPE_CONTINUOUS,
 		duration = 7.0,
 		minDuration = 0.37,
-		slowMovePercentage = 30,
+		slowMovePercentage = 40,
 		turnDegsPerSec = 60.0,
 		castingGesture = ACT_DOTA_CHANNEL_ABILITY_5,
 		castingGestureTranslate = "black_hole",
