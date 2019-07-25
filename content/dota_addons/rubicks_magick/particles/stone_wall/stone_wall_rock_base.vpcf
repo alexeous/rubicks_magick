@@ -39,8 +39,8 @@
 	[
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 100.0
-			m_flRadiusMax = 140.0
+			m_flRadiusMin = 120.0
+			m_flRadiusMax = 120.0
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
@@ -140,8 +140,8 @@
 		},
 		{
 			_class = "C_OP_OscillateScalar"
-			m_RateMin = 500.0
-			m_RateMax = 600.0
+			m_RateMin = 300.0
+			m_RateMax = 400.0
 			m_FrequencyMin = 8.0
 			m_FrequencyMax = 12.0
 			m_nField = "18"
@@ -154,8 +154,8 @@
 			m_nFieldOutput = "26"
 			m_flInputMin = -1000.0
 			m_flInputMax = 1000.0
-			m_flOutputMin = -1020.0
-			m_flOutputMax = 980.0
+			m_flOutputMin = -1010.0
+			m_flOutputMax = 990.0
 		},
 		{
 			_class = "C_OP_SetAttributeToScalarExpression"

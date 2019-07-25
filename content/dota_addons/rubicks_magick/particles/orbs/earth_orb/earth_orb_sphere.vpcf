@@ -1,4 +1,4 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf21:version{7a150ecc-d865-438f-ad53-5963fe1a2720} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_ConstantColor = [ 255, 255, 255, 101 ]
@@ -6,15 +6,7 @@
 	[
 		{
 			m_name = "preview"
-			m_drivers = 
-			[
-				{
-					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 0.0, 0.0, 0.0 ]
-					m_angOffset = [ null, null, null ]
-					m_entityName = "self"
-				},
-			]
+			m_drivers = [  ]
 		},
 	]
 	m_Operators = 
@@ -39,7 +31,7 @@
 			_class = "C_OP_RampScalarLinear"
 			m_RateMin = -2.0
 			m_RateMax = 2.0
-			m_nField = 4
+			m_nField = "4"
 		},
 		{
 			_class = "C_OP_FadeIn"
@@ -52,6 +44,7 @@
 			_class = "C_OP_RenderSprites"
 			m_bAdditive = true
 			m_hTexture = resource:"materials/particle/particle_swirl_04b.vtex"
+			m_ColorScale = [ 255, 255, 255 ]
 		},
 	]
 	m_Initializers = 
@@ -84,7 +77,11 @@
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
-			m_nParticlesToEmit = 10
+			m_nParticlesToEmit = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_flLiteralValue = 10.0
+			}
 		},
 	]
 	m_Children = 
@@ -113,4 +110,5 @@
 			m_ChildRef = resource:"particles/orbs/earth_orb/earth_orb_light.vpcf"
 		},
 	]
+	m_nBehaviorVersion = 4
 }
