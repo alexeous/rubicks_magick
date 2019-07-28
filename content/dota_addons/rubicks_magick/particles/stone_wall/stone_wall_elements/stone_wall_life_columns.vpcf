@@ -69,8 +69,8 @@
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.15
-			m_fLifetimeMax = 0.35
+			m_fLifetimeMin = 0.25
+			m_fLifetimeMax = 0.45
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
@@ -84,8 +84,8 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 3.0
-			m_flRadiusMax = 6.0
+			m_flRadiusMin = 5.0
+			m_flRadiusMax = 8.0
 		},
 	]
 	m_Emitters = 

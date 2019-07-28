@@ -18,7 +18,7 @@
 				m_flRandomMin = 0.0
 				m_flRandomMax = 1.0
 				m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
-				m_flMultFactor = 5.0
+				m_flMultFactor = 2.0
 				m_flInput0 = 0.0
 				m_flInput1 = 1.0
 				m_flOutput0 = 0.0
@@ -72,18 +72,18 @@
 		},
 		{
 			_class = "C_INIT_PositionOffset"
-			m_OffsetMin = [ 0.0, 0.0, 5.0 ]
+			m_OffsetMin = [ 0.0, 0.0, 40.0 ]
 			m_OffsetMax = [ 0.0, 0.0, 50.0 ]
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 200.0
-			m_flRadiusMax = 200.0
+			m_flRadiusMin = 400.0
+			m_flRadiusMax = 500.0
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.4
-			m_fLifetimeMax = 0.5
+			m_fLifetimeMin = 1.2
+			m_fLifetimeMax = 1.5
 		},
 		{
 			_class = "C_INIT_RandomRotation"
@@ -102,8 +102,8 @@
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 46
-			m_nAlphaMax = 50
+			m_nAlphaMin = 10
+			m_nAlphaMax = 15
 		},
 	]
 	m_Operators = 
@@ -137,7 +137,7 @@
 			m_bSaturateColorPreAlphaBlend = false
 			m_bAdditive = true
 			m_bAdditiveAlpha = true
-			m_flOverbrightFactor = 4.0
+			m_flOverbrightFactor = 2.0
 			m_nFeatheringMode = "PARTICLE_DEPTH_FEATHERING_ON_OPTIONAL"
 		},
 	]
@@ -154,61 +154,6 @@
 					m_entityName = "self"
 				},
 			]
-		},
-	]
-	m_ForceGenerators = 
-	[
-		{
-			_class = "C_OP_PerParticleForce"
-			m_flForceScale = 
-			{
-				m_nType = "PF_TYPE_RANDOM_UNIFORM"
-				m_nMapType = "PF_MAP_TYPE_DIRECT"
-				m_flLiteralValue = 1.0
-				m_nControlPoint = 0
-				m_nScalarAttribute = 3
-				m_nVectorAttribute = 6
-				m_nVectorComponent = 0
-				m_flRandomMin = 0.0
-				m_flRandomMax = 1.0
-				m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
-				m_flMultFactor = 1.0
-				m_flInput0 = 0.0
-				m_flInput1 = 1.0
-				m_flOutput0 = 0.0
-				m_flOutput1 = 1.0
-				m_nBiasType = "PF_BIAS_TYPE_STANDARD"
-				m_flBiasParameter = 0.0
-				m_Curve = 
-				{
-					m_spline = [  ]
-					m_tangents = [  ]
-					m_vDomainMins = [ 0.0, 0.0 ]
-					m_vDomainMaxs = [ 0.0, 0.0 ]
-				}
-			}
-			m_vForce = [ 0.0, 0.0, 2000.0 ]
-		},
-	]
-	m_Children = 
-	[
-		{
-			m_ChildRef = resource:"particles/stone_wall/stone_wall_elements/stone_wall_life_sparks.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/stone_wall/stone_wall_elements/stone_wall_life_sparks_b.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/stone_wall/stone_wall_elements/stone_wall_life_columns.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/stone_wall/stone_wall_elements/stone_wall_life_circles.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/stone_wall/stone_wall_elements/stone_wall_life_ground_circles.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/stone_wall/stone_wall_elements/stone_wall_life_glow.vpcf"
 		},
 	]
 }

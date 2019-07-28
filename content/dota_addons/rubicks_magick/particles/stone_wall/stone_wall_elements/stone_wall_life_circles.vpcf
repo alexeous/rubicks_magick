@@ -64,8 +64,8 @@
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 43.5125
-			m_flRadiusMax = 95.048
+			m_flRadiusMin = 35.0
+			m_flRadiusMax = 100.0
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
@@ -74,13 +74,13 @@
 		},
 		{
 			_class = "C_INIT_RandomColor"
-			m_ColorMin = [ 155, 252, 77, 255 ]
+			m_ColorMin = [ 132, 252, 77, 255 ]
 			m_ColorMax = [ 183, 255, 49, 255 ]
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 0.4
-			m_fLifetimeMax = 0.7
+			m_fLifetimeMin = 0.5
+			m_fLifetimeMax = 0.6
 		},
 		{
 			_class = "C_INIT_PositionOffset"
@@ -109,7 +109,37 @@
 				m_flRandomMin = 0.0
 				m_flRandomMax = 1.0
 				m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
-				m_flMultFactor = 8.0
+				m_flMultFactor = 16.0
+				m_flInput0 = 0.0
+				m_flInput1 = 1.0
+				m_flOutput0 = 0.0
+				m_flOutput1 = 1.0
+				m_nBiasType = "PF_BIAS_TYPE_STANDARD"
+				m_flBiasParameter = 0.0
+				m_Curve = 
+				{
+					m_spline = [  ]
+					m_tangents = [  ]
+					m_vDomainMins = [ 0.0, 0.0 ]
+					m_vDomainMaxs = [ 0.0, 0.0 ]
+				}
+			}
+		},
+		{
+			_class = "C_OP_InstantaneousEmitter"
+			m_nParticlesToEmit = 
+			{
+				m_nType = "PF_TYPE_CONTROL_POINT_COMPONENT"
+				m_nMapType = "PF_MAP_TYPE_MULT"
+				m_flLiteralValue = 100.0
+				m_nControlPoint = 2
+				m_nScalarAttribute = 3
+				m_nVectorAttribute = 6
+				m_nVectorComponent = 1
+				m_flRandomMin = 0.0
+				m_flRandomMax = 1.0
+				m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
+				m_flMultFactor = 5.0
 				m_flInput0 = 0.0
 				m_flInput1 = 1.0
 				m_flOutput0 = 0.0
