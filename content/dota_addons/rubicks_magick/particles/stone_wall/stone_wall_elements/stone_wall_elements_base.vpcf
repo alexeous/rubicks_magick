@@ -10,6 +10,9 @@
 		{
 			m_ChildRef = resource:"particles/stone_wall/stone_wall_elements/stone_wall_life.vpcf"
 		},
+		{
+			m_ChildRef = resource:"particles/stone_wall/stone_wall_elements/stone_wall_cold.vpcf"
+		},
 	]
 	m_controlPointConfigurations = 
 	[
