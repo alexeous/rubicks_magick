@@ -18,7 +18,7 @@
 				m_flRandomMin = 0.0
 				m_flRandomMax = 1.0
 				m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
-				m_flMultFactor = 8.0
+				m_flMultFactor = 60.0
 				m_flInput0 = 0.0
 				m_flInput1 = 1.0
 				m_flOutput0 = 0.0
@@ -48,7 +48,7 @@
 				m_flRandomMin = 0.0
 				m_flRandomMax = 1.0
 				m_nRandomMode = "PF_RANDOM_MODE_CONSTANT"
-				m_flMultFactor = 2.0
+				m_flMultFactor = 20.0
 				m_flInput0 = 0.0
 				m_flInput1 = 1.0
 				m_flOutput0 = 0.0
@@ -68,19 +68,25 @@
 	m_Initializers = 
 	[
 		{
+			_class = "C_INIT_RingWave"
+			m_flInitialRadius = 60.0
+			m_flThickness = 30.0
+		},
+		{
 			_class = "C_INIT_CreateWithinSphere"
 			m_fRadiusMax = 30.0
 			m_fRadiusMin = 20.0
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_INIT_RandomRadius"
-			m_flRadiusMin = 80.0
-			m_flRadiusMax = 110.0
+			m_flRadiusMin = 210.0
+			m_flRadiusMax = 260.0
 		},
 		{
 			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 1.2
-			m_fLifetimeMax = 1.5
+			m_fLifetimeMin = 0.3
+			m_fLifetimeMax = 1.0
 		},
 		{
 			_class = "C_INIT_RandomRotation"
@@ -90,6 +96,7 @@
 			_class = "C_INIT_RandomColor"
 			m_ColorMin = [ 218, 248, 254, 255 ]
 			m_ColorMax = [ 200, 223, 243, 255 ]
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
@@ -103,36 +110,37 @@
 		},
 		{
 			_class = "C_INIT_VelocityRadialRandom"
-			m_fSpeedMin = -500.0
-			m_fSpeedMax = -800.0
+			m_fSpeedMin = -200.0
+			m_fSpeedMax = -300.0
 			m_vecLocalCoordinateSystemSpeedScale = [ 1.0, 1.0, 0.0 ]
 		},
 		{
 			_class = "C_INIT_RandomSequence"
-			m_nSequenceMax = 15
+			m_nSequenceMax = 2
 		},
 		{
 			_class = "C_INIT_RandomRotationSpeed"
 			m_flDegreesMin = -200.0
 			m_flDegreesMax = 200.0
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_INIT_PositionOffset"
 			m_OffsetMin = [ 0.0, 0.0, 60.0 ]
-			m_OffsetMax = [ 0.0, 0.0, 90.0 ]
+			m_OffsetMax = [ 0.0, 0.0, 120.0 ]
 		},
 	]
 	m_Operators = 
 	[
 		{
 			_class = "C_OP_BasicMovement"
-			m_Gravity = [ 0.0, 0.0, -100.0 ]
+			m_Gravity = [ 0.0, 0.0, -1000.0 ]
 			m_fDrag = 0.2
 		},
 		{
 			_class = "C_OP_InterpolateRadius"
-			m_flStartScale = 0.6
-			m_flEndScale = 0.8
+			m_flStartScale = 0.0
+			m_flEndScale = 1.5
 		},
 		{
 			_class = "C_OP_Decay"
@@ -147,6 +155,7 @@
 		},
 		{
 			_class = "C_OP_SpinUpdate"
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_OP_VectorNoise"
@@ -162,9 +171,8 @@
 		{
 			_class = "C_OP_RenderSprites"
 			m_ColorScale = [ 255, 255, 255 ]
-			m_flAnimationRate = 3.0
 			m_bAdditive = true
-			m_hTexture = resource:"materials/particle/smoke1/smoke1.vtex"
+			m_hTexture = resource:"materials/particle/spray1/spray1.vtex"
 			m_flAddSelfAmount = 1.0
 			m_nFeatheringMode = "PARTICLE_DEPTH_FEATHERING_ON_OPTIONAL"
 		},
@@ -188,9 +196,11 @@
 	[
 		{
 			m_ChildRef = resource:"particles/stone_wall/stone_wall_elements/stone_wall_cold_steam_b.vpcf"
+			m_bDisableChild = true
 		},
 		{
 			m_ChildRef = resource:"particles/stone_wall/stone_wall_elements/stone_wall_cold_steam_c.vpcf"
+			m_bDisableChild = true
 		},
 	]
 }
