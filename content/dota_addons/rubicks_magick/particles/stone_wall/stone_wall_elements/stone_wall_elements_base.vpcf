@@ -16,6 +16,9 @@
 		{
 			m_ChildRef = resource:"particles/stone_wall/stone_wall_elements/stone_wall_death.vpcf"
 		},
+		{
+			m_ChildRef = resource:"particles/stone_wall/stone_wall_elements/stone_wall_fire.vpcf"
+		},
 	]
 	m_controlPointConfigurations = 
 	[
