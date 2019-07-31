@@ -26,6 +26,9 @@ function RubicksMagickGameMode:InitGameMode()
 	GameRules:SetSameHeroSelectionEnabled(true)
 	GameRules:SetHeroSelectionTime(0.0)
 	GameRules:SetPreGameTime(1.0)
+	if IsInToolsMode() then
+		GameRules:SetCustomGameSetupAutoLaunchDelay(0.0)
+	end
 
 	GameRules:GetGameModeEntity():SetCameraDistanceOverride(1090)
 	GameRules:GetGameModeEntity():SetCustomGameForceHero("npc_dota_hero_rubick")
@@ -37,7 +40,6 @@ function RubicksMagickGameMode:InitGameMode()
 	Elements:Init()
 	Spells:Init()
 
-	Timers:CreateTimer(1, function() GameRules:SetCustomGameSetupRemainingTime(0) end)
 	Timers:CreateTimer(function() 
 		for playerID = 0, DOTA_MAX_PLAYERS - 1 do
 		local player = PlayerResource:GetPlayer(playerID)
