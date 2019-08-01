@@ -40,6 +40,9 @@ var onRebindCallback = null;
 for (var key in keybindTable) {
 	if(key[0] == '+') {
 		addEvent(key);
+		// preventing console spamming messages like "Unknown command or convar '-rm_key_s'!"
+		var upEvent = "-" + key.substr(1);
+		addEmptyCommand(upEvent);
 	}
 }
 
@@ -54,6 +57,10 @@ function getKey(table, value) {
 
 function addEvent(eventName) {
 	Game.AddCommand(eventName, function() { onKeyEvent(eventName); }, "", 0);
+}
+
+function addEmptyCommand(eventName) {
+	Game.AddCommand(eventName, function() {}, "", 0);
 }
 
 function setOnRebindCallback(callback) {
