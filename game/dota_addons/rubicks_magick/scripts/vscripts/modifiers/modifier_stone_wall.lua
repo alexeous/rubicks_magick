@@ -39,6 +39,7 @@ function modifier_stone_wall:OnCreated(kv)
 		local wall = self:GetParent()
 		
 		self:CreateParticle()
+		self:StartSounds()
 
 		if wall.modifierElement == nil or wall.modifierElement == ELEMENT_EARTH then
 			self.phase = PHASE_DESTRUCT
@@ -70,6 +71,37 @@ function modifier_stone_wall:CreateParticle()
 	ParticleManager:SetParticleControl(self.particle, 3, Vector(death, fire, 0))
 end
 
+function modifier_stone_wall:StartSounds()
+	local wall = self:GetParent()
+	local modifierElement = wall.modifierElement
+	if modifierElement == nil or modifierElement == ELEMENT_EARTH then
+		return
+	end
+	
+	local sounds
+	if 		modifierElement == ELEMENT_WATER then	sounds = {  }
+	elseif	modifierElement == ELEMENT_LIFE then	sounds = {  }
+	elseif	modifierElement == ELEMENT_COLD then	sounds = {  }
+	elseif	modifierElement == ELEMENT_DEATH then	sounds = {  }
+	elseif	modifierElement == ELEMENT_FIRE then	sounds = {  }
+	end
+	
+	wall.modifierSounds = sounds
+	for _, sound in pairs(sounds) do
+		wall:EmitSound(sound)
+	end
+end
+
+function modifier_stone_wall:StopSounds()
+	local sounds = self:GetParent().modifierSounds
+	if sound == nil then
+		return
+	end
+	for _, sound in pairs(sounds) do
+		wall:StopSound(sound)
+	end
+end
+
 function modifier_stone_wall:OnIntervalThink()
 	local wall = self:GetParent()
 	
@@ -91,6 +123,7 @@ end
 function modifier_stone_wall:OnDestroy()
 	if IsServer() then
 		ParticleManager:DestroyParticle(self.particle, false)
+		self:StopSounds()
 		self:StartIntervalThink(-1)
 	end
 end

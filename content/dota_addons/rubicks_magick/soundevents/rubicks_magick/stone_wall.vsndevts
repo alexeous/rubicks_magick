@@ -1,0 +1,205 @@
+"PlaceStoneWall1"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/warlock/rain_of_chaos_cast.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "0.720000"  }
+                    "pitch"             {   "value"     "1.100000"  }
+                    "pitch_rand_min"    {   "value"     "-0.05000"  }
+                    "pitch_rand_max"    {   "value"     "0.050000"  }  
+                    "soundlevel"        {   "value"     "90.00000" }
+                    "distance_max"      {   "value"     "2400.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "stop_at_time"      {   "value"     "0.300000"  }
+                    "volume_fade_out"   {   "value"     "0.300000"  }
+                }
+            }
+        }
+    }
+}
+
+"PlaceStoneWall2"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/phoenix/super_nova_begin.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "0.490000"  }
+                    "pitch"             {   "value"     "1.0"  }
+                    "pitch_rand_min"    {   "value"     "-0.05000"  }
+                    "pitch_rand_max"    {   "value"     "0.050000"  }  
+                    "soundlevel"        {   "value"     "90.00000" }
+                    "distance_max"      {   "value"     "2400.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "stop_at_time"      {   "value"     "0.300000"  }
+                    "volume_fade_out"   {   "value"     "0.400000"  }
+                }
+            }
+        }
+    }
+}
+
+"PlaceStoneWall3"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/tiny/preattack02.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "0.720000"  }
+                    "pitch"             {   "value"     "0.50"  }
+                    "pitch_rand_min"    {   "value"     "-0.05000"  }
+                    "pitch_rand_max"    {   "value"     "0.050000"  }  
+                    "soundlevel"        {   "value"     "90.00000" }
+                    "distance_max"      {   "value"     "2400.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "delay"             {   "value"     "-0.20000"  }
+                    "stop_at_time"      {   "value"     "0.300000"  }
+                    "volume_fade_out"   {   "value"     "0.400000"  }
+                }
+            }
+        }
+    }
+}
+
+"PlaceStoneWall4"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/monkey_king/stike_impact03.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "0.650000"  }
+                    "pitch"             {   "value"     "1.00"  }
+                    "pitch_rand_min"    {   "value"     "-0.05000"  }
+                    "pitch_rand_max"    {   "value"     "0.050000"  }  
+                    "soundlevel"        {   "value"     "90.00000" }
+                    "distance_max"      {   "value"     "2400.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "stop_at_time"      {   "value"     "0.300000"  }
+                    "volume_fade_out"   {   "value"     "0.400000"  }
+                }
+            }
+        }
+    }
+}
+
+"PlaceStoneWall5"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/tiny/tiny_avalanche.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "0.6500000"  }
+                    "pitch"             {   "value"     "0.500"  }
+                    "pitch_rand_min"    {   "value"     "-0.05000"  }
+                    "pitch_rand_max"    {   "value"     "0.050000"  }  
+                    "soundlevel"        {   "value"     "90.00000" }
+                    "distance_max"      {   "value"     "2400.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "stop_at_time"      {   "value"     "0.100000"  }
+                    "volume_fade_out"   {   "value"     "0.500000"  }
+                }
+            }
+        }
+    }
+}
+
+"PlaceStoneWall6"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/tiny/tiny_avalanche.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "0.4000000"  }
+                    "pitch"             {   "value"     "1.10"  }
+                    "pitch_rand_min"    {   "value"     "-0.05000"  }
+                    "pitch_rand_max"    {   "value"     "0.050000"  }  
+                    "soundlevel"        {   "value"     "90.00000" }
+                    "distance_max"      {   "value"     "2400.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "delay"             {   "value"     "0.18000"  }
+                    "stop_at_time"      {   "value"     "0.200000"  }
+                    "volume_fade_out"   {   "value"     "0.500000"  }
+                }
+            }
+        }
+    }
+}

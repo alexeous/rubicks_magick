@@ -9,6 +9,8 @@ function StoneWall:Precache(context)
 
 	PrecacheResource("particle_folder", "particles/stone_wall", context)
 	PrecacheResource("particle_folder", "particles/stone_wall/stone_wall_elements", context)
+
+	PrecacheResource("soundfile", "soundevents/rubicks_magick/stone_wall.vsndevts", context)
 end
 
 function StoneWall:PlayerConnected(player)
@@ -51,6 +53,12 @@ function StoneWall:PlaceStoneWall(caster, modifierElement)
 		StoneWall:InitWallUnit(wall, caster, modifierElement)
 		Spells:RegisterCastedSolidWall(caster, wall)
 	end
+	caster:EmitSound("PlaceStoneWall1")
+	caster:EmitSound("PlaceStoneWall2")
+	caster:EmitSound("PlaceStoneWall3")
+	caster:EmitSound("PlaceStoneWall4")
+	caster:EmitSound("PlaceStoneWall5")
+	caster:EmitSound("PlaceStoneWall6")
 end
 
 function StoneWall:CalcImmuneElements(modifierElement)
