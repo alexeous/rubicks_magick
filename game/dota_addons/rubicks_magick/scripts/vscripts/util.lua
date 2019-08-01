@@ -35,7 +35,7 @@ end
 function Util:EmitSoundOnLocation(location, soundName, caster)
 	local dummy = Util:CreateDummy(location, caster)
 	dummy:EmitSound(soundName)
-	Timers:CreateTimer(10.0, function() dummy:Destroy() end)
+	dummy:Destroy()
 end
 
 function Util:Lerp(a, b, t)
