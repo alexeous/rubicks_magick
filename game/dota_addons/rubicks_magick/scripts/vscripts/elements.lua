@@ -47,7 +47,6 @@ function Elements:Precache(context)
 	PrecacheResource("particle_folder", "particles/orbs/earth_orb", context)
 	PrecacheResource("particle_folder", "particles/orbs/life_orb", context)
 	PrecacheResource("particle_folder", "particles/orbs/water_orb", context)
-	PrecacheResource("soundfile", "soundevents/game_sounds_ui.vsndevts", context)
 end
 
 function Elements:Init()
