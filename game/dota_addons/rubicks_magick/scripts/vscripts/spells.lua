@@ -61,7 +61,7 @@ function Spells:Precache(context)
 	PrecacheResource("particle", "particles/lightning/wet_cast_lightning.vpcf", context)
 
 	PrecacheResource("particle", "particles/status_fx/status_effect_burn.vpcf", context)
-	PrecacheResource("particle_particle", "particles/modifier_status_fx/chilled", context)
+	PrecacheResource("particle_folder", "particles/modifier_status_fx/chilled", context)
 
 	PrecacheResource("soundfile", "soundevents/rubicks_magick/melee_attack.vsndevts", context)
 	PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_kunkka.vsndevts", context)
