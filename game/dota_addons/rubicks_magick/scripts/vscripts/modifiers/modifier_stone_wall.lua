@@ -79,11 +79,11 @@ function modifier_stone_wall:StartSounds()
 	end
 	
 	local sounds
-	if 		modifierElement == ELEMENT_WATER then	sounds = {  }
-	elseif	modifierElement == ELEMENT_LIFE then	sounds = {  }
-	elseif	modifierElement == ELEMENT_COLD then	sounds = {  }
-	elseif	modifierElement == ELEMENT_DEATH then	sounds = {  }
-	elseif	modifierElement == ELEMENT_FIRE then	sounds = {  }
+	if 		modifierElement == ELEMENT_WATER then	sounds = { "WaterStoneWall1" }
+	elseif	modifierElement == ELEMENT_LIFE then	sounds = { "LifeStoneWall1", "LifeStoneWall2", "LifeStoneWall3" }
+	elseif	modifierElement == ELEMENT_COLD then	sounds = { "ColdStoneWall1", "ColdStoneWall2" }
+	elseif	modifierElement == ELEMENT_DEATH then	sounds = { "DeathStoneWall1", "DeathStoneWall2", "DeathStoneWall3" }
+	elseif	modifierElement == ELEMENT_FIRE then	sounds = { "FireStoneWall1", "FireStoneWall2", "FireStoneWall3" }
 	end
 	
 	wall.modifierSounds = sounds
@@ -93,8 +93,9 @@ function modifier_stone_wall:StartSounds()
 end
 
 function modifier_stone_wall:StopSounds()
-	local sounds = self:GetParent().modifierSounds
-	if sound == nil then
+	local wall = self:GetParent()
+	local sounds = wall.modifierSounds
+	if sounds == nil then
 		return
 	end
 	for _, sound in pairs(sounds) do
@@ -124,6 +125,7 @@ function modifier_stone_wall:OnDestroy()
 	if IsServer() then
 		ParticleManager:DestroyParticle(self.particle, false)
 		self:StopSounds()
+		self:GetParent():EmitSound("DestroyStoneWall1")
 		self:StartIntervalThink(-1)
 	end
 end
