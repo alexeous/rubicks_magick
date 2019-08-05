@@ -2,7 +2,6 @@ require("spells/placer")
 
 local KNOCKBACK_AREA_RADIUS = 300
 local KNOCKBACK_AREA_ANGLE = 160
-local KNOCKBACK_AREA_HALF_COS = math.cos(math.rad(KNOCKBACK_AREA_ANGLE / 2))
 
 LinkLuaModifier("modifier_generic_wall", "modifiers/modifier_generic_wall.lua", LUA_MODIFIER_MOTION_NONE)
 
@@ -13,10 +12,9 @@ end
 function GenericWall:KnockbackAllAwayFromWall(caster)
     local center = caster:GetAbsOrigin()
     local forward = caster:GetForwardVector()
-    local units = Util:FindUnitsInRadius(center, KNOCKBACK_AREA_RADIUS)
+    local units = Util:FindUnitsInSector(center, KNOCKBACK_AREA_RADIUS, forward, KNOCKBACK_AREA_ANGLE)
     for _, unit in pairs(units) do
-        if not Spells:IsResistantTo(unit, ELEMENT_EARTH) and 
-          Util:AngleBetweenVectorsLessThanAcosOf(forward, unit:GetAbsOrigin() - center, KNOCKBACK_AREA_HALF_COS) then
+        if unit ~= caster and not Spells:IsResistantTo(unit, ELEMENT_EARTH) then
             MoveController:Knockback(unit, caster, center, KNOCKBACK_AREA_RADIUS)
         end
     end

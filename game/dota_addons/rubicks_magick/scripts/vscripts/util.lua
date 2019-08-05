@@ -19,6 +19,17 @@ function Util:FindUnitsInLine(pos1, pos2, radius, flagFilter)
 	return FindUnitsInLine(DOTA_TEAM_NOTEAM, pos1, pos2, nil, radius, DOTA_UNIT_TARGET_TEAM_BOTH, DOTA_UNIT_TARGET_ALL, flagFilter)
 end
 
+function Util:FindUnitsInSector(center, radius, forward, angle, flagFilter)
+	local units = Util:FindUnitsInRadius(center, radius, flagFilter)
+	local halfCos = math.cos(math.rad(angle / 2))
+	for key, unit in pairs(units) do
+        if not Util:AngleBetweenVectorsLessThanAcosOf(forward, unit:GetAbsOrigin() - center, halfCos) then
+			units[key] = nil
+		end
+	end
+	return units
+end
+
 function Util:CreateDummy(position, owner)
 	local dummy = Util:CreateDummyWithoutModifier(position, owner)
 	dummy:AddNewModifier(dummy, nil, "modifier_dummy", {})
