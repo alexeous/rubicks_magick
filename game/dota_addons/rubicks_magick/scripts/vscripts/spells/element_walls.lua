@@ -35,6 +35,7 @@ function ElementWalls:PlaceIceWallSpell(player)
 
 	Spells:StartCasting(player, spellCastTable)
 	GenericWall:KnockbackAllAwayFromWall(caster)
+	ElementWalls:ApplyIceWallDamage(caster)
 end
 
 function ElementWalls:PlaceSteamWall(player)
@@ -65,8 +66,6 @@ function ElementWalls:PlaceIceWall(caster)
 		Spells:RegisterCastedSolidWall(caster, wall)
 	end
 
-	ElementWalls:ApplyIceWallDamage(caster, wallUnits)
-
 	caster:EmitSound("PlaceStoneWall1")
 end
 
@@ -77,7 +76,7 @@ function ElementWalls:InitIceWallUnit(caster, wall)
 	wall:AddNewModifier(caster, nil, "modifier_ice_wall", {})
 end
 
-function ElementWalls:ApplyIceWallDamage(caster, wallUnits)
+function ElementWalls:ApplyIceWallDamage(caster)
 	local center = caster:GetAbsOrigin()
 	local forward = caster:GetForwardVector()
 	local units = Util:FindUnitsInSector(center, ICE_WALL_DAMAGE_AREA_RADIUS, forward, ICE_WALL_DAMAGE_AREA_ANGLE)
