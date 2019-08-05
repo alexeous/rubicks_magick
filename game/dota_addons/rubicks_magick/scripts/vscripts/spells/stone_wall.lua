@@ -74,7 +74,7 @@ end
 
 function StoneWall:InitWallUnit(wall, caster, modifierElement)
 	wall.modifierElement = modifierElement
-	wall:SetHullRadius(50)
+	wall:SetHullRadius(65)
 	wall.isSolidWall = true
 	wall:AddNewModifier(caster, nil, "modifier_stone_wall", {})
 
