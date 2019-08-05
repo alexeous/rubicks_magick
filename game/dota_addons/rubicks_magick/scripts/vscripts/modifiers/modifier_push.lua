@@ -31,6 +31,11 @@ end
 
 function modifier_push:OnCreated(kv)
 	if IsServer() then
+		if not self:GetParent():HasMovementCapability() then
+			self:Destroy()
+			return
+		end
+
 		self.velocity = Vector(0, 0, 0)
 		self.acceleration = Vector(0, 0, 0)
 		self:OnRefresh(kv)

@@ -40,6 +40,7 @@ function Placer:PlaceDummiesInFrontOfCaster(caster, number, anglePerUnit, onKill
             local unit = Util:CreateDummyWithoutModifier(position)
             unit:SetForwardVector(forward)
             unit.isPlaceable = true
+            unit:SetMoveCapability(DOTA_UNIT_CAP_MOVE_NONE)
 
             if onKilledCallback ~= nil then
                 Placer.onKilledCallbacks[unit] = onKilledCallback
