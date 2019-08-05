@@ -140,7 +140,7 @@ function Spells:OnDirectedCastKeyDown(keys)
 	if hero == nil or not hero:IsAlive() then
 		return
 	end
-	if player.spellCast ~= nil or hero:IsStunned() then 
+	if player.spellCast ~= nil or hero:IsStunned() or Spells:IsCoolingDown(player) then 
 		player.wantsToStartNewDirectedSpell = true
 		return
 	end
@@ -211,7 +211,7 @@ function Spells:OnSelfCastKeyDown(keys)
 	if hero == nil or not hero:IsAlive() then
 		return
 	end
-	if player.spellCast ~= nil or hero:IsStunned() then
+	if player.spellCast ~= nil or hero:IsStunned() or Spells:IsCoolingDown(player) then
 		player.wantsToStartNewSelfSpell = true
 		return
 	end
@@ -427,6 +427,10 @@ function Spells:ProcessHealthChanges()
 	end
 end
 
+function Spells:IsCoolingDown(player)
+	return player.cooldownEnd ~= nil and GameRules:GetGameTime() < player.cooldownEnd
+end
+
 function Spells:TimeElapsedSinceCast(player)
 	return GameRules:GetGameTime() - player.spellCast.startTime
 end
@@ -511,6 +515,10 @@ function Spells:StopCasting(player)
 		if spellCast.chargingParticleID ~= nil then
 			ParticleManager:DestroyParticle(spellCast.chargingParticleID, false)
 		end
+	end
+
+	if spellCast.cooldown ~= nil then
+		player.cooldownEnd = GameRules:GetGameTime() + spellCast.cooldown
 	end
 
 	player.spellCast = nil
