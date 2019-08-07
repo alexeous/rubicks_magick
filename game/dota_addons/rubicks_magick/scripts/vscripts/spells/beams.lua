@@ -16,13 +16,21 @@ function Beams:Precache(context)
 	LinkLuaModifier("modifier_beam_cast", "modifiers/modifier_beam_cast.lua", LUA_MODIFIER_MOTION_NONE)
 	PrecacheResource("particle_folder", "particles/beams/life_beam", context)
 	PrecacheResource("particle_folder", "particles/beams/death_beam", context)
-	PrecacheResource("soundfile", "soundevents/rubicks_magick/beams.vsndevts", context)
-	
+
+	PrecacheResource("soundfile", "soundevents/rubicks_magick/beams.vsndevts", context)	
 	PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_oracle.vsndevts", context)
 	PrecacheResource("soundfile", "soundevents/game_sounds.vsndevts", context)
 	PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_phoenix.vsndevts", context)
 	PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_pugna.vsndevts", context)
 	PrecacheResource("soundfile", "soundevents/game_sounds_items.vsndevts", context)
+	
+	PrecacheResource("soundfile", "sounds/weapons/hero/oracle/fortune_attack.vsnd", context)
+	PrecacheResource("soundfile", "sounds/ui/portal_loop.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/arc_warden/flux_cast.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/pugna/lifedrain_loop.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/phoenix/sunray_beam_loop.vsnd", context)
+	PrecacheResource("soundfile", "sounds/items/linkens_sphere.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/oracle/false_promise_damage.vsnd", context)
 end
 
 function Beams:Init()

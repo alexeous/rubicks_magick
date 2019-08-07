@@ -11,6 +11,21 @@ function RockThrow:Precache(context)
 	PrecacheResource("particle_folder", "particles/rock_throw/charging_particle", context)
 
 	PrecacheResource("soundfile", "soundevents/rubicks_magick/rock_throw.vsndevts", context)
+
+	PrecacheResource("soundfile", "sounds/weapons/hero/windrunner/focus_fire.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/tiny/preattack02.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/tiny/tiny_attack.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/tiny/tiny_attack2.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/tiny/tiny_attack3.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/tiny/tiny_attack4.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/earthshaker/fissure.vsnd", context)
+	PrecacheResource("soundfile", "sounds/physics/deaths/common/body_impact_heavy_01.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/pudge/dismember_blood1.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/pudge/dismember_blood2.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/pudge/dismember_blood3.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/monkey_king/stike_impact02.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/tusk/punch_target.vsnd", context)
+	PrecacheResource("soundfile", "sounds/physics/damage/building/radiant_tower_destruction_03.vsnd", context)
 end
 
 function RockThrow:PlayerConnected(player)

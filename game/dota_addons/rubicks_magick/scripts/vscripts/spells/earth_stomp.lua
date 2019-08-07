@@ -8,6 +8,9 @@ function EarthStomp:Precache(context)
 	PrecacheResource("particle_folder", "particles/earth_stomp", context)
 
 	PrecacheResource("soundfile", "soundevents/rubicks_magick/earth_stomp.vsndevts", context)
+
+	PrecacheResource("soundfile", "sounds/weapons/hero/elder_titan/echo_stomp_cast.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/earthshaker/fissure.vsnd", context)
 end
 
 function EarthStomp:PlayerConnected(player)

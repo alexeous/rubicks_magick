@@ -10,6 +10,7 @@ end
 function Precache(context)
 	PrecacheUnitByNameSync("npc_dota_hero_rubick_rubicks_magick", context)
 	PrecacheResource("soundfile", "soundevents/rubicks_magick/common.vsndevts", context)
+	PrecacheResource("soundfile", "sounds/ui/select_action.vsnd", context)
 
 	Util:Precache(context)
 	MoveController:Precache(context)

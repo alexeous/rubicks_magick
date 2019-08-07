@@ -11,6 +11,21 @@ function Lightning:Precache(context)
 	PrecacheResource("particle_folder", "particles/lightning", context)
 
 	PrecacheResource("soundfile", "soundevents/rubicks_magick/lightning.vsndevts", context)
+	
+	PrecacheResource("soundfile", "sounds/weapons/creep/neutral/harpystorm_transfer_01.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/creep/neutral/harpystorm_transfer_02.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/creep/neutral/harpystorm_transfer_03.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/creep/neutral/harpystorm_transfer_04.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/zuus/lightning_bolt.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/disruptor/thunder_strike_target.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/zuus/arc_lightning.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/creep/neutral/harpystorm_transfer_01.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/creep/neutral/harpystorm_transfer_02.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/creep/neutral/harpystorm_transfer_03.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/creep/neutral/harpystorm_transfer_04.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/razor/razor_lightning_strike_01.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/zuus/lightning_bolt.vsnd", context)
+	
 end
 
 function Lightning:PlayerConnected(player)

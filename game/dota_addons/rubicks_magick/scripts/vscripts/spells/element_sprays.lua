@@ -11,6 +11,21 @@ function ElementSprays:Precache(context)
 	PrecacheResource("particle_folder", "particles/element_sprays/water_spray", context)
 	
 	PrecacheResource("soundfile", "soundevents/rubicks_magick/element_sprays.vsndevts", context)
+	
+	PrecacheResource("soundfile", "sounds/items/ghost_activate.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/venomancer/venomancer_stinging_loop.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/batrider/batrider_firefly_loop.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/venomancer/venomancer_attack1.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/venomancer/venomancer_attack2.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/venomancer/venomancer_attack3.vsnd", context)
+	PrecacheResource("soundfile", "sounds/rubicks_magick/water_spray_start.vsnd", context)
+	PrecacheResource("soundfile", "sounds/rubicks_magick/water_spray_loop.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/batrider/batrider_firefly_beginning.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/phoenix/icarus_dive_stop.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/crystal_maiden/freezing_field.vsnd", context)
+	PrecacheResource("soundfile", "sounds/rubicks_magick/cold_spray_loop02.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/crystal_maiden/preattack01.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/crystal_maiden/preattack02.vsnd", context)
 end
 
 function ElementSprays:PlayerConnected(player)

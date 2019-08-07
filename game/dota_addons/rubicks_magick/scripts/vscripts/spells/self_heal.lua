@@ -6,6 +6,11 @@ function SelfHeal:Precache(context)
 	PrecacheResource("particle_folder", "particles/self_heal", context)	
 
 	PrecacheResource("soundfile", "soundevents/rubicks_magick/self_heal.vsndevts", context)
+
+	PrecacheResource("soundfile", "sounds/weapons/hero/arc_warden/magnetic_field_cast.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/warlock/shadowword_cast_heal.vsnd", context)
+	PrecacheResource("soundfile", "sounds/ui/portal_loop.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/creep/neutral/troll_priest_heal.vsnd", context)
 end
 
 function SelfHeal:PlayerConnected(player)

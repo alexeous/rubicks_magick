@@ -28,6 +28,9 @@ function SelfShield:Precache(context)
 	PrecacheResource("particle_folder", "particles/shield_life_healing", context)
 
 	PrecacheResource("soundfile", "soundevents/rubicks_magick/self_shield.vsndevts", context)
+
+	PrecacheResource("soundfile", "sounds/weapons/hero/medusa/orb_on.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/creep/neutral/troll_priest_heal.vsnd", context)
 end
 
 function SelfShield:PlayerConnected(player)

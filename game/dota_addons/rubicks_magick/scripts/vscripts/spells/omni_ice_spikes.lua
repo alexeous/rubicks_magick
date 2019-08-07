@@ -6,6 +6,10 @@ function OmniIceSpikes:Precache(context)
 	PrecacheResource("particle_folder", "particles/omni_ice_spikes", context)
 
 	PrecacheResource("soundfile", "soundevents/rubicks_magick/omni_ice_spikes.vsndevts", context)
+
+	PrecacheResource("soundfile", "sounds/weapons/hero/ancient_apparition/cold_feet_tick2.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/leshrac/split_earth.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/crystal_maiden/crystal_nova.vsnd", context)
 end
 
 function OmniIceSpikes:PlayerConnected(player)

@@ -17,6 +17,10 @@ function MagicShield:Precache(context)
 	PrecacheResource("particle_folder", "particles/magic_shield/flat_shield", context)
 	
 	PrecacheResource("soundfile", "soundevents/rubicks_magick/magic_shield.vsndevts", context)
+
+	PrecacheResource("soundfile", "sounds/weapons/hero/chen/attack.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/elder_titan/spirit_buff.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/juggernaut/healing_ward_loop.vsnd", context)
 end
 
 function MagicShield:Init()

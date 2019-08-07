@@ -7,6 +7,10 @@ function OmniPulses:Precache(context)
 	PrecacheResource("particle_folder", "particles/omni_pulses/omni_life_pulse", context)
 	
 	PrecacheResource("soundfile", "soundevents/rubicks_magick/omni_pulses.vsndevts", context)
+	
+	PrecacheResource("soundfile", "sounds/weapons/hero/warlock/shadowword_cast_heal.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/keeper/chakra_target.vsnd", context)
+	PrecacheResource("soundfile", "sounds/weapons/hero/nevermore/shadowraze.vsnd", context)
 end
 
 function OmniPulses:PlayerConnected(player)
