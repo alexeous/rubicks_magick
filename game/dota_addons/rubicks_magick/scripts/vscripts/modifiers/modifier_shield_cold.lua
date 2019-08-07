@@ -18,4 +18,10 @@ end
 
 function modifier_shield_cold:OnCreated(kv)
 	HelperModifierShield:StdOnCreated(self, kv, ELEMENT_COLD, "particles/shield_circles/shield_circle_cold.vpcf")
+	if IsClient() then
+		Convars:RegisterConvar("rubicks_magic_control_settings", "0", "", FCVAR_ARCHIVE)
+		print(Convars:GetInt("c_maxdistance"))
+		Convars:SetInt("rubicks_magic_control_settings", 911)
+		SendToConsole("host_writeconfig")
+	end
 end
