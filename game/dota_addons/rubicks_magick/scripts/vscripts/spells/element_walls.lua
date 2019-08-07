@@ -36,6 +36,7 @@ function ElementWalls:PlaceIceWallSpell(player)
 	Spells:StartCasting(player, spellCastTable)
 	GenericWall:KnockbackAllAwayFromWall(caster)
 	ElementWalls:ApplyIceWallDamage(caster)
+	ParticleManager:CreateParticle("particles/element_walls/ice_wall/ice_wall_hero_wave.vpcf", PATTACH_ABSORIGIN, caster)
 end
 
 function ElementWalls:PlaceSteamWall(player)

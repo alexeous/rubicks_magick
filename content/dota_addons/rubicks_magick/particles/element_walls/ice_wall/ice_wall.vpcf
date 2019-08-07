@@ -1,7 +1,7 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf21:version{7a150ecc-d865-438f-ad53-5963fe1a2720} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf23:version{636cefcd-6551-40ad-801c-6085f7e67e27} -->
 {
 	_class = "CParticleSystemDefinition"
-	m_nBehaviorVersion = 9
+	m_nBehaviorVersion = 10
 	m_controlPointConfigurations = 
 	[
 		{
@@ -23,35 +23,31 @@
 			m_ChildRef = resource:"particles/element_walls/ice_wall/ice_wall_shard_base.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/stone_wall/stone_wall_debris.vpcf"
+			m_ChildRef = resource:"particles/element_walls/ice_wall/ice_wall_wave.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/stone_wall/stone_wall_wave.vpcf"
+			m_ChildRef = resource:"particles/element_walls/ice_wall/ice_wall_dust_burst.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/stone_wall/stone_wall_dust_burst.vpcf"
+			m_ChildRef = resource:"particles/element_walls/ice_wall/ice_wall_wave_vert.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/stone_wall/stone_wall_wave_vert.vpcf"
+			m_ChildRef = resource:"particles/element_walls/ice_wall/ice_wall_debris.vpcf"
 		},
 		{
-			m_ChildRef = resource:"particles/stone_wall/stone_wall_dust.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/stone_wall/stone_wall_shards.vpcf"
+			m_ChildRef = resource:"particles/element_walls/ice_wall/ice_wall_dust_burst_destr.vpcf"
 			m_bEndCap = true
 		},
 		{
-			m_ChildRef = resource:"particles/stone_wall/stone_wall_dust_burst_destr.vpcf"
-			m_bEndCap = true
-		},
-		{
-			m_ChildRef = resource:"particles/stone_wall/stone_wall_debris_destr.vpcf"
+			m_ChildRef = resource:"particles/element_walls/ice_wall/ice_wall_debris_destr.vpcf"
 			m_bEndCap = true
 		},
 		{
 			m_ChildRef = resource:"particles/stone_wall/stone_wall_burst_destr.vpcf"
 			m_bEndCap = true
+		},
+		{
+			m_ChildRef = resource:"particles/element_walls/ice_wall/ice_wall_pre_lights.vpcf"
 		},
 	]
 }
