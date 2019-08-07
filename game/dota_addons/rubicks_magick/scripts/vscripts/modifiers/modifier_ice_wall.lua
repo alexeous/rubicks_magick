@@ -54,7 +54,7 @@ end
 function modifier_ice_wall:OnDestroy()
 	if IsServer() then
 		ParticleManager:DestroyParticle(self.particle, false)
-		self:GetParent():EmitSound("DestroyStoneWall1")
+		self:GetParent():EmitSound("DestroyIceWall1")
 		self:StartIntervalThink(-1)
 	end
 end

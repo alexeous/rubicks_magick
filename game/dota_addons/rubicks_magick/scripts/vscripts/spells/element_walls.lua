@@ -9,6 +9,7 @@ function ElementWalls:Precache(context)
 	LinkLuaModifier("modifier_ice_wall", "modifiers/modifier_ice_wall.lua", LUA_MODIFIER_MOTION_NONE)
 
 	PrecacheResource("particle_folder", "particles/element_walls/ice_wall", context)
+	PrecacheResource("soundfile", "soundevents/rubicks_magick/element_walls.vsndevts", context)
 end
 
 function ElementWalls:PlayerConnected(player)
@@ -67,7 +68,8 @@ function ElementWalls:PlaceIceWall(caster)
 		Spells:RegisterCastedSolidWall(caster, wall)
 	end
 
-	caster:EmitSound("PlaceStoneWall1")
+	caster:EmitSound("PlaceIceWall1")
+	caster:EmitSound("PlaceIceWall2")
 end
 
 function ElementWalls:InitIceWallUnit(caster, wall)
