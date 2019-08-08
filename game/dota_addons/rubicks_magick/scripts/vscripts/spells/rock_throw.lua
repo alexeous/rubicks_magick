@@ -1,5 +1,8 @@
 require("libraries/timers")
 
+ROCK_FLIGHT_TIME = 0.22
+ROCK_START_HEIGHT = 100
+
 if RockThrow == nil then
 	RockThrow = class({})
 end
@@ -33,8 +36,6 @@ function RockThrow:PlayerConnected(player)
 end
 
 function RockThrow:Init()
-	RockThrow.rockDummiesList = {}
-	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(RockThrow, "OnRockThink"), "RockThink", ROCK_THINK_PERIOD)
 	ListenToGameEvent("npc_spawned", Dynamic_Wrap(RockThrow, "OnNPCSpawned"), self)
 end
 
@@ -47,7 +48,9 @@ function RockThrow:StartRockThrow(player, pickedElements)
 		chargingPhase1Duration = 2.1,
 		chargingPhase2Duration = 0.5,
 		castingGesture = ACT_DOTA_CHANNEL_ABILITY_5,
-		endFunction = function(player) RockThrow:ReleaseRock(player) end,
+		endFunction = function(player) 
+			RockThrow:ReleaseRock(player) 
+		end,
 		thinkPeriod = 2.1,
 		thinkFunction = function(player)
 			caster:EmitSound("RockOvercharge")
@@ -59,11 +62,6 @@ function RockThrow:StartRockThrow(player, pickedElements)
 	Spells:StartCasting(player, spellCastTable)
 	caster:EmitSound("RockCharging")
 end
-
-ROCK_FLY_TIME = 0.12
-ROCK_START_HEIGHT = 100
-ROCK_FALL_G_CONST = 2 * ROCK_START_HEIGHT / (ROCK_FLY_TIME * ROCK_FLY_TIME)
-ROCK_THINK_PERIOD = 0.018
 
 function RockThrow:ReleaseRock(player)
 	local caster = player:GetAssignedHero()
@@ -133,33 +131,104 @@ function RockThrow:ReleaseRock(player)
 	}
 	local onImpactFunction = table.serialRetrieve(rockImpactTable, pickedElements)
 
-	local forward = caster:GetForwardVector():Normalized()
-	local startOrigin = caster:GetAbsOrigin() + Vector(0, 0, ROCK_START_HEIGHT)
-	local rockDummy = Util:CreateDummy(startOrigin, caster)
-	rockDummy.caster = caster
-	rockDummy.time = 0.0
-	rockDummy.startZ = startOrigin.z
-	rockDummy.moveStep = forward * (distance * (ROCK_THINK_PERIOD / ROCK_FLY_TIME))
-	rockDummy.moveStep.z = 0
-	rockDummy.rockSize = rockSize
-	rockDummy.collisionRadius = rockSize * 16 + 18
-	rockDummy.rockDamage = rockDamage
-	rockDummy.onImpactFunction = onImpactFunction
-	rockDummy.particle = RockThrow:CreateRockParticle(rockDummy, pickedElements)
-	table.insert(RockThrow.rockDummiesList, rockDummy)
+	if timeElapsed >= 2.5 then
+		rockDamage = ({ 135, 330, 650 })[rockSize]
+		caster:AddNewModifier(caster, nil, "modifier_knockdown", { duration = 2.0 })
+	end
+
+	local rock = Projectile:Create({
+		caster = caster,
+		start = caster:GetAbsOrigin() + Vector(0, 0, ROCK_START_HEIGHT),
+		direction = caster:GetForwardVector(),
+		distance = distance,
+		flightDuration = ROCK_FLIGHT_TIME,
+		collisionRadius = rockSize * 16 + 18,
+		destroyDelay = 2.0,
+		particleDestroyDelay = 0.2,
+		onUnitHitCallback = function(rock, unit) 
+			return RockThrow:OnUnitHit(rock, unit) 
+		end,
+		onDeathCallback = function(rock, unitsTouched) 
+			RockThrow:OnRockDeath(rock, unitsTouched) 
+		end,
+		createParticleCallback = function(rock) 
+			return RockThrow:CreateRockParticle(rock, pickedElements) 
+		end
+	})
+
+	rock.rockSize = rockSize
+	rock.rockDamage = rockDamage
+	rock.onImpactFunction = onImpactFunction
 
 	local launchWaveParticle = ParticleManager:CreateParticle("particles/rock_throw/rock_launch_wave.vpcf", PATTACH_CUSTOMORIGIN, nil)
 	ParticleManager:SetParticleControl(launchWaveParticle, 0, caster:GetAbsOrigin())
 	ParticleManager:SetParticleControl(launchWaveParticle, 1, Vector(distance, 0, 0))
 	ParticleManager:SetParticleControl(launchWaveParticle, 2, Vector(0, caster:GetAnglesAsVector().y, 0))
-
-	if timeElapsed >= 2.5 then
-		rockDamage = ({ 135, 330, 650 })[rockSize]
-		caster:AddNewModifier(caster, nil, "modifier_knockdown", { duration = 2.0 })
-	end
 end
 
-function RockThrow:CreateRockParticle(rockDummy, pickedElements)
+
+function RockThrow:OnUnitHit(rock, unit)
+	local origin = rock:GetAbsOrigin()
+	local caster = rock.caster
+	local damage = rock.rockDamage
+
+	Util:EmitSoundOnLocation(origin, "RockTouch", caster)
+
+	local powerfulEnoughForBurst = rock.rockSize == 3 and damage >= 450
+	if unit:IsFrozen() then
+		if not powerfulEnoughForBurst then
+			return false
+		end
+
+		unit:RemoveModifierByName("modifier_frozen")
+		RockThrow:MakeBurstedBodyInvisible(unit)
+		Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage * 10, false, 0.0, true)
+		RockThrow:BurstFrozenParticle(origin)
+		RockThrow:PlayBurstSound(origin, caster, true)
+		return true
+	end
+	
+	local damageAfterShields = Spells:GetDamageAfterShields(unit, damage, ELEMENT_EARTH)
+	if not powerfulEnoughForBurst or unit:GetHealth() - damageAfterShields > 0 then
+		return false
+	end
+
+	RockThrow:MakeBurstedBodyInvisible(unit)
+	Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage, false)
+	RockThrow:BurstBloodParticle(origin)
+	RockThrow:PlayBurstSound(origin, caster, false)
+	return true
+end
+
+function RockThrow:OnRockDeath(rock, unitsTouched)
+	local origin = GetGroundPosition(rock:GetAbsOrigin(), rock) + Vector(0, 0, 40)
+	if rock.onImpactFunction ~= nil then
+		rock.onImpactFunction(origin, unitsTouched)
+	end
+	if next(unitsTouched) == nil then
+		Spells:ApplyElementDamageAoE(origin, rock.collisionRadius, rock.caster, ELEMENT_EARTH, rock.rockDamage, true)
+	else
+		for _, unit in pairs(unitsTouched) do
+			if unit ~= rock.caster then
+				Spells:ApplyElementDamage(unit, rock.caster, ELEMENT_EARTH, rock.rockDamage)
+			end
+		end
+	end
+	
+	Util:EmitSoundOnLocation(origin, "RockImpact", rock.caster)
+	Util:EmitSoundOnLocation(origin, "RockTouch", rock.caster)
+	
+	ParticleManager:SetParticleControl(rock.particle, 0, origin)
+	Timers:CreateTimer(0.05, function()
+		ParticleManager:SetParticleControl(rock.particle, 1, Vector(rock.rockSize, 0, 0))
+		ParticleManager:SetParticleControl(rock.particle, 2, Vector(0, 0, 0))
+		ParticleManager:SetParticleControl(rock.particle, 3, Vector(0, 0, 0))
+	end)
+
+	RockThrow:ImpactParticle(origin, rock.rockSize)
+end
+
+function RockThrow:CreateRockParticle(rock, pickedElements)
 	local waterTrail = 0
 	local fireTrail = 0
 	local coldTrail = 0
@@ -194,108 +263,11 @@ function RockThrow:CreateRockParticle(rockDummy, pickedElements)
 		ice = 1
 	end
 
-	local particle = ParticleManager:CreateParticle("particles/rock_throw/rock.vpcf", PATTACH_ABSORIGIN_FOLLOW, rockDummy)
+	local particle = ParticleManager:CreateParticle("particles/rock_throw/rock.vpcf", PATTACH_ABSORIGIN_FOLLOW, rock)
 	ParticleManager:SetParticleControl(particle, 1, Vector(rockSize, earthOnly, ice))
 	ParticleManager:SetParticleControl(particle, 2, Vector(waterTrail, fireTrail, coldTrail))
 	ParticleManager:SetParticleControl(particle, 3, Vector(deathTrail, lifeTrail, steamTrail))
 	return particle
-end
-
-function RockThrow:OnRockThink()
-	for _, rockDummy in pairs(RockThrow.rockDummiesList) do
-		RockThrow:RockDummyThink(rockDummy)
-	end
-	return ROCK_THINK_PERIOD
-end
-
-function RockThrow:RockDummyThink(rockDummy)
-	local origin = rockDummy:GetAbsOrigin()
-	if origin.z <= GetGroundHeight(origin, rockDummy) then
-		RockThrow:ImpactRock(rockDummy, {})
-		return
-	end
-	
-	local time = rockDummy.time
-	rockDummy.time = time + ROCK_THINK_PERIOD
-	if time == 0 then
-		return
-	end
-
-	local oldOrigin = origin
-	origin = origin + rockDummy.moveStep
-	origin.z = rockDummy.startZ - ROCK_FALL_G_CONST * time * time / 2
-	rockDummy:SetAbsOrigin(origin)
-	
-	local caster = rockDummy.caster
-	local trees = GridNav:GetAllTreesAroundPoint(origin, rockDummy.collisionRadius, true)
-	if next(trees) ~= nil then
-		RockThrow:ImpactRock(rockDummy, {})
-		return
-	end
-
-	local damage = rockDummy.rockDamage
-	local unitsTouched = Util:FindUnitsInLine(oldOrigin, origin, rockDummy.collisionRadius, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
-	for _, unit in pairs(unitsTouched) do
-		if unit ~= rockDummy and unit ~= caster then
-			Util:EmitSoundOnLocation(origin, "RockTouch", caster)
-			local powerfulEnoughForBurst = rockDummy.rockSize == 3 and damage >= 450
-			if unit:IsFrozen() then
-				if powerfulEnoughForBurst then
-					unit:RemoveModifierByName("modifier_frozen")
-					RockThrow:MakeBurstedBodyInvisible(unit)
-					Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage * 10, false, 0.0, true)
-					RockThrow:BurstFrozenParticle(origin)
-					RockThrow:PlayBurstSound(origin, caster, true)
-				else
-					RockThrow:ImpactRock(rockDummy, unitsTouched)
-					break
-				end
-			else
-				local damageAfterShields = Spells:GetDamageAfterShields(unit, damage, ELEMENT_EARTH)
-				if powerfulEnoughForBurst and unit:GetHealth() - damageAfterShields <= 0 then
-					RockThrow:MakeBurstedBodyInvisible(unit)
-					Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage, false)
-					RockThrow:BurstBloodParticle(origin)
-					RockThrow:PlayBurstSound(origin, caster, false)
-				else
-					RockThrow:ImpactRock(rockDummy, unitsTouched)
-					break
-				end
-			end
-		end
-	end
-end
-
-function RockThrow:ImpactRock(rockDummy, unitsTouched)
-	table.removeItem(RockThrow.rockDummiesList, rockDummy)
-
-	local origin = GetGroundPosition(rockDummy:GetAbsOrigin(), rockDummy) + Vector(0, 0, 40)
-	if rockDummy.onImpactFunction ~= nil then
-		rockDummy.onImpactFunction(origin, unitsTouched)
-	end
-	if next(unitsTouched) == nil then
-		Spells:ApplyElementDamageAoE(origin, rockDummy.collisionRadius, rockDummy.caster, ELEMENT_EARTH, rockDummy.rockDamage, true)
-	else
-		for _, unit in pairs(unitsTouched) do
-			if unit ~= rockDummy.caster then
-				Spells:ApplyElementDamage(unit, rockDummy.caster, ELEMENT_EARTH, rockDummy.rockDamage)
-			end
-		end
-	end
-	
-	Util:EmitSoundOnLocation(origin, "RockImpact", rockDummy.caster)
-	Util:EmitSoundOnLocation(origin, "RockTouch", rockDummy.caster)
-	
-	ParticleManager:SetParticleControl(rockDummy.particle, 0, origin)
-	Timers:CreateTimer(0.05, function()
-		ParticleManager:SetParticleControl(rockDummy.particle, 1, Vector(rockDummy.rockSize, 0, 0))
-		ParticleManager:SetParticleControl(rockDummy.particle, 2, Vector(0, 0, 0))
-		ParticleManager:SetParticleControl(rockDummy.particle, 3, Vector(0, 0, 0))
-	end)
-
-	RockThrow:ImpactParticle(origin, rockDummy.rockSize)
-	Timers:CreateTimer(0.2, function() ParticleManager:DestroyParticle(rockDummy.particle, false) end)
-	Timers:CreateTimer(2.0, function() rockDummy:Destroy() end)
 end
 
 function RockThrow:PlayBurstSound(position, caster, frozen)

@@ -22,7 +22,7 @@ require("spells/self_heal")
 require("spells/omni_pulses")
 require("spells/omni_element_sprays")
 require("spells/omni_ice_spikes")
-
+require("spells/projectile")
 
 OMNI_SPELLS_RADIUSES = { 200, 300, 400 }
 
@@ -111,6 +111,7 @@ function Spells:Init()
 	MagicShield:Init()
 	Beams:Init()
 	Placer:Init()
+	Projectile:Init()
 end
 
 function Spells:PlayerConnected(player)
