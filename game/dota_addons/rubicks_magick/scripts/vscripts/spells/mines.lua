@@ -9,7 +9,7 @@ end
 function Mines:PlayerConnected(player)
 
 end
-
+-- Activation delay: 0.15s
 
 function Mines:PlaceLifeMines(player, modifierElement)
 	-------- TODO ---------
