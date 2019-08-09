@@ -1,10 +1,11 @@
-
 require("table_extension")
 
 require("libraries/animations")
 
 require("elements")
 require("move_controller")
+
+require("damage_funcs")
 
 require("spells/self_shield")
 require("spells/magic_shield")
@@ -585,6 +586,9 @@ function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModif
 		return false
 	end
 
+	if type(damage) ~= "number" then
+		damage = DamageFuncs:ResolveValue(damage, victim)
+	end
 	damage = Spells:GetDamageAfterShields(victim, damage, element, blockPerShield)
 
 	if not ignoreWet then
@@ -614,6 +618,9 @@ function Spells:Heal(target, source, heal, ignoreLifeShield)
 		return false
 	end
 	
+	if type(heal) ~= "number" then
+		heal = DamageFuncs:ResolveValue(heal, target)
+	end
 	if not ignoreLifeShield then
 		heal = Spells:GetDamageAfterShields(target, heal, ELEMENT_LIFE)
 	end

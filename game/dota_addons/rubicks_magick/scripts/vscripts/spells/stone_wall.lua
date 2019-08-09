@@ -59,17 +59,17 @@ function StoneWall:PlaceStoneWallSpell(player, modifierElement)
 end
 
 function StoneWall:PlaceStoneWall(caster, modifierElement)
-	caster.blastedWallsCount = 0
-
 	local wallUnitNumber = modifierElement ~= nil and 4 or 2
 	local immuneElements = StoneWall:CalcImmuneElements(modifierElement)
 	
+	local damageFunc = StoneWall:GetDamageFunc(modifierElement)
+
 	local onKilledCallback = function(wall, isQuietKill)
 		StoneWall:OnWallKilled(wall, caster, isQuietKill)
 	end
 	local wallUnits = GenericWall:CreateWallUnits(caster, wallUnitNumber, 40, immuneElements, onKilledCallback)
 	for _, wall in pairs(wallUnits) do
-		StoneWall:InitWallUnit(wall, caster, modifierElement)
+		StoneWall:InitWallUnit(wall, caster, damageFunc, modifierElement)
 		Spells:RegisterCastedSolidWall(caster, wall)
 	end
 	caster:EmitSound("PlaceStoneWall1")
@@ -91,7 +91,17 @@ function StoneWall:CalcImmuneElements(modifierElement)
 	return immuneElements
 end
 
-function StoneWall:InitWallUnit(wall, caster, modifierElement)
+function StoneWall:GetDamageFunc(modifierElement)
+	local damageFuncTable = {
+		[ELEMENT_DEATH] =  DamageFuncs:Reciprocal(215),
+		[ELEMENT_LIFE] =  DamageFuncs:Reciprocal(85),
+		[ELEMENT_FIRE] =  DamageFuncs:Reciprocal(200),
+		[ELEMENT_COLD] =  DamageFuncs:Reciprocal(70)
+	}
+	return damageFuncTable[modifierElement]
+end
+
+function StoneWall:InitWallUnit(wall, caster, damageFunc, modifierElement)
 	wall.modifierElement = modifierElement
 	wall:SetHullRadius(65)
 	wall.isSolidWall = true
@@ -100,12 +110,13 @@ function StoneWall:InitWallUnit(wall, caster, modifierElement)
 	if modifierElement ~= nil and modifierElement ~= ELEMENT_EARTH then
 		local pos = wall:GetAbsOrigin()
 		local radius = OMNI_SPELLS_RADIUSES[1] * 1.1
+		
 		local blastFuncTable = {
-			[ELEMENT_DEATH] = function(powerFactor) OmniPulses:OmniDeathPulse(caster, pos, false, { ELEMENT_DEATH }, nil, nil, radius, 215 * powerFactor) end,
-			[ELEMENT_LIFE] = function(powerFactor) OmniPulses:OmniLifePulse(caster, pos, false, { ELEMENT_LIFE }, nil, nil, radius, 85 * powerFactor) end,
-			[ELEMENT_FIRE] = function(powerFactor) OmniElementSprays:OmniFireSpray(caster, pos, radius, false, 200 * powerFactor) end,
-			[ELEMENT_COLD] = function(powerFactor) OmniElementSprays:OmniColdSpray(caster, pos, radius, false, 70 * powerFactor) end,
-			[ELEMENT_WATER] = function(powerFactor) OmniElementSprays:OmniWaterSpray(caster, pos, radius, false, true) end
+			[ELEMENT_DEATH] = function() OmniPulses:OmniDeathPulse(caster, pos, false, { ELEMENT_DEATH }, nil, nil, radius, damageFunc) end,
+			[ELEMENT_LIFE] = function() OmniPulses:OmniLifePulse(caster, pos, false, { ELEMENT_LIFE }, nil, nil, radius, damageFunc) end,
+			[ELEMENT_FIRE] = function() OmniElementSprays:OmniFireSpray(caster, pos, radius, false, damageFunc) end,
+			[ELEMENT_COLD] = function() OmniElementSprays:OmniColdSpray(caster, pos, radius, false, damageFunc) end,
+			[ELEMENT_WATER] = function() OmniElementSprays:OmniWaterSpray(caster, pos, radius, false, true) end
 		}
 		wall.blastFunction = blastFuncTable[modifierElement]
 	end
@@ -113,7 +124,7 @@ end
 
 function StoneWall:OnWallKilled(wall, caster, isQuietKill)
 	if not isQuietKill and wall.isReadyForBlast then
-		StoneWall:BlastWall(wall, caster)
+		StoneWall:BlastWall(wall)
 	end	
 	Spells:UnregisterCastedSolidWall(caster, wall)
 end
@@ -122,10 +133,8 @@ function StoneWall:MakeReadyForBlast(wall)
 	wall.isReadyForBlast = true
 end
 
-function StoneWall:BlastWall(wall, caster)
-	caster.blastedWallsCount = caster.blastedWallsCount + 1
+function StoneWall:BlastWall(wall)
 	if wall.blastFunction ~= nil then
-		local powerFactor = 1.0 / caster.blastedWallsCount
-		wall.blastFunction(powerFactor)
+		wall.blastFunction()
 	end
 end
