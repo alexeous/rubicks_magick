@@ -45,153 +45,123 @@ end
 function Beams:StartLifeBeam(player, pickedElements)
 	local caster = player:GetAssignedHero()
 
-	local lifeCount = table.count(pickedElements, ELEMENT_LIFE)
-	local mul = ({ 22.29, 31.96, 38.87 })[lifeCount]
-	local pow = ({ 0.50,  0.39,  0.50  })[lifeCount]
-
-	local color = Vector(50, 255, 50)
-	local additionalEffectFunc = nil
 	local additionalEffectTable = {
 		[ELEMENT_LIFE] = {
 			[ELEMENT_LIFE] = {
-				[ELEMENT_FIRE] = function()
-					color = Vector(255, 140, 50)
-					additionalEffectFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 3.92 * math.pow(power, 0.45), true) end
-				end,
-				[ELEMENT_COLD] = function()
-					color = Vector(120, 170, 255)
-					additionalEffectFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 3.04 * math.pow(power, 0.4), true) end
-				end,
-				[ELEMENT_WATER] = function()
-					color = Vector(50, 120, 250)
-					additionalEffectFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 1, true) end
-				end
+				[ELEMENT_FIRE] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 3.92 * math.pow(power, 0.45), true) end,
+				[ELEMENT_COLD] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 3.04 * math.pow(power, 0.4), true) end,
+				[ELEMENT_WATER] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 1, true) end
 			},
 			[ELEMENT_WATER] = {
-				[ELEMENT_FIRE] = function()
-					color = Vector(150, 150, 180)
-					additionalEffectFunc = function(target, power)
-						Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 3.75 * math.pow(power, 0.55), false, 1.0)
-						Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 3.75 * math.pow(power, 0.55), false, 1.0)
-					end
+				[ELEMENT_FIRE] = function(target, power)
+					Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 3.75 * math.pow(power, 0.55), false, 1.0)
+					Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 3.75 * math.pow(power, 0.55), false, 1.0)
 				end,
-				[DEFAULT] = function()
-					color = Vector(50, 120, 250)
-					additionalEffectFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 1, true) end
-				end
+				[DEFAULT] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 1, true) end
 			},
 			[ELEMENT_FIRE] = {
-				[ELEMENT_FIRE] = function()
-					color = Vector(255, 140, 50)
-					additionalEffectFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 4.98 * math.pow(power, 0.53), true) end
-				end,
-				[EMPTY] = function()
-					color = Vector(255, 140, 50)
-					additionalEffectFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 3.83 * math.pow(power, 0.47), true) end
-				end
+				[ELEMENT_FIRE] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 4.98 * math.pow(power, 0.53), true) end,
+				[EMPTY] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 3.83 * math.pow(power, 0.47), true) end
 			},
 			[ELEMENT_COLD] = {
-				[ELEMENT_COLD] = function()
-					color = Vector(120, 170, 255)
-					additionalEffectFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 3.9 * math.pow(power, 0.49), true) end
-				end,
-				[EMPTY] = function()
-					color = Vector(120, 170, 255)
-					additionalEffectFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 2.32 * math.pow(power, 0.6), true) end
-				end
+				[ELEMENT_COLD] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 3.9 * math.pow(power, 0.49), true) end,
+				[EMPTY] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 2.32 * math.pow(power, 0.6), true) end
 			}
 		}
 	}
-	local applyAddEffectFunc = table.serialRetrieve(additionalEffectTable, pickedElements)
-	if applyAddEffectFunc ~= nil then
-		applyAddEffectFunc()
-	end
+	local additionalEffectFunc = table.serialRetrieve(additionalEffectTable, pickedElements)
+
+	local lifeCount = table.count(pickedElements, ELEMENT_LIFE)
+	local mul = ({ 22.29, 31.96, 38.87 })[lifeCount]
+	local pow = ({ 0.50,  0.39,  0.50  })[lifeCount]	
 	local effectFunction = function(target, power)
 		Spells:Heal(target, caster, mul * math.pow(power, pow))
 		if additionalEffectFunc ~= nil then
 			additionalEffectFunc(target, power)
 		end
 	end
+
 	local particle = "particles/beams/life_beam/life_beam.vpcf"
 	local soundList = { "LifeBeamLoop1", "LifeBeamLoop2" }
+	local color = Beams:GetLifeBeamColor(pickedElements)
 	Beams:CreateBeam(player, particle, color, ELEMENT_LIFE, effectFunction, soundList)
+
 	caster:EmitSound("LifeBeamStart")
 end
 
 function Beams:StartDeathBeam(player, pickedElements)
 	local caster = player:GetAssignedHero()
+	
+	local additionalEffectTable = {
+		[ELEMENT_DEATH] = {
+			[ELEMENT_DEATH] = {
+				[ELEMENT_FIRE] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 2.75 * math.pow(power, 0.96), true) end,
+				[ELEMENT_COLD] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 2.19 * math.pow(power, 0.62), true) end,
+				[ELEMENT_WATER] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 1, true) end
+			},
+			[ELEMENT_WATER] = {
+				[ELEMENT_FIRE] = function(target, power)
+					Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 4.05 * math.pow(power, 0.49), false, 1.0)
+					Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 4.05 * math.pow(power, 0.49), false, 1.0)
+				end,
+				[DEFAULT] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 1, true) end
+			},
+			[ELEMENT_FIRE] = {
+				[ELEMENT_FIRE] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 4.97 * math.pow(power, 0.52), true) end,
+				[EMPTY] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 3.3 * math.pow(power, 0.57), true) end
+			},
+			[ELEMENT_COLD] = {
+				[ELEMENT_COLD] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 3.9 * math.pow(power, 0.48), true) end,
+				[EMPTY] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 2.6 * math.pow(power, 0.72), true) end
+			}
+		}
+	}
+	local additionalEffectFunc = table.serialRetrieve(additionalEffectTable, pickedElements)
 
 	local deathCount = table.count(pickedElements, ELEMENT_DEATH)
 	local mul = ({ 17.9, 25.8, 30.5 })[deathCount]
 	local pow = ({ 0.50, 0.49, 0.53 })[deathCount]
-	
-	local color = Vector(200, 0, 0)
-	local additionalEffectFunc = nil
-	local additionalEffectTable = {
-		[ELEMENT_DEATH] = {
-			[ELEMENT_DEATH] = {
-				[ELEMENT_FIRE]  = function()
-					color = Vector(255, 100, 0)
-					additionalEffectFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 2.75 * math.pow(power, 0.96), true) end
-				end,
-				[ELEMENT_COLD]  = function()
-					color = Vector(130, 200, 240)
-					additionalEffectFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 2.19 * math.pow(power, 0.62), true) end
-				end,
-				[ELEMENT_WATER] = function()
-					color = Vector(20, 80, 220)
-					additionalEffectFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 1, true) end
-				end
-			},
-			[ELEMENT_WATER] = {
-				[ELEMENT_FIRE] = function()
-					color = Vector(160, 160, 170)
-					additionalEffectFunc = function(target, power)
-						Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 4.05 * math.pow(power, 0.49), false, 1.0)
-						Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 4.05 * math.pow(power, 0.49), false, 1.0)
-					end
-				end,
-				[DEFAULT] = function()
-					color = Vector(20, 80, 220)
-					additionalEffectFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 1, true) end
-				end
-			},
-			[ELEMENT_FIRE] = {
-				[ELEMENT_FIRE] = function()
-					color = Vector(255, 100, 0)
-					additionalEffectFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 4.97 * math.pow(power, 0.52), true) end
-				end,
-				[EMPTY] = function()
-					color = Vector(255, 100, 0)
-					additionalEffectFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 3.3 * math.pow(power, 0.57), true) end
-				end
-			},
-			[ELEMENT_COLD] = {
-				[ELEMENT_COLD] = function()
-					color = Vector(130, 200, 240)
-					additionalEffectFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 3.9 * math.pow(power, 0.48), true) end
-				end,
-				[EMPTY] = function()
-					color = Vector(130, 200, 240)
-					additionalEffectFunc = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 2.6 * math.pow(power, 0.72), true) end
-				end
-			}
-		}
-	}
-	local applyAddEffectFunc = table.serialRetrieve(additionalEffectTable, pickedElements)
-	if applyAddEffectFunc ~= nil then
-		applyAddEffectFunc()
-	end
 	local effectFunction = function(target, power)
 		Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, mul * math.pow(power, pow))
 		if additionalEffectFunc ~= nil then
 			additionalEffectFunc(target, power)
 		end
 	end
+	
 	local particle = "particles/beams/death_beam/death_beam.vpcf"
 	local soundList = { "DeathBeamLoop1", "DeathBeamLoop2" }
+	local color = Beams:GetDeathBeamColor(pickedElements)
 	Beams:CreateBeam(player, particle, color, ELEMENT_DEATH, effectFunction, soundList)
+	
 	caster:EmitSound("DeathBeamStart")
+end
+
+function Beams:GetLifeBeamColor(pickedElements)
+	local function contains(e) return table.indexOf(pickedElements, e) ~= nil end
+
+	local color = Vector(50, 255, 50)
+	if contains(ELEMENT_COLD) then 		color = Vector(120, 170, 255)
+	elseif contains(ELEMENT_WATER) then
+		if contains(ELEMENT_FIRE) then 	color = Vector(150, 150, 180)
+		else 							color = Vector(50, 120, 250) 
+		end
+	elseif contains(ELEMENT_FIRE) then	color = Vector(255, 140, 50)
+	end
+	return color
+end
+
+function Beams:GetDeathBeamColor(pickedElements)
+	local function contains(e) return table.indexOf(pickedElements, e) ~= nil end
+
+	local color = Vector(200, 0, 0)
+	if contains(ELEMENT_COLD) then 		color = Vector(130, 200, 240)
+	elseif contains(ELEMENT_WATER) then
+		if contains(ELEMENT_FIRE) then 	color = Vector(160, 160, 170)
+		else 							color = Vector(20, 80, 220)
+		end
+	elseif contains(ELEMENT_FIRE) then	color = Vector(255, 100, 0)
+	end
+	return color
 end
 
 function Beams:CreateBeam(player, particleName, color, mainElement, effectFunction, soundList)
