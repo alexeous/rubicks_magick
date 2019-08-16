@@ -17,13 +17,15 @@ function HP:OnHPThink()
     HP.manipulations = {}
     for target, allTargetInfos in pairs(manipulations) do
         for source, info in pairs(allTargetInfos) do
+            local deltaHP = info.deltaHP
             if target.isPlaceable then
                 ApplyDamage({ victim = target, attacker = source, damage = 1, damage_type = DAMAGE_TYPE_PURE })
-            elseif info.deltaHP > 0 then
-                target:Heal(info.deltaHP, source)
-                SendOverheadEventMessage(target, OVERHEAD_ALERT_HEAL, target, info.deltaHP, target)
+            elseif deltaHP > 0 then
+                deltaHP = math.min(deltaHP, target:GetMaxHealth() - target:GetHealth())
+                target:Heal(deltaHP, source)
+                SendOverheadEventMessage(target, OVERHEAD_ALERT_HEAL, target, deltaHP, target)
             else
-                ApplyDamage({ victim = target, attacker = source, damage = -info.deltaHP, damage_type = DAMAGE_TYPE_PURE })
+                ApplyDamage({ victim = target, attacker = source, damage = -deltaHP, damage_type = DAMAGE_TYPE_PURE })
             end
         end
 
