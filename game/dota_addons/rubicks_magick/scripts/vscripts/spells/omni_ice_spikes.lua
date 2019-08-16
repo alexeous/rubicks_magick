@@ -34,7 +34,6 @@ function OmniIceSpikes:OmniIceSpikesSpell(player, modifierElement)
 end
 
 function OmniIceSpikes:OmniIceSpikes(caster, modifierElement)
-	local baseDamage = 225
 	local radius = OMNI_SPELLS_RADIUSES[1]
 	local position = caster:GetAbsOrigin()
 
@@ -51,8 +50,7 @@ function OmniIceSpikes:OmniIceSpikes(caster, modifierElement)
 		end
 	end
 
-	Spells:ApplyElementDamageAoE(position, radius, caster, ELEMENT_WATER, baseDamage / 2, true, false)
-	Spells:ApplyElementDamageAoE(position, radius, caster, ELEMENT_COLD, baseDamage / 2, true, false, nil, true)
+	HP:ApplyElementAoE(position, radius, caster, PSEUDO_ELEMENT_ICE, 225, true)
 
 	local particle = ParticleManager:CreateParticle("particles/omni_ice_spikes/omni_ice_spikes.vpcf", PATTACH_CUSTOMORIGIN, nil)
 	ParticleManager:SetParticleControl(particle, 0, position)

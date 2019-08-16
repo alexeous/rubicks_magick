@@ -104,10 +104,12 @@ end
 
 
 function OmniElementSprays:OmniSteamSpray(caster, position, radius, isSelfCast, damage, isWet)
-	Spells:ApplyElementDamageAoE(position, radius, caster, ELEMENT_WATER, damage / 2, isSelfCast, isWet, 1.0)
-	Spells:ApplyElementDamageAoE(position, radius, caster, ELEMENT_FIRE, damage / 2, isSelfCast, false, 1.0)
-	if isSelfCast and isWet then
-		Modifiers:ExtinguishWithElement(caster, ELEMENT_WATER)
+	HP:ApplyElementAoE(position, radius, caster, PSEUDO_ELEMENT_STEAM, damage, isSelfCast)
+	if isWet then 
+		HP:ApplyElementAoE(position, radius, caster, ELEMENT_WATER, 1, isSelfCast)
+		if isSelfCast then
+			Modifiers:ExtinguishWithElement(caster, ELEMENT_WATER)
+		end
 	end
 
 	local particle = ParticleManager:CreateParticle("particles/omni_sprays/omni_steam_spray/omni_steam_spray.vpcf", PATTACH_CUSTOMORIGIN, nil)
@@ -127,7 +129,7 @@ function OmniElementSprays:OmniWaterSpray(caster, position, radius, isSelfCast, 
 	local units = Util:FindUnitsInRadius(position, radius)
 	for _, unit in pairs(units) do
 		if not (unit == caster and isSelfCast) then
-			Spells:ApplyElementDamage(unit, caster, ELEMENT_WATER, 1, true, 1.0)
+			HP:ApplyElement(unit, caster, ELEMENT_WATER, 1)
 			if doPush then
 				if SelfShield:ResistanceLevelTo(unit, ELEMENT_WATER) < 2 then
 					MoveController:Knockback(unit, caster, position, radius + 100)
@@ -152,7 +154,7 @@ function OmniElementSprays:OmniWaterSpray(caster, position, radius, isSelfCast, 
 end
 
 function OmniElementSprays:OmniFireSpray(caster, position, radius, isSelfCast, damage)
-	Spells:ApplyElementDamageAoE(position, radius, caster, ELEMENT_FIRE, damage, isSelfCast, true)
+	HP:ApplyElementAoE(position, radius, caster, ELEMENT_FIRE, damage, isSelfCast)
 	if isSelfCast then
 		Modifiers:DryAndWarm(caster)
 	end
@@ -167,7 +169,7 @@ function OmniElementSprays:OmniFireSpray(caster, position, radius, isSelfCast, d
 end
 
 function OmniElementSprays:OmniColdSpray(caster, position, radius, isSelfCast, damage)
-	Spells:ApplyElementDamageAoE(position, radius, caster, ELEMENT_COLD, damage, isSelfCast, true)
+	HP:ApplyElementAoE(position, radius, caster, ELEMENT_COLD, damage, isSelfCast)
 	if isSelfCast then
 		Modifiers:ExtinguishWithElement(caster, ELEMENT_COLD)
 	end

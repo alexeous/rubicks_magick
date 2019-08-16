@@ -17,7 +17,7 @@ end
 
 function modifier_wet_cast_lightning:OnCreated(kv)
 	if IsServer() then
-		Spells:ApplyElementDamage(self:GetParent(), self:GetParent(), ELEMENT_LIGHTNING, 150)
+		HP:ApplyElement(self:GetParent(), self:GetParent(), ELEMENT_LIGHTNING, 150)
 	end
 end
 

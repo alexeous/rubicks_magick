@@ -49,8 +49,8 @@ function ElementSprays:StartSteamSpray(player, modifierElement)
 	local distanceInd = (modifierElement == ELEMENT_WATER) and 2 or 1
 	local hero = player:GetAssignedHero()
 	local onTouchFn = function(unit)
-		Spells:ApplyElementDamage(unit, hero, ELEMENT_WATER, damage / 2, isWet, 1.0)
-		Spells:ApplyElementDamage(unit, hero, ELEMENT_FIRE, damage / 2, false, 1.0)
+		HP:ApplyElement(unit, hero, PSEUDO_ELEMENT_STEAM, damage)
+		if isWet then HP:ApplyElement(unit, hero, ELEMENT_WATER, 1) end
 	end
 	local particle = ParticleManager:CreateParticle("particles/element_sprays/steam_spray/steam_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, hero)
 	local particleRecalcFn = function(factor)
@@ -85,7 +85,7 @@ function ElementSprays:StartFireSpray(player, power)
 	local distance = ELEMENT_SPRAY_DISTANCES[power]
 	local hero = player:GetAssignedHero()
 	local onTouchFn = function(unit)
-		Spells:ApplyElementDamage(unit, hero, ELEMENT_FIRE, damages[power], true)
+		HP:ApplyElement(unit, hero, ELEMENT_FIRE, damages[power])
 	end
 	local radius = 90 + power * 25
 	local particle = ParticleManager:CreateParticle("particles/element_sprays/fire_spray/fire_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, hero)
@@ -104,7 +104,7 @@ function ElementSprays:StartColdSpray(player, power)
 	local distance = ELEMENT_SPRAY_DISTANCES[power]
 	local hero = player:GetAssignedHero()
 	local onTouchFn = function(unit)
-		Spells:ApplyElementDamage(unit, hero, ELEMENT_COLD, damages[power], true)
+		HP:ApplyElement(unit, hero, ELEMENT_COLD, damages[power])
 	end
 	local radius = 90 + power * 25
 	local particle = ParticleManager:CreateParticle("particles/element_sprays/cold_spray/cold_spray.vpcf", PATTACH_ABSORIGIN_FOLLOW, hero)
@@ -171,7 +171,7 @@ function ElementSprays:MakeWaterOnTouchFunction(caster, distance)
 	return function(unit)
 		local canPushCaster = SelfShield:ResistanceLevelTo(caster, ELEMENT_WATER) < 2
 
-		Spells:ApplyElementDamage(unit, caster, ELEMENT_WATER, 1, true)
+		HP:ApplyElement(unit, caster, ELEMENT_WATER, 1)
 		local unitToCasterVec = caster:GetAbsOrigin() - unit:GetAbsOrigin()
 		local distanceFactor = 1.2 - math.min(1, #unitToCasterVec / distance)
 		local vec = caster:GetForwardVector():Normalized() * distanceFactor

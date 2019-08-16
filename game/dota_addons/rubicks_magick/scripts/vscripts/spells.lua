@@ -4,8 +4,8 @@ require("libraries/animations")
 
 require("elements")
 require("move_controller")
+require("hp")
 require("modifiers")
-require("damage_funcs")
 
 require("spells/self_shield")
 require("spells/magic_shield")
@@ -98,8 +98,6 @@ function Spells:Precache(context)
 end
 
 function Spells:Init()
-	Spells.healthChanges = {}
-
 	GameRules:GetGameModeEntity():SetThink(Dynamic_Wrap(Spells, "OnSpellsThink"), "OnSpellsThink", 2)
 	ListenToGameEvent("entity_killed", Dynamic_Wrap(Spells, "OnEntityKilled"), self)
 
@@ -108,6 +106,7 @@ function Spells:Init()
 	CustomGameEventManager:RegisterListener("rm_self_cast_down", Dynamic_Wrap(Spells, "OnSelfCastKeyDown"))
 	CustomGameEventManager:RegisterListener("rm_self_cast_up", Dynamic_Wrap(Spells, "OnSelfCastKeyUp"))
 
+	HP:Init()
 	RockThrow:Init()
 	ElementSprays:Init()
 	MagicShield:Init()
@@ -323,8 +322,6 @@ function Spells:OnSpellsThink()
 		Spells:CheckIfPlayerWantsToStartNewSpell(player)
 	end
 
-	Spells:ProcessHealthChanges()
-
 	return SPELLS_THINK_PERIOD
 end
 
@@ -357,85 +354,6 @@ function Spells:CheckIfPlayerWantsToStartNewSpell(player)
 	if player.wantsToStartNewDirectedSpell then
 		player.wantsToStartNewDirectedSpell = false
 		Spells:OnDirectedCastKeyDown({ playerID = player:GetPlayerID() })
-	end
-end
-
-function Spells:ProcessHealthChanges()
-	local function CollectModifiersToApply(damages)
-		local modifiers = {}
-		for _, info in pairs(damages) do
-			if info.applyModifiers then
-				table.insert(modifiers, { damage = info.value, source = info.source, element = info.element })
-			end
-		end
-		return modifiers
-	end
-
-	-- There might be events reacting on entity killed or smth like that that perform damage or heal applying
-	-- thus leading to changes to Spells.healthChanges. We ensure that any health change infos will be
-	-- stored in another table, not the one we are processing right now to prevent its corruption
-	local allHealthChanges = Spells.healthChanges
-	Spells.healthChanges = {}
-	for unit, healthChanges in pairs(allHealthChanges) do
-		local heals = healthChanges.heals
-		local damages = healthChanges.damages
-		local modifiersToApply = CollectModifiersToApply(damages)
-
-		while next(heals) ~= nil and next(damages) ~= nil do
-			local function ConsumeValue(table, key, max)
-				local info = table[key]
-				local clampedValue = math.min(info.value, max)
-				local metMax = clampedValue < info.value
-				info.value = info.value - clampedValue
-				if info.value < 0.5 then table[key] = nil end
-				return clampedValue, metMax
-			end
-
-			for k, info in pairs(heals) do
-				local clampedValue, metMax = ConsumeValue(heals, k, unit:GetMaxHealth() - unit:GetHealth())
-				if unit.isPlaceable then
-					ApplyDamage({ victim = unit, attacker = info.source, damage = 1, damage_type = DAMAGE_TYPE_PURE })
-				else
-					unit:Heal(clampedValue, info.source)
-					SendOverheadEventMessage(unit, OVERHEAD_ALERT_HEAL, unit, clampedValue, unit)
-				end
-				if metMax then break end
-			end
-			for k, info in pairs(damages) do
-				local clampedValue, metMax = ConsumeValue(damages, k, unit:GetHealth() - 1)
-				ApplyDamage({ victim = unit, attacker = info.source, damage = clampedValue, damage_type = DAMAGE_TYPE_PURE })
-				if metMax then break end
-			end
-		end
-
-		for _, info in pairs(heals) do
-			local clampedValue = math.min(info.value, unit:GetMaxHealth() - unit:GetHealth())
-			if unit.isPlaceable then
-				ApplyDamage({ victim = unit, attacker = info.source, damage = 1, damage_type = DAMAGE_TYPE_PURE })
-			else
-				unit:Heal(clampedValue, info.source)
-				if clampedValue > 0 then
-					SendOverheadEventMessage(unit, OVERHEAD_ALERT_HEAL, unit, clampedValue, unit)
-				end
-			end
-		end
-
-		for _, info in pairs(damages) do
-			ApplyDamage({ victim = unit, attacker = info.source, damage = info.value, damage_type = DAMAGE_TYPE_PURE })
-		end
-
-		if unit:IsAlive() then
-			for _, m in pairs(modifiersToApply) do
-				local damage, source, element = m.damage, m.source, m.element
-				if element == ELEMENT_WATER then
-					Modifiers:ApplyWet(unit, source)
-				elseif element == ELEMENT_COLD then
-					Modifiers:ApplyChill(unit, source, damage)
-				elseif element == ELEMENT_FIRE then
-					Modifiers:ApplyBurn(unit, source)
-				end
-			end
-		end
 	end
 end
 
@@ -554,7 +472,7 @@ function Spells:MeleeAttack(player)
 			player.spellCast.hasAttacked = true
 			local hero = player:GetAssignedHero()
 			local center = hero:GetAbsOrigin() + hero:GetForwardVector() * 110
-			if Spells:ApplyElementDamageAoE(center, 110, hero, ELEMENT_EARTH, 210, true, true) then
+			if HP:ApplyElementAoE(center, 110, hero, ELEMENT_EARTH, 210, true, true) then
 				player:GetAssignedHero():EmitSound("MeleeAttack")
 			elseif #Util:FindUnitsInRadius(center, 110, DOTA_UNIT_TARGET_FLAG_INVULNERABLE) > 1 then
 				player:GetAssignedHero():EmitSound("MeleeAttackBlocked")
@@ -565,108 +483,6 @@ function Spells:MeleeAttack(player)
 
 	Spells:StartCasting(player, spellCastTable)
 	Timers:CreateTimer(0.1, function() player:GetAssignedHero():EmitSound("MeleeAttackWhoosh") end)
-end
-
-
-
-------------------------- HEALTH MANIPULATION  --------------------------
-
-function Spells:PrepareHealthChangesTable(unit)
-	local healthChanges = Spells.healthChanges[unit] or {}
-	Spells.healthChanges[unit] = healthChanges
-
-	local damages = healthChanges.damages or {}
-	healthChanges.damages = damages
-
-	local heals = healthChanges.heals or {}
-	healthChanges.heals = heals
-end
-
-function Spells:ApplyElementDamage(victim, attacker, element, damage, applyModifiers, blockPerShield, ignoreWet)
-	if victim:IsInvulnerable() then
-		return false
-	end
-
-	if type(damage) ~= "number" then
-		damage = DamageFuncs:ResolveValue(damage, victim)
-	end
-	damage = Spells:GetDamageAfterShields(victim, damage, element, blockPerShield)
-
-	if not ignoreWet then
-		if victim:HasModifier("modifier_wet") and ((element == ELEMENT_LIGHTNING) or (element == ELEMENT_COLD)) then
-			damage = damage * 2
-			if victim.wetRemoveTimer == nil then
-				victim.wetRemoveTimer = Timers:CreateTimer(0.4, function() 
-					victim.wetRemoveTimer = nil
-					victim:RemoveModifierByName("modifier_wet")
-				end)
-			end
-		end
-	end
-	if damage < 0.5 then
-		return false
-	end
-
-	Spells:PrepareHealthChangesTable(victim)
-	local info = { value = damage, source = attacker, element = element, applyModifiers = applyModifiers }
-	table.insert(Spells.healthChanges[victim].damages, info)
-
-	return true
-end
-
-function Spells:Heal(target, source, heal, ignoreLifeShield)
-	if target:IsInvulnerable() then
-		return false
-	end
-	
-	if type(heal) ~= "number" then
-		heal = DamageFuncs:ResolveValue(heal, target)
-	end
-	if not ignoreLifeShield then
-		heal = Spells:GetDamageAfterShields(target, heal, ELEMENT_LIFE)
-	end
-	if heal < 0.5 then
-		return false
-	end
-
-	Spells:PrepareHealthChangesTable(target)
-	local info = { value = heal, source = source }
-	table.insert(Spells.healthChanges[target].heals, info)
-
-	return true
-end
-
-function Spells:ApplyElementDamageAoE(center, radius, attacker, element, damage, dontDamageAttacker, applyModifiers, blockPerShield, ignoreWet)
-	local damagedAnyone = false
-	local unitsToHurt = Util:FindUnitsInRadius(center, radius)
-	for _, unit in pairs(unitsToHurt) do
-		if not (unit == attacker and dontDamageAttacker) then
-			local damaged = Spells:ApplyElementDamage(unit, attacker, element, damage, applyModifiers, blockPerShield, ignoreWet)
-			damagedAnyone = damagedAnyone or damaged
-		end
-	end
-	return damagedAnyone
-end
-
-function Spells:HealAoE(center, radius, source, heal, dontHealSource)
-	local healedAnyone = false
-	local unitsToHeal = Util:FindUnitsInRadius(center, radius)
-	for _, unit in pairs(unitsToHeal) do
-		if not (unit == source and dontHealSource) then
-			local healed = Spells:Heal(unit, source, heal, false)
-			healedAnyone = healedAnyone or healed
-		end
-	end
-	return healedAnyone
-end
-
-function Spells:GetDamageAfterShields(victim, damage, element, blockPerShield)
-	if victim.shieldElements ~= nil then
-		local blockFactor = blockPerShield or 0.5
-		local portion = damage * blockFactor
-		damage = math.max(0, damage - portion * SelfShield:ResistanceLevelTo(victim, element))
-	end
-	return damage
 end
 
 function Spells:WetCastLightning(caster)

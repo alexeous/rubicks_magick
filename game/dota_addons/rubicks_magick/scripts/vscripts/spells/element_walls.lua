@@ -92,8 +92,7 @@ function ElementWalls:ApplyIceWallDamage(caster)
 	local units = Util:FindUnitsInSector(center, ICE_WALL_DAMAGE_AREA_RADIUS, forward, ICE_WALL_DAMAGE_AREA_ANGLE)
 	for _, unit in pairs(units) do
 		if unit ~= caster then
-			Spells:ApplyElementDamage(unit, caster, ELEMENT_WATER, 100, false, nil, true)
-			Spells:ApplyElementDamage(unit, caster, ELEMENT_COLD, 100, false, nil, true)
+			HP:ApplyElement(unit, caster, PSEUDO_ELEMENT_ICE, 200)
 		end
 	end
 end

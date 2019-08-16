@@ -48,24 +48,21 @@ function Beams:StartLifeBeam(player, pickedElements)
 	local additionalEffectTable = {
 		[ELEMENT_LIFE] = {
 			[ELEMENT_LIFE] = {
-				[ELEMENT_FIRE] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 3.92 * math.pow(power, 0.45), true) end,
-				[ELEMENT_COLD] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 3.04 * math.pow(power, 0.4), true) end,
-				[ELEMENT_WATER] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 1, true) end
+				[ELEMENT_FIRE] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_FIRE, 3.92 * math.pow(power, 0.45)) end,
+				[ELEMENT_COLD] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_COLD, 3.04 * math.pow(power, 0.4)) end,
+				[ELEMENT_WATER] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_WATER, 1) end
 			},
 			[ELEMENT_WATER] = {
-				[ELEMENT_FIRE] = function(target, power)
-					Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 3.75 * math.pow(power, 0.55), false, 1.0)
-					Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 3.75 * math.pow(power, 0.55), false, 1.0)
-				end,
-				[DEFAULT] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 1, true) end
+				[ELEMENT_FIRE] = function(target, power) HP:ApplyElement(target, caster, PSEUDO_ELEMENT_STEAM, 3.75 * math.pow(power, 0.55)) end,
+				[DEFAULT] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_WATER, 1) end
 			},
 			[ELEMENT_FIRE] = {
-				[ELEMENT_FIRE] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 4.98 * math.pow(power, 0.53), true) end,
-				[EMPTY] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 3.83 * math.pow(power, 0.47), true) end
+				[ELEMENT_FIRE] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_FIRE, 4.98 * math.pow(power, 0.53)) end,
+				[EMPTY] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_FIRE, 3.83 * math.pow(power, 0.47)) end
 			},
 			[ELEMENT_COLD] = {
-				[ELEMENT_COLD] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 3.9 * math.pow(power, 0.49), true) end,
-				[EMPTY] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 2.32 * math.pow(power, 0.6), true) end
+				[ELEMENT_COLD] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_COLD, 3.9 * math.pow(power, 0.49)) end,
+				[EMPTY] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_COLD, 2.32 * math.pow(power, 0.6)) end
 			}
 		}
 	}
@@ -75,7 +72,7 @@ function Beams:StartLifeBeam(player, pickedElements)
 	local mul = ({ 22.29, 31.96, 38.87 })[lifeCount]
 	local pow = ({ 0.50,  0.39,  0.50  })[lifeCount]	
 	local effectFunction = function(target, power)
-		Spells:Heal(target, caster, mul * math.pow(power, pow))
+		HP:ApplyElement(target, caster, ELEMENT_LIFE, mul * math.pow(power, pow))
 		if additionalEffectFunc ~= nil then
 			additionalEffectFunc(target, power)
 		end
@@ -95,24 +92,21 @@ function Beams:StartDeathBeam(player, pickedElements)
 	local additionalEffectTable = {
 		[ELEMENT_DEATH] = {
 			[ELEMENT_DEATH] = {
-				[ELEMENT_FIRE] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 2.75 * math.pow(power, 0.96), true) end,
-				[ELEMENT_COLD] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 2.19 * math.pow(power, 0.62), true) end,
-				[ELEMENT_WATER] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 1, true) end
+				[ELEMENT_FIRE] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_FIRE, 2.75 * math.pow(power, 0.96)) end,
+				[ELEMENT_COLD] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_COLD, 2.19 * math.pow(power, 0.62)) end,
+				[ELEMENT_WATER] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_WATER, 1) end
 			},
 			[ELEMENT_WATER] = {
-				[ELEMENT_FIRE] = function(target, power)
-					Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 4.05 * math.pow(power, 0.49), false, 1.0)
-					Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 4.05 * math.pow(power, 0.49), false, 1.0)
-				end,
-				[DEFAULT] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_WATER, 1, true) end
+				[ELEMENT_FIRE] = function(target, power) HP:ApplyElement(target, caster, PSEUDO_ELEMENT_STEAM, 4.05 * math.pow(power, 0.49)) end,
+				[DEFAULT] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_WATER, 1) end
 			},
 			[ELEMENT_FIRE] = {
-				[ELEMENT_FIRE] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 4.97 * math.pow(power, 0.52), true) end,
-				[EMPTY] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 3.3 * math.pow(power, 0.57), true) end
+				[ELEMENT_FIRE] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_FIRE, 4.97 * math.pow(power, 0.52)) end,
+				[EMPTY] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_FIRE, 3.3 * math.pow(power, 0.57)) end
 			},
 			[ELEMENT_COLD] = {
-				[ELEMENT_COLD] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 3.9 * math.pow(power, 0.48), true) end,
-				[EMPTY] = function(target, power) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 2.6 * math.pow(power, 0.72), true) end
+				[ELEMENT_COLD] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_COLD, 3.9 * math.pow(power, 0.48)) end,
+				[EMPTY] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_COLD, 2.6 * math.pow(power, 0.72)) end
 			}
 		}
 	}
@@ -122,7 +116,7 @@ function Beams:StartDeathBeam(player, pickedElements)
 	local mul = ({ 17.9, 25.8, 30.5 })[deathCount]
 	local pow = ({ 0.50, 0.49, 0.53 })[deathCount]
 	local effectFunction = function(target, power)
-		Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, mul * math.pow(power, pow))
+		HP:ApplyElement(target, caster, ELEMENT_DEATH, mul * math.pow(power, pow))
 		if additionalEffectFunc ~= nil then
 			additionalEffectFunc(target, power)
 		end

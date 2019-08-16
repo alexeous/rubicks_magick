@@ -93,10 +93,10 @@ end
 
 function StoneWall:GetDamageFunc(modifierElement)
 	local damageFuncTable = {
-		[ELEMENT_DEATH] =  DamageFuncs:Reciprocal(215),
-		[ELEMENT_LIFE] =  DamageFuncs:Reciprocal(85),
-		[ELEMENT_FIRE] =  DamageFuncs:Reciprocal(200),
-		[ELEMENT_COLD] =  DamageFuncs:Reciprocal(70)
+		[ELEMENT_DEATH] =  HP:MakeReciprocalApplying(215),
+		[ELEMENT_LIFE] =  HP:MakeReciprocalApplying(85),
+		[ELEMENT_FIRE] =  HP:MakeReciprocalApplying(200),
+		[ELEMENT_COLD] =  HP:MakeReciprocalApplying(70)
 	}
 	return damageFuncTable[modifierElement]
 end

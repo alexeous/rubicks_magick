@@ -113,8 +113,7 @@ function RockThrow:ReleaseRock(player)
 				[ELEMENT_COLD]  = function(pos, unitsTouched)
 					for _, unit in pairs(unitsTouched) do
 						if unit ~= caster then
-							Spells:ApplyElementDamage(unit, caster, ELEMENT_COLD,  150 * damageFactor, false, 1.0, true)
-							Spells:ApplyElementDamage(unit, caster, ELEMENT_WATER, 150 * damageFactor, false, 1.0)
+							HP:ApplyElement(unit, caster, PSEUDO_ELEMENT_ICE, 300 * damageFactor)
 						end
 					end
 				end
@@ -182,19 +181,19 @@ function RockThrow:OnUnitHit(rock, unit)
 
 		unit:RemoveModifierByName("modifier_frozen")
 		RockThrow:MakeBurstedBodyInvisible(unit)
-		Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage * 10, false, 0.0, true)
+		HP:ApplyElement(unit, caster, ELEMENT_EARTH, damage * 10, true)
 		RockThrow:BurstFrozenParticle(origin)
 		RockThrow:PlayBurstSound(origin, caster, true)
 		return true
 	end
 	
-	local damageAfterShields = Spells:GetDamageAfterShields(unit, damage, ELEMENT_EARTH)
+	local damageAfterShields = HP:GetDamageAfterShields(unit, damage, ELEMENT_EARTH)
 	if not powerfulEnoughForBurst or unit:GetHealth() - damageAfterShields > 0 then
 		return false
 	end
 
 	RockThrow:MakeBurstedBodyInvisible(unit)
-	Spells:ApplyElementDamage(unit, caster, ELEMENT_EARTH, damage, false)
+	HP:ApplyElement(unit, caster, ELEMENT_EARTH, damage)
 	RockThrow:BurstBloodParticle(origin)
 	RockThrow:PlayBurstSound(origin, caster, false)
 	return true
@@ -206,11 +205,11 @@ function RockThrow:OnRockDeath(rock, unitsTouched)
 		rock.onImpactFunction(origin, unitsTouched)
 	end
 	if next(unitsTouched) == nil then
-		Spells:ApplyElementDamageAoE(origin, rock.collisionRadius, rock.caster, ELEMENT_EARTH, rock.rockDamage, true)
+		HP:ApplyElementAoE(origin, rock.collisionRadius, rock.caster, ELEMENT_EARTH, rock.rockDamage, true)
 	else
 		for _, unit in pairs(unitsTouched) do
 			if unit ~= rock.caster then
-				Spells:ApplyElementDamage(unit, rock.caster, ELEMENT_EARTH, rock.rockDamage)
+				HP:ApplyElement(unit, rock.caster, ELEMENT_EARTH, rock.rockDamage)
 			end
 		end
 	end

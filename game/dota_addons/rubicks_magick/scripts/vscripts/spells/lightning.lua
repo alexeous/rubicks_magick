@@ -41,42 +41,42 @@ function Lightning:DirectedLightning(player, pickedElements)
 	local additionalEffectTable = {
 		[ELEMENT_LIGHTNING] = {
 			[ELEMENT_LIGHTNING] = {
-				[ELEMENT_LIFE] = function(target) Spells:Heal(target, caster, 75) end,
-				[ELEMENT_DEATH] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 52) end,
-				[ELEMENT_FIRE] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true) end,
-				[ELEMENT_COLD] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 18, true) end
+				[ELEMENT_LIFE] = function(target) HP:ApplyElement(target, caster, ELEMENT_LIFE, 75) end,
+				[ELEMENT_DEATH] = function(target) HP:ApplyElement(target, caster, ELEMENT_DEATH, 52) end,
+				[ELEMENT_FIRE] = function(target) HP:ApplyElement(target, caster, ELEMENT_FIRE, 15) end,
+				[ELEMENT_COLD] = function(target) HP:ApplyElement(target, caster, ELEMENT_COLD, 18) end
 			},
 			[ELEMENT_LIFE] = {
-				[ELEMENT_LIFE] = function(target) Spells:Heal(target, caster, 106) end,
+				[ELEMENT_LIFE] = function(target) HP:ApplyElement(target, caster, ELEMENT_LIFE, 106) end,
 				[ELEMENT_FIRE] = function(target) 
-					Spells:Heal(target, caster, 75)
-					Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true)
+					HP:ApplyElement(target, caster, ELEMENT_LIFE, 75)
+					HP:ApplyElement(target, caster, ELEMENT_FIRE, 15)
 				end,
 				[ELEMENT_COLD] = function(target) 
-					Spells:Heal(target, caster, 75)
-					Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 18, true)
+					HP:ApplyElement(target, caster, ELEMENT_LIFE, 75)
+					HP:ApplyElement(target, caster, ELEMENT_COLD, 18)
 				end,
-				[EMPTY] = function(target) Spells:Heal(target, caster, 75) end
+				[EMPTY] = function(target) HP:ApplyElement(target, caster, ELEMENT_LIFE, 75) end
 			},
 			[ELEMENT_DEATH] = {
-				[ELEMENT_DEATH] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 74) end,
+				[ELEMENT_DEATH] = function(target) HP:ApplyElement(target, caster, ELEMENT_DEATH, 74) end,
 				[ELEMENT_FIRE] = function(target) 
-					Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 52)
-					Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true)
+					HP:ApplyElement(target, caster, ELEMENT_DEATH, 52)
+					HP:ApplyElement(target, caster, ELEMENT_FIRE, 15)
 				end,
 				[ELEMENT_COLD] = function(target) 
-					Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 52)
-					Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 18, true)
+					HP:ApplyElement(target, caster, ELEMENT_DEATH, 52)
+					HP:ApplyElement(target, caster, ELEMENT_COLD, 18)
 				end,
-				[EMPTY] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 52) end
+				[EMPTY] = function(target) HP:ApplyElement(target, caster, ELEMENT_DEATH, 52) end
 			},
 			[ELEMENT_FIRE] = {
-				[ELEMENT_FIRE] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 21, true) end,
-				[EMPTY] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true) end
+				[ELEMENT_FIRE] = function(target) HP:ApplyElement(target, caster, ELEMENT_FIRE, 21) end,
+				[EMPTY] = function(target) HP:ApplyElement(target, caster, ELEMENT_FIRE, 15) end
 			},
 			[ELEMENT_COLD] = {
-				[ELEMENT_COLD] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 26, true) end,
-				[EMPTY] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 18, true) end
+				[ELEMENT_COLD] = function(target) HP:ApplyElement(target, caster, ELEMENT_COLD, 26) end,
+				[EMPTY] = function(target) HP:ApplyElement(target, caster, ELEMENT_COLD, 18) end
 			}
 		}
 	}
@@ -110,42 +110,42 @@ function Lightning:OmniLightning(player, pickedElements)
 	local additionalEffectTable = {
 		[ELEMENT_LIGHTNING] = {
 			[ELEMENT_LIGHTNING] = {
-				[ELEMENT_LIFE] = function(target) Spells:Heal(target, caster, 65) end,
-				[ELEMENT_DEATH] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 55) end,
-				[ELEMENT_FIRE] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true) end,
-				[ELEMENT_COLD] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 20, true) end
+				[ELEMENT_LIFE] = function(target) HP:ApplyElement(target, caster, ELEMENT_LIFE, 65) end,
+				[ELEMENT_DEATH] = function(target) HP:ApplyElement(target, caster, ELEMENT_DEATH, 55) end,
+				[ELEMENT_FIRE] = function(target) HP:ApplyElement(target, caster, ELEMENT_FIRE, 15) end,
+				[ELEMENT_COLD] = function(target) HP:ApplyElement(target, caster, ELEMENT_COLD, 20) end
 			},
 			[ELEMENT_LIFE] = {
-				[ELEMENT_LIFE] = function(target) Spells:Heal(target, caster, 92) end,
+				[ELEMENT_LIFE] = function(target) HP:ApplyElement(target, caster, ELEMENT_LIFE, 92) end,
 				[ELEMENT_FIRE] = function(target) 
-					Spells:Heal(target, caster, 65)
-					Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true)
+					HP:ApplyElement(target, caster, ELEMENT_LIFE, 65)
+					HP:ApplyElement(target, caster, ELEMENT_FIRE, 15)
 				end,
 				[ELEMENT_COLD] = function(target) 
-					Spells:Heal(target, caster, 65)
-					Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 20, true)
+					HP:ApplyElement(target, caster, ELEMENT_LIFE, 65)
+					HP:ApplyElement(target, caster, ELEMENT_COLD, 20)
 				end,
-				[EMPTY] = function(target) Spells:Heal(target, caster, 65) end
+				[EMPTY] = function(target) HP:ApplyElement(target, caster, ELEMENT_LIFE, 65) end
 			},
 			[ELEMENT_DEATH] = {
-				[ELEMENT_DEATH] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 78) end,
+				[ELEMENT_DEATH] = function(target) HP:ApplyElement(target, caster, ELEMENT_DEATH, 78) end,
 				[ELEMENT_FIRE] = function(target) 
-					Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 55)
-					Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true)
+					HP:ApplyElement(target, caster, ELEMENT_DEATH, 55)
+					HP:ApplyElement(target, caster, ELEMENT_FIRE, 15)
 				end,
 				[ELEMENT_COLD] = function(target) 
-					Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 55)
-					Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 20, true)
+					HP:ApplyElement(target, caster, ELEMENT_DEATH, 55)
+					HP:ApplyElement(target, caster, ELEMENT_COLD, 20)
 				end,
-				[EMPTY] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_DEATH, 55) end
+				[EMPTY] = function(target) HP:ApplyElement(target, caster, ELEMENT_DEATH, 55) end
 			},
 			[ELEMENT_FIRE] = {
-				[ELEMENT_FIRE] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 22, true) end,
-				[EMPTY] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_FIRE, 15, true) end
+				[ELEMENT_FIRE] = function(target) HP:ApplyElement(target, caster, ELEMENT_FIRE, 22) end,
+				[EMPTY] = function(target) HP:ApplyElement(target, caster, ELEMENT_FIRE, 15) end
 			},
 			[ELEMENT_COLD] = {
-				[ELEMENT_COLD] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 28, true) end,
-				[EMPTY] = function(target) Spells:ApplyElementDamage(target, caster, ELEMENT_COLD, 20, true) end
+				[ELEMENT_COLD] = function(target) HP:ApplyElement(target, caster, ELEMENT_COLD, 28) end,
+				[EMPTY] = function(target) HP:ApplyElement(target, caster, ELEMENT_COLD, 20) end
 			}
 		}
 	}
@@ -189,7 +189,7 @@ end
 
 function Lightning:MakeEffectFunction(caster, lightningDamage, additionalEffectFunc)
 	return function(target)
-		Spells:ApplyElementDamage(target, caster, ELEMENT_LIGHTNING, lightningDamage)
+		HP:ApplyElement(target, caster, ELEMENT_LIGHTNING, lightningDamage)
 		if additionalEffectFunc ~= nil then
 			additionalEffectFunc(target)
 		end

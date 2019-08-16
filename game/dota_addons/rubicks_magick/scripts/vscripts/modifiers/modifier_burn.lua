@@ -51,7 +51,7 @@ end
 
 function modifier_burn:OnIntervalThink()
 	if IsServer() then
-		Spells:ApplyElementDamage(self:GetParent(), self:GetCaster(), ELEMENT_FIRE, self.damage, false)
+		HP:ApplyElement(self:GetParent(), self:GetCaster(), ELEMENT_FIRE, self.damage, false, true)
 		
 		self.thinksToReduce = self.thinksToReduce - 1
 		if self.thinksToReduce <= 0 then

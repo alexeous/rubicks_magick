@@ -71,6 +71,6 @@ function SelfHeal:DoHeal(player)
 	local hero = player:GetAssignedHero()
 	local heal = player.spellCast.selfHeal_BaseHeal + math.exp(player.spellCast.selfHeal_ExpMultiplier * player.spellCast.selfHeal_HealCount)
 	player.spellCast.selfHeal_HealCount = player.spellCast.selfHeal_HealCount + 1
-	Spells:Heal(hero, hero, heal, false)
+	HP:ApplyElement(hero, hero, ELEMENT_LIFE, heal)
 	hero:EmitSound("SelfHealThink")
 end
