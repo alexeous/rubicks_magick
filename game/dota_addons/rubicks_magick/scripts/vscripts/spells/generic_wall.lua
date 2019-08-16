@@ -14,7 +14,7 @@ function GenericWall:KnockbackAllAwayFromWall(caster)
     local forward = caster:GetForwardVector()
     local units = Util:FindUnitsInSector(center, KNOCKBACK_AREA_RADIUS, forward, KNOCKBACK_AREA_ANGLE)
     for _, unit in pairs(units) do
-        if unit ~= caster and not Spells:IsResistantTo(unit, ELEMENT_EARTH) then
+        if unit ~= caster and not SelfShield:HasAnyResistanceTo(unit, ELEMENT_EARTH) then
             MoveController:Knockback(unit, caster, center, KNOCKBACK_AREA_RADIUS)
         end
     end

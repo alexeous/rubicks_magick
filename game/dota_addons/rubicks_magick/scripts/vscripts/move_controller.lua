@@ -267,7 +267,7 @@ function MoveController:ContinueMoveToPosition(player)
 end
 
 function MoveController:AddPush(target, caster, velocity, acceleration, noGravityDelay)
-	local earthResist = Spells:ResistanceLevelTo(target, ELEMENT_EARTH)
+	local earthResist = SelfShield:ResistanceLevelTo(target, ELEMENT_EARTH)
 	local reduceFactor = math.pow(0.5, earthResist)
 	velocity = (velocity or Vector(0, 0, 0)) * reduceFactor
 	acceleration = (acceleration or Vector(0, 0, 0)) * reduceFactor
@@ -282,7 +282,7 @@ end
 function MoveController:Knockback(target, caster, center, distance)
 	local centerToTarget = target:GetAbsOrigin() - center
 	centerToTarget.z = 0 	-- being on the safe side
-	local earthResist = Spells:ResistanceLevelTo(target, ELEMENT_EARTH)
+	local earthResist = SelfShield:ResistanceLevelTo(target, ELEMENT_EARTH)
 	local reduceFactor = math.pow(0.5, earthResist)
 	local pushDistance = math.max(0, distance - centerToTarget:Length2D()) * reduceFactor
 	local duration = 0.35

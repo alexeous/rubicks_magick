@@ -663,7 +663,7 @@ function Spells:GetDamageAfterShields(victim, damage, element, blockPerShield)
 	if victim.shieldElements ~= nil then
 		local blockFactor = blockPerShield or 0.5
 		local portion = damage * blockFactor
-		damage = math.max(0, damage - portion * Spells:ResistanceLevelTo(victim, element))
+		damage = math.max(0, damage - portion * SelfShield:ResistanceLevelTo(victim, element))
 	end
 	return damage
 end
@@ -671,19 +671,8 @@ end
 
 ------------------------- MODIFIERS APPLYING --------------------------
 
-function Spells:ResistanceLevelTo(target, element)
-	if target == nil or target.shieldElements == nil then
-		return 0
-	end
-	return table.count(target.shieldElements, element)
-end
-
-function Spells:IsResistantTo(target, element)
-	return Spells:ResistanceLevelTo(target, element) > 0
-end
-
 function Spells:ApplyWet(target, caster)
-	if Spells:IsResistantTo(target, ELEMENT_WATER) or target:IsInvulnerable() then
+	if SelfShield:HasAnyResistanceTo(target, ELEMENT_WATER) or target:IsInvulnerable() then
 		return false
 	end
 
@@ -695,7 +684,7 @@ function Spells:ApplyWet(target, caster)
 end
 
 function Spells:ApplyChill(target, caster, power)
-	if Spells:IsResistantTo(target, ELEMENT_COLD) or target:IsInvulnerable() then
+	if SelfShield:HasAnyResistanceTo(target, ELEMENT_COLD) or target:IsInvulnerable() then
 		return false
 	end
 
@@ -713,7 +702,7 @@ function Spells:ApplyChill(target, caster, power)
 end
 
 function Spells:ApplyBurn(target, caster)
-	if Spells:IsResistantTo(target, ELEMENT_FIRE) or target:IsInvulnerable() then
+	if SelfShield:HasAnyResistanceTo(target, ELEMENT_FIRE) or target:IsInvulnerable() then
 		return false
 	end
 
@@ -741,7 +730,7 @@ function Spells:CanApplyModifier(target, element)
 end
 
 function Spells:DryAndWarm(target)
-	if target == nil or Spells:IsResistantTo(target, ELEMENT_FIRE) then
+	if target == nil or SelfShield:HasAnyResistanceTo(target, ELEMENT_FIRE) then
 		return false
 	end
 	if target:HasModifier("modifier_wet") then
@@ -757,7 +746,7 @@ function Spells:DryAndWarm(target)
 end
 
 function Spells:ExtinguishWithElement(target, element)
-	if target == nil or Spells:IsResistantTo(target, element) then
+	if target == nil or SelfShield:HasAnyResistanceTo(target, element) then
 		return false
 	end
 	if target:HasModifier("modifier_burn") then

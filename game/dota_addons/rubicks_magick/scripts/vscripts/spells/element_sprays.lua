@@ -169,14 +169,14 @@ end
 
 function ElementSprays:MakeWaterOnTouchFunction(caster, distance)
 	return function(unit)
-		local canPushCaster = Spells:ResistanceLevelTo(caster, ELEMENT_WATER) < 2
+		local canPushCaster = SelfShield:ResistanceLevelTo(caster, ELEMENT_WATER) < 2
 
 		Spells:ApplyElementDamage(unit, caster, ELEMENT_WATER, 1, true)
 		local unitToCasterVec = caster:GetAbsOrigin() - unit:GetAbsOrigin()
 		local distanceFactor = 1.2 - math.min(1, #unitToCasterVec / distance)
 		local vec = caster:GetForwardVector():Normalized() * distanceFactor
 
-		if Spells:ResistanceLevelTo(target, ELEMENT_WATER) < 2 then
+		if SelfShield:ResistanceLevelTo(target, ELEMENT_WATER) < 2 then
 			MoveController:AddPush(unit, caster, vec * 50, vec * 200)
 			unit:SetForwardVector(unitToCasterVec)
 		elseif canPushCaster and not target.isWall then

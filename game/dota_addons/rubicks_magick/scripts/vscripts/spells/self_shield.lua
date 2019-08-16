@@ -84,3 +84,14 @@ function SelfShield:RemoveAllShields(unit)
 		end
 	end
 end
+
+function SelfShield:ResistanceLevelTo(target, element)
+	if target == nil or target.shieldElements == nil then
+		return 0
+	end
+	return table.count(target.shieldElements, element)
+end
+
+function SelfShield:HasAnyResistanceTo(target, element)
+	return SelfShield:ResistanceLevelTo(target, element) > 0
+end
