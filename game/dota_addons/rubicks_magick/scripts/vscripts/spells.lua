@@ -25,13 +25,14 @@ require("spells/omni_element_sprays")
 require("spells/omni_ice_spikes")
 require("spells/projectile")
 
+local SPELLS_THINK_PERIOD = 0.02
+
 OMNI_SPELLS_RADIUSES = { 200, 300, 400 }
 
 CAST_TYPE_INSTANT = 1
 CAST_TYPE_CONTINUOUS = 2
 CAST_TYPE_CHARGING = 3
 
-SPELLS_THINK_PERIOD = 0.02
 
 DRY_WARM_EXTINGUISH_GUARD_DURATION = 0.8
 
