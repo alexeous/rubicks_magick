@@ -4,7 +4,7 @@ require("libraries/animations")
 
 require("elements")
 require("move_controller")
-
+require("modifiers")
 require("damage_funcs")
 
 require("spells/self_shield")
@@ -427,11 +427,11 @@ function Spells:ProcessHealthChanges()
 			for _, m in pairs(modifiersToApply) do
 				local damage, source, element = m.damage, m.source, m.element
 				if element == ELEMENT_WATER then
-					Spells:ApplyWet(unit, source)
+					Modifiers:ApplyWet(unit, source)
 				elseif element == ELEMENT_COLD then
-					Spells:ApplyChill(unit, source, damage)
+					Modifiers:ApplyChill(unit, source, damage)
 				elseif element == ELEMENT_FIRE then
-					Spells:ApplyBurn(unit, source)
+					Modifiers:ApplyBurn(unit, source)
 				end
 			end
 		end
@@ -666,100 +666,6 @@ function Spells:GetDamageAfterShields(victim, damage, element, blockPerShield)
 		damage = math.max(0, damage - portion * SelfShield:ResistanceLevelTo(victim, element))
 	end
 	return damage
-end
-
-
-------------------------- MODIFIERS APPLYING --------------------------
-
-function Spells:ApplyWet(target, caster)
-	if SelfShield:HasAnyResistanceTo(target, ELEMENT_WATER) or target:IsInvulnerable() then
-		return false
-	end
-
-	local wasBurning = Spells:ExtinguishWithElement(target, ELEMENT_WATER)
-	if not wasBurning and Spells:CanApplyModifier(target, ELEMENT_WATER) and not target:HasModifier("modifier_chill") then
-		target:AddNewModifier(caster, nil, "modifier_wet", {})
-	end
-	return true
-end
-
-function Spells:ApplyChill(target, caster, power)
-	if SelfShield:HasAnyResistanceTo(target, ELEMENT_COLD) or target:IsInvulnerable() then
-		return false
-	end
-
-	local wasBurning = Spells:ExtinguishWithElement(target, ELEMENT_COLD)
-	if not wasBurning and Spells:CanApplyModifier(target, ELEMENT_COLD) then
-		local currentChillModifier = target:FindModifierByName("modifier_chill")
-		if currentChillModifier ~= nil then
-			currentChillModifier:Enhance(power)
-		else
-			target:AddNewModifier(caster, nil, "modifier_chill", {})
-			target:SetModifierStackCount("modifier_chill", caster, power)
-		end
-	end
-	return true
-end
-
-function Spells:ApplyBurn(target, caster)
-	if SelfShield:HasAnyResistanceTo(target, ELEMENT_FIRE) or target:IsInvulnerable() then
-		return false
-	end
-
-	local wasWetOrChilled = Spells:DryAndWarm(target)
-	if not wasWetOrChilled and Spells:CanApplyModifier(target, ELEMENT_FIRE) then
-		local currentBurnModifier = target:FindModifierByName("modifier_burn")
-		if currentBurnModifier ~= nil then
-			currentBurnModifier:Reapply()
-		else
-			target:AddNewModifier(caster, nil, "modifier_burn", {})
-		end
-	end
-	return true
-end
-
-function Spells:CanApplyModifier(target, element)
-	if target == nil then
-		return false
-	end
-	if target.dryWarmExtinguishElement == nil or target.dryWarmExtinguishTime == nil then
-		return true
-	end
-	local time = GameRules:GetGameTime()
-	return not (target.dryWarmExtinguishElement == element and time - target.dryWarmExtinguishTime < DRY_WARM_EXTINGUISH_GUARD_DURATION)
-end
-
-function Spells:DryAndWarm(target)
-	if target == nil or SelfShield:HasAnyResistanceTo(target, ELEMENT_FIRE) then
-		return false
-	end
-	if target:HasModifier("modifier_wet") then
-		target:RemoveModifierByName("modifier_wet")
-		Spells:SetupDryWarmExtinguishGuard(target, ELEMENT_FIRE)
-		return true
-	elseif target:HasModifier("modifier_chill") then
-		target:RemoveModifierByName("modifier_chill")
-		Spells:SetupDryWarmExtinguishGuard(target, ELEMENT_FIRE)
-		return true
-	end
-	return false
-end
-
-function Spells:ExtinguishWithElement(target, element)
-	if target == nil or SelfShield:HasAnyResistanceTo(target, element) then
-		return false
-	end
-	if target:HasModifier("modifier_burn") then
-		target:RemoveModifierByName("modifier_burn")
-		Spells:SetupDryWarmExtinguishGuard(target, element)
-		return true
-	end
-	return false
-end
-
-function Spells:SetupDryWarmExtinguishGuard(target, element)
-	target.dryWarmExtinguishElement = element
-	target.dryWarmExtinguishTime = GameRules:GetGameTime()
 end
 
 function Spells:WetCastLightning(caster)
