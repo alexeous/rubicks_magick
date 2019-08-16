@@ -188,7 +188,8 @@ function RockThrow:OnUnitHit(rock, unit)
 	end
 	
 	local damageAfterShields = HP:GetDamageAfterShields(unit, damage, ELEMENT_EARTH)
-	if not powerfulEnoughForBurst or unit:GetHealth() - damageAfterShields > 0 then
+	local hasResistance = SelfShield:HasAnyResistanceTo(unit, ELEMENT_EARTH)
+	if not powerfulEnoughForBurst or unit:GetHealth() - damageAfterShields > 0 or hasResistance then
 		return false
 	end
 
