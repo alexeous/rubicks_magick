@@ -85,7 +85,7 @@ function Projectile:OnProjectileThink(projectile, deltaTime)
     local unitsTouched = Util:FindUnitsInLine(oldOrigin, origin, projectile.collisionRadius, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
     for _, unit in pairs(unitsTouched) do
         if unit ~= projectile and unit ~= caster then
-            if not projectile.onUnitHitCallback(projectile, unit) then
+            if projectile.onUnitHitCallback == nil or not projectile.onUnitHitCallback(projectile, unit) then
                 return false, unitsTouched
             end
         end
@@ -95,8 +95,10 @@ end
 
 function Projectile:Destroy(listKey, projectile, unitsTouched)
     Projectile.projectileList[listKey] = nil
+    unitsTouched = unitsTouched or {}
+    table.removeItem(unitsTouched, projectile.caster)
 
-    projectile.onDeathCallback(projectile, unitsTouched or {})
+    projectile.onDeathCallback(projectile, unitsTouched)
     if projectile.particle ~= nil then
         Timers:CreateTimer(projectile.particleDestroyDelay, function() 
             ParticleManager:DestroyParticle(projectile.particle, false) 

@@ -208,9 +208,7 @@ function RockThrow:OnRockDeath(rock, unitsTouched)
 		HP:ApplyElementAoE(origin, rock.collisionRadius, rock.caster, ELEMENT_EARTH, rock.rockDamage, true)
 	else
 		for _, unit in pairs(unitsTouched) do
-			if unit ~= rock.caster then
-				HP:ApplyElement(unit, rock.caster, ELEMENT_EARTH, rock.rockDamage)
-			end
+			HP:ApplyElement(unit, rock.caster, ELEMENT_EARTH, rock.rockDamage)
 		end
 	end
 	
