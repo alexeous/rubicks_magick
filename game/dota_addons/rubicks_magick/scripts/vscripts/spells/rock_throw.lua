@@ -1,7 +1,7 @@
 require("libraries/timers")
 
-ROCK_FLIGHT_TIME = 0.22
-ROCK_START_HEIGHT = 100
+local ROCK_FLIGHT_TIME = 0.22
+local ROCK_START_HEIGHT = 100
 
 if RockThrow == nil then
 	RockThrow = class({})
