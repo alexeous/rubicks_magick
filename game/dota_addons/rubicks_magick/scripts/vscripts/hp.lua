@@ -73,7 +73,7 @@ function HP:ApplyElement(target, caster, element, value, ignoreShields, dontAppl
 
     local deltaHP = (element ~= ELEMENT_LIFE) and -value or value
     local applyModifier = nil
-    if not dontApplyModifiers and element == ELEMENT_WATER or element == ELEMENT_COLD or element == ELEMENT_FIRE then
+    if not dontApplyModifiers and (element == ELEMENT_WATER or element == ELEMENT_COLD or element == ELEMENT_FIRE) then
         applyModifier = { damage = value, element = element }
     end
     HP:DoManipulation(target, caster, deltaHP, applyModifier)
