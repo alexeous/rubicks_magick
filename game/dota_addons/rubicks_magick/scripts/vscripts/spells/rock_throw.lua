@@ -77,17 +77,17 @@ function RockThrow:ReleaseRock(player)
 	local timeElapsed = Spells:TimeElapsedSinceCast(player)
 
 	local phase1 = player.spellCast.chargingPhase1Duration
-	local timeFactor = math.min(phase1, timeElapsed) / phase1
-	local damageFactor = timeFactor
-	local radiusFactor = 0.4 + 0.6 * timeFactor
+	local t = math.min(phase1, timeElapsed) / phase1
+	local damageFactor = t
+	local radiusFactor = 0.4 + 0.6 * t
 
 	local minRockDamage = ({ 30, 40, 50 })[rockSize]
 	local maxRockDamage = ({ 125, 300, 600 })[rockSize]
-	local rockDamage = Util:Lerp(minRockDamage, maxRockDamage, timeFactor)
+	local rockDamage = Util:Lerp(minRockDamage, maxRockDamage, t)
 
 	local minDistance = 45
 	local maxDistance = ({ 1800, 1500, 1200 })[rockSize]
-	local distance = Util:Lerp(minDistance, maxDistance, timeFactor)
+	local distance = Util:Lerp(minDistance, maxDistance, t)
 
 	local radiuses = GetScaledRadiuses(radiusFactor)
 
@@ -131,7 +131,6 @@ function RockThrow:ReleaseRock(player)
 	local onImpactFunction = table.serialRetrieve(rockImpactTable, pickedElements)
 
 	if timeElapsed >= 2.5 then
-		rockDamage = ({ 135, 330, 650 })[rockSize]
 		caster:AddNewModifier(caster, nil, "modifier_knockdown", { duration = 2.0 })
 	end
 
