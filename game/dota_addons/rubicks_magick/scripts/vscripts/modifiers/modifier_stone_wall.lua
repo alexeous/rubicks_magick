@@ -1,12 +1,10 @@
 local PURE_STONE_WALL_DURATION = 8.2
 local ELEMENT_STONE_WALL_DURATION = 3.3
 local ELEMENT_STONE_WALL_JUDDER_DELAY = 0.85
-local DEATH_ON_DAMAGE_DELAY = 0.1
 
 local PHASE_JUDDER = 0
 local PHASE_DESTRUCT = 1
-local PHASE_DESTRUCT_ON_DAMAGE = 2
-local PHASE_DEATH = 3
+local PHASE_DEATH = 2
 
 if modifier_stone_wall == nil then
 	modifier_stone_wall = class({})
@@ -14,24 +12,6 @@ end
 
 function modifier_stone_wall:IsPermanent()
 	return false
-end
-
-function modifier_stone_wall:DeclareFunctions()
-	local funcs = {
-		MODIFIER_EVENT_ON_TAKEDAMAGE
-	}
-	return funcs
-end
-
-function modifier_stone_wall:OnTakeDamage(keys)
-	if IsServer() and keys.unit == self:GetParent() and self.phase ~= PHASE_DEATH then
-		keys.damage = 0
-		self:GetParent():SetHealth(1)
-		if self.phase ~= PHASE_DESTRUCT_ON_DAMAGE then
-			self.phase = PHASE_DESTRUCT_ON_DAMAGE
-			self:StartIntervalThink(DEATH_ON_DAMAGE_DELAY)
-		end
-	end
 end
 
 function modifier_stone_wall:OnCreated(kv)
@@ -106,7 +86,7 @@ end
 function modifier_stone_wall:OnIntervalThink()
 	local wall = self:GetParent()
 	
-	if self.phase == PHASE_DESTRUCT or self.phase == PHASE_DESTRUCT_ON_DAMAGE then
+	if self.phase == PHASE_DESTRUCT then
 		self.phase = PHASE_DEATH
 		wall:Kill(nil, nil)
 		return
