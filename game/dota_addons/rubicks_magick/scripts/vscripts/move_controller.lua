@@ -150,6 +150,10 @@ function MoveController:AdaptHeroForMoveParentUsage(hero)
 	hero.GetForwardVector = function(self)
 		return RotatePosition(Vector(0, 0, 0), self:GetAngles(), Vector(1, 0, 0))
 	end
+	hero.OldGetRightVector = hero.GetRightVector
+	hero.GetRightVector = function(self)
+		return RotatePosition(Vector(0, 0, 0), self:GetAngles(), Vector(0, 1, 0))
+	end
 
 	hero.OldSetAbsOrigin = hero.SetAbsOrigin
 	hero.SetAbsOrigin = function(self, newOrigin)
