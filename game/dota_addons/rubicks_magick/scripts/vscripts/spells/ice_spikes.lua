@@ -1,3 +1,8 @@
+local NUM_SPIKES = 5
+local SPIKE_FLIGHT_TIME = 0.22
+local SPIKE_START_HEIGHT = 100
+local DELAY_BETWEEN_SPIKES = 0.02
+
 if IceSpikes == nil then
 	IceSpikes = class({})
 end
@@ -35,8 +40,98 @@ function IceSpikes:StartIceSpikes(player, modifierElement)
 end
 
 function IceSpikes:ReleaseSpikes(player, modifierElement)
+	local caster = player:GetAssignedHero()
+	
 	caster:StopSound("RockCharging")
 	caster:StopSound("RockOvercharge")
 
 	local timeElapsed = Spells:TimeElapsedSinceCast(player)
+	local phase1 = player.spellCast.chargingPhase1Duration
+	local t = math.min(phase1, timeElapsed) / phase1
+
+	local startPos = caster:GetAbsOrigin() + Vector(0, 0, SPIKE_START_HEIGHT)
+	local forward = caster:GetForwardVector()
+	local right = caster:GetRightVector()
+
+	local distance = Util:Lerp(150, 1500, t)
+	local endSpreadPerpendicular = (distance < 350) and 200 or 300
+	local endSpreadAlong = distance * 0.2
+
+	local iceDamageFunc = HP:MakeReciprocalApplying(Util:Lerp(25, 150, t))
+	local modifierDamageFunc = IceSpikes:MakeModifierElementDamageValue(t, modifierElement)
+
+	local function hitUnit(unit)
+		HP:ApplyElement(unit, caster, PSEUDO_ELEMENT_ICE, iceDamageFunc)
+		if modifierDamageFunc ~= nil then
+			HP:ApplyElement(unit, caster, modifierElement, modifierDamageFunc)
+		end
+	end
+
+	local function launchSpike(endPos)
+		local startToEnd = endPos - startPos
+		local startToEndLen = #startToEnd
+		Projectile:Create({
+			caster = caster,
+			start = startPos,
+			direction = startToEnd / startToEndLen,
+			distance = startToEndLen,
+			flightDuration = SPIKE_FLIGHT_TIME,
+			collisionRadius = 40,
+			destroyDelay = 2.0,
+			particleDestroyDelay = 0.2,
+			onDeathCallback = function(spike, unitsTouched)
+				for _, unit in pairs(unitsTouched) do
+					hitUnit(unit)
+				end
+				RockThrow:ImpactParticle(spike:GetAbsOrigin(), 1)
+			end,
+			createParticleCallback = function(spike)
+				return IceSpikes:CreateParticle(spike)
+			end
+		})
+	end
+
+	if timeElapsed < 2.5 then
+		local indices = table.createRange(0, NUM_SPIKES)
+		Timers:CreateTimer(function()
+			local i = table.popRandom(indices)
+			if i == nil then
+				return nil
+			end
+
+			local offsetPerpendicular = right * endSpreadPerpendicular * ((i / (NUM_SPIKES - 1) - 0.5) + RandomFloat(-0.1, 0.1))
+			local offsetAlong = forward * endSpreadAlong * RandomFloat(-0.5, 0.5)
+			local endPos = startPos + forward * distance + offsetPerpendicular + offsetAlong
+			launchSpike(endPos)
+
+			return DELAY_BETWEEN_SPIKES
+		end)
+	else
+		for i = 0, NUM_SPIKES - 1 do
+			local offsetPerpendicular = right * endSpreadPerpendicular * (i / (NUM_SPIKES - 1) - 0.5)
+			local endPos = startPos + forward * distance + offsetPerpendicular
+			launchSpike(endPos)
+		end
+		caster:AddNewModifier(caster, nil, "modifier_knockdown", { duration = 2.0 })
+	end
+
+	local launchWaveParticle = ParticleManager:CreateParticle("particles/rock_throw/rock_launch_wave.vpcf", PATTACH_CUSTOMORIGIN, nil)
+	ParticleManager:SetParticleControl(launchWaveParticle, 0, caster:GetAbsOrigin())
+	ParticleManager:SetParticleControl(launchWaveParticle, 1, Vector(distance, 0, 0))
+	ParticleManager:SetParticleControl(launchWaveParticle, 2, Vector(0, caster:GetAnglesAsVector().y, 0))
+end
+
+function IceSpikes:MakeModifierElementDamageValue(t, modifierElement)
+	local function make(min, max) return HP:MakeReciprocalApplying(Util:Lerp(min, max, t)) end
+	local damageValueTable = {
+		[ELEMENT_WATER] = 1,
+		[ELEMENT_COLD]  = make(1, 30),
+		[ELEMENT_LIFE]  = make(35, 225),
+		[ELEMENT_DEATH] = make(1, 50)
+	}
+	return damageValueTable[modifierElement]
+end
+
+function IceSpikes:CreateParticle(spike)
+	return RockThrow:CreateRockParticle(spike, {ELEMENT_EARTH, ELEMENT_WATER, ELEMENT_COLD})
 end

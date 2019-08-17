@@ -82,3 +82,22 @@ table.removeItem = function(t, item)
 		table.remove(t, index)
 	end
 end
+
+table.createRange = function(start, count)
+	local list = {}
+	for i = 0, count - 1 do
+		list[i + 1] = start + i
+	end
+	return list
+end
+
+table.popRandom = function(t)
+	local length = #t
+	if length == 0 then 
+		return nil 
+	end
+	local i = RandomInt(1, length)
+	local value = t[i]
+	table.remove(t, i)
+	return value
+end
