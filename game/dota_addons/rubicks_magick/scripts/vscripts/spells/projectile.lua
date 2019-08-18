@@ -86,6 +86,8 @@ function Projectile:OnProjectileThink(projectile, deltaTime)
     for _, unit in pairs(unitsTouched) do
         if unit ~= projectile and unit ~= caster then
             if projectile.onUnitHitCallback == nil or not projectile.onUnitHitCallback(projectile, unit) then
+                local newOriginAtUnit = Util:ProjectPointOnLine(unit:GetAbsOrigin(), oldOrigin, origin)
+                projectile:SetAbsOrigin(newOriginAtUnit)
                 return false, unitsTouched
             end
         end

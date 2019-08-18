@@ -87,3 +87,11 @@ function Util:ClampVectorLength(vector, minLength, maxLength)
 	end
 	return vector
 end
+
+function Util:ProjectPointOnLine(point, lineA, lineB)
+	local ab = lineB - lineA
+	local abLen = #ab
+	local ap = point - lineA
+	local projVecLen = ab:Dot(ap) / abLen
+	return lineA + ab * projVecLen / abLen	-- = lineA + (ab / abLen) * projVecLen = lineA + ab:Normalized() * projVecLen
+end
