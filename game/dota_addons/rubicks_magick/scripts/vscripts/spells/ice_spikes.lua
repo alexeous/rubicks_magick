@@ -21,7 +21,7 @@ function IceSpikes:StartIceSpikes(player, modifierElement)
 	local spellCastTable = {
 		castType = CAST_TYPE_CHARGING,
 		duration = 2.6,
-		cooldown = 0.4,
+		cooldown = 0.6,
 		chargingPhase1Duration = 2.1,
 		chargingPhase2Duration = 0.5,
 		castingGesture = ACT_DOTA_CHANNEL_ABILITY_5,

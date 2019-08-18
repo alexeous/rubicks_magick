@@ -448,7 +448,7 @@ function Spells:StopCasting(player)
 	end
 
 	if spellCast.cooldown ~= nil then
-		player.cooldownEnd = GameRules:GetGameTime() + spellCast.cooldown
+		player.cooldownEnd = spellCast.startTime + spellCast.cooldown
 	end
 
 	player.spellCast = nil
