@@ -108,44 +108,31 @@ function OmniPulses:OmniDeathPulse(caster, position, ignoreCaster, pickedElement
 	local radius = radiusOverride or (OMNI_SPELLS_RADIUSES[power] * radiusFactor)
 	local deathDamages = { 100, 140, 174 }
 	local deathDamage = damageOverride or (deathDamages[power] * damageFactor)
-	local color = Vector(255, 0, 0)
+	local color = OmniPulses:GetDeathOmniPulseColor(pickedElements)
 
 	local deathPulseTable = {
 		[ELEMENT_DEATH] = {
 			[ELEMENT_DEATH] = {
-				[ELEMENT_WATER] = function()
-					color = Vector(0, 72, 255)
-					OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, false)
+				[ELEMENT_WATER] = function() OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, false) end,
+				[ELEMENT_FIRE] 	= function() OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, 76 * damageFactor)
 				end,
-				[ELEMENT_FIRE] = function()
-					color = Vector(255, 100, 0)
-					OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, 76 * damageFactor)
-				end,
-				[ELEMENT_COLD] = function()
-					color = Vector(163, 222, 255)
-					OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, 46 * damageFactor)
+				[ELEMENT_COLD] 	= function() OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, 46 * damageFactor)
 				end
 			},
 			[ELEMENT_WATER] = {
-				[ELEMENT_FIRE] = function()
-					color = Vector(160, 160, 160)
-					OmniElementSprays:OmniSteamSpray(caster, position, radius, ignoreCaster, 125 * damageFactor, false)					
+				[ELEMENT_FIRE] 	= function() OmniElementSprays:OmniSteamSpray(caster, position, radius, ignoreCaster, 125 * damageFactor, false)					
 				end,
-				[DEFAULT] = function()
-					color = Vector(0, 72, 255)
-					OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, (pickedElements[3] == ELEMENT_WATER))
+				[DEFAULT] 		= function() OmniElementSprays:OmniWaterSpray(caster, position, radius, ignoreCaster, (pickedElements[3] == ELEMENT_WATER))
 				end
 			},
-			[ELEMENT_FIRE] = function()
-				color = Vector(255, 100, 0)
-				local damage = (pickedElements[3] == ELEMENT_FIRE) and 106 or 75
-				OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, damage * damageFactor)
-			end,
-			[ELEMENT_COLD] = function() 
-				color = Vector(163, 222, 255)
-				local damage = (pickedElements[1] == ELEMENT_COLD) and 63 or 45
-				OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, damage * damageFactor)
-			end
+			[ELEMENT_FIRE] = {
+				[ELEMENT_FIRE]	= function() OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, 106 * damageFactor) end,
+				[EMPTY]			= function() OmniElementSprays:OmniFireSpray(caster, position, radius, ignoreCaster, 75 * damageFactor) end
+			},
+			[ELEMENT_COLD] = {
+				[ELEMENT_COLD]	= function() OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, 63 * damageFactor) end,
+				[EMPTY]			= function() OmniElementSprays:OmniColdSpray(caster, position, radius, ignoreCaster, 45 * damageFactor) end
+			}
 		}
 	}
 	local func = table.serialRetrieve(deathPulseTable, pickedElements)
@@ -163,4 +150,18 @@ function OmniPulses:OmniDeathPulse(caster, position, ignoreCaster, pickedElement
 	ParticleManager:SetParticleControl(particle, 3, color)
 	
 	Util:EmitSoundOnLocation(position, "OmniDeathPulse", caster)
+end
+
+function OmniPulses:GetDeathOmniPulseColor(pickedElements)
+	local function contains(e) return table.indexOf(pickedElements, e) ~= nil end
+
+	local color = Vector(255, 0, 0)
+	if contains(ELEMENT_COLD) then 		color = Vector(163, 222, 255)
+	elseif contains(ELEMENT_WATER) then
+		if contains(ELEMENT_FIRE) then 	color = Vector(160, 160, 160)
+		else 							color = Vector(0, 72, 255)
+		end
+	elseif contains(ELEMENT_FIRE) then	color = Vector(255, 100, 0)
+	end
+	return color
 end
