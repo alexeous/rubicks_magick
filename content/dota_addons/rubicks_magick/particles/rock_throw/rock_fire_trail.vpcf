@@ -1,4 +1,4 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf21:version{7a150ecc-d865-438f-ad53-5963fe1a2720} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf23:version{636cefcd-6551-40ad-801c-6085f7e67e27} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_controlPointConfigurations = 
@@ -78,6 +78,10 @@
 			m_nAlphaMin = 127
 			m_nAlphaMax = 175
 		},
+		{
+			_class = "C_INIT_InheritVelocity"
+			m_flVelocityScale = 0.05
+		},
 	]
 	m_Emitters = 
 	[
@@ -118,5 +122,5 @@
 			m_ChildRef = resource:"particles/rock_throw/rock_fire_trail_fire.vpcf"
 		},
 	]
-	m_nBehaviorVersion = 9
+	m_nBehaviorVersion = 10
 }

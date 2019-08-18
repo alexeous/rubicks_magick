@@ -36,7 +36,7 @@
 			_class = "C_OP_RampScalarLinear"
 			m_RateMin = -15.0
 			m_RateMax = -20.0
-			m_nField = 4
+			m_nField = "4"
 		},
 		{
 			_class = "C_OP_EndCapTimedDecay"
@@ -45,7 +45,7 @@
 			_class = "C_OP_OscillateScalar"
 			m_RateMin = 50.0
 			m_RateMax = 100.0
-			m_nField = 3
+			m_nField = "3"
 		},
 	]
 	m_Renderers = 
@@ -57,6 +57,7 @@
 			m_bSaturateColorPreAlphaBlend = false
 			m_bAdditive = true
 			m_flOverbrightFactor = 2.0
+			m_ColorScale = [ 176, 225, 248 ]
 		},
 	]
 	m_Initializers = 
@@ -95,11 +96,6 @@
 				m_nType = "PF_TYPE_LITERAL"
 				m_flLiteralValue = 1.5
 			}
-			m_flStartTime = 
-			{
-				m_nType = "PF_TYPE_LITERAL"
-				m_flLiteralValue = 0.0
-			}
 			m_flEmitRate = 
 			{
 				m_nType = "PF_TYPE_LITERAL"
@@ -107,6 +103,5 @@
 			}
 		},
 	]
-	m_PreEmissionOperators = [  ]
 	m_nBehaviorVersion = 10
 }
