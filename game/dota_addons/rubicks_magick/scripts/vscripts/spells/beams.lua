@@ -151,7 +151,7 @@ function Beams:GetDeathBeamColor(pickedElements)
 	if contains(ELEMENT_COLD) then 		color = Vector(130, 200, 240)
 	elseif contains(ELEMENT_WATER) then
 		if contains(ELEMENT_FIRE) then 	color = Vector(160, 160, 170)
-		else 							color = Vector(20, 80, 220)
+		else 							color = Vector(70, 130, 240)
 		end
 	elseif contains(ELEMENT_FIRE) then	color = Vector(255, 100, 0)
 	end
