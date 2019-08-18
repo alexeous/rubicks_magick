@@ -1,4 +1,4 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf23:version{636cefcd-6551-40ad-801c-6085f7e67e27} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_controlPointConfigurations = 
@@ -34,6 +34,11 @@
 			_class = "C_INIT_CreateWithinSphere"
 		},
 		{
+			_class = "C_INIT_RandomLifeTime"
+			m_fLifetimeMin = 2.5
+			m_fLifetimeMax = 2.5
+		},
+		{
 			_class = "C_INIT_PositionOffset"
 			m_OffsetMin = [ 0.0, 0.0, 110.0 ]
 			m_OffsetMax = [ 0.0, 0.0, 110.0 ]
@@ -41,21 +46,20 @@
 		{
 			_class = "C_INIT_RemapCPtoScalar"
 			m_nCPInput = 1
-			m_nFieldOutput = 1
+			m_nFieldOutput = "1"
 			m_flInputMax = 100.0
 			m_flOutputMax = 100.0
-		},
-		{
-			_class = "C_INIT_RandomLifeTime"
-			m_fLifetimeMin = 2.5
-			m_fLifetimeMax = 2.5
 		},
 	]
 	m_Emitters = 
 	[
 		{
 			_class = "C_OP_InstantaneousEmitter"
-			m_nParticlesToEmit = 1
+			m_nParticlesToEmit = 
+			{
+				m_nType = "PF_TYPE_LITERAL"
+				m_flLiteralValue = 1.0
+			}
 		},
 	]
 	m_Children = 
@@ -65,18 +69,20 @@
 		},
 		{
 			m_ChildRef = resource:"particles/rock_throw/charging_particle/charging_particle_swings_fast.vpcf"
-			m_flDelay = 1.8
+			m_flDelay = 2.1
 		},
 		{
 			m_ChildRef = resource:"particles/rock_throw/charging_particle/charging_particle_swings.vpcf"
 		},
 		{
 			m_ChildRef = resource:"particles/rock_throw/charging_particle/charging_particle_stones_fast.vpcf"
-			m_flDelay = 1.8
+			m_flDelay = 2.1
 		},
 		{
 			m_ChildRef = resource:"particles/rock_throw/charging_particle/charging_particle_wave.vpcf"
-			m_flDelay = 2.0
+			m_flDelay = 2.1
 		},
 	]
+	m_nBehaviorVersion = 10
+	m_nFirstMultipleOverride_BackwardCompat = 2
 }
