@@ -48,21 +48,21 @@ function Beams:StartLifeBeam(player, pickedElements)
 	local additionalEffectTable = {
 		[ELEMENT_LIFE] = {
 			[ELEMENT_LIFE] = {
-				[ELEMENT_FIRE] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_FIRE, 3.92 * math.pow(power, 0.45)) end,
-				[ELEMENT_COLD] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_COLD, 3.04 * math.pow(power, 0.4)) end,
+				[ELEMENT_FIRE] 	= function(target, power) HP:ApplyElement(target, caster, ELEMENT_FIRE, 3.92 * math.pow(power, 0.45)) end,
+				[ELEMENT_COLD] 	= function(target, power) HP:ApplyElement(target, caster, ELEMENT_COLD, 3.04 * math.pow(power, 0.4)) end,
 				[ELEMENT_WATER] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_WATER, 1) end
 			},
 			[ELEMENT_WATER] = {
-				[ELEMENT_FIRE] = function(target, power) HP:ApplyElement(target, caster, PSEUDO_ELEMENT_STEAM, 3.75 * math.pow(power, 0.55)) end,
-				[DEFAULT] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_WATER, 1) end
+				[ELEMENT_FIRE] 	= function(target, power) HP:ApplyElement(target, caster, PSEUDO_ELEMENT_STEAM, 3.75 * math.pow(power, 0.55)) end,
+				[DEFAULT] 		= function(target, power) HP:ApplyElement(target, caster, ELEMENT_WATER, 1) end
 			},
 			[ELEMENT_FIRE] = {
-				[ELEMENT_FIRE] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_FIRE, 4.98 * math.pow(power, 0.53)) end,
-				[EMPTY] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_FIRE, 3.83 * math.pow(power, 0.47)) end
+				[ELEMENT_FIRE] 	= function(target, power) HP:ApplyElement(target, caster, ELEMENT_FIRE, 4.98 * math.pow(power, 0.53)) end,
+				[EMPTY] 		= function(target, power) HP:ApplyElement(target, caster, ELEMENT_FIRE, 3.83 * math.pow(power, 0.47)) end
 			},
 			[ELEMENT_COLD] = {
-				[ELEMENT_COLD] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_COLD, 3.9 * math.pow(power, 0.49)) end,
-				[EMPTY] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_COLD, 2.32 * math.pow(power, 0.6)) end
+				[ELEMENT_COLD] 	= function(target, power) HP:ApplyElement(target, caster, ELEMENT_COLD, 3.9 * math.pow(power, 0.49)) end,
+				[EMPTY] 		= function(target, power) HP:ApplyElement(target, caster, ELEMENT_COLD, 2.32 * math.pow(power, 0.6)) end
 			}
 		}
 	}
@@ -92,21 +92,21 @@ function Beams:StartDeathBeam(player, pickedElements)
 	local additionalEffectTable = {
 		[ELEMENT_DEATH] = {
 			[ELEMENT_DEATH] = {
-				[ELEMENT_FIRE] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_FIRE, 2.75 * math.pow(power, 0.96)) end,
-				[ELEMENT_COLD] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_COLD, 2.19 * math.pow(power, 0.62)) end,
+				[ELEMENT_FIRE] 	= function(target, power) HP:ApplyElement(target, caster, ELEMENT_FIRE, 2.75 * math.pow(power, 0.96)) end,
+				[ELEMENT_COLD] 	= function(target, power) HP:ApplyElement(target, caster, ELEMENT_COLD, 2.19 * math.pow(power, 0.62)) end,
 				[ELEMENT_WATER] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_WATER, 1) end
 			},
 			[ELEMENT_WATER] = {
-				[ELEMENT_FIRE] = function(target, power) HP:ApplyElement(target, caster, PSEUDO_ELEMENT_STEAM, 4.05 * math.pow(power, 0.49)) end,
-				[DEFAULT] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_WATER, 1) end
+				[ELEMENT_FIRE] 	= function(target, power) HP:ApplyElement(target, caster, PSEUDO_ELEMENT_STEAM, 4.05 * math.pow(power, 0.49)) end,
+				[DEFAULT] 		= function(target, power) HP:ApplyElement(target, caster, ELEMENT_WATER, 1) end
 			},
 			[ELEMENT_FIRE] = {
-				[ELEMENT_FIRE] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_FIRE, 4.97 * math.pow(power, 0.52)) end,
-				[EMPTY] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_FIRE, 3.3 * math.pow(power, 0.57)) end
+				[ELEMENT_FIRE] 	= function(target, power) HP:ApplyElement(target, caster, ELEMENT_FIRE, 4.97 * math.pow(power, 0.52)) end,
+				[EMPTY] 		= function(target, power) HP:ApplyElement(target, caster, ELEMENT_FIRE, 3.3 * math.pow(power, 0.57)) end
 			},
 			[ELEMENT_COLD] = {
-				[ELEMENT_COLD] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_COLD, 3.9 * math.pow(power, 0.48)) end,
-				[EMPTY] = function(target, power) HP:ApplyElement(target, caster, ELEMENT_COLD, 2.6 * math.pow(power, 0.72)) end
+				[ELEMENT_COLD] 	= function(target, power) HP:ApplyElement(target, caster, ELEMENT_COLD, 3.9 * math.pow(power, 0.48)) end,
+				[EMPTY] 		= function(target, power) HP:ApplyElement(target, caster, ELEMENT_COLD, 2.6 * math.pow(power, 0.72)) end
 			}
 		}
 	}
