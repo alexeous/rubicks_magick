@@ -14,10 +14,11 @@ end
 function Projectile:Create(infoTable)
     local caster = infoTable.caster
     local start = infoTable.start
+    local collisionRadius = infoTable.collisionRadius
     
-    local projectile = Util:CreateDummy(start, caster)
+    local projectile = Util:CreateDummy(start + Vector(0, 0, collisionRadius), caster)
     projectile.caster = caster
-    projectile.collisionRadius = infoTable.collisionRadius
+    projectile.collisionRadius = collisionRadius
     projectile.direction = infoTable.direction:Normalized()
     projectile.distance = infoTable.distance
     projectile.flightDuration = infoTable.flightDuration
@@ -58,7 +59,7 @@ end
 
 function Projectile:OnProjectileThink(projectile, deltaTime)
     local origin = projectile:GetAbsOrigin()
-	if origin.z <= GetGroundHeight(origin, projectile) then
+	if origin.z <= GetGroundHeight(origin, projectile) + projectile.collisionRadius then
 		return false
     end
 
