@@ -78,10 +78,6 @@ function Projectile:OnProjectileThink(projectile, deltaTime)
     projectile:SetAbsOrigin(origin)
     
     local caster = projectile.caster
-	local trees = GridNav:GetAllTreesAroundPoint(origin, projectile.collisionRadius, true)
-	if next(trees) ~= nil then
-		return false
-    end
     
     local unitsTouched = Util:FindUnitsInLine(oldOrigin, origin, projectile.collisionRadius, DOTA_UNIT_TARGET_FLAG_INVULNERABLE)
     for _, unit in pairs(unitsTouched) do
@@ -92,6 +88,11 @@ function Projectile:OnProjectileThink(projectile, deltaTime)
                 return false, unitsTouched
             end
         end
+    end
+
+	local trees = GridNav:GetAllTreesAroundPoint(origin, projectile.collisionRadius, true)
+	if next(trees) ~= nil then
+		return false
     end
     return true
 end
