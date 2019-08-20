@@ -8,7 +8,8 @@ if IceSpikes == nil then
 end
 
 function IceSpikes:Precache(context)
-
+	PrecacheResource("particle_folder", "particles/ice_spikes", context)
+	PrecacheResource("particle_folder", "particles/ice_spikes/charging_particle", context)
 end
 
 function IceSpikes:PlayerConnected(player)
@@ -33,7 +34,7 @@ function IceSpikes:StartIceSpikes(player, modifierElement)
 			caster:EmitSound("RockOvercharge")
 		end,
 		slowMovePercentage = 50,
-		chargingParticle = "particles/rock_throw/charging_particle/charging_particle.vpcf"
+		chargingParticle = "particles/ice_spikes/charging_particle/charging_particle.vpcf"
 	}
 	Spells:StartCasting(player, spellCastTable)
 	caster:EmitSound("RockCharging")
@@ -83,10 +84,11 @@ function IceSpikes:ReleaseSpikes(player, modifierElement)
 				for _, unit in pairs(unitsTouched) do
 					hitUnit(unit)
 				end
-				RockThrow:ImpactParticle(spike:GetAbsOrigin(), 1)
+				IceSpikes:StopParticles(spike)
+				IceSpikes:ImpactParticle(spike, modifierElement)
 			end,
 			createParticleCallback = function(spike)
-				return IceSpikes:CreateParticle(spike)
+				return IceSpikes:CreateParticle(spike, modifierElement)
 			end
 		})
 	end
@@ -132,6 +134,26 @@ function IceSpikes:MakeModifierElementDamageValue(t, modifierElement)
 	return damageValueTable[modifierElement]
 end
 
-function IceSpikes:CreateParticle(spike)
-	return RockThrow:CreateRockParticle(spike, {ELEMENT_EARTH, ELEMENT_WATER, ELEMENT_COLD})
+function IceSpikes:CreateParticle(spike, modifierElement)
+	local deathTrail = modifierElement == ELEMENT_DEATH
+	local iceTrail = not deathTrail
+	local waterTrail = modifierElement == ELEMENT_WATER
+	local coldTrail = modifierElement == ELEMENT_COLD
+	local spikeRadiusScale = 1
+	
+	local particle = ParticleManager:CreateParticle("particles/ice_spikes/ice_spike.vpcf", PATTACH_ABSORIGIN_FOLLOW, spike)
+	local function to01(x) return x and 1 or 0 end
+	ParticleManager:SetParticleControl(particle, 1, Vector(to01(iceTrail), to01(waterTrail), to01(coldTrail)))
+	ParticleManager:SetParticleControl(particle, 2, Vector(to01(deathTrail), 0, 0))
+	ParticleManager:SetParticleControl(particle, 3, Vector(spikeRadiusScale, 0, 0))
+
+	return particle
+end
+
+function IceSpikes:StopParticles(spike)
+	ParticleManager:SetParticleControl(spike.particle, 3, Vector(0, 0, 0))
+end
+
+function IceSpikes:ImpactParticle(spike, modifierElement)
+	RockThrow:ImpactParticle(spike:GetAbsOrigin(), 1)
 end
