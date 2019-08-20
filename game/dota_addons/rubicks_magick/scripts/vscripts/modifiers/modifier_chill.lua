@@ -30,9 +30,16 @@ end
 
 function modifier_chill:DeclareFunctions()
 	local funcs = {
-		MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE
+		MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE,
+		MODIFIER_EVENT_ON_DEATH
 	}
 	return funcs
+end
+
+function modifier_chill:OnDeath()
+	if IsServer() then
+		self:Destroy()
+	end
 end
 
 function modifier_chill:GetModifierMoveSpeedBonus_Percentage(params)
