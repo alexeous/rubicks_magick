@@ -142,7 +142,6 @@ function RockThrow:ReleaseRock(player)
 		flightDuration = ROCK_FLIGHT_TIME,
 		collisionRadius = rockSize * 16 + 18,
 		destroyDelay = 2.0,
-		particleDestroyDelay = 0.2,
 		onUnitHitCallback = function(rock, unit) 
 			return RockThrow:OnUnitHit(rock, unit) 
 		end,
