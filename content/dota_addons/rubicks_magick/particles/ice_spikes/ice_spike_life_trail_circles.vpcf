@@ -65,6 +65,7 @@
 			m_hTexture = resource:"materials/particle/particle_ring_wave_17.vtex"
 			m_flOverbrightFactor = 3.0
 			m_bSaturateColorPreAlphaBlend = false
+			m_flDepthBias = 10.0
 		},
 	]
 	m_Initializers = 
