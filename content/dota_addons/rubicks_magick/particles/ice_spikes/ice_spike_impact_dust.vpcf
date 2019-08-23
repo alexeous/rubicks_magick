@@ -32,14 +32,16 @@
 		},
 		{
 			_class = "C_OP_FadeOutSimple"
+			m_flFadeOutTime = 0.1
 		},
 		{
 			_class = "C_OP_FadeOutSimple"
-			m_flFadeOutTime = 0.5
+			m_flFadeOutTime = 0.9
 		},
 		{
 			_class = "C_OP_ColorInterpolate"
 			m_ColorFade = [ 38, 34, 34, 255 ]
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_OP_InterpolateRadius"
@@ -53,6 +55,8 @@
 			_class = "C_OP_RenderSprites"
 			m_hTexture = resource:"materials/particle/smoke1/smoke1.vtex"
 			m_ColorScale = [ 255, 255, 255 ]
+			m_bAdditive = true
+			m_nFeatheringMode = "PARTICLE_DEPTH_FEATHERING_ON_OPTIONAL"
 		},
 	]
 	m_Initializers = 
@@ -69,7 +73,7 @@
 		{
 			_class = "C_INIT_RandomRadius"
 			m_flRadiusMin = 40.0
-			m_flRadiusMax = 90.0
+			m_flRadiusMax = 80.0
 		},
 		{
 			_class = "C_INIT_RandomSequence"
@@ -83,18 +87,18 @@
 		},
 		{
 			_class = "C_INIT_RandomAlpha"
-			m_nAlphaMin = 127
-			m_nAlphaMax = 150
+			m_nAlphaMin = 82
+			m_nAlphaMax = 76
 		},
 		{
 			_class = "C_INIT_RandomColor"
-			m_ColorMin = [ 216, 216, 216, 255 ]
-			m_ColorMax = [ 177, 177, 177, 255 ]
+			m_ColorMin = [ 208, 226, 240, 255 ]
+			m_ColorMax = [ 207, 238, 255, 255 ]
 		},
 		{
 			_class = "C_INIT_VelocityRadialRandom"
-			m_fSpeedMin = -800.0
-			m_fSpeedMax = -1200.0
+			m_fSpeedMin = -600.0
+			m_fSpeedMax = -900.0
 			m_vecLocalCoordinateSystemSpeedScale = [ 1.0, 1.0, 0.0 ]
 		},
 	]

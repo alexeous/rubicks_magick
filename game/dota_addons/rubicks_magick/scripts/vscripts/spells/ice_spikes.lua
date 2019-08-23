@@ -156,5 +156,6 @@ function IceSpikes:StopParticles(spike)
 end
 
 function IceSpikes:ImpactParticle(spike, modifierElement)
-	RockThrow:ImpactParticle(spike:GetAbsOrigin(), 1)
+	local particle = ParticleManager:CreateParticle("particles/ice_spikes/ice_spike_impact.vpcf", PATTACH_CUSTOMORIGIN, nil)
+	ParticleManager:SetParticleControl(particle, 0, spike:GetAbsOrigin())
 end
