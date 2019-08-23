@@ -136,7 +136,8 @@ end
 
 function IceSpikes:CreateParticle(spike, modifierElement)
 	local deathTrail = modifierElement == ELEMENT_DEATH
-	local iceTrail = not deathTrail
+	local lifeTrail = modifierElement == ELEMENT_LIFE
+	local iceTrail = not deathTrail and not lifeTrail
 	local waterTrail = modifierElement == ELEMENT_WATER
 	local coldTrail = modifierElement == ELEMENT_COLD
 	local spikeRadiusScale = 1
@@ -144,7 +145,7 @@ function IceSpikes:CreateParticle(spike, modifierElement)
 	local particle = ParticleManager:CreateParticle("particles/ice_spikes/ice_spike.vpcf", PATTACH_ABSORIGIN_FOLLOW, spike)
 	local function to01(x) return x and 1 or 0 end
 	ParticleManager:SetParticleControl(particle, 1, Vector(to01(iceTrail), to01(waterTrail), to01(coldTrail)))
-	ParticleManager:SetParticleControl(particle, 2, Vector(to01(deathTrail), 0, 0))
+	ParticleManager:SetParticleControl(particle, 2, Vector(to01(lifeTrail), to01(deathTrail), 0))
 	ParticleManager:SetParticleControl(particle, 3, Vector(spikeRadiusScale, 0, 0))
 
 	return particle
