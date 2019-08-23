@@ -148,7 +148,7 @@ function Beams:GetDeathBeamColor(pickedElements)
 	local function contains(e) return table.indexOf(pickedElements, e) ~= nil end
 
 	local color = Vector(200, 0, 0)
-	if contains(ELEMENT_COLD) then 		color = Vector(130, 200, 240)
+	if contains(ELEMENT_COLD) then 		color = Vector(150, 230, 255)
 	elseif contains(ELEMENT_WATER) then
 		if contains(ELEMENT_FIRE) then 	color = Vector(160, 160, 170)
 		else 							color = Vector(70, 130, 240)

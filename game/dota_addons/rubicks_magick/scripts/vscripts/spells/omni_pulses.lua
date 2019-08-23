@@ -156,7 +156,7 @@ function OmniPulses:GetDeathOmniPulseColor(pickedElements)
 	local function contains(e) return table.indexOf(pickedElements, e) ~= nil end
 
 	local color = Vector(255, 0, 0)
-	if contains(ELEMENT_COLD) then 		color = Vector(222, 222, 255)
+	if contains(ELEMENT_COLD) then 		color = Vector(222, 255, 255)
 	elseif contains(ELEMENT_WATER) then
 		if contains(ELEMENT_FIRE) then 	color = Vector(160, 160, 160)
 		else 							color = Vector(100, 190, 255)
