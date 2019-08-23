@@ -247,6 +247,9 @@
 		{
 			m_ChildRef = resource:"particles/ice_spikes/ice_spike_life_trail.vpcf"
 		},
+		{
+			m_ChildRef = resource:"particles/ice_spikes/ice_spike_death_trail.vpcf"
+		},
 	]
 	m_nBehaviorVersion = 10
 	m_nFirstMultipleOverride_BackwardCompat = 1
