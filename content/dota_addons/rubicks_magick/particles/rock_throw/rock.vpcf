@@ -24,6 +24,14 @@
 		{
 			_class = "C_OP_EndCapTimedDecay"
 		},
+		{
+			_class = "C_OP_RemapCPtoScalar"
+			m_nCPInput = 1
+			m_flInputMin = 1.0
+			m_flInputMax = 3.0
+			m_flOutputMin = 0.8
+			m_flOutputMax = 1.2
+		},
 	]
 	m_Renderers = 
 	[
@@ -52,6 +60,7 @@
 			m_flInputMax = 3.0
 			m_flOutputMin = 0.8
 			m_flOutputMax = 1.2
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_INIT_RandomRotation"

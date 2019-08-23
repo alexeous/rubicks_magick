@@ -142,6 +142,7 @@ function RockThrow:ReleaseRock(player)
 		flightDuration = ROCK_FLIGHT_TIME,
 		collisionRadius = rockSize * 16 + 18,
 		destroyDelay = 2.0,
+		particleDestroyDelay = 0.2,
 		onUnitHitCallback = function(rock, unit) 
 			return RockThrow:OnUnitHit(rock, unit) 
 		end,
@@ -215,11 +216,7 @@ function RockThrow:OnRockDeath(rock, unitsTouched)
 	Util:EmitSoundOnLocation(origin, "RockTouch", rock.caster)
 	
 	ParticleManager:SetParticleControl(rock.particle, 0, origin)
-	Timers:CreateTimer(0.05, function()
-		ParticleManager:SetParticleControl(rock.particle, 1, Vector(rock.rockSize, 0, 0))
-		ParticleManager:SetParticleControl(rock.particle, 2, Vector(0, 0, 0))
-		ParticleManager:SetParticleControl(rock.particle, 3, Vector(0, 0, 0))
-	end)
+	ParticleManager:SetParticleControl(rock.particle, 1, Vector(0, rock.particleCP1.y, rock.particleCP1.z))
 
 	RockThrow:ImpactParticle(origin, rock.rockSize)
 end
@@ -259,10 +256,14 @@ function RockThrow:CreateRockParticle(rock, pickedElements)
 		ice = 1
 	end
 
+	rock.particleCP1 = Vector(rockSize, earthOnly, ice)
+	rock.particleCP2 = Vector(waterTrail, fireTrail, coldTrail)
+	rock.particleCP3 = Vector(deathTrail, lifeTrail, steamTrail)
+
 	local particle = ParticleManager:CreateParticle("particles/rock_throw/rock.vpcf", PATTACH_ABSORIGIN_FOLLOW, rock)
-	ParticleManager:SetParticleControl(particle, 1, Vector(rockSize, earthOnly, ice))
-	ParticleManager:SetParticleControl(particle, 2, Vector(waterTrail, fireTrail, coldTrail))
-	ParticleManager:SetParticleControl(particle, 3, Vector(deathTrail, lifeTrail, steamTrail))
+	ParticleManager:SetParticleControl(particle, 1, rock.particleCP1)
+	ParticleManager:SetParticleControl(particle, 2, rock.particleCP2)
+	ParticleManager:SetParticleControl(particle, 3, rock.particleCP3)
 	return particle
 end
 
