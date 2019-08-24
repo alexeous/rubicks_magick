@@ -38,15 +38,13 @@ end
 
 function Util:CreateDummyWithoutModifier(position, owner)
 	local team = owner ~= nil and owner:GetTeam() or DOTA_TEAM_NOTEAM
-	local dummy = CreateUnitByName("npc_dummy_blank", position, false, owner, owner, team)
+	local dummy = CreateUnitByName("npc_dummy_blank", position, false, owner, nil, team)
 	dummy:SetAbsOrigin(position)
 	return dummy
 end
 
 function Util:EmitSoundOnLocation(location, soundName, caster)
-	local dummy = Util:CreateDummy(location, caster)
-	dummy:EmitSound(soundName)
-	dummy:Destroy()
+	EmitSoundOnLocationWithCaster(location, soundName, caster)
 end
 
 function Util:Lerp(a, b, t)
