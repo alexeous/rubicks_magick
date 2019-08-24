@@ -10,6 +10,8 @@ end
 function IceSpikes:Precache(context)
 	PrecacheResource("particle_folder", "particles/ice_spikes", context)
 	PrecacheResource("particle_folder", "particles/ice_spikes/charging_particle", context)
+
+	PrecacheResource("soundfile", "soundevents/rubicks_magick/ice_spikes.vsndevts", context)
 end
 
 function IceSpikes:PlayerConnected(player)
@@ -71,7 +73,7 @@ function IceSpikes:ReleaseSpikes(player, modifierElement)
 	local function launchSpike(endPos)
 		local startToEnd = endPos - startPos
 		local startToEndLen = #startToEnd
-		Projectile:Create({
+		local ff =Projectile:Create({
 			caster = caster,
 			start = startPos,
 			direction = startToEnd / startToEndLen,
@@ -86,11 +88,22 @@ function IceSpikes:ReleaseSpikes(player, modifierElement)
 				end
 				IceSpikes:StopParticles(spike)
 				IceSpikes:ImpactParticle(spike, modifierElement)
+				Util:EmitSoundOnLocation(spike:GetAbsOrigin(), "IceSpikeImpact1", caster)
 			end,
 			createParticleCallback = function(spike)
 				return IceSpikes:CreateParticle(spike, modifierElement)
 			end
 		})
+		Util:EmitSoundOnLocation(startPos, "IceSpikeLaunch1", caster)
+		Util:EmitSoundOnLocation(startPos, "IceSpikeLaunch2", caster)
+		Util:EmitSoundOnLocation(startPos, "IceSpikeLaunch3", caster)
+		if 		modifierElement == ELEMENT_WATER then 	Util:EmitSoundOnLocation(startPos, "IceSpikeLaunchWater1", caster)
+		elseif 	modifierElement == ELEMENT_COLD then	Util:EmitSoundOnLocation(startPos, "IceSpikeLaunchCold1", caster)
+		elseif 	modifierElement == ELEMENT_LIFE then	Util:EmitSoundOnLocation(startPos, "IceSpikeLaunchLife1", caster)
+		elseif 	modifierElement == ELEMENT_DEATH then	
+			Util:EmitSoundOnLocation(startPos, "IceSpikeLaunchDeath1", caster)
+			Util:EmitSoundOnLocation(startPos, "IceSpikeLaunchDeath2", caster)
+		end
 	end
 
 	if timeElapsed < 2.5 then

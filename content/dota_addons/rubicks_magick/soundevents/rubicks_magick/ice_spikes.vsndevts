@@ -1,0 +1,319 @@
+"IceSpikeLaunch1"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/ancient_apparition/attack1.vsnd"
+                              "value1"        "sounds/weapons/hero/ancient_apparition/attack2.vsnd"
+                              "value2"        "sounds/weapons/hero/ancient_apparition/attack3.vsnd"
+                              "value3"        "sounds/weapons/hero/ancient_apparition/attack4.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "0.6300000"  }
+                    "pitch"             {   "value"     "1.000000"  }
+                    "pitch_rand_min"    {   "value"     "-0.15000"  }
+                    "pitch_rand_max"    {   "value"     "0.150000"  }  
+                    "soundlevel"        {   "value"     "90.00000" }
+                    "distance_max"      {   "value"     "2400.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "stop_at_time"      {   "value"     "0.200000"  }
+                    "volume_fade_out"   {   "value"     "0.400000"  }
+                }
+            }
+        }
+    }
+}
+
+"IceSpikeLaunch2"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/windrunner/powershot_damage01.vsnd"
+                              "value1"        "sounds/weapons/hero/windrunner/powershot_damage02.vsnd"
+                              "value2"        "sounds/weapons/hero/windrunner/powershot_damage03.vsnd"
+                              "value3"        "sounds/weapons/hero/windrunner/powershot_damage04.vsnd"
+                              "value4"        "sounds/weapons/hero/windrunner/powershot_damage05.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "0.910000"  }
+                    "pitch"             {   "value"     "1.100000"  }
+                    "pitch_rand_min"    {   "value"     "-0.35000"  }
+                    "pitch_rand_max"    {   "value"     "0.350000"  }  
+                    "soundlevel"        {   "value"     "90.00000" }
+                    "distance_max"      {   "value"     "2400.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "delay"             {   "value"     "0.10000"  }
+                    "stop_at_time"      {   "value"     "0.200000"  }
+                    "volume_fade_out"   {   "value"     "0.400000"  }
+                }
+            }
+        }
+    }
+}
+
+"IceSpikeLaunch3"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/ancient_apparition/cold_feet.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "0.2100000"  }
+                    "pitch"             {   "value"     "1.100000"  }
+                    "pitch_rand_min"    {   "value"     "-0.15000"  }
+                    "pitch_rand_max"    {   "value"     "0.150000"  }  
+                    "soundlevel"        {   "value"     "90.00000" }
+                    "distance_max"      {   "value"     "2400.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "stop_at_time"      {   "value"     "0.200000"  }
+                    "volume_fade_out"   {   "value"     "0.400000"  }
+                }
+            }
+        }
+    }
+}
+
+"IceSpikeLaunchWater1"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/physics/footsteps/common/waterstep_01.vsnd"
+                              "value1"        "sounds/physics/footsteps/common/waterstep_02.vsnd"
+                              "value2"        "sounds/physics/footsteps/common/waterstep_03.vsnd"
+                              "value3"        "sounds/physics/footsteps/common/waterstep_04.vsnd"
+                              "value4"        "sounds/physics/footsteps/common/waterstep_05.vsnd"
+                              "value5"        "sounds/physics/footsteps/common/waterstep_06.vsnd"
+                              "value6"        "sounds/physics/footsteps/common/waterstep_07.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "3.20000"  }
+                    "pitch"             {   "value"     "0.800000"  }
+                    "pitch_rand_min"    {   "value"     "-0.35000"  }
+                    "pitch_rand_max"    {   "value"     "0.350000"  }  
+                    "soundlevel"        {   "value"     "90.00000" }
+                    "distance_max"      {   "value"     "2400.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                }
+            }
+        }
+    }
+}
+
+"IceSpikeLaunchCold1"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/rubicks_magick/cold_spray_loop02.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "1.450000"  }
+                    "pitch"             {   "value"     "0.900000"  }
+                    "pitch_rand_min"    {   "value"     "-0.05000"  }
+                    "pitch_rand_max"    {   "value"     "0.050000"  }  
+                    "soundlevel"        {   "value"     "90.00000" }
+                    "distance_max"      {   "value"     "2400.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "stop_at_time"      {   "value"     "0.200000"  }
+                    "volume_fade_out"   {   "value"     "0.500000"  }
+                }
+            }
+        }
+    }
+}
+
+"IceSpikeLaunchLife1"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/warlock/shadowword_cast_heal.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "1.050000"  }
+                    "pitch"             {   "value"     "2.00000"  }
+                    "pitch_rand_min"    {   "value"     "-0.05000"  }
+                    "pitch_rand_max"    {   "value"     "0.050000"  }  
+                    "soundlevel"        {   "value"     "90.00000" }
+                    "distance_max"      {   "value"     "2400.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "stop_at_time"      {   "value"     "0.200000"  }
+                    "volume_fade_out"   {   "value"     "0.500000"  }
+                }
+            }
+        }
+    }
+}
+
+"IceSpikeLaunchDeath1"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/towers/attack_dire.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "1.3000"  }
+                    "pitch"             {   "value"     "1.0000"  }
+                    "pitch_rand_min"    {   "value"     "-0.15000"  }
+                    "pitch_rand_max"    {   "value"     "0.150000"  }  
+                    "soundlevel"        {   "value"     "90.00000" }
+                    "distance_max"      {   "value"     "2400.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "stop_at_time"      {   "value"     "0.200000"  }
+                    "volume_fade_out"   {   "value"     "0.500000"  }
+                }
+            }
+        }
+    }
+}
+
+"IceSpikeLaunchDeath2"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/witch_doctor/maledict_tick.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "0.7000"  }
+                    "pitch"             {   "value"     "1.0000"  }
+                    "pitch_rand_min"    {   "value"     "-0.15000"  }
+                    "pitch_rand_max"    {   "value"     "0.150000"  }  
+                    "soundlevel"        {   "value"     "90.00000" }
+                    "distance_max"      {   "value"     "2400.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "stop_at_time"      {   "value"     "0.200000"  }
+                    "volume_fade_out"   {   "value"     "0.500000"  }
+                }
+            }
+        }
+    }
+}
+
+"IceSpikeImpact1"
+{
+    "operator_stacks"
+    {
+        "update_stack"
+        {
+            "reference_operator"
+            {
+                "operator"              "sos_reference_stack"
+                "reference_stack"       "dota_src1_3d"
+                "operator_variables"
+                {
+                    "vsnd_files"
+                    {
+                        "value"
+                        {
+                              "value0"        "sounds/weapons/hero/ancient_apparition/cold_feet_tick.vsnd"
+                              "value1"        "sounds/weapons/hero/ancient_apparition/cold_feet_tick2.vsnd"
+                              "value2"        "sounds/weapons/hero/ancient_apparition/cold_feet_tick3.vsnd"
+                        }
+                    }
+                    "volume"            {   "value"     "0.3000"  }
+                    "pitch"             {   "value"     "1.0000"  }
+                    "pitch_rand_min"    {   "value"     "-0.15000"  }
+                    "pitch_rand_max"    {   "value"     "0.150000"  }  
+                    "soundlevel"        {   "value"     "90.00000" }
+                    "distance_max"      {   "value"     "2400.000"  }
+                    "event_type"        {   "value"     "1.000000"  }
+                    "stop_at_time"      {   "value"     "0.200000"  }
+                    "volume_fade_out"   {   "value"     "0.500000"  }
+                }
+            }
+        }
+    }
+}
