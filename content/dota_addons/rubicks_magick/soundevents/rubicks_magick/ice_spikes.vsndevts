@@ -133,7 +133,7 @@
                               "value6"        "sounds/physics/footsteps/common/waterstep_07.vsnd"
                         }
                     }
-                    "volume"            {   "value"     "3.20000"  }
+                    "volume"            {   "value"     "1.50000"  }
                     "pitch"             {   "value"     "0.800000"  }
                     "pitch_rand_min"    {   "value"     "-0.35000"  }
                     "pitch_rand_max"    {   "value"     "0.350000"  }  
