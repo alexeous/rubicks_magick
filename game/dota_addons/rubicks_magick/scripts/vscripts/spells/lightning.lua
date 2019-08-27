@@ -344,8 +344,9 @@ function Lightning:GetMostAttractiveTarget(candidates, caster)
 		local bPos = b:GetAbsOrigin()
 		return SqrLength2D(casterPos - aPos) < SqrLength2D(casterPos - bPos)
 	end
-	local walls = table.where(candidates, function(_, x) return x.isWall end)
-	return table.min(walls, IsACloserToCasterThanB) or table.min(candidates, IsACloserToCasterThanB)
+	return table.min(candidates, function(a, b)
+		return a.isWall or IsACloserToCasterThanB(a, b)
+	end)
 end
 
 function Lightning:CreateParticle(startPos, endPos, noTarget, isDeath, isLife, color)
