@@ -293,19 +293,7 @@ function Lightning:GetDirectedLightningTarget(caster, distance)
 		local toTarget = t:GetAbsOrigin() - origin
 		return Util:AngleBetweenVectorsLessThanAcosOf(forward, toTarget, COS_30)
 	end)
-	if not table.any(targets) then
-		return nil
-	end
-
-	local function IsACloserToCasterThanB(a, b)
-		local casterPos = caster:GetAbsOrigin()
-		return (casterPos - a):Length2D() < (casterPos - b):Length2D()
-	end
-
-	local target = table.min(targets, function(a, b)
-		return a.isSolidWall or IsACloserToCasterThanB(a:GetAbsOrigin(), b:GetAbsOrigin())
-	end)
-	return target
+	return Lightning:GetMostAttractiveTarget(targets, caster)
 end
 
 function Lightning:GetOmniLightningTargets(caster, distance) 
@@ -334,24 +322,30 @@ function Lightning:GetChainLightningTarget(caster, startUnit, distance, affected
 			Lightning:TraceLineToTarget(startUnit, t) and 
 			not Util:AngleBetweenVectorsLessThanAcosOf(t:GetAbsOrigin() - startPos, startToCaster, COS_30)
 	end)
-	if not table.any(targets) then
-		return nil
-	end
-
-	local function IsACloserToCasterThanB(a, b)
-		local casterPos = caster:GetAbsOrigin()
-		return (casterPos - a):Length2D() < (casterPos - b):Length2D()
-	end
-
-	local target = table.min(targets, function(a, b)
-		return a.isSolidWall or IsACloserToCasterThanB(a:GetAbsOrigin(), b:GetAbsOrigin())
-	end)
-	return target
+	return Lightning:GetMostAttractiveTarget(targets, caster)
 end
 
 function Lightning:TraceLineToTarget(from, target)
 	local traceTable = { startpos = from:GetAbsOrigin(), endpos = target:GetAbsOrigin(), ignore = from }
 	return TraceLine(traceTable) and traceTable.hit and traceTable.enthit == target
+end
+
+function Lightning:GetMostAttractiveTarget(candidates, caster)
+	if not table.any(candidates) then
+		return nil
+	end
+
+	local casterPos = caster:GetAbsOrigin()
+	local function SqrLength2D(vec)
+		return vec:Dot(vec)
+	end
+	local function IsACloserToCasterThanB(a, b)
+		local aPos = a:GetAbsOrigin()
+		local bPos = b:GetAbsOrigin()
+		return SqrLength2D(casterPos - aPos) < SqrLength2D(casterPos - bPos)
+	end
+	local walls = table.where(candidates, function(_, x) return x.isWall end)
+	return table.min(walls, IsACloserToCasterThanB) or table.min(candidates, IsACloserToCasterThanB)
 end
 
 function Lightning:CreateParticle(startPos, endPos, noTarget, isDeath, isLife, color)
