@@ -272,7 +272,7 @@ end
 
 function Lightning:ChainLightning(caster, startUnit, distance, affectedUnits, effectFunc, isDeath, isLife, color)
 	local target = Lightning:GetChainLightningTarget(caster, startUnit, distance, affectedUnits)
-	if target == nil then
+	if target == nil or target.isElementWall or target.isLightningWall then
 		return
 	end
 	effectFunc(target)
