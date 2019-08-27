@@ -101,13 +101,12 @@ function HP:GetDamageAfterShields(target, value, element)
     local function reduceValue(n) value = math.max(0, value - (0.5 * value) * n) end
     local function any01(e) return SelfShield:HasAnyResistanceTo(target, e) and 1 or 0 end
 
+    reduceValue(SelfShield:ResistanceLevelTo(target, element))
     if element == PSEUDO_ELEMENT_STEAM then
         reduceValue(any01(ELEMENT_WATER) + any01(ELEMENT_FIRE))
     elseif element == PSEUDO_ELEMENT_ICE then
         reduceValue(SelfShield:ResistanceLevelTo(target, ELEMENT_EARTH))
         reduceValue(any01(ELEMENT_WATER) + any01(ELEMENT_COLD))
-    else
-        reduceValue(SelfShield:ResistanceLevelTo(target, element))
     end
     
 	return value
@@ -147,5 +146,20 @@ function HP:MakeReciprocalApplying(initialValue)
         local count = (hitCounts[target] or 0) + 1
         hitCounts[target] = count
         return initialValue / count
+    end
+end
+
+function HP:MakeSharedApplyingCurried(value)
+    local counters = {}
+    return function(applyingNumber)
+        return function(target)
+            local counter = counters[target] or 0
+            if applyingNumber > counter then
+                counters[target] = applyingNumber
+                return value
+            else
+                return 0
+            end
+        end
     end
 end

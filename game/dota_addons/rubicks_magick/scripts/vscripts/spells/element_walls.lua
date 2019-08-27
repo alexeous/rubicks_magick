@@ -7,6 +7,7 @@ end
 
 function ElementWalls:Precache(context)
 	LinkLuaModifier("modifier_ice_wall", "modifiers/modifier_ice_wall.lua", LUA_MODIFIER_MOTION_NONE)
+	LinkLuaModifier("modifier_element_wall", "modifiers/modifier_element_wall.lua", LUA_MODIFIER_MOTION_NONE)
 
 	PrecacheResource("particle_folder", "particles/element_walls/ice_wall", context)
 	
@@ -23,6 +24,22 @@ function ElementWalls:PlayerConnected(player)
 
 end
 
+
+function ElementWalls:PlaceWaterWallSpell(player, modifierElement)
+	ElementWalls:GenericStartCasting(player, ELEMENT_WATER, modifierElement)
+end
+
+function ElementWalls:PlaceColdWallSpell(player, modifierElement)
+	ElementWalls:GenericStartCasting(player, ELEMENT_COLD, modifierElement)
+end
+
+function ElementWalls:PlaceFireWallSpell(player, modifierElement)
+	ElementWalls:GenericStartCasting(player, ELEMENT_FIRE, modifierElement)
+end
+
+function ElementWalls:PlaceSteamWallSpell(player)
+	ElementWalls:GenericStartCasting(player, PSEUDO_ELEMENT_STEAM, nil)
+end
 
 function ElementWalls:PlaceIceWallSpell(player)
 	local caster = player:GetAssignedHero()
@@ -47,20 +64,74 @@ function ElementWalls:PlaceIceWallSpell(player)
 	ParticleManager:CreateParticle("particles/element_walls/ice_wall/ice_wall_hero_wave.vpcf", PATTACH_ABSORIGIN, caster)
 end
 
-function ElementWalls:PlaceSteamWall(player)
-	-------- TODO ---------
+
+function ElementWalls:GenericStartCasting(player, element, modifierElement)
+	local spellCastTable = {
+		castType = CAST_TYPE_INSTANT,
+		duration = 0.75,
+		dontMoveWhileCasting = true,
+		castingGesture = ACT_DOTA_CAST_ABILITY_5,
+		castingGestureRate = 2.0,
+		castingGestureTranslate = "wall",
+		thinkPeriod = 0.17,
+		thinkFunction = function(player) 
+			player.spellCast.thinkFunction = nil
+			Spells:RemoveElementWalls(player)
+			ElementWalls:GenericPlaceWallUnits(player:GetAssignedHero(), element, modifierElement)
+		end
+	}
+	Spells:StartCasting(player, spellCastTable)
 end
 
-function ElementWalls:PlaceWaterWall(player, modifierElement)
-	-------- TODO ---------
+function ElementWalls:GenericPlaceWallUnits(caster, element, modifierElement)
+	local wallUnitNumber = modifierElement ~= nil and 4 or 2
+
+	local immuneElements = table.except(ALL_ELEMENTS_INCLUDING_PSEUDO, ElementWalls:GetWallVulnerabilityElements(element))
+
+	local damage = ElementWalls:GetWallDamage(element)
+	local sharedApplyingCurriedFunc = HP:MakeSharedApplyingCurried(damage)
+	local doPush = element == ELEMENT_WATER
+	local effectFunc = function(wall, target, applyingNumber)
+		if HP:ApplyElement(target, caster, element, sharedApplyingCurriedFunc(applyingNumber)) and doPush then
+			MoveController:Knockback(target, caster, wall:GetAbsOrigin(), 80)
+		end
+	end
+
+	local onKilledCallback = function(wall)
+		Spells:UnregisterCastedElementWall(caster, wall)
+	end
+	
+	local wallUnits = GenericWall:CreateWallUnits(caster, wallUnitNumber, 40, immuneElements, onKilledCallback)
+	for _, wall in pairs(wallUnits) do
+		ElementWalls:GenericInitWallUnit(wall, caster, element, effectFunc)
+		Spells:RegisterCastedElementWall(caster, wall)
+	end
 end
 
-function ElementWalls:PlaceFireWall(player, modifierElement)
-	-------- TODO ---------
+function ElementWalls:GetWallVulnerabilityElements(wallElement)
+	local vulnerabilityElementsTable = {
+		[ELEMENT_WATER]			= { ELEMENT_FIRE },
+		[ELEMENT_COLD]			= { ELEMENT_FIRE },
+		[ELEMENT_FIRE]			= { ELEMENT_WATER, ELEMENT_COLD },
+		[PSEUDO_ELEMENT_STEAM]	= { ELEMENT_COLD }
+	}
+	return vulnerabilityElementsTable[wallElement]
 end
 
-function ElementWalls:PlaceColdWall(player, modifierElement)
-	-------- TODO ---------
+function ElementWalls:GetWallDamage(wallElement)
+	local damageTable = {
+		[ELEMENT_WATER]			= 1,
+		[ELEMENT_COLD]			= 45,
+		[ELEMENT_FIRE]			= 80,
+		[PSEUDO_ELEMENT_STEAM]	= 100
+	}
+	return damageTable[wallElement]
+end
+
+function ElementWalls:GenericInitWallUnit(wall, caster, element, effectFunc)
+	wall.isElementWall = true
+	wall.effectFunc = effectFunc
+	wall:AddNewModifier(caster, nil, "modifier_element_wall", { element = element })
 end
 
 function ElementWalls:PlaceIceWall(caster)

@@ -53,6 +53,16 @@ table.where = function(t, predicate)
 	return result
 end
 
+table.except = function(t, exceptList)
+	local result = {}
+	for _, v in pairs(t) do
+		if not table.indexOf(exceptList, v) then
+			table.insert(result, v)
+		end
+	end
+	return result
+end
+
 table.min = function(t, lessPredicate)
 	local min = nil
 	for _, v in pairs(t) do

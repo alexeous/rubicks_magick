@@ -173,12 +173,12 @@ function Spells:OnDirectedCastKeyDown(keys)
 			[ELEMENT_LIFE]      = function() Mines:PlaceLifeMines(player, pickedElements[3]) end,
 			[ELEMENT_DEATH]     = function() Mines:PlaceDeathMines(player, pickedElements[3]) end,
 			[ELEMENT_WATER] = {
-				[ELEMENT_FIRE] = function() ElementWalls:PlaceSteamWall(player) end,
+				[ELEMENT_FIRE] = function() ElementWalls:PlaceSteamWallSpell(player) end,
 				[ELEMENT_COLD] = function() ElementWalls:PlaceIceWallSpell(player) end,
-				[DEFAULT]	   = function() ElementWalls:PlaceWaterWall(player, pickedElements[3]) end
+				[DEFAULT]	   = function() ElementWalls:PlaceWaterWallSpell(player, pickedElements[3]) end
 			},
-			[ELEMENT_FIRE] = function() ElementWalls:PlaceFireWall(player, pickedElements[3]) end,
-			[ELEMENT_COLD] = function() ElementWalls:PlaceColdWall(player, pickedElements[3]) end,
+			[ELEMENT_FIRE] = function() ElementWalls:PlaceFireWallSpell(player, pickedElements[3]) end,
+			[ELEMENT_COLD] = function() ElementWalls:PlaceColdWallSpell(player, pickedElements[3]) end,
 			[EMPTY]        = function() MagicShield:PlaceFlatMagicShieldSpell(player) end,
 		},
 		[ELEMENT_EARTH] 	= function() RockThrow:StartRockThrow(player, pickedElements) end,
@@ -496,7 +496,9 @@ end
 
 function Spells:RegisterCastedSolidWall(caster, wall)
 	caster.castedSolidWalls = caster.castedSolidWalls or {}
-	table.insert(caster.castedSolidWalls, wall)
+	if not table.indexOf(caster.castedElementWalls, wall) then
+		table.insert(caster.castedSolidWalls, wall)
+	end
 end
 
 function Spells:UnregisterCastedSolidWall(caster, wall)
@@ -515,4 +517,28 @@ function Spells:RemoveMagicShieldAndSolidWalls(player)
 		hero.castedSolidWalls = {}
 	end
 	MagicShield:DestroyCurrentShield(player)
+end
+
+function Spells:RegisterCastedElementWall(caster, wall)
+	caster.castedElementWalls = caster.castedElementWalls or {}
+	if not table.indexOf(caster.castedElementWalls, wall) then
+		table.insert(caster.castedElementWalls, wall)
+	end
+end
+
+function Spells:UnregisterCastedElementWall(caster, wall)
+	if caster.castedElementWalls ~= nil then
+		table.removeItem(caster.castedElementWalls, wall)
+	end
+end
+
+function Spells:RemoveElementWalls(player)
+	local hero = player:GetAssignedHero()
+	if hero.castedElementWalls ~= nil then
+		local wallsCopy = table.clone(hero.castedElementWalls) -- if in onKilledCallback there is a removal from castedElementWalls, looping over it itself could went wrong
+		for _, wall in pairs(wallsCopy) do
+			Placer:KillQuietly(wall)
+		end
+		hero.castedElementWalls = {}
+	end
 end
